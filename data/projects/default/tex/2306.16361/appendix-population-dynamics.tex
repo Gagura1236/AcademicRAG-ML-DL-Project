@@ -1,0 +1,159 @@
+\section{Missing Proofs in \Cref{sec:main_results}}
+
+\subsection{Proof of \Cref{lem:expressivity}}\label{app:conditions}
+In this section, we prove sufficient and necessary conditions for $\gamma_2$ and $\gamma_4$ when the population loss is 0.
+
+\begin{proposition}[Necessary condition]
+    Let $f_\rho(x)=\E_{u\sim \rho}[\sigma(u^\top x)]$ be a (not necessarily symmetric nor rotational invariant) two-layer neural network and $y(x)=h(e_1^\top x)$ the target function. Define $\gamma_k=\frac{\legendreCoeff{h}{k}}{\legendreCoeff{\sigma}{k}},\forall k\ge 0$. Suppose $\E_{x\sim \Sp}(f_\rho(x)-y(x))^2=0$ and $\legendreCoeff{\sigma}{2}\neq 0,\legendreCoeff{\sigma}{4}\neq 0$, we have
+    \begin{align}\label{equ:prop-nc-1}
+        &\gamma_2^2\le \gamma_4+O\(\frac{1}{\sqrt{d}}\),\\
+        &\gamma_4\le \gamma_2+O\(\frac{1}{\sqrt{d}}\),\label{equ:prop-nc-2}\\
+        &\gamma_2\le 1.\label{equ:prop-nc-3}
+    \end{align}
+\end{proposition}
+\begin{proof}
+    Similar to the proof of Lemma~\ref{lemma:population_loss_formula}, we have
+    \begin{align}
+    &\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \target(x^\top e_1))^2] 
+     = \E_{x \sim \bbS^{d - 1}} \Big( \E_{u \sim \rho}[\sigma(u^\top x)] - \target(x^\top e_1) \Big)^2 \\
+     = \;&\E_{x \sim \bbS^{d - 1}} \Big(\E_{u \sim \rho}\Big[ \sum_{k = 0}^\infty \legendreCoeff{\sigma}{k} \overline{P_{k, d}} (u^\top x) \Big] - \sum_{k = 0}^\infty \legendreCoeff{h}{k} \overline{P}_{k, d}(x^\top e_1) \Big)^2 \\
+     = \;&\E_{x \sim \bbS^{d - 1}} \Big(\sum_{k=0}^\infty \Big(\legendreCoeff{\sigma}{k} \E_{u \sim \rho} [\overline{P}_{k,d}(u^\top x)] - \legendreCoeff{h}{k} \overline{P}_{k,d}(x^\top e_1) \Big) \Big)^2.\label{equ:pf-nc-0}
+    \end{align}
+    Continuing the equation by invoking Lemma~\ref{lem:legendre-poly-inner-product}, we get
+    \begin{align}
+        &\E_{x \sim \bbS^{d - 1}} \Big(\sum_{k=0}^\infty \Big(\legendreCoeff{\sigma}{k} \E_{u \sim \rho} [\overline{P}_{k,d}(u^\top x)] - \legendreCoeff{h}{k} \overline{P}_{k,d}(x^\top e_1) \Big) \Big)^2\\
+        =\;&\sum_{k=0}^\infty \E_{x \sim \bbS^{d - 1}} \Big(\legendreCoeff{\sigma}{k} \E_{u \sim \rho} [\overline{P}_{k,d}(u^\top x)] - \legendreCoeff{h}{k} \overline{P}_{k,d}(x^\top e_1) \Big)^2\\
+        =\;&\sum_{k=0}^\infty \legendreCoeff{\sigma}{k}^2\Big( \E_{u,u' \sim \rho} [P_{k,d}(u^\top u') - 2\gamma_k P_{k,d}(u^\top e_1)+ \gamma_k^2 P_{k,d}(e_1^\top e_1])\Big)^2.
+    \end{align}
+Therefore, $\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \target(x^\top e_1))^2]=0$ implies that
+\begin{align}
+    &\E_{u,u' \sim \rho} [P_{2,d}(u^\top u') - 2\gamma_2 P_{2,d}(u^\top e_1)+ \gamma_2^2 P_{2,d}(e_1^\top e_1)]=0,\label{equ:pf-nc-1} \\
+    &\E_{u,u' \sim \rho} [P_{4,d}(u^\top u') - 2\gamma_4 P_{4,d}(u^\top e_1)+ \gamma_4^2 P_{4,d}(e_1^\top e_1)]=0.\label{equ:pf-nc-2} 
+\end{align}
+
+First we prove Eq.~\eqref{equ:prop-nc-3}. By Lemma~\ref{lem:legendre-kernel-feature}, there is a feature mapping $\phi:\Sp\to\R^{N_{2,d}}$ such that for every $u,v\in\Sp$,
+\begin{align}
+    &\dotp{\phi(u)}{\phi(v)}=N_{2,d}P_{2,d}(u^\top v),\\
+    &\|\phi_u\|_2^2=N_{2,d}.
+\end{align}
+Rewrite Eq.~\eqref{equ:pf-nc-1} using $\phi_2$ we get
+\begin{align}
+    \|\E_{u \sim \rho} [\phi_2(u)] - \gamma_2 \phi_2(e_1)\|_2^2=0.
+\end{align}
+Or equivalently,
+\begin{align}
+    \gamma_2\phi_2(e_1)=\E_{u \sim \rho} [\phi_2(u)]
+\end{align}
+As a result,
+\begin{align}
+    \gamma_2=\norm{\frac{\phi_2(e_1)}{\sqrt{N_{k,d}}}}_2=\norm{\frac{\E_{u \sim \rho} [\phi_2(u)]}{\sqrt{N_{k,d}}}}_2\le \frac{\E_{u \sim \rho} [\norm{\phi_2(u)]}_2}{\sqrt{N_{2,d}}}=1.
+\end{align}
+Similarly, we also have $\gamma_4\le 1.$
+
+Now we prove Eq.~\eqref{equ:prop-nc-1}. Recall that
+\begin{align}
+    P_{2, d}(t) &= \frac{d}{d - 1}t^2 - \frac{1}{d - 1},\label{equ:pf-nc-3} \\
+    P_{4, d}(t) &= \frac{(d + 2)(d + 4)}{d^2 - 1}t^4 - \frac{6d + 12}{d^2 - 1}t^2 + \frac{3}{d^2 - 1}.\label{equ:pf-nc-4} 
+\end{align}
+Combining Eq.~\eqref{equ:pf-nc-1} and Eq.~\eqref{equ:pf-nc-3} we have
+\begin{align}
+    &0=\frac{d-1}{d}\E_{u,u' \sim \rho} [P_{2,d}(u^\top u') - 2\gamma_2 P_{2,d}(u^\top e_1)+ \gamma_2^2 P_{2,d}(e_1^\top e_1)]\\
+    =&\;\E_{u,u' \sim \rho} [(u^\top u')^2 - 2\gamma_2 (u^\top e_1)^2+ \gamma_2^2 (e_1^\top e_1)^2]-\frac{1}{d}(1-2\gamma_2+\gamma_2^2)\\
+    =&\;\|\E_{u \sim \rho} [u^{\otimes 2} - \gamma_2 e_1^{\otimes 2}]\|_F^2-\frac{1}{d}(1-\gamma_2)^2.
+\end{align}
+Consequently,
+\begin{align}\label{equ:pf-nc-5}
+    \|\E_{u \sim \rho} [u^{\otimes 2} - \gamma_2 e_1^{\otimes 2}]\|_F^2=\frac{1}{d}(1-\gamma_2)^2.
+\end{align}
+Similarly, combining Eq.~\eqref{equ:pf-nc-2} and Eq.~\eqref{equ:pf-nc-4} we get
+\begin{align}
+    &0=\frac{d^2 - 1}{(d + 2)(d + 4)}\E_{u,u' \sim \rho} [P_{4,d}(u^\top u') - 4\gamma_4 P_{4,d}(u^\top e_1)+ \gamma_4^2 P_{4,d}(e_1^\top e_1)]\\
+    =&\;\E_{u,u' \sim \rho} [(u^\top u')^4 - 2\gamma_4 (u^\top e_1)^4+ \gamma_4^2 (e_1^\top e_1)^4]+\frac{3}{(d+2)(d+4)}(1-2\gamma_4+\gamma_4^2)\\
+    &-\frac{6d+12}{(d+2)(d+4)}\E_{u,u' \sim \rho} [(u^\top u')^2 - 2\gamma_4 (u^\top e_1)^2+ \gamma_4^2 (e_1^\top e_1)^2].
+\end{align}
+Consequently,
+\begin{align}\label{equ:pf-nc-6}
+    \|\E_{u \sim \rho} [u^{\otimes 4} - \gamma_4 e_1^{\otimes 4}]\|_F^2\le \frac{3}{(d+2)(d+4)}(1-\gamma_4)^2+\frac{6d+12}{(d+2)(d+4)}(\gamma_4+1)^2.
+\end{align}
+Now for any fixed $\xi\in\Sp$, our key observation is that by Jensen's inequality,
+\begin{align}\label{equ:pf-nc-7}
+    \E_{u\sim \rho}[(u^\top \xi)^2]^2\le \E_{u\sim \rho}[(u^\top \xi)^4].
+\end{align}
+On the one hand, by Eq.~\eqref{equ:pf-nc-5} we have
+\begin{align}
+    &\left|\E_{u\sim \rho}[(u^\top \xi)^2]-\gamma_2 (e_1^\top \xi)^2\right|=\left|\E_{u\sim \rho}[\dotp{u^{\otimes 2}-\gamma_2 e_1^{\otimes 2}}{\xi^{\otimes 2}}]\right|\\
+    \le\; &\|\E_{u \sim \rho} [u^{\otimes 2} - \gamma_2 e_1^{\otimes 2}]\|_F\|\xi^{\otimes 2}\|_F= \sqrt{\frac{(1-\gamma_2)^2}{d}}.\label{equ:pf-nc-8}
+\end{align}
+On the other hand, by Eq.~\eqref{equ:pf-nc-6} we have
+\begin{align}
+    &\left|\E_{u\sim \rho}[(u^\top \xi)^4]-\gamma_4 (e_1^\top \xi)^4\right|=\left|\E_{u\sim \rho}[\dotp{u^{\otimes 4}-\gamma_4 e_1^{\otimes 4}}{\xi^{\otimes 4}}]\right|\\
+    \le\; &\|\E_{u \sim \rho} [u^{\otimes 4} - \gamma_4 e_1^{\otimes 4}]\|_F\|\xi^{\otimes 4}\|_F\le 2\sqrt{\frac{6d+12}{(d+2)(d+4)}}(|\gamma_4+1|+|\gamma_4-1|).\label{equ:pf-nc-9}
+\end{align}
+Finally, combining Eqs~\eqref{equ:pf-nc-7}-\eqref{equ:pf-nc-9} and set $\xi=e_1$ we get
+\begin{align}
+    \(\gamma_2-\sqrt{\frac{(1-\gamma_2)^2}{d}}\)^2\le \gamma_4+2\sqrt{\frac{6d+12}{(d+2)(d+4)}}(|\gamma_4+1|+|\gamma_4-1|).
+\end{align}
+It follows directly that
+\begin{align}
+    \gamma_2^2\le \gamma_4+O\(\frac{1}{\sqrt{d}}\).
+\end{align}
+
+Finally we prove Eq.~\eqref{equ:prop-nc-2}. For any $\xi,u\in\Sp$ we have $|u^\top \xi|\le 1$. As a result,
+\begin{align}\label{equ:pf-nc-10}
+    \E_{u\sim \rho}[(u^\top \xi)^4]\le \E_{u\sim \rho}[(u^\top \xi)^2].
+\end{align}
+Combining with Eq.~\eqref{equ:pf-nc-8} and Eq.~\eqref{equ:pf-nc-9} and setting $\xi=e_1$ we get
+\begin{align}
+    \gamma_4\le O(1/\sqrt{d})+\E_{u\sim \rho}[(u^\top \xi)^4]\le O(1/\sqrt{d})+\E_{u\sim \rho}[(u^\top \xi)^2]\le O(1/\sqrt{d})+\gamma_2.
+\end{align}
+\end{proof}
+
+
+\begin{proposition}[Sufficient condition]
+    Let $f_\rho(x)=\E_{u\sim \rho}[\sigma(u^\top x)]$ be a two-layer neural network and $y(x)=h(e_1^\top x)$ the target function. Let $\gamma_k=\frac{\legendreCoeff{h}{k}}{\legendreCoeff{\sigma}{k}},\forall k\ge 0$. Suppose $\legendreCoeff{\target}{k}=0,\forall k\not\in\{0,2,4\}$, $\legendreCoeff{\target}{0}=\legendreCoeff{\sigma}{0}$, $\sigma$ is a degree-4 polynomial, and 
+    \begin{align}
+        &\gamma_2^2\le \gamma_4-O\(1/d\),\label{equ:prop-sc-1}\\
+        &\gamma_4\le \gamma_2-O\(1/d\),\label{equ:prop-sc-2}\\
+        &\gamma_2\le 1-O\(1/d\).\label{equ:prop-sc-3}
+    \end{align}
+    Then there exists a symmetric and rotational invariant neural network $\rho$ such that $\E_{x\sim \Sp}(f_\rho(x)-y(x))^2=0$.
+\end{proposition}
+\begin{proof}
+    Recall that by Lemma~\ref{lemma:population_loss_formula}, for every symmetric and rotational invariant neural network $\rho$ we have 
+    \begin{align}
+    L(\rho)
+    & = \frac{\legendreCoeff{\sigma}{2}^2}{2} \Big( \E_{u \sim \rho} [P_{2, d}(w)] - \gamma_2\Big)^2 + \frac{\legendreCoeff{\sigma}{4}^2}{2} \Big( \E_{u \sim \rho} [P_{4, d}(w)] - \gamma_4 \Big)^2
+    \end{align}
+    where $u=(w,z)$, $w\in[-1,1]$, and $z\in\sqrt{1-w^2}\bbS^{d-2}.$ Therefore, we only need to show that there exists a one-dimensional distribution $\mu$ such that
+    \begin{align}
+        \E_{w \sim \mu} [P_{2, d}(w)]=\gamma_2,\label{equ:pf-sc-1}\\
+        \E_{w \sim \mu} [P_{4, d}(w)]=\gamma_4.\label{equ:pf-sc-2}
+    \end{align}
+    Recall that
+    \begin{align}
+        P_{2, d}(t) &= \frac{d}{d - 1}t^2 - \frac{1}{d - 1},\label{equ:pf-sc-3} \\
+        P_{4, d}(t) &= \frac{(d + 2)(d + 4)}{d^2 - 1}t^4 - \frac{6d + 12}{d^2 - 1}t^2 + \frac{3}{d^2 - 1}.\label{equ:pf-sc-4} 
+    \end{align}
+    Consequently, Eq.~\eqref{equ:pf-sc-1} and Eq.~\eqref{equ:pf-sc-2} is equivalent to 
+    \begin{align}
+        &\E_{w\sim \mu}[w^2]=\frac{d-1}{d}\gamma_2+\frac{1}{d},\\
+        &\E_{w\sim \mu}[w^4]=\frac{d^2-1}{(d+2)(d+4)}\gamma_4+\frac{6d+12}{(d+2)(d+4)}\(\frac{d-1}{d}\gamma_2+\frac{1}{d}\)-\frac{3}{(d+2)(d+4)}.
+    \end{align}
+    Let $\beta_2=\frac{d-1}{d}\gamma_2+\frac{1}{d}$ and $\beta_4=\frac{d^2-1}{(d+2)(d+4)}\gamma_4+\frac{6d+12}{(d+2)(d+4)}\(\frac{d-1}{d}\gamma_2+\frac{1}{d}\)-\frac{3}{(d+2)(d+4)}$. Then we have $|\beta_2-\gamma_2|\le O(1/d)$ and $|\beta_4-\gamma_4|\le O(1/d).$ Rewriting Eqs.~\eqref{equ:prop-sc-1}-\eqref{equ:prop-sc-3} using $\beta_2$ and $\beta_4$, we have
+    \begin{align}
+        \beta_2^2\le \beta_4,\\
+        \beta_4\le \beta_2,\\
+        \beta_2\le 1.
+    \end{align}
+    By \Cref{prop:existence-1d-distribution}, there exists a distribution $\mu^\star$ such that
+    \begin{align}
+        &\E_{w\sim \mu^\star}[w^2]=\beta_2,\\
+        &\E_{w\sim \mu^\star}[w^4]=\beta_4.
+    \end{align}
+    Hence, by setting the marginal distribution of $w$ equal to $\mu^\star$, we have
+    \begin{align}
+        \E_{w \sim \mu^\star} [P_{2, d}(w)]=\gamma_2,\quad 
+        \E_{w \sim \mu^\star} [P_{4, d}(w)]=\gamma_4,
+    \end{align}
+    which proves the desired result.
+\end{proof}

@@ -1,0 +1,399 @@
+\section{Proof of \Cref{thm:projectedGD_main}} \label{sec:projectedGD_smallLR}
+
+In this section, we build on our analysis from \Cref{section:proof_finite_sample} to show that projected gradient descent with $\frac{1}{\poly(d)}$ learning rate can achieve low population loss. In the rest of the section, for convenience, we define $\deltaSingleGD_t = \uGD_t - \uhat_{\eta t}$, and omit $\chi$ when it is clear from context.
+
+\begin{lemma} \label{lemma:gradient_expectation_inner_product}
+Let $\rho, \rho'$ be two distributions on $\bbS^{d - 1}$, and let $\Gamma$ be a coupling between $\rho$ and $\rho'$. Additionally, let $u_1, u_2, v \in \bbS^{d - 1}$. Then, we have
+\begin{align}
+|\nabla_{u_1} L(\rho) \cdot v - \nabla_{u_2} L(\rho') \cdot v|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\E_{u, u' \sim \Gamma} \Big[\|u - u'\|_2^2] \Big]^{1/2} + \|u_1 - u_2\|_2 \Big) \period
+\end{align}
+\end{lemma}
+\begin{proof}
+We can expand the left-hand side as
+\begin{align} \label{eq:gradient_expected_different_dists}
+\Big| \E_{x \sim \bbS^{d - 1}} \Big[(f_\rho(x) - y(x)) \sigma'(u_1 \cdot x) (v \cdot x) - (f_{\rho'}(x) - y(x)) \sigma'(u_2 \cdot x) (v \cdot x) \Big] \Big| \period
+\end{align}
+We first obtain a bound on
+\begin{align} \label{eq:gradient_expectation_first_part}
+\Big| \E_{x \sim \bbS^{d - 1}} \Big[ f_\rho(x) \sigma'(u_1 \cdot x) (v \cdot x) - f_{\rho'}(x) \sigma'(u_2 \cdot x) (v \cdot x) \Big] \Big| \period
+\end{align}
+By the definition of $f_\rho$, we can rewrite \Cref{eq:gradient_expectation_first_part} as
+\begin{align}
+\Big| \E_{u_1', u_2' \sim \Gamma} \E_{x \sim \bbS^{d - 1}} \Big[ \sigma(u_1' \cdot x) \sigma'(u_1 \cdot x) (v \cdot x) - \sigma(u_2' \cdot x) \sigma'(u_2 \cdot x) (v \cdot x) \Big] \Big|
+\end{align}
+By \Cref{eq:legendre_polynomial_2_4}, $\sigma$ is an even fourth-degree polynomial and $\sigma'$ is an odd third-degree polynomial. Thus, the inner expectation can be written as a linear combination of a constant number of terms of the form
+\begin{align} \label{eq:gradient_expectation_indiv_term}
+\Big| \E_{x \sim \bbS^{d - 1}} \Big[ (u_1' \cdot x)^i (u_1 \cdot x)^j (v \cdot x) - (u_2' \cdot x)^i (u_2 \cdot x)^j (v \cdot x) \Big] \Big|
+\end{align}
+where $i = 0, 2, 4$ and $j = 1, 3$. We can also estimate the coefficient which accompanies each individual term \Cref{eq:gradient_expectation_indiv_term}. We first recall the facts that $\sigma(t) = \sigmaCoeffTwo \PtwoDbar(t) + \sigmaCoeffFour \PfourDbar(t)$, that $N_{2, d} = O(d^2)$ and $N_{4, d} = O(d^4)$ by Equation (2.10) of \citet{atkinson2012spherical}, and that the $i^{\textup{th}}$ degree term of $\PtwoD$ has a coefficient which is $O(d^{i/2 - 1})$ and the $i^{\textup{th}}$ degree term of $\PfourD$ has a coefficient which is $O(d^{i/2 - 2})$. From these facts it follows that the $i^{th}$ degree term of $\PtwoDbar = \sqrt{N_{2, d}} \PtwoD$ has a coefficient which is $O(d^{i/2})$ and the $i^{th}$ degree term of $\PfourDbar = \sqrt{N_{4, d}} \PfourD$ has a coefficient which is $O(d^{i/2})$. Thus, each term of the form given in \Cref{eq:gradient_expectation_indiv_term} has a coefficient which is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^{(i + j + 1)/2}$ in absolute value. We can now upper bound each of the terms of the form given in \Cref{eq:gradient_expectation_indiv_term} as follows:
+\begin{align}
+\Big| \E_{x \sim \bbS^{d - 1}} & \Big[ (u_1' \cdot x)^i (u_1 \cdot x)^j (v \cdot x) - (u_2' \cdot x)^i (u_2 \cdot x)^j (v \cdot x) \Big] \Big| \\
+& \leq \Big| \E_{x \sim \bbS^{d - 1}} \Big[\Big((u_1' \cdot x)^i - (u_2' \cdot x)^i \Big) (u_1 \cdot x)^j (v \cdot x) \Big] \Big| \\
+& \nextlinespace\nextlinespace + \Big| \E_{x \sim \bbS^{d - 1}} \Big[ (u_2' \cdot x)^i \Big((u_1 \cdot x)^j - (u_2 \cdot x)^j \Big) (v \cdot x) \Big] \Big| \\
+& \leq \sum_{k = 0}^{i - 1} \Big| \E_{x \sim \bbS^{d - 1}} \Big[\Big((u_1' - u_2') \cdot x\Big) (u_1' \cdot x)^k (u_2' \cdot x)^{i - 1 - k} (u_1 \cdot x)^j (v \cdot x) \Big] \Big| \\
+& \nextlinespace\nextlinespace + \sum_{k = 0}^{j - 1} \Big| \E_{x \sim \bbS^{d - 1}} \Big[(u_2' \cdot x)^i \Big((u_1 - u_2) \cdot x \Big) (u_1 \cdot x)^k (u_2 \cdot x)^{j - 1 - k} (v \cdot x) \Big] \Big| \\
+& \lesssim \sum_{k = 0}^{i - 1} \|u_1' - u_2'\|_2 \cdot \frac{1}{d^{(1 + k + i - 1 - k + j + 1)/2}} + \sum_{k = 0}^{j - 1} \|u_1 - u_2\|_2 \cdot \frac{1}{d^{(i + 1 + k + j - 1 - k + 1)/2}}
+& \tag{By \Cref{lemma:sphere_moment}} \\
+& \lesssim \|u_1' - u_2'\|_2 \frac{1}{d^{(i + j + 1)/2}} + \|u_1 - u_2\|_2 \frac{1}{d^{(i + j + 1)/2}} \period
+\end{align}
+Since the coefficient of this term is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^{(i + j + 1)/2}$ in absolute value, this term contributes at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\|u_1' - u_2'\|_2 + \|u_1 - u_2\|_2 \Big) \period
+\end{align}
+Thus, taking the expectation over $u_1', u_2' \sim \Gamma$, we have
+\begin{align}
+\Big| \E_{x \sim \bbS^{d - 1}} \Big[ f_\rho(x) \sigma'(u_1 \cdot x) (v \cdot x) - & f_{\rho'}(x) \sigma'(u_2 \cdot x) (v \cdot x) \Big] \Big| \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\E_{u, u' \sim \Gamma} \Big[ \|u - u'\|_2 \Big] + \|u_1 - u_2 \|_2 \Big) \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\E_{u, u' \sim \Gamma} \Big[ \|u - u'\|_2^2 \Big]^{1/2} + \|u_1 - u_2 \|_2 \Big) \period
+\end{align}
+A similar but simpler argument can be used to bound
+\begin{align}
+\Big| \E_{x \sim \bbS^{d - 1}} \Big[ y(x) \sigma'(u_1 \cdot x) (v \cdot x) - y(x) \sigma'(u_2 \cdot x) (v \cdot x) \Big] \Big|
+\end{align}
+by expanding $y(x)$ and $\sigma'(x)$. Thus, we obtain
+\begin{align}
+|\nabla_{u_1} L(\rho) \cdot v - \nabla_{u_2} L(\rho) \cdot v|
+& \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\E_{u, u' \sim \Gamma} \Big[\|u - u'\|_2^2] \Big]^{1/2} + \|u_1 - u_2\|_2 \Big)
+\end{align}
+as desired.
+\end{proof}
+
+\begin{lemma} \label{lemma:discretized_gradient_concentration}
+Suppose we are in the setting of \Cref{thm:projectedGD_main}. Assume that $n \gtrsim d^3 (\log d)^C$ for a sufficiently large universal constant $C > 0$. Additionally, assume that $\max_\chi \|\deltaSingleGD_t(\chi)\|_2 \leq \frac{1}{\sqrt{d}}$. Then, we have
+\begin{align} \label{eq:discretized_gradient_error1}
+|(\pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t})) \cdot \deltaSingleGD_t|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t (\chi)\|_2^2
+\end{align}
+\end{lemma}
+\begin{proof}
+We can write the left-hand side of \Cref{eq:discretized_gradient_error1} as
+\begin{align} \label{eq:empirical_gradient_dot_product_diff}
+(\pgrad_{\uGD_t} \Lhat(\rhoGD_t) - & \pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_t)) \cdot \deltaSingleGD_t \\
+& = \frac{1}{n} \sum_{i = 1}^n \Big((f_{\rhoGD_t}(x_i) - y(x_i)) \sigma'(\uGD_t \cdot x_i) - (f_{\rhohat_{\eta t}}(x_i) - y(x_i)) \sigma'(\uhat_{\eta t} \cdot x_i) \Big) x_i \cdot \deltaSingleGD_t \period
+\end{align}
+We proceed by first showing using \Cref{lemma:main_concentration_lemma} that we do not incur much error when we replace the empirical average over the $x_i$ by an expectation over $x \sim \bbS^{d - 1}$. We can separate the right hand side of \Cref{eq:empirical_gradient_dot_product_diff} into two parts:
+\begin{align}
+S_1 
+& = \frac{1}{n} \sum_{i = 1}^n \Big(f_{\rhoGD_t}(x_i) \sigma'(\uGD_t \cdot x_i) - f_{\rhohat_{\eta t}}(x_i) \sigma'(\uhat_{\eta t} \cdot x_i) \Big) (\deltaSingleGD_t \cdot x_i)
+\end{align}
+and
+\begin{align}
+S_2
+& = \frac{1}{n} \sum_{i = 1}^n \Big(y(x_i) \sigma'(\uGD_t \cdot x_i) - y(x_i) \sigma'(\uhat_{\eta t} \cdot x_i) \Big) (\deltaSingleGD_t \cdot x_i) \period
+\end{align}
+We wish to show that $S_1$ and $S_2$ are very close to
+\begin{align}
+M_1
+& = \E_{x \sim \bbS^{d - 1}} \Big[\Big(f_{\rhoGD_t}(x) \sigma'(\uGD_t \cdot x) - f_{\rhohat_{\eta t}}(x) \sigma'(\uhat_{\eta t} \cdot x) \Big) (\deltaSingleGD_t \cdot x)\Big]
+\end{align}
+and
+\begin{align}
+M_2
+& = \E_{x \sim \bbS^{d - 1}} \Big[\Big(y(x_i) \sigma'(\uGD_t \cdot x_i) - y(x_i) \sigma'(\uhat_{\eta t} \cdot x_i) \Big) (\deltaSingleGD_t \cdot x_i)\Big]
+\end{align}
+respectively, with high probability --- then, we will obtain bounds on $M_1$ and $M_2$. We will show that $S_1$ and $M_1$ are close --- the proof that $S_2$ and $M_2$ are close is similar.
+
+\paragraph{Expanding into Monomials} Our proof strategy is to expand the following quantity, for $x \in \bbS^{d - 1}$:
+\begin{align}
+G(x)
+& = \Big(f_{\rhoGD_t}(x) \sigma'(\uGD_t \cdot x) - f_{\rhohat_{\eta t}}(x) \sigma'(\uhat_{\eta t} \cdot x) \Big) (\deltaSingleGD_t \cdot x)
+\end{align}
+and obtain concentration bounds for each of the terms. In this proof, we let $\Gamma$ denote the natural coupling between $\rhobar, \rhohat, \rhoGD$ which is the distribution over triples $(\ubar_{\eta t}(\chi), \uhat_{\eta t}(\chi), \uGD_{\eta t}(\chi))$, where $\chi$ is sampled from $\{\chi_1, \ldots, \chi_m\}$.
+Then, we can write $G(x)$ as 
+\begin{align}
+G(x)
+& = \E_{\ubar_{\eta t}', \uhat_{\eta t}', \uGD_t' \sim \Gamma} \Big[ \Big(\sigma(\uGD_t' \cdot x) \sigma'(\uGD_t \cdot x) - \sigma(\uhat_{\eta t}' \cdot x) \sigma'(\uhat_{\eta t} \cdot x)\Big) \cdot (\deltaSingleGD_t \cdot x) \Big] \period
+\end{align}
+For convenience, let us define
+\begin{align} \label{eq:discrete_time_before_expanding}
+g(x)
+& = \Big(\sigma(\uGD_t' \cdot x) \sigma'(\uGD_t \cdot x) - \sigma(\uhat_{\eta t}' \cdot x) \sigma'(\uhat_{\eta t} \cdot x)\Big) \cdot (\deltaSingleGD_t \cdot x) \period
+\end{align}
+Clearly we have $G(x) = \E_{\ubar_{\eta t}', \uhat_{\eta t}', \uGD_t' \sim \Gamma} [g(x)]$. Now, we consider the effect of expanding $g(x)$ by expanding $\sigma$ and $\sigma'$ into monomials that involve $(\uGD_t' \cdot x)$, $(\uGD_t \cdot x)$, $(\uhat_{\eta t}' \cdot x)$ and $(\uhat_{\eta t} \cdot x)$. Since $\sigma$ is an even polynomial of degree $4$ and $\sigma'$ is an odd polynomial of degree $3$, we can write $g(x)$ as a linear combination of terms of the following form:
+\begin{align} \label{eq:single_term}
+\Big((\uGD_t' \cdot x)^{\idx{1}} (\uGD_t \cdot x)^{\idx{2}} - (\uhat_{\eta t}' \cdot x)^{\idx{1}} (\uhat_{\eta t} \cdot x)^{\idx{2}} \Big) (\deltaSingleGD_t \cdot x)
+\end{align}
+where $\idx{1} = 0, 2, 4$ and $\idx{2} = 1, 3$ --- each such term also has a constant factor of $O(\legendreCoeff{\sigma}{\idx{1}} \legendreCoeff{\sigma}{\idx{2}} \sqrt{N_{\idx{1}, d}} \sqrt{N_{\idx{2}, d}})$. We now consider the contribution of \Cref{eq:single_term} for each value of $\idx{1}, \idx{2}$. In the case where $\idx{1} = 0$, we can rewrite \Cref{eq:single_term} as $(\deltaSingleGD_t \cdot x)^2$ when $\idx{2} = 1$, and
+\begin{align}
+\Big((\uGD_t \cdot x)^2 + (\uGD_t \cdot x)(\uhat_{\eta t} \cdot x) + (\uhat_{\eta t} \cdot x)^2 \Big) (\deltaSingleGD_t \cdot x)^2
+\end{align}
+when $\idx{2} = 3$. In the case where $\idx{1}$ and $\idx{2}$ are both nonzero, letting $\deltaSingleGD_t' = \uGD_t' - \uhat_{\eta t}'$ we can write \Cref{eq:single_term} as 
+\begin{align}
+\Big((\uGD_t' \cdot x)^{\idx{1}} (\uGD_t \cdot x)^{\idx{2}} - (\uhat_{\eta t}' \cdot x)^{\idx{1}} & (\uhat_{\eta t} \cdot x)^{\idx{2}} \Big) (\deltaSingleGD_t \cdot x) \\
+& = \Big((\uGD_t' \cdot x)^{\idx{1}} - (\uhat_{\eta t}' \cdot x)^{\idx{1}} \Big) (\uGD_t \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x) \\
+& \nextlinespace + (\uhat_{\eta t}' \cdot x)^{\idx{1}} \Big((\uGD_t \cdot x)^{\idx{2}} - (\uhat_{\eta t} \cdot x)^{\idx{2}} \Big) (\deltaSingleGD_t \cdot x) \\
+& = \sum_{\substack{\idx{3} + \idx{4} = \idx{1} - 1 \\ \idx{3}, \idx{4} \geq 0}} (\uGD_t' \cdot x)^{\idx{3}} (\uhat_{\eta t}' \cdot x)^{\idx{4}} (\uGD_t' \cdot x - \uhat_{\eta t}' \cdot x) (\uGD_t \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x) \\
+& \nextlinespace + \sum_{\substack{\idx{3} + \idx{4} = \idx{2} - 1 \\ \idx{3}, \idx{4} \geq 0}} (\uhat_{\eta t}' \cdot x)^{\idx{1}} (\uGD_t \cdot x)^{\idx{3}} (\uhat_{\eta t} \cdot x)^{\idx{4}} (\uGD_t \cdot x - \uhat_{\eta t} \cdot x) (\deltaSingleGD_t \cdot x) \\
+& = \sum_{\substack{\idx{3} + \idx{4} = \idx{1} - 1 \\ \idx{3}, \idx{4} \geq 0}} (\uGD_t' \cdot x)^{\idx{3}} (\uhat_{\eta t}' \cdot x)^{\idx{4}} (\uGD_t \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x)(\deltaSingleGD_t' \cdot x) \\
+& \nextlinespace + \sum_{\substack{\idx{3} + \idx{4} = \idx{2} - 1 \\ \idx{3}, \idx{4} \geq 0}} (\uhat_{\eta t}' \cdot x)^{\idx{1}} (\uGD_t \cdot x)^{\idx{3}} (\uhat_{\eta t} \cdot x)^{\idx{4}} (\deltaSingleGD_t \cdot x)^2 \period
+\end{align}
+In summary, \Cref{eq:single_term} can be written as a linear combination of terms of the form
+\begin{align} \label{eq:single_term_type1}
+(\uGD_t' \cdot x)^{\idx{3}} (\uhat_{\eta t} \cdot x)^{\idx{4}} (\uGD_t \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x)(\deltaSingleGD_t' \cdot x)
+\end{align}
+where $\idx{3} + \idx{4} = 1, 3$ and $\idx{2} = 1, 3$, and terms of the form
+\begin{align} \label{eq:single_term_type2}
+(\uhat_{\eta t}' \cdot x)^{\idx{1}} (\uGD_t \cdot x)^{\idx{3}} (\uhat_{\eta t} \cdot x)^{\idx{4}} (\deltaSingleGD_t \cdot x)^2
+\end{align}
+where $\idx{1} = 0, 2, 4$ and $\idx{3} + \idx{4} = 0, 2$.
+
+\paragraph{Contribution of \Cref{eq:single_term_type2} to Concentration Error} In \Cref{eq:single_term_type2}, we can write $\uGD_t = \uhat_{\eta t} + \deltaSingleGD_t$, and thus write \Cref{eq:single_term_type2} as a linear combination of terms of the form
+\begin{align}
+(\uhat_{\eta t}' \cdot x)^{\idx{1}} (\uhat_{\eta t} \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x)^{2 + \idx{3}}
+\end{align}
+where $\idx{1} = 0, 2, 4$ and $\idx{2} + \idx{3} = 0, 2$. Next, in order to use \Cref{lemma:main_concentration_lemma}, we write $\uhat_{\eta t} = \ubar_{\eta t} + \delta_t$ and expand (recalling the definition of $\delta_t$ from \Cref{lemma:final_bounds_ABC}). Thus, \Cref{eq:single_term_type2} is a linear combination of terms of the form
+\begin{align} \label{eq:single_term_type2_simplified}
+(\ubar_{\eta t}' \cdot x)^{\idx{1}} (\delta_{\eta t}' \cdot x)^{\idx{2}}
+(\ubar_{\eta t} \cdot x)^{\idx{3}}
+(\delta_{\eta t} \cdot x)^{\idx{4}}
+(\deltaSingleGD_t \cdot x)^{2 + \idx{5}}
+\end{align}
+where $\idx{1} + \idx{2} = 0, 2, 4$, and $\idx{3} + \idx{4} + \idx{5} = 0, 2$. Finally, we obtain a concentration bound for \Cref{eq:single_term_type2_simplified} using \Cref{lemma:main_concentration_lemma}:
+\begin{align} \label{eq:type2_concentration_error}
+\Big|\frac{1}{n} \sum_{i = 1}^n &(\ubar_{\eta t}' \cdot x_i)^{\idx{1}} (\delta_{\eta t}' \cdot x_i)^{\idx{2}}
+(\ubar_{\eta t} \cdot x_i)^{\idx{3}}
+(\delta_{\eta t} \cdot x_i)^{\idx{4}}
+(\deltaSingleGD_t \cdot x_i)^{2 + \idx{5}} \\
+& \nextlinespace\nextlinespace\nextlinespace - \E_{x \sim \bbS^{d - 1}} \Big[(\ubar_{\eta t}' \cdot x)^{\idx{1}} (\delta_{\eta t}' \cdot x)^{\idx{2}}
+(\ubar_{\eta t} \cdot x)^{\idx{3}}
+(\delta_{\eta t} \cdot x)^{\idx{4}}
+(\deltaSingleGD_t \cdot x)^{2 + \idx{5}}\Big] \Big| \\
+& \lesssim (\log d)^{O(1)} \frac{\|\delta_{\eta t}'\|_2^{\idx{2}} \|\delta_{\eta t}\|_2^{\idx{4}} \|\deltaSingleGD_t\|_2^{2 + \idx{5}}}{d^{(\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5})/2 + 1}} \Big(\sqrt{\frac{d}{n}} + \frac{d^{(\idx{2} + \idx{4} + \idx{5})/2 + 1}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \period
+\end{align}
+Here, when applying \Cref{lemma:main_concentration_lemma}, $\ubar_{\eta t}$ and $\ubar_{\eta t}'$ take the role of $w_1$ and $w_2$, while $\delta_{\eta t}'/\|\delta_{\eta t}'\|_2$, $\delta_{\eta t}/\|\delta_{\eta t}\|_2$ and $\deltaSingleGD_t/\|\deltaSingleGD_t\|_2$ take the role of $u_1$, $u_2$, $u_3$ and $u_4$ (we let $u_3 = u_4 = \deltaSingleGD_t/\|\deltaSingleGD_t\|_2$ and choose $p_3$ and $p_4$ so that $p_3 + p_4 = 2 + \idx{5}$). Note that we implicitly perform a union bound over $\ubar_{\eta t}'$ and $\delta_{\eta t}'$ drawn from the support of $f_{\rhohat_{\eta t}}$ --- this does not affect the failure probability, since the failure probability for the result of \Cref{lemma:main_concentration_lemma} is $\frac{1}{d^{\Omega(\log d)}}$, and it is assumed in \Cref{thm:projectedGD_main} that $m \leq d^C$ for some universal constant $C$. When applying \Cref{lemma:main_concentration_lemma} at later points in this proof, we implicitly perform this union bound.
+
+In order to compute the final contribution of each such term to the concentration error between $S_1$ and $M_1$, we must first (1) incorporate the coefficients of $\sigma$ and $\sigma'$ with respect to the Legendre polynomials $\PtwoD$ and $\PfourD$, (2) take the average of $\|\delta'_{\eta t}\|_2^b$ with respect to $\chi$ (which is implicit throughout this proof), and (3) use the fact that $n \gtrsim d^3 (\log d)^{O(1)}$.
+
+Recall that $\sigma = \sigmaCoeffTwo \sqrt{N_{2, d}} \PtwoD + \sigmaCoeffFour \sqrt{N_{4, d}} \PfourD$. Using \Cref{eq:legendre_polynomial_2_4} and the fact that $N_{2, d} \asymp d^2$ and $N_{4, d} \asymp d^4$ (by Equation (2.10) of \citet{atkinson2012spherical}), we find that, up to constant factors, the coefficient of the $0^{\textup{th}}$-order term in $\sigma(t)$ can be bounded above by $\max(\sigmaCoeffTwo, \sigmaCoeffFour)$, the coefficient of the $2^{\textup{nd}}$-order term in $\sigma(t)$ can be bounded above by $\max(\sigmaCoeffTwo, \sigmaCoeffFour) d$, and the coefficient of the $4^{\textup{th}}$ order term can be bounded above by $\sigmaCoeffFour d^2$. Similarly, up to constant factors, the coefficient of the $1^{\textup{st}}$-order term in $\sigma'(t)$ can be bounded above by $\max(\sigmaCoeffTwo, \sigmaCoeffFour) d$ and the coefficient of the $3^{\textup{rd}}$-order term in $\sigma'(t)$ can be bounded above by $\max(\sigmaCoeffTwo, \sigmaCoeffFour) d^2$. Thus, each term of degree $k$ originating from $\sigma$ contributes a factor of $\max(\sigmaCoeffTwo, \sigmaCoeffFour) d^{k/2}$ to the coefficient of \Cref{eq:single_term_type2}, and each term of degree $k - 1$ originating from $\sigma'$ contributes a factor of $\max(\sigmaCoeffTwo, \sigmaCoeffFour) d^{k/2}$ to the coefficient of \Cref{eq:single_term_type2}. Finally, for each term in \Cref{eq:single_term_type2_simplified} of total degree $\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5} + 2$, note that $\sigma$ and $\sigma'$ together contribute a factor of degree $\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5} + 1$, since in \Cref{eq:discrete_time_before_expanding}, aside from the factors contributed by $\sigma$ and $\sigma'$, only a single factor of $\deltaSingleGD_t \cdot x$ is present.
+
+Thus, to obtain the final contribution of \Cref{eq:type2_concentration_error} to the overall error between $M_1$ and $S_1$, we multiply by an additional coefficient of $\max(\sigmaCoeffTwo^2, \sigmaCoeffFour^2) d^{(\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5})/2 + 1}$. Taking this into account, the contribution of \Cref{eq:type2_concentration_error} is
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \|\delta_{\eta t}'\|_2^{\idx{2}} \|\delta_{\eta t}\|_2^{\idx{4}} \|\deltaSingleGD_t\|_2^{2 + \idx{5}} \Big(\sqrt{\frac{d}{n}} + \frac{d^{(\idx{2} + \idx{4} + \idx{5})/2 + 1}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \period
+\end{align}
+Next, we simplify this using casework on $\idx{2}$. For the case $\idx{2} \leq 1$, since $\idx{4} + \idx{5} \leq 2$, the bound is at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\delta_{\eta t}'\|_2^{\idx{2}} \|\delta_{\eta t}\|_2^{\idx{4}} \|\deltaSingleGD_t\|_2^{2 + \idx{5}}
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\deltaSingleGD_t\|_2^2
+\end{align}
+since $d^{(\idx{2} + \idx{4} + \idx{5})/2 + 1} \leq d^{2.5}$, and because $n \gtrsim d^3 (\log d)^{O(1)}$, and we eliminate a factor of $\|\delta_{\eta t}'\|_2^{\idx{2}} \|\delta_{\eta t}\|_2^{\idx{4}} \|\deltaSingleGD_t\|_2^{\idx{5}}$ because all of the particles have $\ell_2$ norm at most $1$. Additionally, for the case $\idx{2} \geq 2$, after taking the average of $\|\delta'_{\eta t}\|_2^{\idx{2}} \lesssim \|\delta'_{\eta t}\|_2^2$ across all $\chi$, the bound is at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) & (\log d)^{O(1)} \deltaBar_{\eta t}^2 \|\deltaSingleGD_t\|_2^2 \Big(\sqrt{\frac{d}{n}} + \frac{d^{(\idx{2} + \idx{4} + \idx{5})/2 + 1}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_{\eta t}^2 \|\deltaSingleGD_t\|_2^2 \Big(d^{\idx{2}/2 - 1} + O\Big(\frac{1}{d}\Big) \Big)
+& \tag{B.c. $n \gtrsim d^3 (\log d)^{O(1)}$ and $\idx{4} + \idx{5} \leq 2$} \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\deltaSingleGD_t\|_2^2
+& \tag{B.c. $\deltaBar_{\eta t} \leq \frac{1}{\sqrt{d}}$ and $\idx{2} \leq 4$}
+\end{align}
+where we have $\deltaBar_{\eta t} \leq \frac{1}{\sqrt{d}}$ because by \Cref{lemma:IH_is_maintained}, we have that \Cref{assumption:inductive_hypothesis} holds as long as $\eta t \leq \Tstar$. In summary, we have shown that terms of the form \Cref{eq:single_term_type2} contribute at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\deltaSingleGD_t\|_2^2$, up to constant factors, to the concentration error between $S_1$ and $M_2$.
+
+\paragraph{Contribution of \Cref{eq:single_term_type1} to Concentration Error} We expand \Cref{eq:single_term_type1} by using $\uGD_t = \deltaSingleGD_t + \delta_{\eta t} + \ubar_{\eta t}$, $\uhat_{\eta t} = \delta_{\eta t} + \ubar_{\eta t}$ and $\uGD_t' = \deltaSingleGD_t' + \delta_{\eta t}' + \ubar_{\eta t}'$. Thus, we can write \Cref{eq:single_term_type1} as a linear combination of terms of the form
+\begin{align} \label{eq:single_term_type1_simplified}
+(\deltaSingleGD_t \cdot x)^{1 + \idx{1}} (\deltaSingleGD_t' \cdot x)^{1 + \idx{2}} (\delta_{\eta t} \cdot x)^{\idx{3}} (\delta_{\eta t}' \cdot x)^{\idx{4}} (\ubar_{\eta t} \cdot x)^{\idx{5}} (\ubar_{\eta t}' \cdot x)^{\idx{6}}
+\end{align}
+where $\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5} + \idx{6} = 6$ (since the degrees of each of the monomials must be $8$) and $\idx{3} \leq 3$ (since each of these terms originates from $(\uGD_t' \cdot x)^{\idx{3}} (\uhat_{\eta t}' \cdot x)^{\idx{4}} (\uGD_t \cdot x)^{\idx{2}} (\deltaSingleGD_t \cdot x) (\deltaSingleGD_t' \cdot x)$ where $\idx{2} \leq 3$). Using \Cref{lemma:main_concentration_lemma}, we obtain a concentration bound for \Cref{eq:single_term_type1_simplified}:
+\begin{align} \label{eq:type1_concentration_error}
+\Big|\frac{1}{n} \sum_{i = 1}^n & (\deltaSingleGD_t \cdot x_i)^{1 + \idx{1}} (\deltaSingleGD_t' \cdot x_i)^{1 + \idx{2}} (\delta_{\eta t} \cdot x_i)^{\idx{3}} (\delta_{\eta t}' \cdot x_i)^{\idx{4}} (\ubar_{\eta t} \cdot x_i)^{\idx{5}} (\ubar_{\eta t}' \cdot x_i)^{\idx{6}} \\
+& \nextlinespace - \E_{x \sim \bbS^{d - 1}} \Big[(\deltaSingleGD_t \cdot x)^{1 + \idx{1}} (\deltaSingleGD_t' \cdot x)^{1 + \idx{2}} (\delta_{\eta t} \cdot x)^{\idx{3}} (\delta_{\eta t}' \cdot x)^{\idx{4}} (\ubar_{\eta t} \cdot x)^{\idx{5}} (\ubar_{\eta t}' \cdot x)^{\idx{6}}\Big] \Big| \\
+& \lesssim (\log d)^{O(1)} \frac{\|\deltaSingleGD_t\|_2^{1 + \idx{1}} \|\deltaSingleGD_t'\|_2^{1 + \idx{2}} \|\delta_{\eta t}\|_2^{\idx{3}} \|\delta_{\eta t}'\|_2^{\idx{4}}}{d^{1 + (\idx{1} + \idx{2} + \idx{3} + \idx{4} + \idx{5} + \idx{6})/2}} \Big(\sqrt{\frac{d}{n}} + \frac{d^{1 + (\idx{1} + \idx{2} + \idx{3} + \idx{4})/2}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \period
+\end{align}
+As discussed in the previous case, after we consider the coefficients of $\sigma(t)$ and $\sigma'(t)$, we find that the term in \Cref{eq:single_term_type1_simplified} contributes
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \|\deltaSingleGD_t\|_2^{1 + \idx{1}} \|\deltaSingleGD_t'\|_2^{1 + \idx{2}} \|\delta_{\eta t}\|_2^{\idx{3}} \|\delta_{\eta t}'\|_2^{\idx{4}} \Big(\sqrt{\frac{d}{n}} + \frac{d^{1 + (\idx{1} + \idx{2} + \idx{3} + \idx{4})/2}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \period
+\end{align}
+Now, suppose $\idx{5} + \idx{6} \geq 2$. Then, $\idx{1} + \idx{2} + \idx{3} + \idx{4} \leq 4$, meaning the contribution to the concentration error is at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\|\deltaSingleGD_t\|_2 \|\deltaSingleGD_t'\|_2
+& \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_{\chi} \|\deltaSingleGD_t(\chi)\|_2^2
+\end{align}
+using the fact that $n \gtrsim d^3 (\log d)^C$ for a sufficiently large constant $C$, and $\|\deltaSingleGD_t\|_2 \lesssim 1$ and $\|\delta_{\eta t}\|_2 \lesssim 1$. On the other hand, if $\idx{5} + \idx{6} \leq 1$, then $\idx{1} + \idx{2} + \idx{3} + \idx{4} \geq 5$, and since $\idx{3} \leq 3$, this implies that $\idx{1} + \idx{2} + \idx{4} \geq 2$. In this case, the bound is at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) & (\log d)^{O(1)} \|\deltaSingleGD_t\|_2^{1 + \idx{1}} \|\deltaSingleGD_t'\|_2^{1 + \idx{2}} \|\delta_{\eta t}\|_2^{\idx{3}} \|\delta_{\eta t}'\|_2^{\idx{4}} \Big(\sqrt{\frac{d}{n}} + \frac{d^{1 + (\idx{1} + \idx{2} + \idx{3} + \idx{4})/2}}{n} + \frac{1}{d^{\Omega(\log d)}} \Big) \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\deltaSingleGD_t\|_2^{1 + \idx{1}} \|\deltaSingleGD_t'\|_2^{1 + \idx{2}} \|\delta_{\eta t}\|_2^{\idx{3}} \|\delta_{\eta t}'\|_2^{\idx{4}} d
+& \tag{B.c. $\idx{1} + \idx{2} + \idx{3} + \idx{4} \leq 6$ and $n \gtrsim d^3 (\log d)^C$} \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \cdot \frac{1}{d^{(\idx{1} + \idx{2})/2}} \|\delta_{\eta t}'\|_2^{\idx{4}} d \period
+& \tag{B.c. $\max_\chi \|\deltaSingleGD_t(\chi)\|_2 \leq \frac{1}{\sqrt{d}}$ and $\|\delta_{\eta t}\|_2 \lesssim 1$}
+\end{align}
+Thus, if $\idx{1} + \idx{2} \geq 2$, then the contribution of this term to the overall concentration error is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2$. On the other hand, if $\idx{4} = 1$, then we can take the average of $\|\delta_{\eta t}'\|_2$ across $\chi$, and by \Cref{lemma:IH_is_maintained}, we have that \Cref{assumption:inductive_hypothesis} holds for $\eta t \leq \Tstar$, meaning that $\E_\chi \|\delta_{\eta t}'\|_2 \leq \deltaBar_{\eta t} \leq \frac{1}{\sqrt{d}}$. In this case, the contribution of this term to the overall concentration error is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \cdot \frac{1}{d^{(\idx{1} + \idx{2} + \idx{4})/2}} d = (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2$. Finally, when $\idx{4} \geq 2$, we can take the average of $\|\delta_{\eta t}'\|_2^2$ over $\chi$ --- we have $\E_\chi \|\delta_{\eta t}'\|_2^2 \leq \frac{1}{d}$, and therefore the contribution of this term to the overall concentration error is at most
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \cdot \frac{1}{d^{1 + (\idx{1} + \idx{2})/2}} d
+\leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \period
+\end{align}
+In all cases, the contribution of \Cref{eq:single_term_type1} to the overall concentration error between $S_1$ and $M_1$ is at most 
+\begin{align}
+(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \period
+\end{align}
+\paragraph{Overall Concentration Error}
+
+In summary, the overall concentration error between $S_1$ and $M_1$ is that of $G(x)$. We have expanded $G(x)$ into various monomials of dot products involving $x$, and shown that each monomial contributes at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2$ to the concentration error. Thus, with high probability,
+\begin{align}
+|M_1 - S_1|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \period
+\end{align}
+In order to bound $|M_2 - S_2|$, an almost identical, but simpler, argument can be used, with $y(x)$ in the place of $f_{\rhoGD_t}(x)$ or $f_{\rhohat_{\eta t}}(x)$. In the modified argument, $\uGD_t'$, $\uhat_{\eta t}'$ and $\ubar_{\eta t}'$ will all be replaced with $\e$. Thus, in the analysis of \Cref{eq:single_term_type2_simplified}, we can replace $\ubar_{\eta t}'$ with $\e$ and assume that $\idx{2} = 0$ (since otherwise this term becomes $0$ due to the $\delta_{\eta t}' \cdot x$ factor) --- we can then proceed similarly to the subcase where $\idx{2} \leq 1$ in the analysis of \Cref{eq:single_term_type2_simplified}. Additionally, the term analogous to \Cref{eq:single_term_type1_simplified} does not arise in the case where $f_{\rhoGD_t}(x)$ and $f_{\rhohat_{\eta t}}(x)$ are replaced by $y(x)$, since $\uGD_t'$ and $\uhat_{\eta t}'$ are both replaced by $\e$, so the corresponding term is $0$. We also note that the Legendre coefficients of $y(x)$ have absolute values which are less than those of $\sigma$. Thus, we have
+\begin{align}
+|M_1 - S_1| + |M_2 - S_2| \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \period
+\end{align}
+\paragraph{Bounding the Expectation} To complete the proof, it suffices to bound $|M_1 - M_2|$. We have that
+\begin{align}
+M_1 - M_2
+& = \nabla_{\uGD_t} L(\rhoGD_t) \cdot \deltaSingleGD_t - \nabla_{\uhat_{\eta t}} L(\rhohat_{\eta t}) \cdot \deltaSingleGD_t
+\end{align}
+and by \Cref{lemma:gradient_expectation_inner_product}, we have
+\begin{align}
+|M_1 - M_2|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big(\E_{(\uGD_t', \uhat_{\eta t}') \sim (\rhoGD_t, \rhohat_{\eta t})} \Big[\|\uGD_t' - \uhat_{\eta t}'\|_2^2\Big]^{1/2} + \|\uGD_t - \uhat_{\eta t}\|_2 \Big) \|\deltaSingleGD_t\|_2 \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t (\chi)\|_2^2
+\end{align}
+Combining this with our bound on $|M_1 - S_1| + |M_2 - S_2|$, we find that
+\begin{align}
+|(\pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t})) \cdot \deltaSingleGD_t|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t (\chi)\|_2^2
+\end{align}
+as desired.
+\end{proof}
+
+\begin{lemma} \label{lemma:hat_grad_diff}
+Suppose we are in the setting of \Cref{thm:projectedGD_main}. Suppose $s, t \geq 0$. Then,
+\begin{align}
+\|\pgrad_{\uhat_t} \Lhat(\rhohat_t) - \pgrad_{\uhat_s} \Lhat(\rhohat_s)\|_2 \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4 \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2
+\end{align}
+\end{lemma}
+\begin{proof}
+We have
+\begin{align}
+\|\pgrad_{\uhat_t}\Lhat(\rhohat_t) & - \pgrad_{\uhat_s} \Lhat(\rhohat_s)\|_2 \\
+& = \| (I - \uhat_t \uhat_t^\top) \nabla_{\uhat_t} \Lhat(\rhohat_t) - (I - \uhat_s \uhat_s^\top) \nabla_{\uhat_s} \Lhat(\rhohat_s) \|_2 \\
+& = \Big\|(I - \uhat_t \uhat_t^\top) \cdot \frac{1}{n} \sum_{i = 1}^n (f_{\rhohat_t}(x_i) - y(x_i)) \sigma'(\uhat_t^\top x_i) x_i \\
+& \nextlinespace\nextlinespace - (I - \uhat_s \uhat_s^\top) \cdot \frac{1}{n} \sum_{i = 1}^n (f_{\rhohat_s}(x_i) - y(x_i)) \sigma'(\uhat_s^\top x_i) x_i \Big\|_2 \\
+& \leq \frac{1}{n} \sum_{i = 1}^n \|(f_{\rhohat_t}(x_i) - y(x_i)) \sigma'(\uhat_t^\top x_i) (I - \uhat_t \uhat_t^\top) x_i - (f_{\rhohat_s}(x_i) - y(x_i)) \sigma'(\uhat_s^\top x_i) (I - \uhat_s \uhat_s^\top) x_i \|_2 \period \label{eq:gradient_diff_1}
+\end{align}
+We bound the right-hand side by several applications of the triangle inequality. First, observe that for any $x \in \bbS^{d - 1}$, we have
+\begin{align}
+|f_{\rhohat_t}(x) - f_{\rhohat_s}(x)|
+& \leq \frac{1}{m} \sum_{j = 1}^m |\sigma(\uhat_t(\chi_i) \cdot x) - \sigma(\uhat_s(\chi_i) \cdot x)| \\
+& \lesssim \frac{1}{m} \sum_{j = 1}^m (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) |\uhat_t(\chi_i) \cdot x - \uhat_s(\chi_i) \cdot x| 
+& \tag{By \Cref{lemma:sigma_bound}} \\
+& \lesssim \frac{(|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}})}{m} \sum_{j = 1}^m \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \lesssim (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \period \label{eq:triangle_ineq_comp_1}
+\end{align}
+Additionally, for $\uhat_t$ and $\uhat_s$ with the same initialization $\chi$, we have
+\begin{align}
+|\sigma'(\uhat_t^\top x) - \sigma'(\uhat_s^\top x)|
+& \lesssim (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \cdot |\uhat_t^\top x - \uhat_s^\top x|
+& \tag{By \Cref{lemma:sigma_bound}} \\
+& \lesssim (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \|\uhat_t - \uhat_s\|_2 \period \\
+& \lesssim (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \period \label{eq:triangle_ineq_comp_2}
+\end{align}
+Also, for $\uhat_t$ and $\uhat_s$ with the same initialization $\chi$, we have
+\begin{align}
+\|(I - \uhat_t \uhat_t^\top) x_i - (I - \uhat_s \uhat_s^\top)x_i \|_2
+& = \|(\uhat_t \cdot x_i) \uhat_t - (\uhat_s \cdot x_i) \uhat_s\|_2 \\
+& \leq \|(\uhat_t \cdot x_i - \uhat_s \cdot x_i) \uhat_t\|_2 + |\uhat_s \cdot x_i| \|\uhat_t - \uhat_s\|_2 \\
+& \lesssim \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \period \label{eq:triangle_ineq_comp_3}
+\end{align}
+Finally, for $x \in \bbS^{d - 1}$ and any distribution $\rho$ on $\bbS^{d - 1}$, we have
+\begin{align}
+|f_\rho(x) - y(x)|
+& \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}} \label{eq:triangle_ineq_comp_4}
+\end{align}
+since we can bound $|f_\rho(x)|$ using \Cref{lemma:sigma_bound}, and because (ignoring $\legendreCoeff{\target}{0}$ since it is equal to $\legendreCoeff{\sigma}{0}$) $y(x) = \gamma_2 \sigmaCoeffTwo \PtwoD + \gamma_4 \sigmaCoeffFour \PfourD$, and using \Cref{assumption:target}.
+
+Thus, we can simplify the right-hand side of \Cref{eq:gradient_diff_1} using the triangle inequality, and combining \Cref{eq:triangle_ineq_comp_1}, \Cref{eq:triangle_ineq_comp_2}, \Cref{eq:triangle_ineq_comp_3} and \Cref{eq:triangle_ineq_comp_4}:
+\begin{align}
+\|(f_{\rhohat_t}(x_i) - y(x_i)) & \sigma'(\uhat_t^\top x_i) (I - \uhat_t \uhat_t^\top) x_i - (f_{\rhohat_s}(x_i) - y(x_i)) \sigma'(\uhat_s^\top x_i) (I - \uhat_s \uhat_s^\top) x_i \|_2 \\
+& \leq |f_{\rhohat_t}(x_i) - f_{\rhohat_s}(x_i)| \|\sigma'(\uhat_t^\top x_i) (I - \uhat_t \uhat_t^\top) x_i\|_2 \\
+& \nextlinespace\nextlinespace + |f_{\rhohat_s}(x_i) - y(x_i)| |\sigma'(\uhat_t^\top x_i) - \sigma'(\uhat_s^\top x_i)| \|(I - \uhat_t \uhat_t^\top)x_i \|_2 \\
+& \nextlinespace\nextlinespace + |f_{\rhohat_s}(x_i) - y(x_i)||\sigma'(\uhat_s^\top x_i)| \|(I - \uhat_t \uhat_t^\top)x_i - (I - \uhat_s \uhat_s^\top) x_i\|_2 \\
+& \lesssim (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \nextlinespace\nextlinespace + |f_{\rhohat_s}(x_i) - y(x_i)| |\sigma'(\uhat_t^\top x_i) - \sigma'(\uhat_s^\top x_i)| \|(I - \uhat_t \uhat_t^\top)x_i \|_2 \\
+& \nextlinespace\nextlinespace + |f_{\rhohat_s}(x_i) - y(x_i)||\sigma'(\uhat_s^\top x_i)| \|(I - \uhat_t \uhat_t^\top)x_i - (I - \uhat_s \uhat_s^\top) x_i\|_2 
+& \tag{By \Cref{eq:triangle_ineq_comp_1}, bounding $|\sigma'(\uhat_t^\top x_i)|$ by \Cref{lemma:sigma_bound}} \\
+& \lesssim (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \nextlinespace\nextlinespace + (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \nextlinespace\nextlinespace + |f_{\rhohat_s}(x_i) - y(x_i)||\sigma'(\uhat_s^\top x_i)| \|(I - \uhat_t \uhat_t^\top)x_i - (I - \uhat_s \uhat_s^\top) x_i\|_2 
+& \tag{By \Cref{eq:triangle_ineq_comp_4} and \Cref{eq:triangle_ineq_comp_2}} \\
+& \lesssim (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \nextlinespace\nextlinespace + (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \\
+& \nextlinespace\nextlinespace + (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2
+& \tag{By \Cref{eq:triangle_ineq_comp_3}, \Cref{eq:triangle_ineq_comp_4} and \Cref{lemma:sigma_bound}} \\
+& \lesssim (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2 \period
+\end{align}
+Therefore, \Cref{eq:gradient_diff_1} gives
+\begin{align}
+\|\pgrad_{\uhat_t}\Lhat(\rhohat_t) - \pgrad_{\uhat_s} \Lhat(\rhohat_s)\|_2
+& \lesssim (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \cdot \max_{i \in [m]} \|\uhat_t(\chi_i) - \uhat_s(\chi_i)\|_2
+\end{align}
+as desired.
+\end{proof}
+
+\begin{proof}[Proof of \Cref{thm:projectedGD_main}]
+To show that projected gradient descent achieves low population loss, we show that it does not diverge far from projected gradient descent. Suppose $\rhohat_0$ and $\rhoGD_0$ are both equal to $\textup{unif}(\chi_1, \ldots, \chi_m\})$. Then, by induction over $t$, we bound the difference between $\uGD_t(\chi)$ and $\uhat_{\eta t}(\chi)$ for all $\chi \in \{\chi_1, \ldots, \chi_m\}$. At $t = 0$, we have $\uGD_0(\chi) = \uhat_0(\chi)$. Let $t$ be a nonnegative integer, and assume that for all $s \leq t$ we have $\max_\chi \|\deltaSingleGD_t(\chi)\|_2 \leq \frac{1}{\sqrt{d}}$.
+
+By the definition of projected gradient descent, we have
+\begin{align}
+\uGD_{t + 1}(\chi) 
+& = \frac{\uGD_t(\chi) - \eta \cdot \pgrad_{\uGD_t(\chi)} \Lhat(\rhoGD_t)}{\|\uGD_t(\chi) - \eta \cdot \pgrad_{\uGD_t(\chi)} \Lhat(\rhoGD_t)\|_2} \period
+\end{align}
+Note that $\|\uGD_t - \eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t)\|_2 \geq \|\uGD_t\|_2$, since $\pgrad_{\uGD_t} \Lhat(\rhoGD_t)$ is orthogonal to $\uGD_t$. Thus, letting $\Pi$ denote the projection onto the $\ell_2$ unit ball, we have
+\begin{align}
+\|\uGD_{t + 1} - \uhat_{\eta (t + 1)}\|_2
+ = \|\Pi(\uGD_t - \eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t)) - \Pi(\uhat_{\eta (t + 1)})\|_2
+ \leq \|\uGD_t - \eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \uhat_{\eta (t + 1)}\|_2 \period
+\end{align}
+Also, we have
+\begin{align}
+\uhat_{\eta (t + 1)}(\chi)
+& = \uhat_{\eta t}(\chi) - \int_{\eta t}^{\eta (t + 1)} \pgrad_{\uhat_s(\chi)} \Lhat(\rhohat_s) ds \period
+\end{align}
+Thus,
+\begin{align}
+\|\uGD_t - \eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \uhat_{\eta (t + 1)} \|_2^2
+& = \Big\|\uGD_t - \eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \uhat_{\eta t} + \int_{\eta t}^{\eta (t + 1)} \pgrad_{\uhat_s} \Lhat(\rhohat_s) ds \Big\|_2^2 \\
+& = \|\uGD_t - \uhat_{\eta t}\|_2^2 + \Big\|\eta \cdot \pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \int_{\eta t}^{\eta (t + 1)} \pgrad_{\uhat_s} \Lhat(\rhohat_s) ds \Big\|_2^2 \\
+& \nextlinespace + 2 (\uGD_t - \uhat_{\eta t}) \cdot \int_{\eta t}^{\eta (t + 1)} (\pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \pgrad_{\uhat_s} \Lhat(\rhohat_s)) ds  \\
+& = \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) \\
+& \nextlinespace + 2 \eta \deltaSingleGD_t \cdot (\pgrad_{\uGD_t} \Lhat(\rhoGD_t) - \pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t})) \\
+& \nextlinespace + 2 \deltaSingleGD_t \cdot \int_{\eta t}^{\eta (t + 1)} (\pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t}) - \pgrad_{\uhat_s} \Lhat(\rhohat_s) ds
+& \tag{By \Cref{lemma:gradient_bounds}} \\
+& \leq \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \Big) \\
+& \nextlinespace + 2 \deltaSingleGD_t \cdot \int_{\eta t}^{\eta (t + 1)} (\pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t}) - \pgrad_{\uhat_s} \Lhat(\rhohat_s) ds
+& \tag{By \Cref{lemma:discretized_gradient_concentration}} \\
+& \leq \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \Big) \\
+& \nextlinespace + 2 \eta \|\deltaSingleGD_t\|_2 \max_{s \in [\eta t, \eta (t + 1)]} \|\pgrad_{\uhat_{\eta t}} \Lhat(\rhohat_{\eta t}) - \pgrad_{\uhat_s} \Lhat(\rhohat_s) \|_2 \\
+& \leq \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \Big) \\
+& \nextlinespace + 2 \eta \|\deltaSingleGD_t\|_2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4  \max_{s \in [\eta t, \eta (t + 1)]} \max_{i \in [m]} \|\uhat_s(\chi_i) - \uhat_{\eta t}(\chi_i)\|_2 
+& \tag{By \Cref{lemma:hat_grad_diff}} \\
+& \leq \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \Big) \\
+& \nextlinespace + 2 \eta \|\deltaSingleGD_t\|_2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4  \cdot \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4
+& \tag{By \Cref{lemma:gradient_bounds}} \\
+& \leq \|\deltaSingleGD_t\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big) + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 \Big) \period
+\end{align}
+Thus, we have
+\begin{align}
+\max_\chi \|\deltaSingleGD_{t + 1}(\chi)\|_2^2 
+& \leq \Big(1 + O\Big(\eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big)\Big) \max_\chi \|\deltaSingleGD_t(\chi)\|_2^2 + O\Big(\eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \Big)
+\end{align}
+which means that for some universal constant $C$,
+\begin{align}
+\max_\chi \|\deltaSingleGD_{t + 1}(\chi)\|_2^2 
+& \lesssim \sum_{i = 0}^{t} \Big(1 + C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big)^i \cdot \eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \\
+& \lesssim \eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \cdot \frac{\Big(1 + C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big)^{t + 1} - 1}{\Big(1 + C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big) - 1} \\
+& \lesssim \eta^2 (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^2 d^8 \cdot \frac{\Big(1 + C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big)^{t + 1} - 1}{C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} \\
+& \lesssim \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^8 \cdot \Big(1 + C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Big)^{t + 1} \\
+& \lesssim \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^8 \cdot e^{C \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (t + 1)} \period
+\label{eq:discretization_geometric_series_bound}
+\end{align}
+Thus, as long as $\eta = \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^B}$ for a sufficiently large universal constant $B$, and choosing $\eta$ so that $\Tstar$ is an integer multiple of $\eta$, we have $\max_\chi \|\deltaSingleGD_{t + 1}(\chi)\|_2 \leq \frac{1}{\sqrt{d}}$, because if $t \leq \frac{\Tstar}{\eta}$, then 
+\begin{align}
+\max_\chi \|\deltaSingleGD_{t + 1}(\chi)\|_2^2
+& \leq \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^8 \cdot e^{C (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \Tstar} \\
+& \leq \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^8 \cdot e^{O(\log d)} \\
+& \leq \eta (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^{O(1)} \period
+\end{align}
+This completes the induction, and therefore for all $t \leq \frac{\Tstar}{\eta}$, we have $\max_\chi \|\deltaSingleGD_t(\chi) \|_2 \leq \frac{1}{\sqrt{d}}$. Additionally, by \Cref{lemma:point_error_to_fn_error}, and using the coupling between $\rhoGD_t$ and $\rhohat_{\eta t}$ which is the joint distribution of $(\uGD_t(\chi), \uhat_{\eta t}(\chi))$, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rhoGD_t}(x) - f_{\rhohat_{\eta t}}(x))^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \max_{\chi} \|\deltaSingleGD_t(\chi)\|_2^2 \lesssim \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d} \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon
+\end{align}
+which completes the proof.
+\end{proof}

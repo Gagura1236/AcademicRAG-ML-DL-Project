@@ -1,0 +1,2075 @@
+
+\section{Proofs for Population Dynamics} \label{appendix:population_case}
+
+\subsection{Proof of \Cref{lemma:population_loss_formula}}\label{app:pf-lem-plf}
+
+In the following, we prove \Cref{lemma:population_loss_formula}, which provides a way to simplify $L(\rho)$ when $\rho$ is rotationally invariant and symmetric.
+
+\begin{proof}[Proof of \Cref{lemma:population_loss_formula}]
+Recall that the population loss is
+\begin{align}   
+L(\rho)
+& = \frac{1}{2}\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \target(\dotp{x}{\e}))^2],
+\end{align}
+and the activation function $\sigma:\R\to\R$ and target function $h:\R\to\R$ has the following decomposition:
+\begin{align}
+    \sigma(t)&=\sum_{k=0}^{\infty}\legendreCoeff{\sigma}{k}\overline{P}_{k,d}(t),\\
+    \target(t)&=\sum_{k=0}^{\infty}\legendreCoeff{\target}{k}\overline{P}_{k,d}(t).
+\end{align}
+Therefore we have
+\begin{align} \label{eq:pop_loss_first_step}
+2L(\rho)
+& = \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \target(\dotp{x}{\e}))^2] \\
+& = \E_{x \sim \bbS^{d - 1}} \Big( \E_{u \sim \rho}[\sigma(\dotp{\u}{x})] - \target(\dotp{x}{\e}) \Big)^2 \\
+& = \E_{x \sim \bbS^{d - 1}} \Big(\E_{u \sim \rho}\Big[ \sum_{k = 0}^\infty \legendreCoeff{\sigma}{k} \overline{P_{k, d}} (\dotp{u}{x}) \Big] - \sum_{k = 0}^\infty \legendreCoeff{h}{k} \overline{P}_{k, d}(\dotp{x}{\e}) \Big)^2 \\
+& = \E_{x \sim \bbS^{d - 1}} \Big(\sum_{k=0}^\infty \Big(\legendreCoeff{\sigma}{k} \E_{u \sim \rho} [\overline{P}_{k,d}(\dotp{u}{x})] - \legendreCoeff{h}{k} \overline{P}_{k,d}(\dotp{x}{\e}) \Big) \Big)^2.
+\end{align}
+When the neural network $\rho$ is rotationally invariant, we can simplify the above equation by invoking \Cref{lemma:1d_rotational_invariance}, which states that 
+\begin{align}
+    \E_{u \sim \rho} [\overline{P}_{k,d}(\dotp{u}{x})]=\E_{u \sim \rho}[P_{k, d}(\dotp{\e}{u})] \overline{P}_{k,d}(\dotp{\e}{x}).
+\end{align}
+Continuing \Cref{eq:pop_loss_first_step} above we have,
+\begin{align}
+2L(\rho)& = \E_{x \sim \bbS^{d - 1}} \Big(\sum_{k=0}^\infty \legendreCoeff{\sigma}{k} \E_{u \sim \rho}[P_{k, d}(\dotp{\e}{u})] \overline{P}_{k,d}(\dotp{\e}{x}) - \legendreCoeff{h}{k} \overline{P}_{k,d}(\dotp{\e}{x}) \Big)^2\\
+& = \E_{x \sim \bbS^{d - 1}} \Big(\sum_{k=0}^\infty (\legendreCoeff{\sigma}{k} \E_{u \sim \rho}[P_{k, d}(\dotp{\e}{u})] - \legendreCoeff{h}{k}) \overline{P}_{k,d}(\dotp{\e}{x}) \Big)^2
+\end{align}
+Now we expand the square by invoking \Cref{lem:legendre-poly-inner-product}. In particular, \Cref{lem:legendre-poly-inner-product} states that
+\begin{align}
+    \E_{x\sim \Sp}[\overline{P}_{k,d}(\dotp{\e}{x})\overline{P}_{k',d}(\dotp{\e}{x})]=\ind{k=k'}P_{k,d}(\dotp{\e}{\e})=\ind{k=k'}.
+\end{align}
+Consequently,
+\begin{align}
+2L(\rho)
+& = \sum_{k=0}^\infty \Big(\legendreCoeff{\sigma}{k} \E_{u \sim \rho}[P_{k, d}(\dotp{\e}{u})] - \legendreCoeff{h}{k} \Big)^2,
+\end{align}
+as desired.
+
+To prove the second part of this lemma, in the following, we assume that (1) $\legendreCoeff{\target}{k}=0,\forall k\not\in\{0,2,4\}$, (2) $\legendreCoeff{\target}{0}=\legendreCoeff{\sigma}{0}$, and (3) that $\sigma$ is a degree-4 polynomial. Then we get
+\begin{align}
+L(\rho)
+& = \frac{\legendreCoeff{\sigma}{2}^2}{2} \Big( \E_{u \sim \rho} [P_{2, d}(w)] - \gamma_2\Big)^2 + \frac{\legendreCoeff{\sigma}{4}^2}{2} \Big( \E_{u \sim \rho} [P_{4, d}(w)] - \gamma_4 \Big)^2+\sum_{k\in\{1,3\}}\frac{\legendreCoeff{\sigma}{k}^2}{2}\(\E_{u \sim \rho} [P_{k, d}(w)]\)^2.
+\end{align}
+Since $\rho$ is symmetric and $P_{k,d}(w)$ is an odd function when $k$ is odd, we get
+\begin{align}
+    \forall k\in\{1,3\},\quad \E_{u \sim \rho} [P_{k, d}(w)]=0.
+\end{align}
+It follows directly that
+\begin{align}
+L(\rho)
+& = \frac{\legendreCoeff{\sigma}{2}^2}{2} \Big( \E_{u \sim \rho} [P_{2, d}(w)] - \gamma_2\Big)^2 + \frac{\legendreCoeff{\sigma}{4}^2}{2} \Big( \E_{u \sim \rho} [P_{4, d}(w)] - \gamma_4 \Big)^2
+\end{align}
+\end{proof}
+
+\subsection{Proof of \Cref{lemma:rho_rotational_invariant} and \Cref{lem:1-d-traj}} \label{subsec:pop_symmetry_missing_proofs}
+
+The goal of this subsection is to show \Cref{lemma:rho_rotational_invariant}, which states that $\rho_t$ remains symmetric and rotationally invariant under the infinite-width population dynamics, and to show \Cref{lem:1-d-traj} which describes the dynamics of the first coordinates of the particles in $\rho_t$.
+
+The following lemma is a first step. Recall that when $\rho$ is rotationally invariant, then \Cref{lemma:population_loss_formula} allows us to rewrite $L(\rho) = \frac{1}{2} \E_{x \sim \bbS^{d - 1}} \Big(f_\rho(x) - y \Big)^2$ as $\frac{1}{2} \sum_{k = 0}^\infty \Big(\legendreCoeff{\sigma}{k} \E_{\u \sim \rho} [\Pkd(\w)] - \hat{\target}_{k, d} \Big)^2$. The following lemma states that the gradient from the two formulas for $L(\rho)$ are the same when $\rho$ is rotationally invariant.
+
+\begin{lemma} \label{lemma:velocity_1d_equivalence}
+Let $\rho$ be a distribution on $\bbS^{d - 1}$ and let $\nu$ be a distribution on $[-1, 1]$. Define
+\begin{align}
+F(\nu)
+& = \frac{1}{2} \sum_{k = 0}^\infty \Big( \legendreCoeff{\sigma}{k}\E_{\w \sim \nu} [P_{k, d}(\w)] - \hat{\target}_{k,d} \Big)^2 \period
+\end{align}
+If $\rho$ is rotationally invariant as in \Cref{def:rot_inv_symmetry} and $\nu$ is the marginal distribution of $\w$ for $\u = (\w, \z) \sim \rho$, then for any particle $\u = (\w, \z)$, we have
+\begin{align}
+(1 - \w^2) \nabla_\w F(\nu) = \pgrad_\w L(\rho)
+\end{align}
+where $\pgrad_\w L(\rho)$ denotes the first coordinate of $\pgrad_\u L(\rho)$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:velocity_1d_equivalence}]
+For any particle $\u = (\w, \z)$, we write the first coordinate of $\nabla_\u L(\rho)$ as $\nabla_\w L(\rho)$, and the vector consisting of the last $(d - 1)$ coordinates as $\nabla_\z L(\rho)$. Observe that
+\begin{align}
+\pgrad_\w L(\rho)
+& = \dotp{\e}{\pgrad_\u L(\rho)} \\
+& = \dotp{\e}{(I - \u \u^\top) \nabla_\u L(\rho)} \\
+& = \nabla_\w L(\rho) - \w \dotp{\u}{\nabla_\u L(\rho)} \\
+& = (1 - \w^2) \nabla_\w L(\rho) - w \dotp{\z}{\nabla_\z L(\rho)}
+\end{align}
+On the other hand, suppose $\rho$ satisfies the rotational invariance property, and that $\nu$ is the marginal distribution of the first coordinate under $\rho$. Then, we can write $\rho$ in terms of $\nu$ --- for any $\w \in [-1, 1]$, the distribution of $\z$ conditioned on $\w$ is $\sqrt{1 - \w^2} \bbS^{d - 1}$. Thus, since $L(\rho) = F(\nu)$ by \Cref{lemma:population_loss_formula}, we have by the chain rule that
+\begin{align}
+\nabla_\w F(\nu)
+& = \E_{\substack{\xi \sim \bbS^{d - 2} \\ u = \w \e + \sqrt{1 - \w^2} \xi}} \Big[ \Big\langle \nabla_\u L(\rho), \frac{\partial \u}{\partial \w} \Big\rangle \Big] \\
+& = \nabla_\w L(\rho) + \E_{\xi \sim \bbS^{d - 2}} \Big[ \Big\langle \nabla_\z L(\rho) \Big|_{z = \sqrt{1 - \w^2} \xi}, \frac{\partial \z}{\partial \w} \Big\rangle \Big] \\
+& = \nabla_\w L(\rho) + \E_{\xi \sim \bbS^{d - 2}} \Big[ \Big\langle \nabla_\z L(\rho) \Big|_{z = \sqrt{1 - \w^2} \xi}, -\frac{\w}{\sqrt{1 - \w^2}} \xi \Big\rangle \Big] \\
+& = \nabla_\w L(\rho) + \E_{\xi \sim \bbS^{d - 2}} \Big[ \Big\langle \nabla_\z L(\rho) \Big|_{z = \sqrt{1 - \w^2} \xi}, -\frac{\w}{1 - \w^2} \z \Big\rangle \Big] \\
+& = \nabla_\w L(\rho) - \frac{w}{1 - w^2} \E_{\xi \sim \bbS^{d - 2}} [\langle \nabla_\z L(\rho), \z \rangle]
+\end{align}
+Moreover, for any fixed $\w \in [-1, 1]$, the quantity $\langle \nabla_\z L(\rho), \z \rangle$ does not depend on $\z$, since by \Cref{lemma:grad_rot_equiv}, for any rotation matrix $A$ and $\z' = A\z$, we have $\langle \nabla_{\z'} L(\rho), \z' \rangle = \langle A \cdot \nabla_\z L(\rho), A \z \rangle = \langle \nabla_\z L(\rho), \z \rangle$. Thus, for any $\w \in [-1, 1]$ and $\z \in \sqrt{1 - \w^2} \bbS^{d - 2}$, we can write
+\begin{align}
+(1 - \w^2) \nabla_\w F(\nu)
+= (1 - \w^2) \nabla_\w L(\rho) - \w \dotp{\z}{\nabla_\z L(\rho)}
+= \pgrad_\w L(\rho)
+\end{align}
+as desired.
+\end{proof}
+
+In the proof of the above lemma, we used the following fact which we now prove: when $\rho$ is rotationally invariant, $\nabla_\u L(\rho)$ is rotationally equivariant as a function of $\u$, i.e. if $\u$ is rotated by a rotation matrix $A$ which only modifies the last $(d - 1)$ coordinates, then $\nabla_\u L(\rho)$ is rotated by $A$ as well.
+
+\begin{lemma} [Gradient is Rotationally Equivariant] \label{lemma:grad_rot_equiv}
+Let $\rho$ be a rotationally invariant distribution as in \Cref{def:rot_inv_symmetry}. Let $A \in \R^{d \times d}$ be a rotation matrix with $A\e = \e$, i.e. $A$ only modifies the last $(d - 1)$ coordinates. Let $\u \in \bbS^{d - 1}$ and $\u' = A \u$. Then, $\nabla_{\u'} L(\rho) = A \cdot \nabla_u L(\rho)$, and $\pgrad_{\u'} L(\rho) = A \cdot \pgrad_\u L(\rho)$.
+\end{lemma}
+\begin{proof}
+The proof is by a straightforward calculation:
+\begin{align}
+\nabla_{\u'} L(\rho)
+& = \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - y(x)) \sigma'(\dotp{\u'}{x}) x] \\
+& = \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \target(\dotp{\e}{x})) \sigma'(\dotp{\u'}{x}) x] \\
+& = \E_{x \sim \bbS^{d - 1}} [(f_\rho(Ax) - \target(\dotp{\e}{Ax})) \sigma'(\dotp{\u'}{Ax}) Ax]
+& \tag{By rotational invariance of uniform distribution on $\bbS^{d - 1}$} \\
+& = A \E_{x \sim \bbS^{d - 1}} [(f_\rho(Ax) - h(\dotp{\e}{Ax})) \sigma'(\dotp{\u'}{Ax}) x] \\
+& = A \E_{x \sim \bbS^{d - 1}} [(f_\rho(Ax) - h(\dotp{\e}{Ax})) \sigma'(\dotp{A\u}{Ax}) x]
+& \tag{By definition of $\u'$} \\
+& = A \E_{x \sim \bbS^{d - 1}} [(f_\rho(Ax) - h(\dotp{\e}{Ax})) \sigma'(\dotp{\u}{x}) x]
+& \tag{B.c. $A$ is a rotation matrix so $A^\top A = \ddimId$} \\
+& = A \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - h(\dotp{\e}{Ax})) \sigma'(\dotp{\u}{x}) x]
+& \tag{B.c. $f_\rho(Ax) = f_\rho(x)$ by rotational invariance of $\rho$} \\
+& = A \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - h(\dotp{\e}{x})) \sigma'(\dotp{\u}{x}) x]
+& \tag{B.c. $A\e = \e$ and $A^\top A = \ddimId$} \\
+& = A \cdot \nabla_\u L(\rho)
+\end{align}
+This proves the first statement of the lemma. The second statement also follows from a similar calculation:
+\begin{align}
+\pgrad_{\u'} L(\rho)
+& = (I - \u' (\u')^\top) \cdot \nabla_{\u'} L(\rho) \\
+& = (I - A \u \u^\top A^\top) \cdot A \cdot \nabla_\u L(\rho) \\
+& = A \cdot \nabla_\u L(\rho) - A \u \u^\top A^\top A \cdot \nabla_\u L(\rho) \\
+& = A \cdot \nabla_\u L(\rho) - A \u \u^\top \cdot \nabla_\u L(\rho)
+& \tag{B.c. $A^\top A = \ddimId$} \\
+& = A \cdot (I - \u\u^\top) \cdot \nabla_\u L(\rho) \\
+& = A \cdot \pgrad_\u L(\rho)
+\end{align}
+as desired.
+\end{proof}
+
+As a corollary, we obtain our first formula for the dynamics of the 1-dimensional particles:
+
+\begin{lemma} [One-Dimensional Velocity] \label{lemma:1d_velocity_final}
+Suppose we are in the setting of \Cref{thm:pop_main_thm} and that $\rho_t$ is rotationally invariant. Then, for any particle $\u_t$ (where we omit the initialization $\chi$ for convenience), if $\w_t$ is the first coordinate of $\u_t$, then
+\begin{align}
+\frac{d\w_t}{dt}
+& = -(1 - \w_t^2) \sum_{k = 0}^4 \Big(\legendreCoeff{\sigma}{k} \E_{\u \sim \rho_t}[\Pkd(\w)] - \legendreCoeff{\target}{k} \Big) \cdot \legendreCoeff{\sigma}{k} \Pkd'(\w) \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:1d_velocity_final}]
+This follows directly from \Cref{lemma:velocity_1d_equivalence}, and because the activation $\sigma$ and the target $\target$ only have nonzero coefficients $\legendreCoeff{\sigma}{k}$ and $\legendreCoeff{\target}{k}$ for $k = 0, \ldots, 4$.
+\end{proof}
+
+We now complete the proof of \Cref{lemma:rho_rotational_invariant}, i.e. that $\rho_t$ remains rotationally invariant and symmetric if it is defined according to the population projected gradient flow as in \Cref{eq:population_init} and \Cref{eq:population_derivative}. To prove that $\rho_t$ remains symmetric, we make use of the above formula for the 1-dimensional dynamics.
+
+\begin{proof}[Proof of \Cref{lemma:rho_rotational_invariant}]
+First, we show the rotational invariance property. Assume inductively that at a time $t$, $\rho_t$ satisfies the desired rotational invariance property --- it holds at initialization since $\rho_0$ is the uniform distribution on $\bbS^{d - 1}$. Consider a particle $\u_t$ and let $A \in \R^{d \times d}$ be a rotation matrix which only modifies the last $(d - 1)$ coordinates. Let $\u'_t = A\u_t$ be another particle. Then, it follows from \Cref{lemma:grad_rot_equiv} that
+\begin{align}
+\frac{d\u_t'}{dt} & = A \frac{d\u_t}{dt}
+\end{align}
+Thus, for a fixed $\w \in [-1, 1]$, if $\z \sim \sqrt{1 - \w^2} \bbS^{d - 2}$, then the distribution of $\frac{d\z}{dt}$ is uniform on $c \bbS^{d - 2}$ for a fixed scalar $c$ that depends on $\w$. Therefore, $\rho$ will remain rotationally invariant.
+
+Next, we prove that $\rho_t$ is symmetric. First observe that $\rho_t$ is symmetric at initialization, since it is the uniform distribution on $\bbS^{d - 1}$. Now, suppose that $\rho_t$ is symmetric at time $t$. The polynomial $\Pkd$ is odd if $k$ is odd and even if $k$ is even --- this can be seen from induction on \Cref{eq:legn_inductive1} and \Cref{eq:legn_inductive2}. Thus, $\E_{\u \sim \rho_t}[\Pkd(\w)] = 0$ for odd $k$ by our assumption that $\rho_t$ is symmetric. Additionally, recall that we defined $\target$ so that $\legendreCoeff{\sigma}{0} = \legendreCoeff{\target}{0}$ and $\legendreCoeff{\target}{k} = 0$ for odd $k$. Thus, by our definition of $D_{2, t}$ and $D_{4, t}$ in \Cref{sec:population-dynamics},
+\begin{align}
+\frac{d\w_t}{dt}
+& = -(1 - \w_t^2) (\sigmaCoeffTwo^2 D_{2, t} \PtwoD'(\w_t) + \sigmaCoeffFour^2 D_{4, t} \PfourD'(\w_t))
+\end{align}
+by \Cref{lemma:1d_velocity_final}. Since $\PtwoD$ and $\PfourD$ are even polynomials, we know $\PtwoD'$ and $\PfourD'$ are odd polynomials, and thus $\frac{d\w_t}{dt}$ is an odd polynomial in $\w_t$. In other words, if $\w_t$ and $\w_t'$ are the first coordinates of two particles $\u_t$ and $\u_t'$ respectively, such that $\w_t' = -\w_t$, then $\frac{d\w_t'}{dt} = -\frac{d\w_t}{dt}$. Thus, the distribution of $\frac{d\w_t}{dt}$ is symmetric, meaning that $\rho_t$ will remain symmetric.
+\end{proof}
+
+In the rest of the proofs for the infinite-width population dynamics, we make use of the symmetry property. In particular, many of the lemmas are stated for $w > 0$ or $\iota > 0$ --- however, the generalizations to $w < 0$ or $\iota < 0$ also hold. We use this symmetry implicitly throughout the proofs in this section.
+
+In \Cref{lem:1-d-traj}, we are simply rewriting our formula for the 1-dimensional dynamics in a more convenient form. The following proof shows the detailed calculation.
+
+\begin{proof}[Proof of \Cref{lem:1-d-traj}]
+By \Cref{lemma:1d_velocity_final} and the fact that only the second and fourth order terms are nonzero (which follows from \Cref{lemma:rho_rotational_invariant}, the fact that $\Pkd$ is an odd polynomial for odd $k$ (\Cref{eq:legn_inductive1} and \Cref{eq:legn_inductive2}) and because $\legendreCoeff{\target}{1} = \legendreCoeff{\target}{3} = 0$), the velocity of $\w$ is equal to the following:
+\begin{align}
+\pgrad_\w L(\rho)
+& = -(1 - \w^2) \cdot \Big(\sigmaCoeffTwo^2 D_2(t) \PtwoD'(\w) + \sigmaCoeffFour^2 D_4(t) \PfourD'(\w) \Big)
+\end{align}
+where we use $\pgrad_\w L(\rho)$ to denote the first coordinate of $\pgrad_\u L(\rho)$. For convenience, during the rest of the proof of this lemma, let $\etaD^{(1)} = \frac{d}{d - 1}$, $\etaD^{(2)} = \frac{d^2 + 6d + 8}{d^2 - 1}$ and $\etaD^{(3)} = \frac{6d + 12}{d^2 - 1}$. Then, by \Cref{eq:legendre_polynomial_2_4},
+\begin{align}
+\pgrad_\w L(\rho)
+& = -(1 - w^2) \cdot \Big(\sigmaCoeffTwo^2 D_2(t) P_{2, d}'(w) + \sigmaCoeffFour^2 D_4(t) P_{4, d}'(w) \Big) \\
+& = -(1 - w^2) \cdot \Big(\sigmaCoeffTwo^2 D_2(t) \cdot 2 \etaD^{(1)} w + \sigmaCoeffFour^2 D_4(t) \cdot (4\etaD^{(2)} w^3 - 2\etaD^{(3)} w) \Big) \\
+& = -(1 - w^2) \cdot \Big( P_t(w) + 2 \sigmaCoeffTwo^2 D_2(t) \cdot (\etaD^{(1)} - 1) w \\
+& \nextlinespace\nextlinespace\nextlinespace + 4 \sigmaCoeffFour^2 D_4(t) \cdot (\etaD^{(2)} - 1) w^3 - 2 \sigmaCoeffFour^2 D_4(t) \etaD^{(3)} w \Big) \\
+& = -(1 - w^2) \cdot \Big(P_t(w) + Q_t(w) \Big)
+\end{align}
+Here we have chosen $\lambdaD^{(1)} = 2 \sigmaCoeffTwo^2 (\etaD^{(1)} - 1) D_2(t) - 2 \sigmaCoeffFour^2 D_4(t) \etaD^{(3)}$ and $\lambdaD^{(3)} = 4 \sigmaCoeffFour^2 D_4(t) (\etaD^{(2)} - 1)$. Observe that $|\lambdaD^{(1)}|, |\lambdaD^{(3)}| \leq O(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d})$, as desired.
+\end{proof}
+
+\subsection{Analysis of Phase 1}
+
+Recall the formal definition of Phase 1 in \Cref{def:phase_1}. Intuitively, during Phase 1, the particles are all growing at a similar rate --- because the particles $\w$ are all less than $\wmax = \frac{1}{\log d}$ in magnitude, the cubic term involving $\w^3$ in the velocity of $\w$ does not have a significant effect on the growth of $\w$. We formalize this in the following lemma.
+
+\begin{lemma} [Uniform Growth Lemma] \label{lemma:uniform_growth_lemma}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Consider a time interval $[t_0, t_1]\in [0, T_2]$ in Phase 1 or 2. We are interested in quantifying the (relative) growth rate of the neurons indexed (or initialized) at $\iota_1$ and $\iota_2$ (where $0 < \iota_1 < \iota_2$), defined as 
+\begin{align}
+    \F_1 & \triangleq \frac{\w_{t_1}(\iota_1)}{\w_{t_0}(\iota_1)}\nonumber \\
+    \F_2 & \triangleq \frac{\w_{t_1}(\iota_2)}{\w_{t_0}(\iota_2)}\nonumber
+\end{align}
+Let $\delta \in (0, 1)$ such that $\frac{1}{\sqrt{d}} \lesssim \delta \leq \frac{1}{\log F_2}$ --- here, we implicitly assume that $\F_2 \leq e^d$. We also assume that $\delta \leq \frac{\gamma_2^2}{16}$. Further assume that $\w_{t_1}(\iota_2) = \delta$. Finally assume that $\Prob(|\iota| \geq |\iota_2|) \leq \frac{\gamma_2^2}{16}$. Then,
+\begin{align} \label{eq:uniform_growth_statement_1}
+\F_1 \asymp \F_2
+\end{align}
+and additionally,
+\begin{align} \label{eq:first_order_growth_rate}
+\F_1 \asymp \exp\Big(\int_{t_0}^{t_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)
+\end{align}
+Finally,
+\begin{align} \label{eq:uniform_growth_statement_2}
+t_1 - t_0
+& \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log \F_2
+\end{align}
+We note that $\F_1$ and $\F_2$ are both at least $1$.
+\end{lemma}
+Note that this lemma also holds for $\iota_2 < \iota_1 < 0$, and with $w_{t_1} (\iota_2) = -\delta$, by the symmetry of $\rho_t$.
+
+\begin{proof}[Proof of \Cref{lemma:uniform_growth_lemma}]
+In this proof, we define $\tau = \sqrt{\gamma_2}$ --- then, by \Cref{assumption:target}, we can write $\gamma_4 = \beta \cdot \tau^4$ where $1.1 \leq \beta$ and $\beta$ is less than some universal constant $c_1$. Suppose at time $t_1$, $\w_{t_1}(\iota_2) = \delta$. One useful observation, which we use in the rest of this proof, is that for all $t \leq t_1$, $w_t(\iota_2) \leq \delta$, since for $\w \gtrsim \frac{1}{\sqrt{d}}$, we have $\frac{d\w}{dt} \geq 0$ by \Cref{lem:1-d-traj} (here we used the assumption that $\delta \gtrsim \frac{1}{\sqrt{d}}$). Thus,
+\begin{align}
+\E_{\w \sim \rho}[\PtwoD(\w)]
+& = \Prob(|\iota| > |\iota_2|) \cdot \E_{\w \sim \rho}[\PtwoD(\w) \mid |\iota| > |\iota_2|] + \Prob(|\iota| < |\iota_2|) \cdot \E_{\w \sim \rho} [\PtwoD(\w) \mid |\iota| < |\iota_2|] \\
+& \leq \frac{\gamma_2^2}{16} + \E_{\w \sim \rho}[\PtwoD(\w) \mid |\iota| < |\iota_2|]
+& \tag{B.c. $|\PtwoD(\w)| \leq 1$ by Eq. (2.116) of \citet{atkinson2012spherical} and $\Prob(|\iota| > |\iota_2|) \leq \delta$} \\
+& \leq \frac{\gamma_2^2}{16} + \delta^2 + O\Big(\frac{1}{d}\Big) 
+& \tag{By \Cref{eq:legendre_polynomial_2_4} and b.c. $|\w_t(\iota)| \leq \delta$ if $|\iota| \leq |\iota_2|$ by \Cref{prop:particle_order}} \\
+& \leq \frac{\tau^4}{8} + O\Big(\frac{1}{d}\Big)
+& \tag{B.c. $\delta \leq \frac{\gamma_2^2}{16}$ and $\gamma_2 = \tau^2$}
+\end{align}
+Thus, writing $\gamma_2 = \tau^2$, we have
+\begin{align}
+|\DtwoT|
+ = |\E_{\w \sim \rho}[\PtwoD(\w)] - \tau^2| 
+ \geq \Big|\frac{\tau^4}{8} + O\Big(\frac{1}{d}\Big) - \tau^2 \Big| 
+ \geq \frac{\tau^2}{2}
+ \label{eq:uniform_growth_d2_lb}
+\end{align}
+where the last inequality is by \Cref{assumption:target} b.c. $d \geq c_3$ and $\gamma_4 \lesssim \gamma_2$. By a similar argument,
+\begin{align}
+|\DfourT|
+& = |\E_{\w \sim \rho}[\PfourD(w)] - \beta \tau^4| \\
+& \leq \beta \tau^4 + \frac{\gamma_2^2}{16} + \delta^4 + O\Big(\frac{1}{d}\Big) 
+& \tag{Using $|P_{4, d}(\w)| \leq 1$, $\Prob(|\iota| > |\iota_2|) \leq \frac{\gamma_2^2}{16}$ , $\delta \leq \frac{\tau^4}{16}$ and \Cref{eq:legendre_polynomial_2_4}} \\
+& \leq (\beta + 1/8) \tau^4 
+& \tag{B.c. $\delta \leq \frac{\gamma_2^2}{16} \leq \frac{\beta \tau^4}{16}$} \\
+& \leq |\DtwoT|
+\end{align}
+Thus, for any time $t \in [t_0, t_1]$, for any $\iota \in [\iota_1, \iota_2]$, by \Cref{lem:1-d-traj} (and because $\w_t(\iota) \leq \delta$ for any $\iota \in [\iota_1, \iota_2]$ by \Cref{prop:particle_order}), we have
+\begin{align}
+v_t(\w_t(\iota))
+& = -(1 - \w_t(\iota)^2) \cdot \Big(2 \sigmaCoeffTwo^2 \DtwoT \w_t(\iota) \cdot (1 \pm O(\delta)) + Q_t(\w_t(\iota)) \Big) 
+\tag{B.c. $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ by \Cref{assumption:target}, $|D_{4, t}| \leq |D_{2, t}|$, and $\w_t(\iota) \leq \delta$} \\
+& = 2 \sigmaCoeffTwo^2 |\DtwoT| \w_t(\iota) \cdot (1 \pm O(\delta)) - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d}\Big) |\w_t(\iota)|
+\tag{B.c. $|\w_t(\iota)| \leq \delta$ and by bound on coefficients of $Q_t$ from \Cref{lem:1-d-traj}} \\
+& = 2 \sigmaCoeffTwo^2 |\DtwoT| \w_t(\iota) \cdot (1 \pm O(\delta))
+\tag{B.c. $\delta \geq \frac{1}{d}$}
+\end{align}
+In summary,
+\begin{align}\label{eq:velocity_similar}
+\vel_t(\w_t(\iota))
+& = 2 \sigmaCoeffTwo^2 |D_{2, t}| \w_t(\iota) \cdot (1 \pm O(\delta)) 
+\end{align}
+Thus,
+\begin{align}
+\frac{v(\w_t(\iota_2))}{\w_t(\iota_2)} \leq \frac{1 + O(\delta)}{1 - O(\delta)} \frac{v(\w_t(\iota_1))}{\w_t(\iota_1)} \leq (1 + O(\delta)) \cdot \frac{v(\w_t(\iota_1))}{\w_t(\iota_1)}
+\end{align}
+and $\w_t(\iota_2)$ grows by a factor
+\begin{align}
+\F_2 = \exp\Big(\int_{t_0}^{t_1} \frac{v(\w_t(\iota_2))}{\w_t(\iota_2)} dt \Big) \leq \exp\Big( (1 + O(\delta)) \int_{t_0}^{t_1} \frac{v(\w_t(\iota_1))}{\w_t(\iota_1)} dt \Big) = \F_1^{1 + O(\delta)}
+\end{align}
+Rearranging gives
+\begin{align}
+\F_1 \geq \F_2^{1 - O(\delta)} = \frac{\F_2}{\F_2^{O(\delta)}}
+\end{align}
+Finally, observe that $\F_2^{O(\delta)} \leq O(1)$, since by the assumption that $\delta \leq \frac{1}{\log F_2}$,
+\begin{align} \label{eq:fu_power_delta}
+\F_2^{\delta}
+& \leq \F_2^{\frac{1}{\log \F_2}}
+\end{align}
+and for any $x > 0$, $x^{\frac{1}{\ln x}} = e$, meaning that $\F_2^{\delta} \leq O(1)$. This implies that $\F_1 \gtrsim \F_2$. From the above calculations, we can also obtain
+\begin{align}
+\exp\Big(\int_{t_0}^{t_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)
+& \gtrsim \exp\Big(\int_{t_0}^{t_1} \frac{1}{1 + O(\delta)} \cdot \frac{\vel_t(\w_t(\iota_2))}{\w_t(\iota_2)} dt \Big)
+& \tag{By \Cref{eq:velocity_similar}} \\
+& \gtrsim \exp\Big((1 - O(\delta)) \cdot \int_{t_0}^{t_1} \frac{v_t(\w_t(\iota_2))}{\w_t(\iota_2)} dt\Big) \\
+& \gtrsim \F_2^{1 - O(\delta)} \\
+& \gtrsim \F_2
+& \tag{By \Cref{eq:fu_power_delta}}
+\end{align}
+as desired. Similarly, we can obtain
+\begin{align}
+\exp\Big(\int_{t_0}^{t_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)
+& \lesssim \exp\Big(\int_{t_0}^{t_1} (1 + O(\delta)) \cdot \frac{\vel_t(\w_t(\iota_2))}{\w_t(\iota_2)} dt \Big) \\
+& \lesssim \F_2^{1 + O(\delta)} \\
+& \lesssim \F_2
+& \tag{B.c. $\delta \leq \frac{1}{\log \F_2}$}
+\end{align}
+Finally,
+\begin{align}
+\F_1
+& \lesssim \exp\Big(\int_{t_0}^{t_1} (1 + O(\delta)) \cdot \frac{\vel_t(\w_t(\iota_2))}{\w_t(\iota_2)} dt \Big) \\
+& \lesssim \F_2^{1 + O(\delta)} \\
+& \lesssim \F_2 
+& \tag{B.c. $\delta \leq \frac{1}{\log \F_2}$}
+\end{align}
+as desired. Finally, we show the running time bound. Since $\delta \leq \frac{\gamma_2^2}{16}$ and $\gamma_2$ is less than a sufficiently small universal constant by \Cref{assumption:target}, for any time $t$ during this interval, $v(\w_t(\iota_2)) \gtrsim \sigmaCoeffTwo^2 D_2(t) \w_t(\iota_2) \gtrsim \sigmaCoeffTwo^2 \tau^2 \w_t(\iota_2)$ (where the second inequality is by \Cref{eq:uniform_growth_d2_lb}). Thus, by Gronwall's inequality (\Cref{fact:gronwall}), the time elapsed when $\w_t(\iota_2)$ grows by a factor of $\F_2$ is at most $\frac{1}{\sigmaCoeffTwo^2 \tau^2} \log \F_2$.
+\end{proof}
+
+\subsubsection{Proof of \Cref{lemma:phase_1_summary}}
+
+As a direct consequence of the above lemma, we can show \Cref{lemma:phase_1_summary}, which characterizes how fast the particles $\w_t$ grow during Phase 1.
+
+\begin{proof}[Proof of \Cref{lemma:phase_1_summary}]
+To show the lower bound on $\w_{T_1}(\iota)$, we apply \Cref{lemma:uniform_growth_lemma}, with $t_0 = 0$ and $t_1 = T_1$, with $\delta = \frac{1}{\log d}$, and with $\iota_1 = \iota$ and $\iota_2 = \iotaU$. Let us verify that the assumptions of \Cref{lemma:uniform_growth_lemma} hold:
+\begin{itemize}
+    \item Observe that $\frac{\w_{T_1}(\iotaU)}{\iotaU} = \frac{1/\log d}{\log d / \sqrt{d}} = \frac{\sqrt{d}}{(\log d)^2}$, meaning that $\log \F_2 \leq \log d$ and $\frac{1}{\log \F_2} \geq \delta$.
+    \item By \Cref{assumption:target}, $\delta = \frac{1}{\log d} \leq \frac{\gamma_2^2}{16}$, since $d \geq c_3$.
+    \item The assumption that $\Prob(|\iota| \geq \iotaU) \leq \frac{\gamma_2^2}{16}$ holds by a standard bound on the tail of $\mu_d$.
+\end{itemize}
+Using the notation of \Cref{lemma:uniform_growth_lemma},
+\begin{align}
+\F_2
+= \frac{\w_{T_1}(\iotaU)}{\iotaU}
+= \frac{\wmax}{(\log d)/\sqrt{d}}
+= \frac{\sqrt{d}}{(\log d)^2}
+\end{align}
+where $\wmax$ is as defined in \Cref{def:phase_1}. By \Cref{eq:uniform_growth_statement_1}, we therefore know that
+\begin{align}
+\frac{\sqrt{d}}{(\log d)^2}
+\gtrsim \frac{\w_{T_1}(\iota)}{\iota} 
+\gtrsim \frac{\sqrt{d}}{(\log d)^2}
+\end{align}
+For the bound on the running time, observe that by \Cref{eq:uniform_growth_statement_2}, $T_1 \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log \frac{\sqrt{d}}{(\log d)^2}$. The final statement holds because $F_2 = \frac{\sqrt{d}}{(\log d)^2}$ and from the second statement of \Cref{lemma:uniform_growth_lemma}. This completes the proof.
+\end{proof}
+
+\subsection{Analysis of Phase 2}
+
+Recall the formal definition of Phase 2 from \Cref{def:phase_2}. Our analysis in this section has two main goals: (1) to show that the running time of Phase 2 is small, and (2) to show that a majority of the particles become at least $\frac{1}{\log \log d}$ in magnitude, up to a constant factor. We will achieve goal (2) using \Cref{lemma:uniform_growth_lemma} --- then, we show that goal (1) holds using goal (2). Additionally, goal (2) will be useful for the subsequent phases as well.
+
+First, the following proposition defines a range of particles which will be relevant during Phase 2 and Phase 3. This range of particles is a strict subset of the interval $(0, \iotaU)$ which we considered during Phase 1 --- we will show that this new range of particles grows uniformly during the beginning of Phase 2, until the largest of them becomes about $\frac{1}{\log \log d}$ in magnitude. Specifically, we define $\iotaL \triangleq \frac{\kappa}{\sqrt{d}}$ and $\iotaR \triangleq \frac{1}{\kappa \sqrt{d}}$ where $\kappa \asymp \frac{1}{\log \log d}$. The following proposition states that at initialization, a very large fraction of the $\iota$'s have magnitude between $\iotaL$ and $\iotaR$.
+
+\begin{proposition} \label{prop:probability_of_relevant_interval}
+Let $\kappa \in (0, 1)$, and suppose $\iota$ is drawn uniformly at random from $\mu_d$. Define $\iotaL = \frac{\kappa}{\sqrt{d}}$ and $\iotaR = \frac{1}{\kappa \sqrt{d}}.$ Then, $\Prob(|\iota| \not\in [\iotaL, \iotaR]) \lesssim \kappa$.
+\end{proposition}
+
+\begin{proof}[Proof of \Cref{prop:probability_of_relevant_interval}]
+First, we upper bound the probability that $|\iota| \geq \iotaR$. By Markov's inequality,
+\begin{align}
+\Prob(|\iota| \geq \iotaR) \leq \frac{\E[\iota^2]}{\iotaR^2} = \frac{1/d}{1/(\kappa^2 d)} = \kappa^2
+\end{align}
+Now, we upper bound the probability that $|\iota| \leq \iotaL$. By Eqs. (1.16) and (1.18) of \citet{atkinson2012spherical}, the probability density function of $\iota$ is $p(\iota) = \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} (1 - \iota^2)^{\frac{d - 3}{2}}$. Thus, we can simply upper bound the density by its maximum value:
+\begin{align}
+\Prob(|\iota| \leq \iotaL)
+& \lesssim \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \int_{-\iotaL}^{\iotaL} (1 - t^2)^{\frac{d - 3}{2}} dt \\
+& \lesssim \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \cdot 2\iotaL \\
+& \lesssim \sqrt{d} \cdot \iotaL
+\tag{By Stirling's Formula} \\
+& \lesssim \sqrt{d} \cdot \frac{\kappa}{\sqrt{d}} \\
+& \lesssim \kappa
+\end{align}
+as desired.
+\end{proof}
+
+Next, as a corollary of \Cref{lemma:uniform_growth_lemma}, we show that for a portion of Phase 2, the particles initialized at $\iota \in [\iotaL, \iotaR]$ grow by a similar factor. Specifically, this is true until the largest of these particles is $\xi = \frac{1}{2 \log \log d}$ in magnitude.
+
+\begin{lemma}[Corollary of \Cref{lemma:uniform_growth_lemma}]
+\label{lemma:phase_2_uniform_growth_corollary}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Let $\TR > T_1$ be the first time such that $\w_{\TR}(\iotaR) = \xi = \frac{1}{2 \log \log d}$. Then, for all $\iota$ with $|\iota| \in [\iotaL, \iotaR]$, we have $|\w_{\TR}(\iota)| \gtrsim \xi \kappa^2$, and additionally, $\frac{w_{\TR}(\iota)}{w_{T_1}(\iota)} \asymp \xi \kappa (\log d)^2$. Furthermore, $\TR - T_1 \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log \log d$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:phase_2_uniform_growth_corollary}]
+By \Cref{lemma:phase_1_summary}, $\w_{T_1}(\iotaR) \asymp \frac{\sqrt{d}}{(\log d)^2} \iotaR = \frac{1}{\kappa (\log d)^2}$. Let $\iotaL = \frac{\kappa}{\sqrt{d}}$ and $\iotaR = \frac{1}{\kappa \sqrt{d}}$, where $\kappa = \frac{1}{\log \log d}$. Now, we apply \Cref{lemma:uniform_growth_lemma}, with $t_0 = T_1$ and $t_1 = \TR$, and with $\iota_1 = \iota$ for some $\iota \in [\iotaL, \iotaR]$ and $\iota_2 = \iotaR$, and with $\delta = \frac{1}{2 \log \log d}$. Note that we assume without loss of generality that $\iota > 0$ --- the statement for $\iota < 0$ follows by the symmetry of $\rho_t$. Let us verify that the assumptions hold:
+\begin{itemize}
+\item First, $\delta = \frac{1}{2 \log \log d} \gtrsim \frac{1}{\sqrt{d}}$. Addditionally, observe that by \Cref{lemma:phase_1_summary}, $\frac{\w_{T_1}(\iotaR)}{\iotaR} \asymp \frac{\sqrt{d}}{(\log d)^2}$, meaning that $\w_{T_1}(\iotaR) \asymp \frac{1}{\kappa (\log d)^2}$. Thus, using the notation of \Cref{lemma:uniform_growth_lemma}, we have $\F_2 \lesssim \frac{1/\log \log d}{1/(\kappa(\log d)^2)} = \frac{\kappa (\log d)^2}{\log \log d}$, and $\log \F_2 \leq 2 \log \log d - 2 \log \log \log d + C < \frac{1}{\delta}$, as desired. (Here $C$ is a universal constant, and the last inequality holds by \Cref{assumption:target} since $d \geq c_3$.)
+\item By \Cref{assumption:target}, $\delta = \frac{1}{2 \log \log d} \lesssim \frac{\gamma_2^2}{16}$ since $d \geq c_3$.
+\item Additionally, the probability that $|\iota| \geq |\iotaR|$ is at most $\kappa = \frac{1}{\log \log d}$ up to constant factors by \Cref{prop:probability_of_relevant_interval}, and this is clearly at most $\frac{\gamma_2^2}{16}$ by \Cref{assumption:target}. 
+\end{itemize}
+Using \Cref{lemma:uniform_growth_lemma}, we obtain
+\begin{align}
+\frac{w_{\TR}(\iota)}{w_{T_1}(\iota)} 
+\asymp \frac{w_{\TR}(\iotaR)}{w_{T_1}(\iotaR)} 
+\asymp \frac{\xi}{w_{T_1}(\iotaR)} 
+\asymp \frac{\xi}{\Big(\frac{1}{\kappa (\log d)^2}\Big)} 
+\asymp \xi \kappa (\log d)^2
+\end{align}
+Thus, using the conclusion of \Cref{lemma:phase_1_summary} that $\frac{w_{T_1}(\iota)}{\iota} \gtrsim \frac{\sqrt{d}}{(\log d)^2}$, we obtain
+\begin{align}
+\w_{\TR}(\iota) 
+\gtrsim \frac{\w_{\TR}(\iota)}{\w_{T_1}(\iota)} \cdot \frac{w_{T_1}(\iota)}{\iota} \cdot \iota 
+\gtrsim \xi \kappa (\log d)^2 \cdot \frac{\sqrt{d}}{(\log d)^2} \cdot \frac{\kappa}{\sqrt{d}} 
+\gtrsim \xi \kappa^2
+\end{align}
+as desired. Thus, we obtain the first statement of this lemma. In addition, by \Cref{eq:uniform_growth_statement_2}, and since $w_{\TR}(\iotaR) = \xi$ and $w_{T_1}(\iotaR) \gtrsim \frac{1}{\kappa(\log d)^2}$, the running time bound we obtain for this part of Phase 2 is $\TR - T_1 \lesssim \frac{1}{\sigmaCoeffTwo^2 \tau^2} \log \frac{\xi}{1/(\kappa (\log d)^2)} \lesssim \frac{1}{\sigmaCoeffTwo^2 \tau^2} (\log \log d)$, as desired.
+\end{proof}
+
+We now prove some auxiliary lemmas. First, we show an upper bound on $L(\rho_0)$, which is needed in order to later show an upper bound on the time required to have $L(\rho_t) \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$. In the process, we also show a reasonably tight bound on the magnitude of $D_{2, t}$ and $D_{4, t}$ during the first part of Phase 2.
+
+\begin{lemma} \label{lemma:phase1_d2_d4_neg}
+Suppose we are in the setting of \Cref{thm:pop_main_thm} and \Cref{lemma:phase_2_uniform_growth_corollary}, and suppose $0 \leq t \leq \TR$. Then, $-\frac{3\gamma_2}{2} \leq D_{2, t} \leq -\frac{\gamma_2}{2}$ and $-\frac{3\gamma_4}{2} \leq D_{4, t} \leq -\frac{\gamma_4}{2}$. As a corollary, for all $t \geq 0$, $L(\rho_t) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2^2$.
+\end{lemma}
+\begin{proof}
+Since $t \leq \TR$, $\w_t(\iotaR) \leq \xi = \frac{1}{2 \log \log d}$ (because for $\w \gtrsim \frac{1}{\sqrt{d}}$, we have $\frac{dw}{dt} \geq 0$ by \Cref{lem:1-d-traj}). By \Cref{prop:particle_order}, for all $\iota$ with $|\iota| \leq \iotaR$, $|\w_t(\iota)| \leq \xi$. Thus, by \Cref{prop:probability_of_relevant_interval},
+\begin{align}
+\E_{\w \sim \rho_t}[\w^2]
+& \leq \Prob_{\iota \sim \rho_0} (|\iota| \leq \iotaR) \cdot \E[\w^2 \mid |\iota| \leq \iotaR] + \Prob_{\iota \sim \rho_0} (|\iota| \geq \iotaR) \cdot \E[\w^2 \mid |\iota| \geq \iotaR] \\
+& \leq \xi^2 + O(\kappa)
+& \tag{By \Cref{prop:probability_of_relevant_interval}}
+\end{align}
+Thus, $D_{2, t} = O(\xi^2 + \kappa) - \gamma_2$, meaning that $-\frac{3\gamma_2}{2} \leq D_2 \leq -\frac{\gamma_2}{2}$, and similarly, $-\frac{3\gamma_4}{2} \leq D_4 \leq -\frac{\gamma_4}{2}$. The corollary follows from the fact that $\gamma_4 \lesssim \gamma_2^2$ by \Cref{assumption:target}.
+\end{proof}
+
+Next, we show that the particles are in fact increasing in magnitude during Phases 1 and 2. This makes use of our bound on the magnitudes of $D_{2, t}$ and $D_{4, t}$ up to time $\TR$.
+
+\begin{lemma} \label{lemma:w_increasing_phase2}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $[t_0, t_1]$ is a time interval with $0 \leq t_0 < t_1 \leq T_2$. Then, for all $\iota$ with $|\iota| \in [\iotaL, \iotaR]$, $|\w_t(\iota)|$ is increasing on $[t_0, t_1]$.
+\end{lemma}
+\begin{proof}
+Recall that by \Cref{lem:1-d-traj},
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2) (P_t(\w) + Q_t(\w))
+\end{align}
+and for $\w \geq 0$, it suffices to show that $P_t(\w) + Q_t(\w) \leq 0$. For $t \leq \TR$,
+\begin{align}
+P_t(\w) + Q_t(\w)
+& \leq 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3 + O\Big(\frac{\sigmaCoeffTwo^2|D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \\
+& \leq - \sigmaCoeffTwo^2 \gamma_2 \w + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w|
+& \tag{By \Cref{lemma:phase1_d2_d4_neg}, b.c. $D_{4, t} \leq 0$} \\
+& \leq 0
+& \tag{B.c. $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ and $\gamma_2 \gtrsim \frac{|D_{2, t}|}{d}$ and $\gamma_4 \gtrsim \frac{|D_{4, t}|}{d}$ (\Cref{assumption:target})}
+\end{align}
+For $t \geq \TR$, suppose $\w \gtrsim \xi \kappa^2$ (which holds at time $\TR$ for $\iota \in [\iotaL, \iotaR]$ by \Cref{lemma:phase_2_uniform_growth_corollary}). Then,
+\begin{align}
+P_t(\w) + Q_t(\w)
+& \leq 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4  \sigmaCoeffFour^2 D_{4, t} \w^3 + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \leq \sigmaCoeffTwo^2 D_{2, t} \Big(2\w - \frac{C\w}{d}\Big) + \sigmaCoeffFour^2 D_{4, t} \Big(4\w^3 - \frac{C\w}{d}\Big)
+\end{align}
+for some universal constant $C > 0$. The final expression on the right-hand side is negative --- to see this, note that $2\w - \frac{\w}{d} > 0$ if $\w \gtrsim \xi \kappa^2$, and $4 \w^3 - \frac{\w}{d} > 0$ if $\w \gtrsim \xi \kappa^2$ since $d \geq c_3$ by \Cref{assumption:target}. This completes the proof of the lemma when $\iota \geq 0$. For $\iota < 0$, the lemma holds by the symmetry of $\rho_t$.
+\end{proof}
+
+\subsubsection{Proof of \Cref{lemma:phase_2_runtime}}
+
+Finally, we show \Cref{lemma:phase_2_runtime} which concludes the analysis of Phase 2. For times $t \geq \TR$ within Phase 2, the particles with $|\iota| \in [\iotaL, \iotaR]$ satisfy $|\w_t(\iota)| \gtrsim \xi \kappa^2$. Using this observation, and the fact that $D_{2, t}$ and $D_{4, t}$ have the same sign (meaning that the two terms of $P_t(\w) = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3$ do not cancel) we show that the velocity $v(\w)$ is large on average. By \Cref{lemma:loss_decrease}, this allows us to show that the loss decreases quickly at any time $t \geq \TR$ in Phase 2, meaning that either the loss goes below $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\epsilon^2$ quickly, or we exit Phase 2 quickly.
+
+\begin{proof}[Proof of \Cref{lemma:phase_2_runtime}]
+First, let $\TR$ be as defined in \Cref{lemma:phase_2_uniform_growth_corollary}. By \Cref{lemma:phase_2_uniform_growth_corollary}, $\TR - T_1 \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log \log d$. Furthermore, at time $\TR$, for all $\iota$ such that $|\iota| \in [\iotaL, \iotaR]$, $|\w_t(\iota)| \gtrsim \xi \kappa^2$.
+
+Our proof strategy is now to show that $v(w)$ is large on average, and then apply \Cref{lemma:loss_decrease}. At any time $t \in [\TR, T_2]$, since $D_{2, t} \leq 0$, \Cref{prop:d2<0} implies that $\E_{\w \sim \rho_t}[\w^2] \leq \gamma_2 + O\Big(\frac{1}{d}\Big)$. Thus, by Markov's inequality, and because $d \geq c_3$ (where $c_3$ is defined in \Cref{assumption:target}),
+\begin{align}
+\Prob_{\w \sim \rho_t} (|\w| \geq 1/2) \leq 4 \cdot \Big(\gamma_2 + \frac{1}{d}\Big) \leq 5 \tau^2
+\end{align}
+For all $\iota$ with $|\iota| \in [\iotaL, \iotaR]$, $|\w_t(\iota)|$ is increasing as a function of $t$ on $[0, T_2]$, by \Cref{lemma:w_increasing_phase2}. Thus, by \Cref{prop:probability_of_relevant_interval} and a union bound, $\Prob_{\w \sim \rho_t} (\xi \kappa^2 \leq |\w_t(\iota)| \leq 1/2) \geq 1 - O(\kappa) - 5 \gamma_2 \geq \frac{1}{2}$ for all $t \geq \TR$ and all $\iota$ with $|\iota| \in [\iotaL, \iotaR]$. (Note that $1 - O(\kappa) - 5 \gamma_2 \geq \frac{1}{2}$ holds because $\gamma_2$ is less than a sufficiently small constant by \Cref{assumption:target}.) Finally, for all $\w$ satisfying $\xi \kappa^2 \leq |\w| \leq \frac{1}{2}$, using \Cref{lem:1-d-traj} we can compute that
+\begin{align}
+|\vel_t(\w)|
+& \geq (1 - \w^2) \cdot (|P_t(\w)| - |Q_t(\w)|)
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \geq (1 - \w^2) \cdot \Big|2 \sigmaCoeffTwo^2 |D_{2, t}| |\w| + 4 \sigmaCoeffFour^2 |D_{4, t}| |\w^3| \Big| - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \geq \frac{3}{4} \cdot (2 \sigmaCoeffTwo^2 |D_{2, t}| \xi \kappa^2 + 4 \sigmaCoeffFour^2 |D_{4, t}| \cdot \xi^3 \kappa^6) - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w|
+& \tag{B.c. $\xi \kappa^2 \leq |\w| \leq \frac{1}{2}$} \\
+& \geq \frac{1}{2} \cdot (2 \sigmaCoeffTwo^2 |D_{2, t}| \xi \kappa^2 + 4 \sigmaCoeffFour^2 |D_{4, t}| \cdot \xi^3 \kappa^6)
+& \tag{B.c. $d$ is sufficiently large (\Cref{assumption:target})}
+\end{align}
+Thus, by \Cref{lemma:loss_decrease},
+\begin{align}
+\frac{dL(\rho_t)}{dt}
+& \lesssim - (\sigmaCoeffTwo^2 |D_{2, t}| \xi \kappa^2 + \sigmaCoeffFour^2 |D_{4, t}| \xi^3 \kappa^6 )^2 \\
+& \lesssim -\xi^6 \kappa^{12} (\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|)^2 \\
+& \lesssim - \xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|) \cdot (|D_{2, t}| + |D_{4, t}|) \\
+& \lesssim -\xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\sigmaCoeffTwo^2 |D_{2, t}|^2 + \sigmaCoeffFour^2 |D_{4, t}|^2) \\
+& \lesssim -\xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L
+& \tag{By \Cref{lemma:population_loss_formula}}
+\end{align}
+Thus, since $L(\rho_{\TR}) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2$ (by \Cref{lemma:phase1_d2_d4_neg}), by Gronwall's inequality (\Cref{fact:gronwall}), we know that for $t \in [\TR, T_2]$,
+\begin{align}
+L(\rho_t)
+& \leq L(\rho_{\TR}) \cdot \exp\Big(\int_{\TR}^t -\xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) ds\Big) \\
+& = L(\rho_{\TR}) e^{-(t - \TR) \xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)}
+\end{align}
+Thus, if $L(\rho_t) \gtrsim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$, this implies that
+\begin{align}
+e^{-(t - \TR) \xi^6 \kappa^{12} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} 
+& \gtrsim \frac{\epsilon^2}{\gamma_2}
+\end{align}
+and rearranging gives $t - \TR \leq \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \xi^6 \kappa^{12}} \log(\frac{\gamma_2}{\epsilon^2})$. Thus, either $T_2 - \TR \leq \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \xi^6 \kappa^{12}} \log(\frac{\gamma_2}{\epsilon^2})$, or there exists a time $t \in [\TR, T_2]$ such that $L(\rho_t) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$, and such that $t - \TR \leq \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \xi^6 \kappa^{12}} \log (\frac{\gamma_2}{\epsilon})$. This completes the proof of the lemma.
+\end{proof}
+
+\subsection{Phase 3, Case 1} \label{subsec:phase3_case1}
+
+Phase 3, Case 1 is the case where $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$, i.e. the case where $D_{2, t}$ reaches $0$ first. As we later show in \Cref{lemma:phase3_case1_fixedA} and \Cref{lemma:phase3_case1_fixedB}, if this occurs, then for all $t \geq T_2$, it will be the case that $D_{2, t} \geq 0$ and $D_{4, t} \leq 0$. We now outline our analysis of this case --- the goal of our analysis is to show that either $|D_{2, t}| \leq \epsilon$ or $|D_{4, t}| \leq \epsilon$ holds within $\frac{1}{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2} \cdot \poly\Big(\frac{\log \log d}{\epsilon}\Big)$ time after the start of Phase 3, Case 1.
+
+\paragraph{Proof Strategy for Phase 3, Case 1} Our overall proof strategy in this section is to show that $|v(\w)|$ is large for a large portion of particles $\w$, and then to apply \Cref{lemma:loss_decrease} to show that the loss decreases quickly. Recall that
+\begin{align}
+v_t(\w)
+& = -(1 - \w^2)(P_t(\w) + Q_t(\w))
+\end{align}
+and intuitively, we can ignore $Q_t(\w)$ due to the factor of $\frac{1}{d}$ in its coefficients. Thus, we can write
+\begin{align}
+v_t(\w) 
+& \approx -(1 - \w^2) P_t(\w) \\
+& \approx -(1 - \w^2) \cdot \w \cdot (2 \sigmaCoeffTwo^2 D_{2, t} + 4 \sigmaCoeffFour^2 D_{4, t} \w^2) \period
+\end{align}
+Since $D_{4, t} < 0$ and $D_{2, t} > 0$, we can further rewrite the above as
+\begin{align}
+v_t(\w)
+& \approx -(1 - \w^2) \cdot \w \cdot 4 \sigmaCoeffFour^2 |D_{4, t}| (w - r) (w + r)
+\end{align}
+where $r = \sqrt{-\frac{\sigmaCoeffTwo^2 D_{2, t}}{2 \sigmaCoeffFour^2 D_{4, t}}}$ is the positive root of the last factor $(2 \sigmaCoeffTwo^2 D_{2, t} + 4 \sigmaCoeffFour^2 D_{4, t} \w^2)$. Thus, to show that the velocity $v_T(\w)$ is large, we want to show that there is a large fraction of particles $w \in [0, 1]$ simultaneously satisfying the following: (1) $w$ is far from $1$, (2) $w$ is far from $0$, and (3) $w$ is far from $r$. Indeed, in \Cref{lemma:case_1_mass_in_middle}, we show that out of the particles $\w \in [0, 1]$, at least a $\frac{\gamma_2}{2}$ fraction of these particles is in $[\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, enabling us to bound the distance of these particles $\w$ from $0$ and $1$.
+
+Thus, to show that $v_t(\w)$ is large for these particles, it suffices to show that $|\w - r|$ is large on average for the particles $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, i.e. the conditional expectation $\E_{\w \sim \rho_t} [(\w - r)^2 \mid \w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]$ is large. In turn, this is at least the conditional variance of $\w$ conditioned on $\w$ being in $[\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, so it suffices to show that $\Var(\w \mid \w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}])$ is large, and by \Cref{prop:variance_difference_form} it suffices to show that $\E[(\w - \w')^2 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]$ is large.
+
+To show that the quantity $\E[(\w - \w')^2 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]$ is large, intuitively we would like to show that during Phase 3, Case 1, $\w$ and $\w'$ are getting farther apart. However, this is not true. If we write the velocity as $v_t(\w) = (1 - \w^2) \cdot \w \cdot (4 \sigmaCoeffFour^2 |D_{4, t}| \w^2 - 2 \sigmaCoeffTwo^2 |D_{2, t}|)$, then the last factor is indeed increasing as a function of $\w \in [0, 1]$, and thus ``pushes'' the different particles $\w, \w'$ further apart. This does not work as a formal argument, because as two particles $\w, \w'$ become closer to $0$ or $1$, their distance $|\w - \w'|$ will decrease again due to the factors $\w$ and $(1 - \w^2)$ in the velocity. However, we are only concerned with particles $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$ --- we must make precise the intuition that the behavior of the particles very close to $0$ or $1$ does not matter.
+
+To make this proof strategy precise, we define the potential function $\potential(\w) = \log \Big(\frac{\w}{\sqrt{1 - \w^2}}\Big)$ in \Cref{def:potential_function} and show that $|\potential(\w) - \potential(\w')|$ is increasing in Phase 3, Case 1. As shown in \Cref{lemma:potential_time_derivative}, we have $\frac{d}{dt} \potential(\w) \approx -2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} \w^2$ --- this is simply because $\frac{d\potential(\w)}{d\w} = \frac{1}{\w (1 - \w^2)}$. In other words, $\frac{d}{dt} \potential(\w)$ is exactly $v(\w)$, but without the factors $\w$ and $(1 - \w^2)$ --- we have selected this potential function $\potential(\w)$ specifically to eliminate these factors. Using this observation, it is easy to show that $|\potential(\w) - \potential(\w')|$ is increasing and thus obtain a lower bound on $|\potential(\w) - \potential(\w')|$ for a large fraction of pairs $\w, \w'$. Finally, to convert this to a lower bound on $|\w - \w'|$, we use the fact that $\potential$ is Lipschitz on the interval $[\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$ (\Cref{lemma:potential_bi_lipschitz}), which gives us $|\w - \w'| \geq \frac{1}{\gamma_2^{O(1)}} |\potential(\w) - \potential(\w')|$. 
+
+We now repeat the definition of the potential function:
+
+\begin{definition}[Potential Function $\potential$] \label{def:potential_function}
+We define $\potential : [0, 1] \to (-\infty, \infty)$ by $\potential(\w) = \log\Big(\frac{\w}{\sqrt{1 - \w^2}}\Big)$.
+\end{definition}
+
+We note that $\frac{d\potential(\w)}{d\w} = \frac{1}{\w(1 - \w^2)}$. Next, we note the following useful fact about the potential function (we note that this does not require any assumption that we are in Phase 3, Case 1, and just follows from algebraic manipulations):
+
+\begin{lemma} \label{lemma:potential_time_derivative}
+In the setting of \Cref{thm:pop_main_thm},
+\begin{align}
+\frac{d}{dt} \potential(\w_t)
+& = -2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} w^2 - \lambdaD^{(1)} - \lambdaD^{(3)} w^2
+\end{align}
+where $\lambdaD^{(1)}$ and $\lambdaD^{(3)}$ are as in the statement of \Cref{lem:1-d-traj}.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:potential_time_derivative}]
+For any $\w_t$,
+\begin{align}
+\frac{d}{dt} \potential(\w_t) = \frac{d\potential}{d\w} \cdot \frac{d\w_t}{dt} = \frac{1}{\w (1 - \w^2)} \cdot \frac{d\w_t}{dt}
+\end{align}
+Thus, writing $\frac{d\w_t}{dt} = -(1 - \w^2) \cdot (P_t(\w) + Q_t(\w))$ where $P_t$ and $Q_t$ are defined in \Cref{lem:1-d-traj}, we obtain
+\begin{align}
+\frac{d}{dt} \potential(\w_t)
+& = \frac{1}{\w(1 - \w^2)} \cdot \frac{d\w_t}{dt} \\
+& = -\frac{1}{\w} \cdot (P_t(\w) + Q_t(\w)) \\
+& = -\frac{P_t(\w)}{\w} - \frac{Q_t(\w)}{\w} \\
+& = -2\sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} w^2  - \frac{Q_t(\w)}{\w} \\
+& = -2\sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} w^2  - \lambdaD^{(1)} - \lambdaD^{(3)} w^2
+\end{align}
+where $\lambdaD^{(1)}$ and $\lambdaD^{(3)}$ are as in the statement of \Cref{lem:1-d-traj}.
+\end{proof}
+
+Intuitively, when $D_2 > 0$ and $D_4 < 0$, the main part of the velocity is $P_t(\w) = -2 \sigmaCoeffTwo^2 D_{2, t} \w - 4 \sigmaCoeffFour^2 D_{4, t} w^3$ which is an upward sloping cubic polynomial --- thus, the particles $\w$ move away from the positive root of this polynomial, and the distance between any pair $\w, \w'$ of particles is increasing provided that $\w$ and $\w'$ are not too close to $0$ or $1$. In the following few lemmas, we make this intuition formal using the potential function $\potential$. We first show that for two particles $\w, \w'$, the distance between $\potential(\w)$ and $\potential(\w')$ is increasing as long as $D_{4, t} \leq 0$. Note that this condition holds not only during Phase 3, Case 1, but also during Phases 1 and 2.
+
+\begin{lemma}[$\potential(w)$ and $\potential(w')$ Moving Apart] \label{lemma:case_1_potential_increase} 
+In the setting of \Cref{thm:pop_main_thm}, suppose $D_{4, t} \leq 0$ for all $t$ in some time interval $[t_0, t_1]$, and let $\iota_1, \iota_2 > 0$. Then, 
+\begin{align}
+\Big|\potential(\w_t(\iota_1)) - \potential(\w_t(\iota_2))\Big|
+\end{align}
+is increasing on the interval $[t_0, t_1]$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_1_potential_increase}]
+Suppose $\iota_1, \iota_2 \in [0, 1]$ such that $\iota_1 < \iota_2$ --- by \Cref{prop:particle_order}, we will always have $\w_t(\iota_1) \leq \w_t(\iota_2)$. For convenience, in the rest of this proof, we will write $\w_{1, t} = \w_t(\iota_1)$ and $\w_{2, t} = \w_t(\iota_2)$. Since $\potential$ is an increasing function of $\w$, it will also always be the case that $\potential(\w_{2, t}) \geq \potential(\w_{1, t})$. Thus, to show that $|\potential(\w_{2, t}) - \potential(\w_{1, t})|$ is increasing, it suffices to show that $\potential(\w_{2, t}) - \potential(\w_{1, t})$ is increasing. By \Cref{lemma:potential_time_derivative},
+\begin{align}
+\frac{d}{dt}\Big(\potential(\w_{2, t}) - \potential(\w_{1, t})\Big)
+& = \Big(-2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} \w_{2, t}^2 - \lambdaD^{(1)} - \lambdaD^{(3)} \w_{2, t}^2\Big) \\
+& \nextlinespace - \Big(-2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} \w_{1, t}^2 - \lambdaD^{(1)} - \lambdaD^{(3)} \w_{1, t}^2 \Big) \\
+& = -4\sigmaCoeffFour^2 D_{4, t} (\w_{2, t}^2 - \w_{1, t}^2) - \lambdaD^{(3)} (\w_{2, t}^2 - \w_{1, t}^2) \\
+& = 4 \sigmaCoeffFour^2 |D_{4, t}| (\w_{2, t}^2 - \w_{1, t}^2) - \lambdaD^{(3)} (\w_{2, t}^2 - \w_{1, t}^2)
+\end{align}
+where $\lambdaD^{(1)}$ and $\lambdaD^{(3)}$ are as in \Cref{lem:1-d-traj}. Recall from the statement of \Cref{lem:1-d-traj} that $|\lambdaD^{(3)}| \lesssim \sigmaCoeffFour^2 |D_{4, t}| \cdot \frac{1}{d}$. Therefore, 
+\begin{align}
+\frac{d}{dt}\Big(\potential(\w_{2, t}) - \potential(\w_{1, t})\Big)
+& = 4\sigmaCoeffFour^2 |D_{4, t}| (w_{2, t}^2 - w_{1, t}^2) - \lambdaD^{(3)} (w_{2, t}^2 - w_{1, t}^2) \\
+& \geq 3 \sigmaCoeffFour^2 |D_{4, t}| (w_{2, t}^2 - w_{1, t}^2)
+\end{align}
+and the right hand side is nonnegative since $w_{2, t} \geq w_{1, t} \geq 0$. Thus, $\potential(w_{2, t}) - \potential(w_{1, t})$ is increasing, as desired.
+\end{proof}
+
+Next, we prove a helpful lemma showing that the potential function is bi-Lipschitz. This is useful both when we show that $|\potential(\w) - \potential(\w')|$ is initially large (as it allows us to leverage an initial lower bound on $|\w - \w'|$) and when we show that $|\w - \w'|$ is large later during Phase 3, Case 1 (as it allows us to leverage the lower bound we obtain on $|\potential(\w) - \potential(\w')|$).
+
+\begin{lemma} \label{lemma:potential_bi_lipschitz}
+For all $\w, \w' \in [0, 1]$, $|\potential(\w) - \potential(\w')| \geq |\w - \w'|$. Additionally, for $\eta < \frac{1}{2}$ and $\w, \w' \in [\eta, 1 - \eta]$, $|\potential(\w) - \potential(\w')| \leq \frac{1}{\eta^2} |\w - \w'|$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:potential_bi_lipschitz}]
+First, for all $\w \in [0, 1]$, $\frac{d\potential(\w)}{d\w} = \frac{1}{\w (1 - \w^2)} > 1$, and the first statement of the lemma follows. For the second statement of the lemma, observe that for $\w \in [\eta, 1 - \eta]$,
+\begin{align}
+\Big|\frac{d\potential(\w)}{d\w}\Big| \leq \frac{1}{\w (1 - \w^2)} \leq \frac{1}{\eta (1 - (1 - \eta)^2)} = \frac{1}{\eta (1 - (1 - 2\eta + \eta^2))} = \frac{1}{\eta (2\eta - \eta^2)} < \frac{1}{\eta^2}
+\end{align}
+where the last equality is because $\eta > \eta^2$ (so $2\eta - \eta^2 > \eta$). Thus, $\potential$ is $\frac{1}{\eta^2}$-Lipschitz on the interval $[\eta, 1 - \eta]$.
+\end{proof}
+
+We next need to show that the potential initially has a large value, at the beginning of Phase 3, Case 1. We show this in the next two lemmas, by showing that for any two particles $\w, \w'$, the distance between them grows by a large factor during Phase 2 (specifically, by time $\TR$) and then using this to obtain a lower bound on $|\potential(\w) - \potential(\w')|$ by the bi-Lipschitzness of $\potential$.
+
+\begin{lemma} \label{lemma:w_diff_growth}
+In the setting of \Cref{thm:pop_main_thm}, let $\TR$ be as defined in \Cref{lemma:phase_2_uniform_growth_corollary}. Then, for $\iota, \iota' \in [\iotaL, \iotaR]$,
+\begin{align}
+\frac{\w_{\TR}(\iota') - \w_{\TR}(\iota)}{\iota' - \iota}
+& \gtrsim \xi \kappa \sqrt{d}
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:w_diff_growth}]
+Let $\iota, \iota' \in [\iotaL, \iotaR]$, with $\iota < \iota'$. For convenience, we will write $\w_t = \w_t(\iota)$ and $\w_t' = \w_t(\iota')$. Our goal is to obtain a lower bound on the factor by which $\w_t' - \w_t$ grows by time $\TR$. First, define $P_t$ and $Q_t$ as in \Cref{lem:1-d-traj}, and observe that
+\begin{align}
+\frac{d}{dt}(\w_t' - \w_t)
+& = -(1 - (\w_t')^2)(P_t(\w_t') + Q_t(\w_t')) - (1 - \w_t^2)(P_t(\w_t) + Q_t(\w_t)) \\
+& = -\Big(P_t(\w_t') - P_t(\w_t)\Big) + \Big((\w_t')^2 P_t(\w_t') - \w_t^2 P_t(\w_t)\Big) - \Big(Q_t(\w_t') - Q_t(\w_t)\Big) \\
+& \nextlinespace + \Big( (\w_t')^2 Q_t(\w_t') - \w_t^2 Q_t(\w_t)\Big) \label{eq:diff_derivative_decomposition}
+\end{align}
+We first obtain a lower bound on the first term $-\Big(P_t(\w_t') - P_t(\w_t)\Big)$, and then show that the other terms are lower-order terms as long as $t \leq \TR$. For $t \in [0, \TR]$,
+\begin{align}
+-(P_t(\w_t') - P_t(\w_t))
+& = -\Big(2 \sigmaCoeffTwo^2 D_{2, t} \w_t' + 4 \sigmaCoeffFour^2 D_{4, t} (\w_t')^3 \Big) + \Big(2 \sigmaCoeffTwo^2 D_{2, t} \w_t + 4 \sigmaCoeffFour^2 D_{4, t} \w_t^3 \Big)
+& \tag{\Cref{lem:1-d-traj}} \\
+& = -2 \sigmaCoeffTwo^2 D_{2, t} (\w_t' - \w_t) - 4 \sigmaCoeffFour^2 D_{4, t} ((\w_t')^3 - \w_t^3) \\
+& = 2 \sigmaCoeffTwo^2 |D_{2, t}| (\w_t' - \w_t) + 4 \sigmaCoeffFour^2 |D_{4, t}| ((\w_t')^3 - \w_t^3)
+& \tag{B.c. $t \leq \TR$, $D_{2, t}, D_{4, t} < 0$ by \Cref{lemma:phase1_d2_d4_neg}} \\
+& = 2 \sigmaCoeffTwo^2 |D_{2, t}| (\w_t' - \w_t) + 4 \sigmaCoeffFour^2 |D_{4, t}| ((\w_t')^2 + \w_t \w_t' + \w_t^2) (\w_t' - \w_t) \\
+& \geq 2\sigmaCoeffTwo^2 |D_{2, t}| (\w_t' - \w_t)
+\tag{B.c. omitted term is nonnegative --- $\w_t' > \w_t$ by \Cref{prop:particle_order}}
+\end{align}
+Next, let us show that the remaining terms in \Cref{eq:diff_derivative_decomposition} are lower-order terms which will not decrease the growth rate of $\w_t' - \w_t$ too much. First let us deal with the absolute value of the second term in \Cref{eq:diff_derivative_decomposition}. For convenience, let $\w_{R, t} = \w_t(\iotaR)$. Then,
+\begin{align}
+\Big|(\w_t')^2 P_t(\w_t') - \w_t^2 P_t(\w_t) \Big|
+& \lesssim \Big| (2 \sigmaCoeffTwo^2 D_{2, t} (\w_t')^3 + 4 \sigmaCoeffFour^2 D_{4, t} (\w_t')^5 ) \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace - (2 \sigmaCoeffFour^2 D_{2, t} (\w_t)^3 + 4 \sigmaCoeffFour^2 D_{4, t} (\w_t)^5 ) \Big| \\
+& \lesssim 2 \sigmaCoeffTwo^2 |D_{2, t}| |(\w_t')^3 - \w_t^3| + 4 \sigmaCoeffFour^2 |D_{4, t}| |(\w_t')^5 - \w_t^5|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \lesssim 2 \sigmaCoeffTwo^2 |D_{2, t}| |(\w_t')^2 + \w_t' \w_t + \w_t^2| |\w_t' - \w_t| \\
+& \nextlinespace + 4 \sigmaCoeffFour^2 |D_{4, t}| |(\w_t')^4 + (\w_t')^3 \w_t + (\w_t')^2 \w_t^2 + \w_t' \w_t^3 + \w_t^4| |\w_t' - \w_t| \label{eq:with_third_term} \\
+& \lesssim \sigmaCoeffTwo^2 |D_{2, t}| \w_{R, t}^2 |\w_t' - \w_t|
+& \tag{B.c. $|\w_t|, |\w_t'| \leq \w_{R, t}$ by \Cref{prop:particle_order}}
+\end{align}
+where the last inequality is also because $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$, and $\gamma_4 \lesssim \gamma_2^2$ (\Cref{assumption:target}) and $|D_2| \geq \frac{\gamma_2}{2}$ and $|D_4| \leq \frac{3\gamma_4}{2}$ for $t \leq \TR$ (\Cref{lemma:phase1_d2_d4_neg}), meaning that the first term in \Cref{eq:with_third_term} dominates up to universal constant factors. Next, let us deal with the absolute value of the third term in \Cref{eq:diff_derivative_decomposition}. By \Cref{lemma:polynomial_difference},
+\begin{align}
+|Q_t(\w_t)' - Q_t(\w_t)|
+& \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} \cdot |\w_t' - \w_t|
+& \tag{By definition of $\lambdaD^{(1)}, \lambdaD^{(3)}$, \Cref{lem:1-d-traj}} \\
+& \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d} |\w_t' - \w_t|
+& \tag{B.c. $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ and $|D_4| \lesssim \gamma_4 \lesssim \gamma_2^2 \lesssim |D_2|$ for $t \leq \TR$ (\Cref{lemma:phase1_d2_d4_neg})}
+\end{align}
+Using the same argument with \Cref{lemma:polynomial_difference}, we can bound the fourth term in \Cref{eq:diff_derivative_decomposition}:
+\begin{align}
+|(\w_t')^2 Q_t(\w_t') - \w_t^2 Q_t(\w_t)|
+& \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d} |\w_t' - \w_t|
+\end{align}
+Combining the bounds we obtained for all the terms of \Cref{eq:diff_derivative_decomposition}, we obtain
+\begin{align}
+\frac{d}{dt} (\w_t' - \w_t)
+& \geq 2\sigmaCoeffTwo^2 |D_{2, t}| (\w_t' - \w_t) - O\Big(\sigmaCoeffTwo^2 |D_{2, t}| \Big(w_{R, t}^2 + 1/d\Big) (\w_t' - \w_t)\Big) \\
+& = \Big(2 \sigmaCoeffTwo^2 |D_{2, t}| - O\Big(\sigmaCoeffTwo^2 |D_{2, t}| (\w_{R, t}^2 + 1/d)\Big) \Big) (\w_t' - \w_t)
+\end{align}
+and therefore,
+\begin{align} \label{eq:diff_growth_rate_final}
+\frac{\frac{d}{dt} (\w_t' - \w_t)}{\w_t' - \w_t}
+& \geq 2 \sigmaCoeffTwo^2 |D_{2, t}| - O\Big(\sigmaCoeffTwo^2 |D_{2, t}| (\w_{R, t}^2 + 1/d)\Big)
+\end{align}
+First, let us consider how much $\w_t' - \w_t$ grows during Phase 1. At this point, we apply \Cref{lemma:uniform_growth_lemma} with $\iota_2 = \iotaU$ and $0 < \iota_1 < \iotaU$, with $\delta = \frac{1}{\log d}$. Let us first verify that the assumptions of \Cref{lemma:uniform_growth_lemma} are satisfied. By \Cref{lemma:phase_1_summary}, $\F_2 \asymp \frac{\sqrt{d}}{(\log d)^2}$, using the notation of \Cref{lemma:uniform_growth_lemma}. Thus, $\log \F_2 \leq \log d$, meaning $\delta \leq \frac{1}{\log \F_2}$. By \Cref{assumption:target}, $\delta \leq \frac{\gamma_2^2}{16}$, and by \Cref{prop:sphere-tail-bound}, $\Prob(|\iota| > \iotaU) \leq \frac{1}{\log d} \leq \frac{\gamma_2^2}{16}$ clearly holds. Thus, the assumptions of \Cref{lemma:uniform_growth_lemma} are satisfied. As a consequence of \Cref{lemma:uniform_growth_lemma} (specifically \Cref{eq:first_order_growth_rate}) we obtain
+\begin{align} \label{eq:diff_signal_growth_integral_1}
+\exp\Big(\int_{0}^{T_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)
+ \gtrsim \F_2
+ \gtrsim \frac{\sqrt{d}}{(\log d)^2}
+\end{align}
+For $t \leq T_1$, we have $\w_{R, t}^2 \leq \delta^2 \leq O(\frac{1}{\log d})$ by \Cref{def:phase_1} (and because $\w_t(\iotaR) \leq \w_t(\iotaU)$ by \Cref{prop:particle_order}). Thus,
+\begin{align}
+\frac{\w_{T_1}' - \w_{T_1}}{\w_0' - \w_0}
+& \gtrsim \exp\Big(\int_0^{T_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| \cdot \Big(1 - O\Big(\frac{1}{\log d}\Big)\Big) dt \Big) 
+& \tag{By \Cref{eq:diff_growth_rate_final}} \\
+& \gtrsim \Big(\frac{\sqrt{d}}{(\log d)^2} \Big)^{1 - O(1/\log d)} 
+& \tag{By \Cref{eq:diff_signal_growth_integral_1}} \\
+& \gtrsim \frac{\sqrt{d}}{(\log d)^2}
+& \tag{B.c. $d^{1/\log d} \leq O(1)$}
+\end{align}
+Additionally, we apply \Cref{lemma:uniform_growth_lemma} with $\iota_2 = \iotaR$ (and an arbitrary $\iota_1 \in [\iotaL, \iotaR]$) with $\delta = \xi = \frac{1}{2 \log \log d}$, and $t_0 = T_1$ and $t_1$ being the time $\TR$ such that $\w_{\TR}(\iotaR) = \xi$. We verify that the conditions of \Cref{lemma:uniform_growth_lemma} hold. Using the notation of \Cref{lemma:uniform_growth_lemma}, $\F_2 = \frac{\w_{\TR}(\iotaR)}{\w_{T_1}(\iotaR)} = \xi \kappa (\log d)^2$ by \Cref{lemma:phase_2_uniform_growth_corollary}, and thus $\log \F_2 \leq \frac{1}{\delta}$. Again by \Cref{assumption:target}, $\delta \leq \frac{\gamma_2^2}{16}$, and by \Cref{prop:probability_of_relevant_interval}, $\Prob(|\iota| > \iotaR) \leq O(\kappa) \leq \frac{\gamma_2^2}{16}$. Thus, we apply \Cref{lemma:uniform_growth_lemma} to obtain
+\begin{align} \label{eq:diff_signal_growth_integral_2}
+\exp\Big(\int_{T_1}^{T} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)
+\gtrsim \F_2
+\gtrsim \xi \kappa (\log d)^2
+\end{align}
+For $t \leq \TR$, $\w_{R, t}^2 \leq \xi^2 \leq \delta^2$, meaning that
+\begin{align}
+\frac{\w_{\TR}' - \w_{\TR}}{\w_{T_1}' - \w_{T_1}}
+& \gtrsim \exp\Big(\int_{T_1}^{\TR} 2 \sigmaCoeffTwo^2 |D_{2, t}| \cdot (1 - O(\delta^2)) dt \Big) 
+& \tag{By \Cref{eq:diff_growth_rate_final}} \\
+& \gtrsim (\xi \kappa (\log d)^2)^{1 - O(\delta^2)}
+& \tag{By \Cref{eq:diff_signal_growth_integral_2}} \\
+& \gtrsim \xi \kappa (\log d)^2 
+& \tag{B.c. $(\log d)^{O(\delta)} = (\log d)^{O(\frac{1}{\log \log d})} \leq O(1)$}
+\end{align}
+In summary, since $\w_t' - \w_t$ grows by $\frac{\sqrt{d}}{(\log d)^2}$ (up to a constant factor) from time $0$ to time $T_1$, and by $\xi \kappa (\log d)^2$ (up to a constant factor) from time $T_1$ to time $\TR$, this means
+\begin{align}
+\frac{\w_{\TR}' - \w_{\TR}}{\w_0' - \w_0}
+& \gtrsim \xi \kappa \sqrt{d}
+\end{align}
+from time $0$ to time $\TR$, as desired.
+\end{proof}
+
+We now use the previous lemma to obtain a lower bound on $|\potential(\w) - \potential(\w')|$ by using the bi-Lipschitzness of $\potential$.
+
+\begin{lemma}[Initial Large Distance Between $\w$ and $\w'$] \label{lemma:case_1_initial_potential}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Let $\TR$ be as in the statement of \Cref{lemma:phase_2_uniform_growth_corollary}. If $\iota, \iota'$ are sampled independently from $\rho_0$, then with probability at least $1 - O(\epsilon)$,
+\begin{align}
+|\potential(\w_{\TR}(\iota)) - \potential(\w_{\TR}(\iota'))| \gtrsim \xi \kappa^3
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_1_initial_potential}]
+By Eqs. (1.16) and (1.18) of \citet{atkinson2012spherical}, the probability density function of $\iota$ is $p(\iota) = \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} (1 - \iota^2)^{\frac{d - 3}{2}}$. Thus, for $\iota \in [\iotaL, \iotaR]$, the conditional density function $p(\iota \mid \iota \in [\iotaL, \iotaR])$ can be upper bounded as
+\begin{align}
+p(\iota \mid \iota \in [\iotaL, \iotaR])
+& \lesssim \frac{p(\iota)}{p(\iota \in [\iotaL, \iotaR])} \\
+& \lesssim \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \cdot \frac{(1 - \iota^2)^{\frac{d - 3}{2}}}{p(\iota \in [\iotaL, \iotaR])} \\
+& \lesssim \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \cdot \frac{(1 - \iota^2)^{\frac{d - 3}{2}}}{1 - O(\kappa)}
+& \tag{By \Cref{prop:probability_of_relevant_interval}} \\
+& \lesssim \sqrt{d}
+& \tag{By Stirling's Formula}
+\end{align}
+In particular, for any interval $I$ of length at most $\frac{\kappa^2}{\sqrt{d}}$,
+\begin{align}
+\Prob(\iota \in I \mid \iota \in [\iotaL, \iotaR]) 
+\lesssim \sqrt{d} \cdot |I| 
+\lesssim \kappa^2
+\end{align}
+and from this it follows that
+\begin{align} \label{eq:probability_of_close_pairs}
+\Prob_{\iota, \iota' \sim \rho_0}\Big( |\iota - \iota'| \leq \frac{\kappa^2}{\sqrt{d}} \mid \iota, \iota' \in [\iotaL, \iotaR]\Big)
+& \lesssim \kappa^2
+\end{align}
+
+Next, suppose $\iota, \iota' \in [\iotaL, \iotaR]$ with $\iota' > \iota$, and $|\iota - \iota'| \geq \frac{\kappa^2}{\sqrt{d}}$. Then, by \Cref{lemma:w_diff_growth}, if $\TR$ is the time $T$ mentioned in the statement of \Cref{lemma:phase_2_uniform_growth_corollary}, then 
+\begin{align}
+\w_{\TR}(\iota') - \w_{\TR}(\iota)
+& \gtrsim \xi \kappa^3
+\end{align}
+
+Suppose we sample $\iota, \iota'$ independently from $\rho_0$. By \Cref{prop:probability_of_relevant_interval}, with probability at least $1 - O(\kappa)$, $\iota, \iota' \in [\iotaL, \iotaR]$. Thus, by \Cref{eq:probability_of_close_pairs}, the probability that $\iota, \iota' \in [\iotaL, \iotaR]$ and $|\iota - \iota'| \geq \frac{\kappa^2}{\sqrt{d}}$ is at least $1 - O(\kappa)$. In summary, if we sample $\iota, \iota'$ independently from $\rho_0$, then with probability $1 - O(\kappa)$,
+\begin{align}
+|\potential(\w_{\TR}(\iota)) - \potential(\w_{\TR}(\iota'))| \gtrsim \xi \kappa^3
+\end{align}
+by \Cref{lemma:potential_bi_lipschitz}, as desired.
+\end{proof}
+
+Next, we show that during Phase 3, Case 1, at any time, there is a significant fraction of particles whose distance from $0$ or $1$ can be bounded below.
+
+\begin{lemma} \label{lemma:case_1_mass_in_middle}
+In the setting of \Cref{thm:pop_main_thm}, suppose $D_{4, t} \leq 0$ and $D_{2, t} \geq 0$. Then,
+\begin{align}
+\Prob_{\w \sim \rho_t} (|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \geq \frac{\gamma_2}{2}
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_1_mass_in_middle}]
+For convenience, we define $\tau = \sqrt{\gamma_2}$ and $\beta \geq 1.1$ such that $\gamma_4 = \beta \tau^4$. (Here, $\beta$ and $\tau$ are well-defined by \Cref{assumption:target}.) First, since $D_{2, t} \geq 0$ during Phase 3 Case 1, we know that
+\begin{align}
+\E_{w_t \sim \rho_t} [\PtwoD(\w)]
+& \geq \tau^2
+\tag{By Definition of $D_{2, t}$}
+\end{align}
+and since $D_{4, t} \leq 0$ during Phase 3 Case 1, we know that
+\begin{align}
+\E_{\w_t \sim \rho_t} [\PfourD(\w)]
+& \leq \beta \tau^4
+\tag{By Definition of $D_{4, t}$}
+\end{align}
+Rearranging using $\PtwoD(t) = \frac{d}{d - 1} t^2 - \frac{1}{d - 1}$, we obtain
+\begin{align}
+\frac{d}{d - 1} \E_{\w_t \sim \rho_t} [\w^2] - \frac{1}{d - 1} \geq \tau^2
+\end{align}
+or
+\begin{align} \label{eq:second_moment_lower}
+\E_{\w_t \sim \rho_t} [\w^2]
+& \geq \frac{d - 1}{d} \tau^2 + \frac{1}{d}
+\end{align}
+Similarly, rearranging using $\PfourD(t) = \frac{d^2 + 6d + 8}{d^2 - 1} t^4 - \frac{6d + 12}{d^2 - 1} t^2 + \frac{3}{d^2 - 1}$, we obtain
+\begin{align}
+\frac{d^2 + 6d + 8}{d^2 - 1} \E_{\w_t \sim \rho_t}[\w^4] - \frac{6d + 12}{d^2 - 1} \E_{\w_t \sim \rho_t} [\w^2] + \frac{3}{d^2 - 1} \leq \beta \tau^4
+\end{align}
+and rearranging gives
+\begin{align} \label{eq:fourth_moment_upper}
+\E_{\w_t \sim \rho_t}[\w^4]
+& \leq \beta \tau^4 + O\Big(\frac{1}{d}\Big)
+\end{align}
+because $\w \leq 1$ and we can assume $\beta \tau^4 \leq 1$ due to \Cref{assumption:target}. Suppose that with probability more than $1 - \frac{\tau^2}{2}$ under $\rho_t$, $w \not\in [\tau^{3/2}, 1 - \tau]$. Then,
+\begin{align}
+\E_{\w \sim \rho_t}[\w^2]
+& = \Prob_{\w \sim \rho_t} (\w \geq 1 - \tau) \cdot \E_{\w \sim \rho_t}[\w^2 \mid \w \geq 1 - \tau] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t} (\w \in [\tau^{3/2}, 1 - \tau]) \E_{\w \sim \rho_t}[\w^2 \mid \w \in [\tau^{3/2}, 1 - \tau]] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t} (\w \leq \tau^{3/2}) \cdot \E_{\w \sim \rho_t} [\w^2 \mid \w \leq \tau^{3/2}] \\
+& \leq \Prob_{\w \sim \rho_t}(\w \geq 1 - \tau) + \frac{\tau^2}{2} + \tau^3
+& \tag{By assumption that $\Prob_{\w \sim \rho_t}(\w \in [\tau^{3/2}, 1 - \tau]) \leq \frac{\tau^2}{2}$} \\
+& \leq \Prob_{\w \sim \rho_t} (\w \geq 1 - \tau) + \frac{3\tau^2}{4}
+& \tag{B.c. $\tau \leq 1/4$ (by \Cref{assumption:target}, $\tau$ is sufficiently small)}
+\end{align}
+which by \Cref{eq:second_moment_lower} implies that
+\begin{align} \label{eq:prob_close_to_1_LB}
+\Prob_{\w \sim \rho_t}(\w \geq 1 - \tau)
+ \geq \E_{\w \sim \rho_t}[\w^2] - \frac{3\tau^2}{4} 
+ \geq \frac{d - 1}{d} \tau^2 + \frac{1}{d} - \frac{3\tau^2}{4} 
+ = \frac{\tau^2}{4} - \frac{\tau^2}{d} + \frac{1}{d} 
+ \geq \frac{\tau^2}{4}
+\end{align}
+where the last inequality is because $\tau \leq 1$. On the other hand,
+\begin{align}
+\E_{\w \sim \rho_t}[\w^4] 
+& = \Prob_{\w \sim \rho_t}(\w \geq 1 - \tau) \cdot \E_{\w \sim \rho_t}[\w^4 \mid \w \geq 1 - \tau] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t}(\w \in [\tau^{3/2}, 1 - \tau]) \E_{\w \sim \rho_t}[\w^4 \mid \w \in [\tau^{3/2}, 1 - \tau]] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t} (\w \leq \tau^{3/2}) \cdot \E_{\w \sim \rho_t}[\w^4 \mid \w \leq \tau^{3/2}] \\
+& \geq \Prob_{\w \sim \rho_t}(\w \geq 1 - \tau) \cdot \E_{\w \sim \rho_t}[\w^4 \mid \w \geq 1 - \tau] \\
+& \geq (1 - \tau)^4 \cdot \Prob_{\w \sim \rho_t} (\w \geq 1 - \tau) \\
+& \geq (1 - \tau)^4 \cdot \frac{\tau^2}{4}
+& \tag{By \Cref{eq:prob_close_to_1_LB}} \\
+& \geq \frac{\tau^2}{64}
+& \tag{B.c. $\tau \leq 1/2$ (see \Cref{assumption:target})}
+\end{align}
+By \Cref{eq:fourth_moment_upper}, this is a contradiction, since it implies that
+\begin{align}
+\frac{\tau^2}{64} 
+ \leq \beta \tau^4 + O\Big(\frac{1}{d}\Big)
+ \leq 2 \beta \tau^4 
+\end{align}
+where the second inequality is because $\beta \geq 1.1$ and $d$ is sufficiently large (see \Cref{assumption:target}). This implies that $128 \beta \tau^2 \geq 1$, which contradicts \Cref{assumption:target} (since $\gamma_2$ is chosen to be sufficiently small). Thus, our original assumption that $\Prob_{\w \sim \rho_t}(\w \in [\tau^{3/2}, 1 - \tau]) \leq \frac{\tau^2}{2}$ is incorrect.
+\end{proof}
+
+The purpose of the next three lemmas is to show that if Phase 3, Case 1 occurs, i.e. if $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$, then for all $t \geq T_2$, we have $D_{2, t} \geq 0$ and $D_{4, t} \leq 0$. First, the following lemma states that if $D_{4, t}$ is much smaller than $D_{2, t}$ in absolute value, and $D_{4, t} < 0$ and $D_{2, t} > 0$, then the velocity of the particles $w \geq 0$ will be significantly negative.
+
+\begin{lemma} \label{lemma:phase3_case1_d4small_velocity}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, T_2} = 0$ and $t \geq T_2$ such that $D_{4, t} \leq 0$ and $D_{2, t} \geq 0$. If $|D_{4, t}| \leq \xi |D_{2, t}|$ where $\xi = \frac{1}{\log \log d}$, then for all $\w \in [0, 1]$,
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2) \cdot (1 \pm O(\xi)) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| \w
+\end{align}
+In particular, for $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$,
+\begin{align}
+\vel_t(\w)
+& \lesssim - \gamma_2^{5/4} \sigmaCoeffTwo^2 |D_{2, t}|
+\end{align}
+\end{lemma}
+\begin{proof}
+Suppose $|D_{4, t}| \leq \xi |D_{2, t}|$ where $\xi = \frac{1}{\log \log d}$. Let $P_t$ and $Q_t$ be as in \Cref{lem:1-d-traj}. Then, for any $\w \in [0, 1]$,
+\begin{align} \label{eq:pt_lower_bound_linear_term}
+P_t(\w)
+& = (2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3) \\
+& = (2 \sigmaCoeffTwo^2 |D_{2, t}| \w - 4 \sigmaCoeffFour^2 |D_{4, t}| \w^3) \\
+& = \Big(2 \sigmaCoeffTwo^2 |D_{2, t}| \w \pm O(\xi \sigmaCoeffFour^2 |D_{2, t}| \w^3) \Big) \\
+& = (1 \pm O(\xi)) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| \w
+& \tag{By \Cref{assumption:target}, $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$}
+\end{align}
+Thus, for $w \in [0, 1]$,
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2) (P_t(\w) + Q_t(\w))
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = -(1 - \w^2) \Big(|P_t(\w)| \pm O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d} w\Big) \Big)
+& \tag{B.c. $|D_{2, t}| \geq \xi |D_{4, t}|$ and $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ by \Cref{assumption:target}} \\
+& = -(1 - \w^2) \Big( (1 \pm O(\xi)) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| w \pm O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d} w\Big) \Big)
+& \tag{By \Cref{eq:pt_lower_bound_linear_term}} \\
+& = -(1 - \w^2) \cdot (1 \pm O(\xi)) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| \w
+& \tag{B.c. $\xi \geq \frac{1}{d}$}
+\end{align}
+In particular, for $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$,
+\begin{align} \label{eq:case_1_d2_big_vel_lb}
+\vel_t(\w)
+& \lesssim -(1 - (1 - \gamma_2^{1/2})^2) \cdot (1 - O(\xi)) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| \gamma_2^{3/4} \\
+& \lesssim -(1 - (1 - \gamma_2^{1/2})^2) \cdot \sigmaCoeffTwo^2 |D_{2, t}| \gamma_2^{3/4}
+& \tag{B.c. $\xi = \frac{1}{\log \log d}$} \\
+& \lesssim -(2\gamma_2^{1/2} - \gamma_2) \cdot \sigmaCoeffTwo^2 |D_{2, t}| \gamma_2^{3/4} \\
+& \lesssim -\gamma_2^{5/4} \sigmaCoeffTwo^2 |D_{2, t}|
+& \tag{B.c. $\gamma_2^{1/2} \geq \gamma_2$ since $\gamma_2 \leq 1$}
+\end{align}
+as desired.
+\end{proof}
+
+The next lemma essentially implies that if at some point $D_{4, t} \leq 0$ and $D_{2, t} > 0$, then it will never be the case that $D_{4, t} > 0$ and $D_{2, t} > 0$.
+
+\begin{lemma} \label{lemma:phase3_case1_fixedA}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, t} = 0$ and $D_{2, t} \geq 0$ for some $t \geq 0$. Then, $\frac{d}{ds} D_{4, s} \Big|_{s = t} \leq 0$.
+\end{lemma}
+\begin{proof}
+We can calculate that
+\begin{align}
+\frac{d}{dt} D_{4, t} = \frac{d}{dt} \E_{\w \sim \rho_t}[\PfourD(\w)] = \E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w)]
+\end{align}
+Recall from \Cref{eq:legendre_polynomial_2_4} that
+\begin{align}
+\PfourD(t)
+& = \frac{d^2 + 6d + 8}{d^2 - 1} t^4 - \frac{6d + 12}{d^2 - 1} t^2 + \frac{3}{d^2 - 1}
+\end{align}
+meaning that
+\begin{align}
+\PfourD'(t) = 4t^3 \pm O\Big(\frac{1}{d}\Big) \cdot (|t^3| + |t|) = 4t^3 \pm O\Big(\frac{1}{d}\Big) |t|
+\end{align}
+Observe that for $t \gtrsim \frac{1}{\sqrt{d}}$, $\PfourD'(t) > 0$ and for $t \lesssim \frac{1}{\sqrt{d}}$, it may be the case that $\PfourD'(t) < 0$. In particular,
+\begin{align}
+\E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w)]
+& = \Prob(|\w| \lesssim 1/\sqrt{d}) \cdot \E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \lesssim 1/\sqrt{d}] \\
+& \nextlinespace\nextlinespace + \Prob(|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \gtrsim 1/\sqrt{d}] \\
+& \leq O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + \Prob(|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \gtrsim 1/\sqrt{d}]
+& \tag{B.c. $|\w| \lesssim \frac{1}{\sqrt{d}}$ and by \Cref{lemma:phase3_case1_d4small_velocity}} \\
+& \leq O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + \Prob(|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \\
+& \nextlinespace\nextlinespace \E_{\w \sim \rho_t}[\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]] \\
+& \leq O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) - \Prob(|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \gamma_2^{9/4} \cdot \gamma_2^{5/4} \sigmaCoeffTwo^2 |D_{2, t}|
+& \tag{B.c. $\PfourD'(\w) \gtrsim \gamma_2^{9/4}$, and by \Cref{lemma:phase3_case1_d4small_velocity}} \\
+& \leq O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) - \frac{\gamma_2}{2} \cdot \gamma_2^{14/4} \sigmaCoeffTwo^2 |D_{2, t}|
+& \tag{By \Cref{lemma:case_1_mass_in_middle}} \\
+& < 0
+& \tag{By \Cref{assumption:target} since $d$ is sufficiently large}
+\end{align}
+meaning that $\frac{d}{dt} D_{4, t} < 0$, as desired.
+\end{proof}
+
+The next lemma essentially implies that if at some point $D_{4, t} \leq 0$ and $D_{2, t} > 0$, it will never be the case that $D_{4, t} \leq 0$ and $D_{2, t} < 0$.
+
+\begin{lemma} \label{lemma:phase3_case1_fixedB}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, t} \leq 0$ and $D_{2, t} = 0$, for some $t \geq 0$. Then, $\frac{d}{ds} D_{2, s} \Big|_{s = t} \geq 0$.
+\end{lemma}
+\begin{proof}
+Recall from \Cref{eq:legendre_polynomial_2_4} that $\PtwoD(t) = \frac{d}{d - 1} t^2 - \frac{1}{d - 1}$ meaning that $\PtwoD'(t) = \frac{2d}{d - 1} t$. Thus,
+\begin{align}
+\frac{d}{dt} D_{2, t}  = \frac{d}{dt} \E_{\w \sim \rho_t}[\w^2] = \frac{d}{d - 1} \E_{\w \sim \rho_t} [2\w \cdot \vel_t(\w)]
+\end{align}
+If $D_{4, t} \leq 0$ and $D_{2, t} = 0$, then for any particle $\w \in [0, 1]$, we can write
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2) (P_t(\w) + Q_t(\w)) 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = -(1 - \w^2) \Big(4 \sigmaCoeffFour^2 D_{4, t} \w^3 \pm O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \Big)
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = (1 - \w^2) \Big(4 \sigmaCoeffFour^2 |D_{4, t}| \w^3 \pm O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \Big)
+\label{eq:velocity_d2_0}
+\end{align}
+where the last equality is because $D_{4, t} \leq 0$. Observe that $v_t(\w) \geq 0$ for $w \gtrsim \frac{1}{\sqrt{d}}$, while it may be the case that $v_t(\w) \leq 0$ for $w \lesssim \frac{1}{\sqrt{d}}$. Thus,
+\begin{align}
+\E_{\w \sim \rho_t}[2\w \cdot \vel_t(\w)]
+& = \Prob(|\w| \lesssim 1/\sqrt{d}) \cdot \E_{\w \sim \rho_t}[2\w \cdot \vel_t(\w) \mid |\w| \lesssim 1/\sqrt{d}] \\
+& \nextlinespace\nextlinespace + \Prob(|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t}[2\w \cdot \vel_t(\w) \mid |\w| \lesssim 1/\sqrt{d}] \\
+& \geq -O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) + \Prob(|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t}[2\w \cdot \vel_t(\w) \mid |\w| \gtrsim 1/\sqrt{d}]
+& \tag{By bounding \Cref{eq:velocity_d2_0} when $|\w| \lesssim \frac{1}{\sqrt{d}}$} \\
+& \geq -O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) + \Prob(|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace \E_{\w \sim \rho_t}[2\w \cdot \vel_t(\w) \mid |\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]] \\
+& \gtrsim -O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) + \Prob(|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \cdot \gamma_2^{9/4} \sigmaCoeffFour^2 |D_{4, t}|
+& \tag{By \Cref{eq:velocity_d2_0}} \\
+& \gtrsim -O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) - \frac{\gamma_2}{2} \cdot \gamma_2^{9/4} \sigmaCoeffFour^2 |D_{4, t}|
+& \tag{By \Cref{lemma:case_1_mass_in_middle}} \\
+& \geq 0
+& \tag{By \Cref{assumption:target} since $d$ is sufficiently large}
+\end{align}
+as desired.
+\end{proof}
+
+Putting all of the previous lemmas together, we obtain the following invariant: a lower bound for $|\potential(\w) - \potential(\w')|$, for a large fraction of $\w, \w'$, which holds throughout Phase 3, Case 1. Note that in the proof of this invariant, we need to make use of the fact that once we enter the case where $D_{2, t} > 0$ and $D_{4, t} < 0$, we cannot leave this case. If this is not true, then we cannot use the fact that $|\potential(\w_t) - \potential(\w_t')|$ is increasing as a function of $t$ (\Cref{lemma:case_1_potential_increase}) since if $D_{4, t} > 0$ at any point, then $|\potential(\w_t) - \potential(\w_t')|$ could decrease, and we would not have control over this decrease.
+
+\begin{lemma} [Phase 3, Case 1 Invariant] \label{lemma:case_1_invariant}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Let $\TR$ be as defined in the statement of \Cref{lemma:phase_2_uniform_growth_corollary}, and assume that $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$. Then, for all $t \geq \TR$ (in particular, for all times $t$ during Phase 3 Case 1), if $\iota, \iota'$ are sampled independently from $\rho_0$,
+\begin{align}
+|\potential(\w_t(\iota)) - \potential(\w_t(\iota'))|
+& \gtrsim \xi \kappa^3
+\end{align}
+with probability at least $1 - O(\kappa)$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_1_invariant}]
+By \Cref{lemma:phase3_case1_fixedA} and \Cref{lemma:phase3_case1_fixedB}, if $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$, then for all $t \geq T_2$, we will have $D_{2, t} \geq 0$ and $D_{4, t} \leq 0$. Thus, the lemma follows from \Cref{lemma:case_1_potential_increase} and \Cref{lemma:case_1_initial_potential}, as well as the fact that $D_{4, t} \leq 0$ for $t \in [\TR, T_2]$ (meaning that the potential difference is increasing in the time interval $[\TR, T_2]$).
+\end{proof}
+
+Finally, we show \Cref{lemma:phase3_case1_final} which gives a running time bound for Phase 3, Case 1.
+
+\begin{proof}[Proof of \Cref{lemma:phase3_case1_final}]
+Suppose $t \geq T_2$ and assume that $D_{2, T_2} = 0$ and $D_{4, t} < 0$ (i.e. Phase 3, Case 1 occurs). First, suppose $|D_{4, t}| \leq \xi |D_{2, t}|$ where $\xi = \frac{1}{\log \log d}$. Then, by \Cref{lemma:phase3_case1_d4small_velocity}, if $|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, we have
+\begin{align} \label{eq:phase3_case1_d2_big_vel_lb_occurrence2}
+|\vel_t(\w)|
+& \gtrsim \gamma_2^{5/4} \sigmaCoeffTwo^2 |D_{2, t}|
+\end{align}
+(note that the lemma is stated for $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/4}]$, but holds for $|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/4}]$ since $v_t(\w)$ is an odd function). Therefore,
+\begin{align}
+\E_{\w \sim \rho_t} |\vel_t(\w)|^2
+& \gtrsim \Prob_{\w \sim \rho_t}(|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \cdot \E_{\w \sim \rho_t}[|\vel_t(\w)|^2 \mid |\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]] \\
+& \gtrsim \frac{\gamma_2}{2} \cdot \E_{\w \sim \rho_t}[|\vel_t(\w)|^2 \mid |\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]
+& \tag{By \Cref{lemma:case_1_mass_in_middle}} \\
+& \gtrsim \frac{\gamma_2}{2} \cdot \gamma_2^{5/2} \sigmaCoeffTwo^4 |D_{2, t}|^2
+& \tag{By \Cref{eq:phase3_case1_d2_big_vel_lb_occurrence2}} \\
+& \gtrsim \gamma_2^{7/2} \sigmaCoeffTwo^4 |D_{2, t}|^2 \\
+& \gtrsim \gamma_2^{7/2} \sigmaCoeffTwo^2 \cdot (\sigmaCoeffTwo^2 |D_{2, t}|^2 + \sigmaCoeffFour^2 |D_{4, t}|^2)
+& \tag{B.c. $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ (\Cref{assumption:target}) and $|D_{4, t}| \leq \xi |D_{2, t}|$} \\
+& \gtrsim \gamma_2^{7/2} \sigmaCoeffTwo^2 L(\rho_t)
+\end{align}
+Thus, by \Cref{lemma:loss_decrease}, for any time $t$ during Phase 3, Case 1 such that $|D_{4, t}| \leq \xi |D_{2, t}|$, we have
+\begin{align} \label{eq:case1_loss_derivative_1}
+\frac{dL(\rho_t)}{dt} 
+& \lesssim - \gamma_2^{7/2} \sigmaCoeffTwo^2 L(\rho_t)
+\end{align}
+Let $\Tstar$ be as in \Cref{thm:pop_main_thm}, and define
+\begin{align}
+I_{|D_4| \leq \xi |D_2|} = \{t \leq \Tstar \text{ and }t \text{ in Phase 3, Case 1} \mid |D_{4, t}| \leq \xi |D_{2, t}|\}
+\end{align}
+Then, by \Cref{eq:case1_loss_derivative_1},
+\begin{align}
+\frac{dL(\rho_t)}{dt}
+& \lesssim -\gamma_2^{7/2} \sigmaCoeffTwo^2 L(\rho_t) 1(t \in I_{|D_4| \leq \xi |D_2|})
+\end{align}
+Thus, by Gronwall's inequality (\Cref{fact:gronwall}),
+\begin{align}
+\frac{L(\rho_{\Tstar})}{L(\rho_0)}
+& \leq \exp\Big(-C \int_{T_2}^{\Tstar} \gamma_2^{7/2} \sigmaCoeffTwo^2 1(t \in I_{|D_4| \leq \xi |D_2|}) dt \Big) \\
+& = \exp\Big(-C \gamma_2^{7/2} \sigmaCoeffTwo^2 \int_{I_{|D_4| \leq \xi |D_2|}} 1 dt \Big)
+\end{align}
+Since $L(\rho_0) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2^2$ by \Cref{lemma:phase1_d2_d4_neg} and $L(\rho_{\Tstar}) \gtrsim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$, rearranging gives
+\begin{align} \label{eq:phase3_case1_timebound_A}
+\int_{I_{|D_4| \leq \xi |D_2|}} 1 dt \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2^{7/2}} \log\Big(\frac{\gamma_2^2}{\epsilon^2}\Big)
+\end{align}
+
+Now, suppose $t$ is such that $|D_{4, t}| \geq \xi |D_{2, t}|$. Let us lower bound the average velocity for $w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/4}]$ first (then, we can conclude the average velocity is large by \Cref{lemma:case_1_mass_in_middle}). By \Cref{lem:1-d-traj},
+\begin{align}
+|\vel_t(\w)|
+& = (1 - \w^2) |P_t(\w) + Q_t(\w)|
+\end{align}
+and we can write
+\begin{align}
+P_t(\w) 
+ = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4\sigmaCoeffFour^2 D_{4, t} \w^3 
+ = 4 \sigmaCoeffFour^2 D_{4, t} \w (\w - r) (\w + r)
+\end{align}
+where $r = \sqrt{-\frac{\sigmaCoeffTwo^2 D_{2, t}}{2 \sigmaCoeffFour^2 D_{4, t}}}$ is the positive root of $P_t$. For $|\w| \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, we have 
+\begin{align}
+1 - \w^2 \geq 1 - (1 - \gamma_2^{1/2})^2 = 2 \gamma_2^{1/2} - \gamma_2 \geq \gamma_2^{1/2}.
+\end{align}
+Additionally, $|\w| \geq \gamma_2^{3/4}$ and $|\w + r| \geq \gamma_2^{3/4}$. Thus, for $\w \in [\gamma_2^{3/4}, 1 -\gamma_2^{1/2}]$, we have
+\begin{align}
+|\vel_t(\w)|^2
+& \gtrsim (1 - \w^2)^2 \Big(P_t(\w) + Q_t(\w)\Big)^2 \label{eq:start} \\
+& \gtrsim \gamma_2 \Big(P_t(\w) + Q_t(\w)\Big)^2
+& \tag{B.c. $1 - \w^2 \geq \gamma_2^{1/2}$} \\
+& \gtrsim \gamma_2 \cdot \Big( P_t(\w)^2 - 2 Q_t(\w)^2 \Big)
+& \tag{B.c. $(a + b)^2 \leq 2a^2 + 2b^2$, so $a^2 - 2b^2 \leq 2(a + b)^2$} \\
+& \gtrsim \gamma_2 \cdot \Big( P_t(\w)^2 - O\Big(\frac{\sigmaCoeffTwo^4 D_{2, t}^2 + \sigmaCoeffFour^4 D_{4, t}^2}{d^2}\Big) w^2 \Big)
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim \gamma_2 \cdot \Big( P_t(\w)^2 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d^2}\Big) \w^2 \Big) 
+& \tag{By \Cref{lemma:population_loss_formula}} \\
+& \gtrsim \gamma_2 \cdot \Big(\sigmaCoeffFour^4 D_{4, t}^2 \w^2 (\w + r)^2 (\w - r)^2 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d^2}\Big) \w^2 \Big) 
+& \tag{By factorization of $P_t(\w)$ above} \\
+& \gtrsim \gamma_2 \cdot \Big(\sigmaCoeffFour^4 D_{4, t}^2 \gamma_2^3 (\w - r)^2 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d^2}\Big)\w^2 \Big)
+& \label{eq:velocity_in_middle_case_1}
+\end{align}
+where the last inequality is by the discussion above \Cref{eq:start}. Now, in order to take the expectation over $\w \sim \rho_t$ (conditioned on $\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$), we first compute $\E_{\w \sim \rho_t} [(\w - r)^2 \mid \w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]$:
+\begin{align}
+\E_{\w \sim \rho_t} [(\w - r)^2 \mid \w \sim [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]
+& \geq \Var_{\w \sim \rho_t}(\w \mid \w \sim [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \\
+& \gtrsim \E_{\w, \w' \sim \rho_t} [(\w - \w')^2 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]] \label{eq:root_to_diff}
+\end{align}
+where the last inequality is by \Cref{prop:variance_difference_form}. By \Cref{lemma:case_1_invariant},
+\begin{align}
+\Prob_{\w, \w' \sim \rho_t} (|\potential(\w) - \potential(\w')| \gtrsim \xi \kappa^3) \geq 1 - O(\kappa)
+\end{align}
+By \Cref{lemma:potential_bi_lipschitz}, if $\w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]$, then
+\begin{align}
+|\potential(\w) - \potential(\w')|
+& \leq \frac{1}{\gamma_2^{3/2}} |\w - \w'|
+\end{align}
+Thus, combining the previous two equations gives
+\begin{align}
+\Prob_{\w, \w' \sim \rho_t}(|\w - \w'| < \gamma_2^{3/2} \xi\kappa^3 & \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \\
+& \lesssim \Prob_{\w, \w' \sim \rho_t}(|\potential(\w) - \potential(\w')| < \xi\kappa^3 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \\
+& \lesssim \frac{\Prob_{\w, \w' \sim \rho_t}(|\potential(\w) - \potential(\w')| < \xi \kappa^3 \text{ and } \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}])}{\Prob_{\w, \w' \sim \rho_t}(\w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}])} \\
+& \lesssim \frac{\kappa}{\Prob_{\w, \w' \sim \rho_t}(\w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}])}
+& \tag{By \Cref{lemma:case_1_invariant}} \\
+& \lesssim \frac{\kappa}{\gamma_2}
+& \tag{By \Cref{lemma:case_1_mass_in_middle}}
+\end{align}
+and therefore, by \Cref{assumption:target}, since $\kappa/\gamma_2 \lesssim \frac{1}{\gamma_2 \log \log d}$, this is at most $\frac{1}{2}$, since $d$ is sufficiently large. Thus,
+\begin{align}
+\E_{\w, \w' \sim \rho_t} [(\w - \w')^2 \mid & \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]] \\
+& \gtrsim \Prob_{\w, \w' \sim \rho_t}(|\w - \w'| \geq \gamma_2^{3/2} \xi \kappa^3 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \cdot \gamma_2^3 \xi^2 \kappa^6 \\
+& \gtrsim \gamma_2^3 \xi^2 \kappa^6
+& \label{eq:case_1_variance_bound}
+\end{align}
+where the last inequality is because $\Prob_{\w, \w' \sim \rho_t}(|\w - \w'| < \gamma_2^{3/2} \xi\kappa^3 \mid \w, \w' \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \leq \frac{1}{2}$. By \Cref{eq:velocity_in_middle_case_1}, we have
+\begin{align}
+\E_{\w \sim \rho_t} [|\vel_t(\w)|^2 \mid \w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]]
+& \gtrsim \gamma_2 \cdot \Big(\sigmaCoeffFour^4 D_{4, t}^2 \gamma_2^3 \E_{\w \sim \rho_t} \Big[(\w - r)^2 \mid \w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]\Big] \\
+& \nextlinespace\nextlinespace - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d^2}\Big)\Big) \\
+& \gtrsim \gamma_2 \cdot \Big(\sigmaCoeffFour^4 D_{4, t}^2 \gamma_2^3 \cdot \gamma_2^3 \xi^2 \kappa^6 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d}\Big)\Big)
+& \tag{By \Cref{eq:root_to_diff} and \Cref{eq:case_1_variance_bound}}
+\end{align}
+Since $\Prob_{\w \sim \rho_t}(\w \in [\gamma_2^{3/4}, 1 - \gamma_2^{1/2}]) \geq \frac{\gamma_2}{4}$ by \Cref{lemma:case_1_mass_in_middle} and the symmetry of $\rho_t$, this implies that
+\begin{align}
+\E_{\w \sim \rho_t} |\vel_t(\w)|^2
+& \gtrsim \gamma_2^2 \cdot \Big(\sigmaCoeffFour^4 D_{4, t}^2 \gamma_2^6 \xi^2 \kappa^6 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d}\Big)\Big) \\
+& \gtrsim \gamma_2^2 \cdot \Big( \sigmaCoeffFour^2 \xi^2 L(\rho_t) \gamma_2^6 \xi^2 \kappa^6 - O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) L(\rho_t)}{d}\Big)\Big)
+\tag{B.c. $\sigmaCoeffFour^2 \gtrsim \sigmaCoeffTwo^2$ (\Cref{assumption:target}) and $|D_{4, t}| \geq \xi |D_{2, t}|$ implies $\sigmaCoeffFour^2 D_{4, t}^2 \gtrsim \xi^2 L(\rho_t)$} \\
+& \gtrsim \gamma_2^2 \cdot \Big(\sigmaCoeffFour^2 \gamma_2^6 \xi^4 \kappa^6 - O\Big(\frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d}\Big)\Big) L(\rho_t) \\
+& \gtrsim \sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6 L(\rho_t)
+& \tag{Because $d \geq c_3$ by \Cref{assumption:target}}
+\end{align}
+Thus, by \Cref{lemma:loss_decrease}, $\frac{dL(\rho_t)}{dt} \lesssim - \sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6 L(\rho_t)$. By a similar argument as for the subcase where $|D_{4, t}| \leq \xi |D_{2, t}|$, since $L(\rho_0) \lesssim \sigmaCoeffTwo^2 \gamma_2^2$ (by \Cref{lemma:phase1_d2_d4_neg}), if we define 
+\begin{align}
+I_{|D_4| \geq \xi |D_2|} = \{t \leq \Tstar \text{ and }t \text{ in Phase 3, Case 1} \mid |D_{4, t}| \geq \xi |D_{2, t}|\}
+\end{align}
+then
+\begin{align} \label{eq:phase3_case1_timebound_B}
+\int_{I_{|D_4| \geq \xi |D_2|}} 1 dt 
+& \lesssim \frac{1}{\sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
+\end{align}
+since $L(\rho_{\Tstar}) \gtrsim \sigmaCoeffTwo^2 \epsilon^2$. Combining \Cref{eq:phase3_case1_timebound_A} and \Cref{eq:phase3_case1_timebound_B}, we find that the total time spent in Phase 3, Case 1 is at most $O(\frac{1}{\sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6} \log(\frac{\gamma_2}{\epsilon}))$, as desired.
+\end{proof}
+
+\subsection{Phase 3, Case 2} \label{subsec:phase3_case2}
+
+Next, we analyze Phase 3, Case 2, where $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$. In this case, as we will show, for all $t \geq T_2$, we will have $D_{4, t} \geq 0$ and $D_{2, t} \leq 0$ (\Cref{lemma:case2_invariant}). We will first give an outline of our analysis in this case --- our goal is again to show that either $|D_{2, t}| \leq \epsilon$ or $|D_{4, t}| \leq \epsilon$ within $\frac{1}{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2} \cdot \poly(\frac{\log \log d}{\epsilon})$ time after the start of Phase 3, Case 2.
+
+\paragraph{Proof Strategy for Phase 3, Case 2} We again show that $|v(\w)$ is large on average and then use \Cref{lemma:loss_decrease} to show that the loss decreases quickly. However, our argument to show that $|v(\w)$ is large on average is significantly different from Phase 3, Case 1. We can approximately write
+\begin{align}
+v_t(\w)
+& = -(1 - \w^2) (P_t(\w) + Q_t(\w)) \\
+& \approx -(1 - \w^2) P_t(\w) \\
+& \approx -(1 - \w^2) \w (2 \sigmaCoeffTwo^2 D_{2, t} + 4 \sigmaCoeffFour^2 D_{4, t} \w^2) \\
+& \approx (1 - \w^2) \w (2 \sigmaCoeffTwo^2 |D_{2, t}| - 4 \sigmaCoeffFour^2 |D_{4, t}| \w^2) 
+& \tag{B.c. $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$} \\
+& \approx -(1 - \w^2) \w (4 \sigmaCoeffFour^2 |D_{4, t}| \w^2 - 2 \sigmaCoeffTwo^2 |D_{2, t}|)
+\end{align}
+Letting $r = \sqrt{\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{2 \sigmaCoeffFour^2 |D_{4, t}|}}$ be the positive root of $P_t(\w)$, we obtain
+\begin{align}
+v_t(\w)
+& \approx - 4 \sigmaCoeffFour^2 |D_{4, t}| (\w - r)(\w + r) \w (1 - \w^2)
+\end{align}
+This time, $v_t(\w)$ has a negative slope at $r$, meaning that the particles are attracted towards $r$, and we cannot use the same argument as in Phase 3, Case 1. 
+
+Instead, the key point of our argument in this case is the following. Recall that $D_{4, t} \geq 0$ and $D_{2, t} \leq 0$ for all $t \geq T_2$ --- these roughly imply that $\E_{\w \sim \rho_t} [\w^4] \geq \gamma_4$ and $\E_{\w \sim \rho_t} [\w^2] \leq \gamma_2$. By \Cref{assumption:target}, we have $\gamma_4 \geq 1.1 \gamma_2^2$ --- in other words, $\E_{\w \sim \rho_t}[\w^4] \geq 1.1 (\E_{\w \sim \rho_t}[\w^2])^2$. From this observation, we know that a significant fraction of the particles must be far from $r$ --- otherwise, if all of the particles are concentrated at $r$, then we would have $\E_{\w \sim \rho_t} [\w^4] \approx (\E_{\w \sim \rho_t}[\w^2])^2$, which would give a contradiction.
+
+One complication in showing that the velocity is large is that, a priori, nearly all of the particles could be close to $0$ or $1$ --- their velocities could be small even if they are far from $r$. We make use of the potential function $\potential$ defined in the analysis of Phase 3, Case 1 to avoid this issue. In this case, it turns out that for any two particles $\w, \w'$, their potential difference $|\potential(\w) - \potential(\w')|$ is decreasing (\Cref{lemma:case_2_potential_decrease}). We can use this to show that a $1 - O(\gamma_4)$ fraction of particles $\w$ with initializations in $[\iotaL, \iotamid]$ (where $\iotamid$ is defined later) cannot become too close to $0$ or $1$ in \Cref{lemma:case_2_initial_potential} and \Cref{lemma:case_2_neurons_stay_big}. Intuitively, this is because if $|\potential(\w) - \potential(\w')|$ is bounded by $\log B$ for two particles $\w, \w' > 0$, and $C$ is a sufficiently large constant, then $\w \leq (\frac{1}{\log \log d})^C$ roughly implies that $\w' \lesssim B(\frac{1}{\log \log d})^C$, simply by the definition $\potential(\w) = \log(\frac{\w}{\sqrt{1 - \w^2}})$ together with some algebraic manipulations. Moreover, if all of the particles $\w'$ in this group are at most $B (\frac{1}{\log \log d})^C$, then this implies that $D_2$ has a very large negative value, and this implies that all particles $\w$ have a positive velocity (as argued in \Cref{lemma:case_2_neurons_stay_big}), meaning that the particles $\w$ in this group cannot become smaller than $B(\frac{1}{\log \log d})^C$. We can show by a similar argument that the particles having initializations in $[\iotaL, \iotamid]$ cannot become too close to $1$.
+
+As long as the positive root $r$ of $P_t(\w)$ is at least $\frac{1}{2}$, this group of particles will have a large velocity as argued in \Cref{lemma:phase3_case2_rootlarge_time}, since a significant fraction of these particles must be at most $\frac{1}{3}$. We encounter a potential issue when the positive root $r$ is at most $\frac{1}{2}$: it is possible that the particles initialized in $[\iotaL, \iotamid]$ get stuck at $r$. We mentioned above that by the constraints $D_{2, t} < 0$ and $D_{4, t} > 0$, there must always be some mass away from $r$. However, this mass may only be a $\gamma_4^{5/4}$ fraction of the total mass, while the particles initialized at $[\iotaL, \iotamid]$ only have a $1 - O(\gamma_4)$ fraction of the total mass. Thus, once $r \leq \frac{1}{2}$, it is possible for the mass located far away from $r$ to be disjoint from the set of particles initialized at $[\iotaL, \iotamid]$. To resolve this, we argue in \Cref{lemma:phase3_case2_movement_away_from_1} that the particles larger than $\w_t(\iotamid)$ (which may be close to $1$) will move away from $1$ at an exponentially fast rate while $r \leq \frac{1}{2}$. Once these particles, which are larger than $\w_t(\iotamid)$, are sufficiently far away from $1$, they will also contribute a significant amount to the velocity. Thus, we can argue as discussed above that there must be a significant fraction of particles away from $r$ due to the constraints $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$ (\Cref{lemma:phase3_case2_particles_away_from_root}).
+
+We now begin the formal proof. We first show that as long as $D_{4, t} \geq 0$, the potential difference between any two particles $\w, \w'$ is increasing. In particular, this holds during Phase 3, Case 2 (but note that this lemma is no longer applicable during Phase 1 or Phase 2).
+
+\begin{lemma} [$\potential(\w)$ and $\potential(\w')$ Move Closer in Phase 3 Case 2] \label{lemma:case_2_potential_decrease}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, t} \geq 0$ for all $t$ in some time interval $[t_0, t_1]$. Then, for all $\iota, \iota'$,
+\begin{align}
+\Big|\potential(\w_t(\iota)) - \potential(\w_t(\iota'))\Big|
+\end{align}
+is decreasing as a function of $t$ on the interval $[t_0, t_1]$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_2_potential_decrease}]
+We mostly follow the proof of \Cref{lemma:case_1_potential_increase}. Suppose $\iota, \iota' \in [0, 1]$ such that $\iota \leq \iota'$. Then, $\w_t(\iota') \geq \w_t(\iota)$ for all times $t$ (by \Cref{prop:particle_order}), and since $\potential$ is an increasing function, $\potential(\w_t(\iota')) \geq \potential(\w_t(\iota))$ for all times $t$. Thus, it suffices to show that $\potential(\w_t(\iota')) - \potential(\w_t(\iota))$ is decreasing. For convenience, we write $\w_t' = \w_t(\iota')$ and $\w_t = \w_t(\iota)$. We do a computation similar to that in the proof of \Cref{lemma:case_1_potential_increase}:
+\begin{align}
+\frac{d}{dt} (\potential(\w_t') - \potential(\w_t))
+& = \Big(-2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} (\w_t')^2 - \lambdaD^{(1)} - \lambdaD^{(3)} (\w_t')^2\Big) \\
+& \nextlinespace - \Big(-2 \sigmaCoeffTwo^2 D_{2, t} - 4 \sigmaCoeffFour^2 D_{4, t} \w_t^2 - \lambdaD^{(1)} - \lambdaD^{(3)} \w_t^2 \Big) 
+& \tag{By \Cref{lemma:potential_time_derivative}} \\
+& = -4\sigmaCoeffFour^2 D_{4, t} ((\w_t')^2 - \w_t^2) - \lambdaD^{(3)} ((\w_t')^2 - \w_t^2)
+\end{align}
+According to the statement of \Cref{lem:1-d-traj}, $\lambdaD^{(3)} = 4 \sigmaCoeffFour^2 D_{4, t} \cdot \frac{6d + 9}{d^2 - 1}$, meaning that
+\begin{align}
+\frac{d}{dt} (\potential(\w_t') - \potential(\w_t)) 
+& = -4 \sigmaCoeffFour^2 D_{4, t} ((\w_t')^2 - \w_t^2) - 4 \sigmaCoeffFour^2 D_{4, t} \cdot \frac{6d + 9}{d^2 - 1} ((\w_t')^2 - \w_t^2) \\
+& = -4 \sigmaCoeffFour^2 D_{4, t} \cdot \Big(1 - \frac{6d + 9}{d^2 - 1}\Big) \cdot ((\w_t')^2 - \w_t^2) \\
+& < 0
+& \tag{B.c. $D_{4, t} \geq 0$ and $\w_t' > \w_t > 0$, and $d \geq c_3$ (\Cref{assumption:target})}
+\end{align}
+Thus, on any interval $[t_0, t_1]$ where $D_{4, t} \geq 0$, $\potential(\w_t') - \potential(\w_t)$ is decreasing, as desired.
+\end{proof}
+
+In the next lemma, we show an upper bound on $|\potential(\w) - \potential(\w')|$, at the beginning of Phase 3, Case 2, for particles $\w, \w'$ which are respectively initialized at $\iota, \iota' \in [\iotaL, \iotamid]$. Here $\iotamid$ is defined in the statement/proof of the following lemma.
+
+\begin{lemma} \label{lemma:case_2_initial_potential}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Assume that $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. we are in Phase 3, Case 2. Then, there exists $\iotamid \in [\iotaL, \iotaR]$ such that $\Prob_{\iota \sim \rho_0}(|\iota| > \iotamid) \lesssim \gamma_4$ and for all $\iota, \iota' \in [\iotaL, \iotamid]$,
+\begin{align}
+\Big|\potential(\w_{T_2}(\iota)) - \potential(\w_{T_2}(\iota'))\Big|
+& \leq 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C
+\end{align}
+for some universal constant $C$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_2_initial_potential}]
+Since $D_{4, T_2} = 0$, we have $\E_{\w \sim \rho_{T_2}}[\PfourD(\w)] = \gamma_4$. Thus, by \Cref{eq:legendre_polynomial_2_4},
+\begin{align}
+\frac{d^2 + 6d + 8}{d^2 - 1} \E_{\w \sim \rho_{T_2}} [\w^4] - \frac{6d + 12}{d^2 - 1} \E_{\w \sim \rho_{T_2}} [\w^2] + \frac{3}{d^2 - 1} = \gamma_4
+\end{align}
+Since $|\w_t(\iota)| \leq 1$ for all $t \geq 0$ and all $\iota \in [-1, 1]$, the left-hand side of the above equation is $\E_{\w \sim \rho_t} [\w^4] \pm O(\frac{1}{d})$, and rearranging gives
+\begin{align}
+\E_{\w \sim \rho_t} [\w^4]
+& \leq \gamma_4 + O\Big(\frac{1}{d}\Big)
+\end{align}
+By Markov's inequality,
+\begin{align}
+\Prob_{\w \sim \rho_{T_2}}(|\w| \geq 1/2)
+ \lesssim \gamma_4 + O\Big(\frac{1}{d}\Big) 
+ \lesssim \gamma_4
+\end{align}
+where the second inequality is because $d \geq c_3$ by \Cref{assumption:target}. Let $\iota_0$ be such that $\w_{T_2}(\iota_0) = \frac{1}{2}$. Let $\iotamid = \min(\iota_0, \iotaR)$. Then, $\iotamid \in [\iotaL, \iotaR]$, and $\Prob_{\iota \sim \rho_0}(|\iota| > \iotamid) \lesssim \gamma_4$, because $\Prob_{\iota \sim \rho_0}(|\iota| > \iota_0) \lesssim \gamma_4$ and $\Prob_{\iota \sim \rho_0}(|\iota| > \iotaR) \lesssim O(\kappa)$ by \Cref{prop:probability_of_relevant_interval}, meaning that $\Prob_{\iota \sim \rho_0} (|\iota| > \iotamid) \lesssim \max(\gamma_4, \kappa) \lesssim \gamma_4$ (where the last inequality is because $d \geq c_3$ by \Cref{assumption:target}).
+
+Now, let $\iota \in [\iotaL, \iotamid]$. Observe that on the interval $[0, T_2]$, for all $\iota$, $\w_t(\iota)$ is strictly increasing as a function of $t$, for all $\iota$ (see \Cref{lemma:w_increasing_phase2}). Thus, if $\TR$ is as defined in \Cref{lemma:phase_2_uniform_growth_corollary}, then for all $\iota \in [\iotaL, \iotaR]$, $|\w_{\TR}(\iota)| \gtrsim \xi \kappa^2$. In particular, for all $\iota \in [\iotaL, \iotamid]$, we can write $\w_{T_2}(\iota) \geq C \xi \kappa^2$ for some universal constant $C$. Additionally, for $\iota \leq \iotamid$, we have $\w_{T_2}(\iota) \leq \frac{1}{2}$ by \Cref{prop:particle_order}. Thus, since $\potential(\w)$ is increasing in $\w$, for $\iota \in [\iotaL, \iotamid]$ we have
+\begin{align}
+\potential(\w_{T_2}(\iota))
+ \geq \potential(C \xi \kappa^2) 
+ = \log\Big(\frac{C \xi \kappa^2}{\sqrt{1 - C^2 \xi^2 \kappa^4}}\Big) 
+ \geq \log (C \xi \kappa^2) 
+ = \log C + \log \xi + 2 \log \kappa
+\end{align}
+and
+\begin{align}
+\potential(\w_{T_2}(\iota))
+ \leq \potential(1/2) 
+ = \log\Big(\frac{1/2}{\sqrt{3/4}}\Big) 
+ = \log(1/\sqrt{3}) 
+ = -\frac{1}{2} \log 3
+\end{align}
+Thus, for any $\iota, \iota' \in [\iotaL, \iotamid]$,
+\begin{align}
+\Big|\potential(\w_{T_2}(\iota)) - \potential(\w_{T_2}(\iota'))\Big|
+ \leq -\frac{1}{2} \log 3 - \Big(\log C + \log \xi + 2 \log \kappa\Big) 
+ = 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C'
+\end{align}
+where we have defined the constant $C' = -\frac{1}{2} \log 3 - \log C$.
+\end{proof}
+
+In the next lemma, we show that for $\iota \in [\iotaL, \iotamid]$, during Phase 3, Case 2, $\w_t(\iota)$ can be bounded away from $0$ and $1$, provided that the conclusion of \Cref{lemma:case_2_initial_potential} holds at time $t$.
+
+\begin{lemma} [Lower and Upper Bounds on Particles Between $\iotaL$ and $\iotamid$] \label{lemma:case_2_neurons_stay_big}
+Suppose that we are in the setting of \Cref{thm:pop_main_thm}. Let $s \geq T_2$, and suppose that for all $t \in [T_2, s]$, $D_{4, t} \geq 0$ and $D_{2, t} \leq 0$. Further suppose that for all $t \in [T_2, s]$, the conclusion of \Cref{lemma:case_2_initial_potential} holds, i.e.
+\begin{align} \label{eq:case2_potential_invariant_IH}
+\Big|\potential(\w_s(\iota)) - \potential(\w_s(\iota'))\Big|
+& \leq 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C
+\end{align}
+for all $\iota \in [\iotaL, \iotamid]$, where $\iotamid$ is such that $\Prob_{\iota \sim \rho_0}(|\iota| > \iotamid) \lesssim \gamma_4$, and for some universal constant $C$. Then, for any $t \in [T_2, s]$, for all $\iota \geq \iotaL$, $\w_t(\iota) \geq \xi^2 \kappa^2$. Furthermore, for all $t \in [T_2, s]$, we have $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case_2_neurons_stay_big}]
+Consider some time $t \in [T_2, s]$. Suppose that for some $\iota \in [\iotaL, \iotamid]$, $\w_t(\iota) \leq \xi^2 \kappa^2$. Also, suppose $\iota' \in [\iotaL, \iotamid]$ such that $\iota' > \iota$. Then, 
+\begin{align}
+\potential(\w_t(\iota'))
+& \leq \potential(\w_t(\iota)) + 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C
+& \tag{By \Cref{eq:case2_potential_invariant_IH}, and b.c. $\potential$ is increasing, $\iota' > \iota$ and \Cref{prop:particle_order}} \\
+& \leq \log\Big(\frac{\xi^2 \kappa^2}{\sqrt{1 - \xi^4 \kappa^4}}\Big) + 2 \log\frac{1}{\kappa} + \log \frac{1}{\xi} + C \\
+& \leq \log (2\xi^2\kappa^2) + 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C
+& \tag{B.c. $d \geq c_3$, \Cref{assumption:target}} \\
+& = \log \xi + C'
+& \tag{For some universal constant $C'$}
+\end{align}
+Thus, because $\w \leq \frac{\w}{\sqrt{1 - \w^2}}$,
+\begin{align}
+\log \w_t(\iota')
+ \leq \log\Big(\frac{\w_t(\iota')}{\sqrt{1 - (\w_t(\iota'))^2}} \Big)
+ \leq \log \xi + C'
+\end{align}
+Thus, $\w_t(\iota') \lesssim \xi$ and for all $\iota \in [\iotaL, \iotamid]$, we have shown that $\w_t(\iota) \lesssim \xi$. In addition, $\Prob_{\iota \sim \rho_0} (|\iota| > \iotamid) \lesssim \gamma_4$. We can use this to calculate $D_{2, t}$ and $D_{4, t}$:
+\begin{align}
+D_{2, t}
+& = \E_{\w \sim \rho_t} \Big[ \frac{d}{d - 1} \w^2 - \frac{1}{d - 1}\Big] - \gamma_2
+& \tag{By definition of $\PtwoD$, (\Cref{eq:legendre_polynomial_2_4})} \\
+& \leq \E_{\w \sim \rho_t} [\w^2] - \gamma_2
+& \tag{B.c. $w \leq 1$} \\
+& \leq \Prob_{\iota \sim \rho_0} (|\iota| \leq \iotamid) \E[\w_t(\iota)^2 \mid |\iota| \leq \iotamid] + \Prob_{\iota \sim \rho_0} (|\iota| > \iotamid) \E[\w_t(\iota)^2 \mid |\iota| \geq \iotamid] - \gamma_2 \\
+& \leq O(\xi^2) + \gamma_4 - \gamma_2
+\tag{B.c. $\w_t(\iota) \lesssim \xi$ for $\iota \in [\iotaL, \iotamid]$ and $\Prob(|\iota| > \iotamid) \lesssim \gamma_4$} \\
+& \lesssim -\gamma_2
+\tag{B.c. $\gamma_4 \leq c_1 \gamma_2^2$, $\gamma_2 \leq c_2$ ($c_2$ chosen after $c_1$) and $d \geq c_3$, \Cref{assumption:target}}
+\end{align}
+and
+\begin{align}
+D_{4, t}
+& = \E_{\w \sim \rho_t} \Big[\frac{d^2 + 6d + 8}{d^2 - 1} \w^4 - \frac{6d + 12}{d^2 - 1} \w^2 + \frac{3}{d^2 - 1}\Big] - \gamma_4 & \tag{By definition of $\PfourD$, \Cref{eq:legendre_polynomial_2_4}} \\
+& = \E_{\w \sim \rho_t} [\w^4] - \gamma_4 \pm O\Big(\frac{1}{d}\Big) \\
+& = \Prob_{\iota \sim \rho_0} (|\iota| \leq \iotamid) \E[\w_t(\iota)^4 \mid |\iota| \leq \iotamid] + \Prob_{\iota \sim \rho_0} (|\iota| > \iotamid) \E[\w_t(\iota)^4 \mid |\iota| > \iotamid] - \gamma_4 \pm O\Big(\frac{1}{d}\Big) \\
+& \leq O(\xi^4) + O(\gamma_4) - \gamma_4 \pm O\Big(\frac{1}{d}\Big)
+& \tag{B.c. $\w_t(\iota) \lesssim \xi$ for $\iota \in [\iotaL, \iotamid]$ and $\Prob(\iota > \iotamid) \lesssim \gamma_4$} \\
+& \leq O(\xi^4 + \gamma_4) \\
+& \lesssim \gamma_4
+& \tag{B.c. $d \geq c_3$, by \Cref{assumption:target}}
+\end{align}
+
+To complete the proof, we will show that if these bounds on $D_{2, t}$ and $D_{4, t}$ hold, then for any $\w$, $\vel_t(\w) \geq 0$. By \Cref{lem:1-d-traj}, it suffices to show that $P_t(\w) + Q_t(\w) \leq 0$ for $\w \geq 0$, where $P_t$ and $Q_t$ are as defined in \Cref{lem:1-d-traj}. If $C_1$ and $C_2$ are two appropriately chosen positive universal constants, then by the above upper bounds on $D_{2, t}$ and $D_{4, t}$,
+\begin{align}
+P_t(\w) + Q_t(\w)
+& = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3 + \lambdaD^{(1)} \w + \lambdaD^{(3)} \w^3 \\
+& \leq -C_1 \sigmaCoeffTwo^2 \gamma_2 \w + C_2 \sigmaCoeffFour^2 \cdot \gamma_4 \w^3 + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) \w \\
+&\nextlinespace + O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) \w^3
+& \tag{By definition of $\lambdaD^{(1)}, \lambdaD^{(3)}$ in \Cref{lem:1-d-traj} and above bounds on $D_{2, t}, D_{4, t}$} \\
+& \leq -C_1' \sigmaCoeffTwo^2 \gamma_2 \w + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| 
+& \tag{B.c. $\gamma_4 \lesssim \gamma_2^2 \leq \gamma_2$ and $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ by \Cref{assumption:target}, with new constant $C_1'$} \\
+& \lesssim -\sigmaCoeffTwo^2 \gamma_2 \w
+& \tag{B.c. $d \geq c_3$, \Cref{assumption:target}}
+\end{align}
+
+In summary, if $\w_t(\iota) = \xi^2 \kappa^2$ for some $\iota \in [\iotaL, \iotamid]$, then $\vel_t(\w) > 0$ for all $\w \in [0, 1]$. In addition, at time $T_2$, we have $\w_t(\iota) \gtrsim \xi \kappa^2$ for all $\iota > \iotaL$ by \Cref{lemma:w_increasing_phase2} and \Cref{lemma:phase_2_uniform_growth_corollary}. Thus, for all $\iota \geq \iotaL$, $\w_t(\iota)$ will never go below $\xi^2 \kappa^2$ for $t \in [T_2, s]$, as desired.
+
+To finish the proof, we will show the upper bound on $\w_t(\iotamid)$. Suppose $1 - \w_t(\iotamid) \leq \kappa^4 \xi^3$. Then,
+\begin{align}
+\potential(\w_t(\iotamid))
+& = \log\Big(\frac{\w_t(\iotamid)}{\sqrt{1 - \w_t(\iotamid)^2}}\Big) \\
+& \geq \log \frac{1}{2} - \frac{1}{2} \log (1 - \w_t(\iotamid)^2)
+& \tag{B.c. $\w_t(\iotamid) \geq \frac{1}{2}$} \\
+& \geq \log \frac{1}{2} - \frac{1}{2} \log (1 - (1 - \kappa^4 \xi^3)^2 ) \\
+& = \log \frac{1}{2} - \frac{1}{2} \log (2 \kappa^4 \xi^3 - \kappa^{8} \xi^{6}) \\
+& \geq \log \frac{1}{2} - \frac{1}{2} \log (\kappa^4 \xi^3) 
+& \tag{B.c. $\kappa, \xi \leq 1$ and $\kappa^4 \xi^3 - (\kappa^4 \xi^3)^2 \geq 0$} \\
+& = \log \frac{1}{2} + 2 \log \frac{1}{\kappa} + \frac{3}{2} \log \frac{1}{\xi}
+\end{align}
+Thus, for any $\iota \in [\iotaL, \iotamid]$,
+\begin{align}
+\potential(\w_t(\iota))
+& \geq C + \frac{1}{2} \log \frac{1}{\xi}
+\end{align}
+for some universal constant $C$. In other words, letting $\w_t := \w_t(\iota)$ and rearranging using the definition of $\potential$, we obtain
+\begin{align}
+\frac{\w_t}{\sqrt{1 - \w_t^2}}
+& \gtrsim \frac{1}{\xi^{1/2}}
+\end{align}
+or
+\begin{align}
+\sqrt{1 - \w_t^2}
+\lesssim \xi^{1/2} \w_t
+\lesssim \xi^{1/2}
+\end{align}
+which finally gives $1 - \w_t^2 \lesssim \xi$, or $\w_t^2 \geq 1 - O(\xi)$. In other words, for all $\iota \geq \iotaL$, we have $\w_t(\iota) \geq 1 - O(\xi)$, which implies that
+\begin{align}
+D_{2, t}
+& = \E_{\w \sim \rho_t}[\PtwoD(\w)] - \gamma_2 \\
+& \gtrsim \E_{\w \sim \rho_t} [\w^2] - \gamma_2 - O\Big(\frac{1}{d}\Big) \\
+& \geq \Prob_{\iota \sim \rho_0} (|\iota| \geq \iotaL) \E_{\w \sim \rho_t}[\w^2 \mid |\iota| \geq \iotaL] - \gamma_2 - O\Big(\frac{1}{d}\Big) \\
+& \geq (1 - O(\kappa)) \cdot (\E_{\w \sim \rho_t}[\w^2 \mid |\iota| \geq \iotaL]) - \gamma_2 - O\Big(\frac{1}{d}\Big)
+& \tag{By \Cref{prop:probability_of_relevant_interval}} \\
+& \geq (1 - O(\kappa)) (1 - O(\xi)) - \gamma_2 - O\Big(\frac{1}{d}\Big)
+& \tag{B.c. if $|\iota| > \iotaL$, then $\w_t(\iota)^2 \geq 1 - O(\xi)$} \\
+& \geq 1 - O(\xi + \kappa) - \gamma_2 
+& \tag{B.c. $1/d$ is small by \Cref{assumption:target}} \\
+& > 0
+& \tag{By \Cref{assumption:target} b.c. $\gamma_2$ small and $d$ large}
+\end{align}
+and this contradicts the assumption that for all $t \in [T_2, s]$, $D_{4, t} \geq 0$ and $D_{2, t} \leq 0$. Thus, for all $t \in [T_2, s]$, $1 - \w_t(\iotamid) \geq \kappa^4 \xi^3$, i.e. $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$.
+\end{proof}
+
+The purpose of the next two lemmas is to show that if Phase 3, Case 2 occurs, then for all $t \geq T_2$, we will have $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$, assuming the conclusion of \Cref{lemma:case_2_neurons_stay_big} holds. We will later put these next two lemmas with the above lemma, \Cref{lemma:case_2_neurons_stay_big}, in order to inductively show that the hypothesis of \Cref{lemma:case_2_neurons_stay_big} holds for $t \geq T_2$ (note that \Cref{lemma:case_2_neurons_stay_big} assumes that the upper bound on the potential difference holds on an interval $[T_2, s]$, and more importantly assumes that $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$ for all $t \in [T_2, s]$).
+
+\begin{lemma} \label{lemma:phase3_case2_fixedA}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, t} = 0$ and $D_{2, t} < 0$ for some $t \geq 0$. Additionally, suppose that the conclusion of \Cref{lemma:case_2_neurons_stay_big} holds at time $t$, i.e. for all $\iota \geq \iotaL$, $\w_t(\iota) \geq \xi^2 \kappa^2$, and $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$. Then, $\frac{d}{ds} D_{4, s} \big|_{s = t} > 0$.
+\end{lemma}
+\begin{proof}
+Recall from \Cref{eq:legendre_polynomial_2_4} that
+\begin{align}
+\PfourD(t)
+& = \frac{d^2 + 6d + 8}{d^2 - 1} t^4 - \frac{6d + 12}{d^2 - 1} t^2 + \frac{3}{d^2 - 1}
+\end{align}
+meaning that
+\begin{align} \label{eq:p4_derivative}
+\PfourD'(t)
+ = 4 t^3 \pm O\Big(\frac{1}{d}\Big) |t|
+\end{align}
+Next we compute the derivative of $D_{4, t}$:
+\begin{align}
+\frac{d}{dt} D_{4, t}
+ = \frac{d}{dt} \E_{\w \sim \rho_t}[\PfourD(\w)] 
+ = \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w)]
+\end{align}
+For positive particles $\w \gtrsim \frac{1}{\sqrt{d}}$, we have $\PfourD'(\w) \geq 0$, and for $\w \lesssim \frac{1}{\sqrt{d}}$, it may be the case that $\PfourD'(\w) \leq 0$. Furthermore, when $D_{4, t} = 0$ and $D_{2, t} \leq 0$, we have
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2)\Big(2 \sigmaCoeffTwo^2 D_{2, t} \w + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d}\Big) |\w| \Big)
+& \tag{By \Cref{lem:1-d-traj} and because $D_{4, t} = 0$} \\
+& = (1 - \w^2) \cdot \Big(2 \sigmaCoeffTwo^2 |D_{2, t}| \w \pm O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d}\Big) |\w| \Big)
+& \tag{B.c. $D_{2, t} \leq 0$} \\
+& = (1 - \w^2) \cdot 2 \sigmaCoeffTwo^2 |D_{2, t}| \w \cdot (1 \pm O(1/d)) \label{eq:vt_bound_d4_0}
+\end{align}
+Finally, to lower bound $\frac{d}{dt} D_{4, t}$, we must show that there is a significant fraction of particles for which $\w \gtrsim \frac{1}{\sqrt{d}}$ and $1 - \w$ is large. Because we have $\w_t(\iota) \geq \xi^2 \kappa^2$ for all $\iota \geq \iotaL$, and $\Prob(|\iota| < \iotaL) \lesssim \kappa$ by \Cref{prop:probability_of_relevant_interval}, using a union bound we therefore know that
+\begin{align} \label{eq:using_invariant}
+\Prob_{\w \sim \rho_t}(|\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3])
+ \geq 1 - O(\gamma_4) - O(\kappa) \geq 1 - O(\gamma_4)
+\end{align}
+where the second inequality is by \Cref{assumption:target} since $d$ is sufficiently large. Thus,
+\begin{align}
+\frac{d}{dt} D_{4, t}
+& = \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w)] \\
+& = \Prob_{\w \sim \rho_t} (|\w| \lesssim 1/\sqrt{d}) \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \lesssim 1/ \sqrt{d}] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t} (|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \gtrsim 1/\sqrt{d}] \\
+& \geq - O\Big(\frac{1}{d^{3/2}} \cdot \frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^{1/2}}\Big) + \Prob_{\w \sim \rho_t} (|\w| \gtrsim 1/\sqrt{d}) \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \gtrsim 1/\sqrt{d}] 
+& \tag{By bounding $|\PfourD'(\w) \cdot \vel_t(\w)|$ when $|\w| \lesssim 1/\sqrt{d}$} \\
+& \geq - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + \Prob_{\w \sim \rho_t}(|\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]) \\
+& \nextlinespace\nextlinespace\nextlinespace \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]] \\
+& \geq - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + (1 - O(\gamma_4)) \E_{\w \sim \rho_t} [\PfourD'(\w) \cdot \vel_t(\w) \mid |\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]]
+& \tag{By \Cref{eq:using_invariant}} \\
+& \gtrsim - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + (\xi^2 \kappa^2)^3 \cdot (1 - (1 - \kappa^4 \xi^3)^2) \sigmaCoeffTwo^2 |D_{2, t}| (\xi^2 \kappa^2)
+\end{align}
+where the last inequality is by \Cref{eq:p4_derivative} and applying the above bound on $\vel_t(\w)$ from \Cref{eq:vt_bound_d4_0} for $|\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]$, and because $d \geq c_3$ by \Cref{assumption:target}. Expanding the last line gives
+\begin{align}
+\frac{d}{dt} D_{4, t}
+& \gtrsim -O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + \sigmaCoeffTwo^2 |D_{2, t}| \xi^6 \kappa^6 \kappa^4 \xi^3 \xi^2 \kappa^2 \\
+& \gtrsim -O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d^2}\Big) + \sigmaCoeffTwo^2 |D_{2, t}| \xi^{11} \kappa^{12}
+\end{align}
+and the right hand side is strictly positive since $d$ is sufficiently large by \Cref{assumption:target}.
+\end{proof}
+
+\begin{lemma} \label{lemma:phase3_case2_fixedB}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and suppose $D_{4, t} > 0$ and $D_{2, t} = 0$ for some $t \geq 0$. Additionally, suppose that the conclusion of \Cref{lemma:case_2_neurons_stay_big} holds at time $t$, i.e. for all $\iota \geq \iotaL$, $\w_t(\iota) \geq \xi^2 \kappa^2$, and $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$. Then, $\frac{d}{ds} D_{2, s} \big|_{s = t} < 0$.
+\end{lemma}
+\begin{proof}
+Recall from \Cref{eq:legendre_polynomial_2_4} that
+\begin{align}
+\PtwoD(t)
+& = \frac{d}{d - 1} t^2 - \frac{1}{d - 1}
+\end{align}
+meaning that
+\begin{align}
+\frac{d}{dt} D_{2, t}
+ = \frac{d}{dt} \E_{\w \sim \rho_t} [\PtwoD(t)]
+ = \frac{2d}{d - 1} \E_{\w \sim \rho_t} [\w \cdot \vel_t(\w)]
+\end{align}
+Suppose $D_{2, t} = 0$ and $D_{4, t} > 0$. Then, the velocity is
+\begin{align}
+\vel_t(\w)
+& = -(1 - \w^2) (P_t(\w) + Q_t(\w)) 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = -(1 - \w^2) \Big(4 \sigmaCoeffFour^2 D_{4, t} \w^3 \pm O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \Big)
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = -(1 - \w^2) \cdot 4 \sigmaCoeffFour^2 D_{4, t} \Big(\w^3 \pm \frac{|\w|}{d}\Big) \label{eq:d2_0_d4>0_vel_bound}
+\end{align}
+Thus, for positive particles $\w$, if $\w \gtrsim \frac{1}{\sqrt{d}}$, $\vel_t(\w) \leq 0$, and for $\w \lesssim \frac{1}{\sqrt{d}}$, the velocity is potentially positive. Using this, we can upper bound $\frac{d}{dt} D_{2, t}$ by upper bounding $\E_{\w \sim \rho_t}[\w \cdot \vel_t(\w)]$:
+\begin{align}
+\E_{\w \sim \rho_t}[\w \cdot \vel_t(\w)]
+& = \Prob_{\w \sim \rho_t}\Big(|\w| \lesssim \frac{1}{\sqrt{d}}\Big) \E_{\w \sim \rho_t}\Big[\w \cdot \vel_t(\w) \mid |\w| \lesssim \frac{1}{\sqrt{d}} \Big] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t} \Big(|\w| \gtrsim \frac{1}{\sqrt{d}}\Big) \E_{\w \sim \rho_t}\Big[\w \cdot \vel_t(\w) \mid |\w| \gtrsim \frac{1}{\sqrt{d}}\Big] \\
+& \leq O\Big(\frac{1}{d^{1/2}} \cdot \frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^{3/2}}\Big) + \Prob_{\w \sim \rho_t} \Big(|\w| \gtrsim \frac{1}{\sqrt{d}}\Big) \E_{\w \sim \rho_t}\Big[\w \cdot \vel_t(\w) \mid |\w| \gtrsim \frac{1}{\sqrt{d}}\Big]
+& \tag{By bounding $\w \cdot \vel_t(\w)$ for $0 \leq \w \lesssim \frac{1}{\sqrt{d}}$} \\
+& \leq O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) + \Prob_{\w \sim \rho_t}\Big(|\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]\Big) \\
+& \nextlinespace\nextlinespace\nextlinespace \E_{\w \sim \rho_t} \Big[\w \cdot \vel_t(\w) \mid |\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]\Big]
+& \tag{B.c. for $\w \gtrsim \frac{1}{\sqrt{d}}$, $\vel_t(\w) < 0$.} \\
+& \leq O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) + (1 - O(\kappa) - O(\gamma_4)) \E_{\w \sim \rho_t} \Big[\w \cdot \vel_t(\w) \mid |\w| \in [\xi^2 \kappa^2, 1 - \kappa^4 \xi^3]\Big]
+\end{align}
+where the last inequality is because $\Prob(|\iota| > \iotamid) \leq O(\gamma_4)$ (by the definition of $\iotamid$, see statement of \Cref{lemma:case_2_neurons_stay_big}) and $\Prob(|\iota| < \iotaL) \leq O(\kappa)$ by \Cref{prop:probability_of_relevant_interval}. Simplifying further, we obtain,
+\begin{align}
+\E_{\w \sim \rho_t}[\w \cdot \vel_t(\w)]
+& \leq O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d^2}\Big) - (1 - O(\kappa) - O(\gamma_4)) (\xi^2 \kappa^2) \cdot (1 - (1 - \kappa^4 \xi^3)^2) \sigmaCoeffFour^2 D_{4, t} (\xi^2\kappa^2)^3
+& \tag{By \Cref{eq:d2_0_d4>0_vel_bound} and b.c. $\frac{1}{d}$ is small (\Cref{assumption:target})} \\
+& \lesssim O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) - \sigmaCoeffFour^2 D_{4, t} \cdot \xi^2 \kappa^2 \cdot \kappa^4 \xi^3 \xi^6 \kappa^6 
+& \tag{By \Cref{assumption:target}, $1 - O(\kappa) - O(\gamma_4) \gtrsim 1$}  \\
+& \lesssim O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) - \sigmaCoeffFour^2 D_{4, t} \xi^{11} \kappa^{12}
+\end{align}
+and the last expression is strictly negative, since $d \geq c_3$ by \Cref{assumption:target} and $D_{4, t} \geq 0$. This proves the lemma.
+\end{proof}
+
+Now, we combine \Cref{lemma:case_2_neurons_stay_big}, \Cref{lemma:phase3_case2_fixedA} and \Cref{lemma:phase3_case2_fixedB} to inductively show that for all $t \geq T_2$, we have $D_{2, t} \leq 0$, $D_{4, t} \geq 0$ and most importantly, $\w_t(\iota)$ can be bounded away from $0$ and $1$ for $\iota \in [\iotaL, \iotamid]$.
+
+\begin{lemma} [Phase 3 Case 2 Invariants] \label{lemma:case2_invariant}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Assume $D_{2, T_2} < 0$ and $D_{4, T_2} = 0$, i.e. Phase 3 Case 2 holds. Then, for all $t \geq T_2$, the following will hold:
+\begin{enumerate}
+    \item $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$
+    \item Let $\iotamid$ be defined as in \Cref{lemma:case_2_neurons_stay_big}. Then, $\w_t(\iota) \geq \xi^2 \kappa^2$ for all $\iota \in [\iotaL, \iotamid]$ and $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$. 
+\end{enumerate}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:case2_invariant}]
+For the purpose of this proof, define
+\begin{align}
+I
+& = \{s \geq T_2 \mid D_{2, s} \leq 0 \text{ and } D_{4, s} \geq 0 \}
+\end{align}
+and let $t_0 = \sup I$, meaning that for $t \in [T_2, t_0]$, $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$. Assume for the sake of contradiction that $t_0 < \infty$. Then, by the continuity of $D_{2, t}$ and $D_{4, t}$ as functions of $t$, $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$. Since $t_0 = \sup I$, either $D_{2, t_0} = 0$ or $D_{4, t_0} = 0$ (and one of these has to be nonzero since otherwise $t_0 = \infty$, which is a contradiction). By \Cref{lemma:case_2_initial_potential} and \Cref{lemma:case_2_potential_decrease}, for all $t \in [T_2, t_0]$, for all $\iota, \iota' \in [\iotaL, \iotamid]$,
+\begin{align}
+\Big| \potential(\w_t(\iota)) - \potential(\w_t(\iota'))\Big| \leq 2 \log \frac{1}{\kappa} + \log \frac{1}{\xi} + C
+\end{align}
+where $C$ is a universal constant. Thus, applying \Cref{lemma:case_2_neurons_stay_big} with $s = t_0$, we find that for all $t \in [T_2, t_0]$, for all $\iota \geq \iotaL$, $\w_t(\iota) \geq \xi^2 \kappa^2$, and furthermore, for all $t \in [T_2, t_0]$, $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$.
+
+To finish the proof, there are two cases to address: either $D_{2, t_0} < 0$ and $D_{4, t_0} = 0$, or $D_{2, t_0} = 0$ and $D_{4, t_0} > 0$. In the first case, by \Cref{lemma:phase3_case2_fixedA}, $\frac{d}{dt} D_{4, t} \Big|_{t = t_0} > 0$, meaning that for a sufficiently small open interval of time $J$ containing $t_0$, $D_{4, t}$ is increasing on this interval. This gives us a contradiction, since it implies that for some $t_0' > t_0$ (with $t_0' - t_0$ sufficiently small) $D_{4, t}$ is nonnegative on $[t_0, t_0']$, and since $D_{2, t_0} < 0$, by continuity, $D_{2, t} < 0$ for $t \in [t_0, t_0']$ as long as $t_0' - t_0 > 0$ is sufficiently small. Thus, $\sup I > t_0$, which is a contradiction. In the second case, we can apply the same argument using \Cref{lemma:phase3_case2_fixedB} in place of \Cref{lemma:phase3_case2_fixedA}.
+
+In summary, if $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, then for all $t \geq T_2$, $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$. As a consequence of \Cref{lemma:case_2_potential_decrease}, \Cref{lemma:case_2_initial_potential}, and \Cref{lemma:case_2_neurons_stay_big}, for all $\iota \in [\iotaL, \iotamid]$, $\w_t(\iota) \geq \xi^2 \kappa^2$, and furthermore, $\w_t(\iotamid) \leq 1 - \kappa^4 \xi^3$, for all $t \geq T_2$.
+\end{proof}
+
+We now proceed to bound the running time of Phase 3, Case 2, by dividing it into a few subcases, and showing that the running time that each of these subcases contribute is within our desired bound. The first lemma below bounds the running time spent in the subcase where the positive root $r$ of $P_t$ is larger than $\frac{1}{2}$ (and where $D_{4, t}$ is large relative to $D_{2, t}$).
+
+\begin{lemma} \label{lemma:phase3_case2_rootlarge_time}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and assume that $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. we are in Phase 3, Case 2. Then, at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ time $t \geq T_2$ elapses such that the following hold:
+\begin{enumerate}
+    \item If $r$ is the positive root of $P_t$ (as defined in \Cref{lem:1-d-traj}) then $r \geq \frac{1}{2}$.
+    \item $|D_{4, t}| \geq \xi |D_{2, t}|$
+    \item $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$
+\end{enumerate}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:phase3_case2_rootlarge_time}]
+Let $t \geq T_2$ such that $|D_{4, t}| \geq \xi |D_{2, t}|$. We can write 
+\begin{align}
+P_t(\w) = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3 = 4 \sigmaCoeffFour^2 D_{4, t} \w (\w - r) (\w + r)
+\end{align}
+where $r$ is the positive root of $P_t(\w)$. We are now going to lower bound the expected velocity while $r \geq \frac{1}{2}$ by lower bounding $P_t(\w)$ for a large fraction of $\w$.
+
+For all $\iota \geq \iotaL$, and $t \geq T_2$, we have $\w_t(\iota) \geq \xi^2 \kappa^2$, by \Cref{lemma:case2_invariant}. Thus, $\Prob_{\w \sim \rho_t} (\w \geq \xi^2 \kappa^2) \leq 1 - O(\kappa)$ by \Cref{prop:probability_of_relevant_interval}. Additionally, because $D_{2, t} \leq 0$, we have $\E_{\w \sim \rho_t}[\w^2] \leq \gamma_2 + O(1/d)$ by \Cref{prop:d2<0}, meaning that by Markov's inequality, $\Prob_{\w \sim \rho_t}(|\w| \geq \frac{1}{3}) \lesssim \gamma_2 + 1/d \leq \gamma_2$, where the last inequality is because $d \geq c_3$ by \Cref{assumption:target}. By a union bound,
+\begin{align} \label{eq:prob_lower_bound_large_root}
+\Prob_{\w \sim \rho_t} (|\w| \in [\xi^2 \kappa^2, 1/3])
+& \geq 1 - O(\gamma_2 + \kappa)
+\end{align}
+For particles $w$ such that $|\w| \in [\xi^2 \kappa^2, 1/3]$, we can lower bound the velocity if $r \geq \frac{1}{2}$:
+\begin{align}
+|\vel_t(\w)|
+& \gtrsim (1 - \w^2)|P_t(\w) + Q_t(\w)|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim |P_t(\w) + Q_t(\w)| 
+& \tag{B.c. $w \leq 1/3$} \\
+& \gtrsim |P_t(\w)| - |Q_t(\w)| \\
+& \gtrsim |2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3| - |\lambdaD^{(1)} \w + \lambdaD^{(3)} \w^3|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim |2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3| - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim \sigmaCoeffFour^2 D_{4, t} |\w| |\w - r| |\w + r| - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) 
+& \tag{By definition of $r$} \\
+& \gtrsim \sigmaCoeffFour^2 D_{4, t} \cdot \xi^2 \kappa^2 \cdot \frac{1}{6} \cdot \frac{1}{2} - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) 
+& \tag{B.c. $\w \in [\xi^2 \kappa^2, 1/3]$ and $r \geq 1/2$} \\
+& \gtrsim \sigmaCoeffFour^2 D_{4, t} \xi^2 \kappa^2
+& \label{eq:vel_lower_bound_large_root}
+\end{align}
+where the last inequality is because $|D_{4, t}| \geq \xi |D_{2, t}|$ and $d$ is sufficiently large by \Cref{assumption:target}. Thus,
+\begin{align}
+\E_{\w \sim \rho_t} |\vel_t(\w)|^2
+& \gtrsim \Prob_{\w \sim \rho_t}(|\w| \in [\xi^2 \kappa^2, 1/3]) \cdot \E_{\w \sim \rho_t}[|\vel_t(\w)|^2 \mid |\w| \in [\xi^2 \kappa^2, 1/3]] \\
+& \gtrsim (1 - O(\gamma_2 + \kappa)) \cdot \sigmaCoeffFour^4 D_{4, t}^2 \xi^4 \kappa^4
+& \tag{By \Cref{eq:prob_lower_bound_large_root}} \\
+& \gtrsim \sigmaCoeffFour^4 D_{4, t}^2 \xi^4 \kappa^4
+& \tag{By \Cref{assumption:target} since $\gamma_2, d$ sufficiently small, large resp.}
+\end{align}
+and
+\begin{align}
+\frac{dL(\rho_t)}{dt}
+& \lesssim - \sigmaCoeffFour^4 D_{4, t}^2 \xi^4 \kappa^4
+& \tag{By \Cref{lemma:loss_decrease}} \\
+& \lesssim -\sigmaCoeffFour^4 (D_{4, t}^2 + \xi^2 D_{2, t}^2 ) \xi^4 \kappa^4
+& \tag{B.c. $|D_{4, t}| \geq \xi |D_{2, t}|$} \\
+& \lesssim -\sigmaCoeffFour^4 (D_{4, t}^2 + D_{2, t}^2) \xi^4 \kappa^6 \\
+& \lesssim -\sigmaCoeffFour^2 \xi^4 \kappa^6 L(\rho_t)
+& \tag{B.c. $\sigmaCoeffTwo^2 \asymp \sigmaCoeffFour^2$ by \Cref{assumption:target}}
+\end{align}
+Since $L(\rho_0) \asymp \sigmaCoeffFour^2 \gamma_2^2$ by \Cref{lemma:phase1_d2_d4_neg} and \Cref{assumption:target}, the amount of time spent in the case where $r(t) \geq \frac{1}{2}$, $|D_{4, t}| \geq \xi |D_{4, t}|$ and $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$ after $t \geq T_2$ is at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ by Gronwall's inequality (\Cref{fact:gronwall}).
+\end{proof}
+
+Next, we deal with the subcase where $D_{4, t}$ is small relative to $D_{2, t}$.
+
+\begin{lemma} \label{lemma:phase3_case2_d4_small_time}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. we are in Phase 3, Case 2. Then, at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ time $t \geq T_2$ elapses such that the following hold:
+\begin{enumerate}
+    \item $|D_{4, t}| \leq \xi |D_{2, t}|$
+    \item $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$
+\end{enumerate}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:phase3_case2_d4_small_time}]
+Suppose $|D_{4, t}| \leq \xi |D_{2, t}|$ at some time $t \geq T_2$. Then, we can lower bound the velocity for a large fraction of $\w$'s, as follows. First, we provide a bound on $P_t(\w)$ (defined in \Cref{lem:1-d-traj}):
+\begin{align}
+P_t(\w)
+& = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = -2 \sigmaCoeffTwo^2 |D_{2, t}| \w + 4 \sigmaCoeffFour^2 |D_{4, t}| \w^3 
+& \tag{B.c. $D_{2, t} < 0$ and $D_{4, t} > 0$ by \Cref{lemma:case2_invariant}} \\
+& = -2 \sigmaCoeffTwo^2 |D_{2, t}| \w + O(\xi \sigmaCoeffFour^2 |D_{2, t}| \w^3) 
+& \tag{B.c. $|D_{4, t}| \leq \xi |D_{2, t}|$} \\
+& = -2 \sigmaCoeffTwo^2 |D_{2, t}| \w + O(\xi \sigmaCoeffTwo^2 |D_{2, t}| \w^3) 
+& \tag{B.c. $\sigmaCoeffTwo^2 \lesssim \sigmaCoeffFour^2$ by \Cref{assumption:target}} \\
+& = -2 \sigmaCoeffTwo^2 |D_{2, t}| \w \cdot (1 - O(\xi))
+\end{align}
+Next, we provide a bound on $Q_t(\w)$:
+\begin{align}
+|Q_t(\w)|
+& = |\lambdaD^{(1)} \w + \lambdaD^{(3)} \w|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& = O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}|}{d}\Big) |\w| 
+& \tag{B.c. $|D_{4, t}| \leq \xi |D_{2, t}|$ and $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$} \\
+& = O(\xi \sigmaCoeffTwo^2 |D_{2, t}|) |\w| 
+& \tag{B.c. $1/d \leq \frac{1}{\log \log d} = \xi$ by \Cref{assumption:target}}
+\end{align}
+Thus,
+\begin{align} \label{eq:corner_case_individual_vel_lb}
+|P_t(\w) + Q_t(\w)|
+& \geq 2 \sigmaCoeffTwo^2 |D_{2, t}| w \cdot (1 - O(\xi))
+\end{align}
+By \Cref{lemma:case2_invariant}, we have $D_{2, t} \leq 0$, meaning that by \Cref{prop:d2<0},
+\begin{align}
+\E_{\w \sim \rho_t}[\w^2] 
+& \leq \gamma_2 + O(1/d)
+\end{align}
+Thus, by Markov's inequality and \Cref{assumption:target},
+\begin{align}
+\Prob_{\w \sim \rho_t}(|\w| \geq 1/2) 
+\lesssim \gamma_2
+\end{align}
+Furthermore, by \Cref{lemma:case2_invariant}, for all $\iota \geq \iotaL$, $\w_t(\iota) \geq \xi^2 \kappa^2$ for all times $t \geq T_2$, meaning that $\w_t \geq \xi^2 \kappa^2$ with probability at least $1 - O(\kappa)$ under $\rho_t$, by \Cref{prop:probability_of_relevant_interval}. Thus, by a union bound,
+\begin{align}
+\Prob_{\w \sim \rho_t}(|\w| \in [\xi^2 \kappa^2, 1/2])
+& \geq 1 - O(\gamma_2) - O(\kappa) \geq \frac{1}{2}
+\end{align}
+where the last inequality is by \Cref{assumption:target} since $\gamma_2$ and $d$ are sufficiently small and large respectively. Thus the average velocity is at least
+\begin{align}
+\E_{\w \sim \rho_t} |\vel_t(\w)|^2
+& \gtrsim \Prob_{\w \sim \rho_t}(\xi^2 \kappa^2 \leq |\w| \leq 1/2) \cdot \E_{\w \sim \rho_t} [|\vel_t(\w)|^2 \mid \xi^2 \kappa^2 \leq |\w| \leq 1/2] \\
+& \gtrsim \frac{1}{2} \cdot \E_{\w \sim \rho_t} [|\vel_t(\w)|^2 \mid \xi^2 \kappa^2 \leq |\w| \leq 1/2] \\
+& \gtrsim \E_{\w \sim \rho_t} [|\vel_t(\w)|^2 \mid \xi^2 \kappa^2 \leq |\w| \leq 1/2] \\
+& \gtrsim \E_{\w \sim \rho_t} [(1 - \w^2)^2 |P_t(\w) + Q_t(\w)|^2 \mid \xi^2 \kappa^2 \leq |\w| \leq 1/2] \\
+& \gtrsim \E_{\w \sim \rho_t} [|P_t(\w) + Q_t(\w)|^2 \mid 
+\xi^2 \kappa^2 \leq |\w| \leq 1/2]
+& \tag{B.c. $|\w| \leq 1/2$} \\
+& \gtrsim \E_{\w \sim \rho_t} [\sigmaCoeffTwo^4 |D_{2, t}|^2 \w^2 \mid \xi^2 \kappa^2 \leq |\w| \leq 1/2]
+& \tag{By \Cref{eq:corner_case_individual_vel_lb}} \\
+& \gtrsim \sigmaCoeffTwo^4 |D_{2, t}|^2 \xi^4 \kappa^4
+\end{align}
+Thus, at any time $t$ where $|D_{4, t}| \leq \xi |D_{2, t}|$, we have
+\begin{align}
+\frac{dL(\rho_t)}{dt}
+& \lesssim - \sigmaCoeffTwo^4 |D_{2, t}|^2 \xi^4 \kappa^4 \\
+& \lesssim -\sigmaCoeffTwo^2 (\sigmaCoeffTwo^2 |D_{2, t}|^2 + \sigmaCoeffFour^2 |D_{4, t}|^2) \xi^4 \kappa^4
+& \tag{B.c. $|D_{4, t}| \leq \xi |D_{2, t}|$ and $\sigmaCoeffFour^2 \lesssim \sigmaCoeffTwo^2$ by \Cref{assumption:target}} \\
+& \lesssim - \sigmaCoeffTwo^2 \xi^4 \kappa^4 L(\rho_t)
+\end{align}
+Since the initial loss is $L(\rho_0) \lesssim \sigmaCoeffTwo^2 \gamma_2^2$ by \Cref{lemma:phase1_d2_d4_neg}, by an argument similar to that used in \Cref{lemma:phase3_case2_rootlarge_time}, using Gronwall's inequality (\Cref{fact:gronwall}), we find that
+\begin{align}
+\int_{T_2}^\infty 1(|D_{4, t}| \leq \xi |D_{2, t}|) 1(L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2) dt \lesssim \frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
+\end{align}
+i.e. the time spent in the subcase in the statement of this lemma is at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$, as desired.
+\end{proof}
+
+We have already considered the case where $|D_{4, t}| \geq \xi |D_{2, t}|$ and $r \geq \frac{1}{2}$. Next, we must deal with the case where $|D_{4, t}| \geq \xi |D_{2, t}|$, but where $r \leq \frac{1}{2}$. We further split this case into two subcases. In the next lemma, we deal with the subcase where $w_t(\iotaR) \geq 1 - \xi$, meaning a non-negligible portion of the particles are close to $1$.
+
+\begin{lemma} \label{lemma:phase3_case2_movement_away_from_1}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. we are in Phase 3, Case 2. Then, the amount of time $t \geq T_2$ that elapses while the following conditions simultaneously hold:
+\begin{enumerate}
+    \item $|D_{4, t}| \geq \xi |D_{2, t}|$
+    \item $r \leq \frac{1}{2}$ where $r$ is the positive root of $P_t$
+    \item $\w_t(\iotaR) \geq 1 - \xi$
+    \item $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$
+\end{enumerate}
+is at most $\frac{1}{\sigmaCoeffFour^2 \epsilon \xi^7 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:phase3_case2_movement_away_from_1}]
+If $\w(\iotaR) \geq 1 - \xi$ at any time, then the subsequent times when it could possibly be moving to towards $1$ are:
+\begin{enumerate}
+    \item During phase 2 --- note that before phase 2, $\w_t(\iotaR) \leq \frac{1}{\log d}$, so it is not possible for $\w_t(\iotaR)$ to be larger than $1 - \xi$ since, by \Cref{lemma:w_increasing_phase2}, $\w_t(\iotaR)$ is increasing during Phase 1.
+    \item The times $t \geq T_2$ when $|D_{4, t}| \leq \xi |D_{2, t}|$
+    \item The times $t \geq T_2$ when $|D_{4, t}| \geq \xi |D_{2, t}|$ and $r \geq \frac{1}{2}$, where $r$ is the positive root of $P_t(\w)$
+\end{enumerate}
+
+The only case not mentioned above consists of the times $t \geq T_2$ when $|D_{4, t}| \geq \xi |D_{2, t}|$ and the positive root $r$ of $P_t(\w)$ is less than $\frac{1}{2}$. In this case, $\w_t(\iotaR)$ will be moving away from $1$. For this reason, we also do not need to consider the case discussed in \Cref{lemma:phase3_case2_particles_away_from_root}.
+
+Thus, we will use upper bounds on the velocity and time during the first 3 cases listed above, and use a lower bound on the velocity in the last. First note that the velocity can always be upper bounded as follows:
+\begin{align}
+\vel_t(\w)
+& \lesssim (1 - \w) (1 + \w) \cdot |P_t(\w) + Q_t(\w)| 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \lesssim (1 - \w) (1 + \w) \cdot \Big| 2 \sigmaCoeffTwo^2 |D_{2, t}| \w + 4 \sigmaCoeffFour^2 |D_{4, t}| \w^3 + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \Big|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \lesssim (1 - \w) \cdot (\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|)
+& \tag{B.c. $|\w| \leq 1$}
+\end{align}
+Thus,
+\begin{align} \label{eq:growth_at_1_UB}
+\frac{d}{dt} (1 - \w)
+ \gtrsim -(\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|) (1 - \w) 
+ \gtrsim -(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (1 - \w)
+\end{align}
+
+\paragraph{During Phase 2.} By \Cref{lemma:phase_2_runtime}, the running time during Phase 2 is $T_2 - T_1 \lesssim \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \xi^6 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$. At the beginning of Phase 2, $\w_t(\iotaR) \leq \frac{1}{\log d}$, by the definition of Phase 1. Thus, by Gronwall's inequality (\Cref{fact:gronwall}), at time $T_2$,
+\begin{align}
+1 - \w_{T_2}(\iotaR)
+& \geq \Big(1 - \frac{1}{\log d}\Big) \cdot \exp\Big(-(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \xi^6 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)
+& \tag{By \Cref{fact:gronwall}, \Cref{eq:growth_at_1_UB} and bound on $T_2 - T_1$} \\
+& \geq \Big(1 - \frac{1}{\log d}\Big) \cdot \exp\Big(-\frac{1}{\xi^6 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)
+& \label{eq:phase_2_contribution}
+\end{align}
+
+\paragraph{Times $t \geq T_2$ when $|D_{4, t}| \leq \xi |D_{2, t}|$ and $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.} By \Cref{lemma:phase3_case2_d4_small_time}, this case contributes at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ time to the overall running time. Thus, by Gronwall's inequality (\Cref{fact:gronwall}), the additional factor that this case contributes to $1 - \w_t(\iotaR)$ is larger than or equal to
+\begin{align}
+\exp\Big(-(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big) 
+& \geq \exp\Big(-\frac{C}{\xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)
+\label{eq:d4_small_contribution}
+\end{align}
+for some universal constant $C$.
+
+\paragraph{Times $t \geq T_2$ when $|D_{4, t}| \geq \xi |D_{2, t}|$, $r(t) \geq \frac{1}{2}$ and $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.} By \Cref{lemma:phase3_case2_rootlarge_time}, this case contributes at most $\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ to the overall running time. Thus, by Gronwall's inequality (\Cref{fact:gronwall}), the additional factor that this case contributes to $1 - \w_t(\iotaR)$ is larger than or equal to
+\begin{align}
+\exp\Big(-(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big) \Big)
+& \geq \exp\Big(-\frac{C}{\xi^4 \kappa^6} \log \Big(\frac{\gamma_2}{\epsilon}\Big)\Big) \label{eq:root_big_contribution}
+\end{align}
+for some universal constant $C$.
+
+\paragraph{Times $t \geq T_2$ when $|D_{4, t}| \geq \xi |D_{2, t}|$, $r(t) \leq \frac{1}{2}$ and $\wR \geq 1 - \xi$.} In this case, we obtain a lower bound on $\frac{d}{dt}(1 - \wR)$, where we have written $\wR = \w_t(\iotaR)$ for convenience. First let us obtain a lower bound on $P_t(\wR)$:
+\begin{align}
+P_t(\wR)
+& \gtrsim 2 \sigmaCoeffTwo^2 D_{2, t} \wR + 4 \sigmaCoeffFour^2 D_{4, t} \wR^3 \\ 
+& \gtrsim 4 \sigmaCoeffFour^2 D_{4, t} \wR (\wR - r) (\wR + r)
+& \tag{B.c. $r$ is the positive root of $P_t$} \\
+& \gtrsim \sigmaCoeffFour^2 D_{4, t} (1 - \xi - r)
+& \tag{B.c. $D_{4, t} \geq 0$ and $\wR \geq 1 - \xi$} \\
+& \gtrsim \sigmaCoeffFour^2 D_{4, t} 
+& \tag{B.c. $r \leq \frac{1}{2}$ and $\xi \leq \frac{1}{\log \log d}$}
+\end{align}
+Next let us obtain an upper bound on $Q_t(\wR)$:
+\begin{align}
+|Q_t(\wR)|
+& \lesssim |\lambdaD^{(1)}| + |\lambdaD^{(3)}|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \lesssim \frac{\sigmaCoeffFour^2 |D_{4, t}|}{\xi d}
+& \tag{B.c. $|D_{2, t}| \leq |D_{4, t}|/\xi$ and $\sigmaCoeffTwo^2 \lesssim \sigmaCoeffFour^2$ by \Cref{assumption:target}}
+\end{align}
+Thus, because $\frac{1}{\xi d} \asymp \frac{\log \log d}{d}$,
+\begin{align} \label{eq:pt_and_qt_for_large_particles}
+P_t(\wR) + Q_t(\wR)
+& \gtrsim \sigmaCoeffFour^2 D_{4, t}
+\end{align}
+and when $\wR \geq 1 - \xi$,
+\begin{align}
+\frac{d}{dt} (1 - \wR)
+& \gtrsim -\vel_t(\wR) \\
+& \gtrsim (1 - \wR) (1 + \wR) (P_t(\wR) + Q_t(\wR))
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim (1 - \wR) \cdot \sigmaCoeffFour^2 D_{4, t}
+& \tag{By \Cref{eq:pt_and_qt_for_large_particles} and b.c. $\wR \geq 1 - \xi$}
+\end{align}
+Furthermore, since $|D_{4, t}| \geq \xi |D_{2, t}|$, this means that $|D_{4, t}| \gtrsim \xi \epsilon$, since otherwise, $|D_{2, t}| \lesssim \epsilon$ and $|D_{4, t}| \lesssim \xi \epsilon$, and the loss would be less than $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$. Thus, if time $\Tesc$ is spent in this case, then by Gronwall's inequality (\Cref{fact:gronwall}), this case contributes a factor of at least 
+\begin{align} \label{eq:root_small_contribution}
+\exp(\Tesc \cdot \sigmaCoeffFour^2 D_{4, t})
+& \geq \exp(\Tesc \cdot \sigmaCoeffFour^2 \xi \epsilon)
+\end{align}
+to $1 - \wR$.
+
+\paragraph{Summary of 4 Cases.} In summary, by \Cref{eq:phase_2_contribution}, \Cref{eq:d4_small_contribution}, \Cref{eq:root_big_contribution} and \Cref{eq:root_small_contribution},
+\begin{align}
+1 - \wR
+& \geq 
+\Big(1 - \frac{1}{\log d}\Big) \cdot \exp\Big(-\frac{1}{\xi^6 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)
+\exp\Big(-\frac{C}{\xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big) \\
+& \nextlinespace\nextlinespace\nextlinespace \exp\Big(-\frac{C}{\xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big) 
+\exp(\Tesc \cdot \sigmaCoeffFour^2 \xi \epsilon)
+\end{align}
+where $\Tesc$ is the amount of time spent so far in the case where $|D_{4, t}| \geq \xi |D_{2, t}|$, $r(t) \geq \frac{1}{2}$ and $\wR \geq 1 - \xi$. This is in fact a lower bound on $1 - \wR$ when $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$, since at all other times when $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\epsilon^2$, we have that $1 - \wR$ is increasing (i.e. $\wR$ is moving away from $1$). In particular, if
+\begin{align}
+\Tesc
+\gtrsim \frac{1}{\sigmaCoeffFour^2 \xi \epsilon} \Big(\frac{1}{\xi^6 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big) + \frac{C}{\xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big) + \frac{C}{\xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big) \Big) 
+\gtrsim \frac{1}{\sigmaCoeffFour^2 \epsilon \xi^7 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
+\end{align}
+then $1 - \wR$ will be at least $\xi$.
+\end{proof}
+
+Finally, the following lemma deals with the last case, where the positive root $r$ of $P_t$ is at most $\frac{1}{2}$, and additionally, $\w_t(\iotaR) \leq 1 - \xi$.
+
+\begin{lemma} \label{lemma:phase3_case2_particles_away_from_root}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Assume $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. Phase 3 Case 2 holds. Then, the amount of time $t \geq T_2$ that elapses while the following conditions simultaneously hold:
+\begin{enumerate}
+    \item $|D_{4, t}| \geq \xi |D_{2, t}|$
+    \item $r \leq \frac{1}{2}$
+    \item $\w_t(\iotaR) \leq 1 - \xi$
+    \item $L(\rho_t) \geq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$
+\end{enumerate}
+is at most $\frac{1}{\sigmaCoeffFour^2 \gamma_2^{11/2} \xi^8 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:phase3_case2_particles_away_from_root}]
+For convenience and ease of presentation, in this proof we define $\tau := \sqrt{\gamma_2}$, and $\beta \geq 1.1$ such that $\gamma_4 = \beta \tau^4$. (Note that by \Cref{assumption:target}, $\beta$ is at most a universal constant.) We first show that there is always a large fraction of particles which are far away from the positive root $r$ of $P_t(\w)$. We consider two cases: (i) $r \leq \tau^{3/2}$ and (ii) $r \geq \tau^{3/2}$.
+
+\paragraph{Case 1: $r \leq \tau^{3/2}$.} Assume for the sake of contradiction that
+\begin{align}
+\Prob_{\w \sim \rho_t}(|\w| \geq r + \tau^{3/2}) 
+& \leq \tau^4
+\end{align}
+Then,
+\begin{align}
+\E_{\w \sim \rho_t}[\w^4]
+& \leq \Prob_{\w \sim \rho_t}(|\w| \geq r + \tau^{3/2}) + \Prob_{\w \sim \rho_t}(|\w| \leq r + \tau^{3/2}) \E_{\w \sim \rho_t}[\w^4 \mid |\w| \leq r + \tau^{3/2}] \\
+& = \tau^4 + (r + \tau^{3/2})^4 \\
+& \leq \tau^4 + (2 \tau^{3/2})^4 
+& \tag{By assumption that $r \leq \tau^{3/2}$} \\
+& = \tau^4 + 16 \tau^6
+\end{align}
+Thus,
+\begin{align}
+D_{4, t}
+& = \E_{\w \sim \rho_t}[\PfourD(\w)] - \beta \tau^4 \\
+& \leq \E_{\w \sim \rho_t}[\w^4] + O\Big(\frac{1}{d}\Big) - \beta \tau^4
+& \tag{By \Cref{eq:legendre_polynomial_2_4}} \\
+& \leq \tau^4 + 16 \tau^6 + O\Big(\frac{1}{d}\Big) - \beta \tau^4 \\
+& = 16 \tau^6 + O\Big(\frac{1}{d}\Big) - (\beta - 1)\tau^4 \\
+& \leq 17 \tau^6 - (\beta - 1)\tau^4 
+& \tag{B.c. $d$ is sufficiently large by \Cref{assumption:target}} \\
+& < 0
+& \tag{B.c. $(\beta - 1) > 17 \tau^2$ by \Cref{assumption:target}}
+\end{align}
+which contradicts the assumption that we are in Phase 3, Case 2 since $D_{4, t} > 0$ by \Cref{lemma:case2_invariant}. Thus, if $r \leq \tau^{3/2}$, then
+\begin{align}
+\Prob_{\w \sim \rho_t}(|\w| \geq r + \tau^{3/2}) \geq \tau^4
+\end{align}
+
+\paragraph{Case 2: $r \geq \tau^{3/2}$.} 
+Suppose that
+\begin{align} \label{eq:contradiction_phase3_case2}
+\Prob_{\w \sim \rho_t}(r - \tau^{3/2} \leq |\w| \leq r + \tau^{3/2})
+& \geq 1 - \tau^5
+\end{align}
+Then,
+\begin{align}
+\E_{\w \sim \rho_t}[\w^2] 
+& \geq \Prob_{\w \sim \rho_t}(r - \tau^{3/2} \leq |w| \leq r + \tau^{3/2}) \E_{\w \sim \rho_t}[\w^2 \mid |\w| \in [r - \tau^{3/2}, r + \tau^{3/2}]] \\
+& \geq (1 - \tau^5) \cdot (r - \tau^{3/2})^2
+\end{align}
+Since $D_{2, t} < 0$ by \Cref{lemma:case2_invariant}, this implies that $\E_{\w \sim \rho_t}[\w^2] \leq \tau^2 + O(1/d)$ by \Cref{prop:d2<0}. Thus,
+\begin{align}
+(1 - \tau^5) (r - \tau^{3/2})^2 \leq \tau^2 + O(1/d)
+\end{align}
+and taking square roots gives
+\begin{align}
+(1 - \tau^5)^{1/2} (r - \tau^{3/2}) \leq \tau + O(1/\sqrt{d})
+\end{align}
+Thus,
+\begin{align} \label{eq:r_upper_bound_phase3_case2}
+r
+& \leq \tau^{3/2} + \frac{1}{(1 - \tau^5)^{1/2}} \cdot \Big(\tau + O\Big(\frac{1}{\sqrt{d}}\Big)\Big)
+\end{align}
+On the other hand,
+\begin{align}
+\E_{\w \sim \rho_t}[\w^4]
+& \leq \Prob_{\w \sim \rho_t}(|\w| \in [r - \tau^{3/2}, r + \tau^{3/2}]) \E_{\w \sim \rho_t}[\w^4 \mid |\w| \in [r - \tau^{3/2}, r + \tau^{3/2}]] \\
+& \nextlinespace\nextlinespace + \Prob_{\w \sim \rho_t}(|\w| \not\in [r - \tau^{3/2}, r + \tau^{3/2}]) \\
+& \leq (r + \tau^{3/2})^4 + \tau^5
+& \tag{By the assumption in \Cref{eq:contradiction_phase3_case2}}
+\end{align}
+and since $D_{4, t} \geq 0$ by \Cref{lemma:case2_invariant}, $\E_{\w \sim \rho_t}[\w^4] \geq \beta \tau^4 - O(1/d)$ by \Cref{eq:legendre_polynomial_2_4} and because $\w \sim \rho_t$ are bounded by $1$ in absolute value. Thus, by the above equation,
+\begin{align}
+(r + \tau^{3/2})^4 + \tau^5 
+& \geq \beta \tau^4 - O\Big(\frac{1}{d}\Big)
+\end{align}
+Rearranging gives
+\begin{align}
+(r + \tau^{3/2})^4 + \tau^5 + O\Big(\frac{1}{d}\Big) \geq \beta \tau^4
+\end{align}
+and taking fourth roots gives
+\begin{align}
+r + \tau^{3/2} + \tau^{5/4} + O\Big(\frac{1}{d^{1/4}}\Big) \geq \beta^{1/4} \tau
+\end{align}
+(by the inequality $\sqrt{x + y} \leq \sqrt{x} + \sqrt{y}$). Therefore,
+\begin{align} \label{eq:r_lower_bound_phase3_case2}
+r \geq \beta^{1/4} \tau - \tau^{3/2} - \tau^{5/4} - O\Big(\frac{1}{d^{1/4}}\Big)
+\end{align}
+Combining \Cref{eq:r_upper_bound_phase3_case2} and \Cref{eq:r_lower_bound_phase3_case2} gives
+\begin{align}
+\beta^{1/4} \tau - \tau^{3/2} - \tau^{5/4} - O\Big(\frac{1}{d^{1/4}}\Big)
+& \leq \tau^{3/2} + \frac{1}{(1 - \tau^5)^{1/2}} \cdot \Big(\tau + O\Big(\frac{1}{\sqrt{d}}\Big)\Big)
+\end{align}
+Rearranging this equation gives
+\begin{align}
+\Big(\beta^{1/4} - \frac{1}{\sqrt{1 - \tau^5}}\Big) \tau
+& \leq 2 \tau^{3/2} + \tau^{5/4} + O\Big(\frac{1}{d^{1/4}}\Big) + \frac{1}{\sqrt{1 - \tau^5}} \cdot O\Big(\frac{1}{\sqrt{d}}\Big) \\
+& \leq 3 \tau^{5/4} + O\Big(\frac{1}{d^{1/4}}\Big) + \frac{1}{\sqrt{1 - \tau^5}} \cdot O\Big(\frac{1}{\sqrt{d}}\Big)
+& \tag{B.c. $\tau \leq 1$, we have $\tau^{3/2} \leq \tau^{5/4}$} \\
+& \leq 4 \tau^{5/4} + \frac{1}{\sqrt{1 - \tau^5}} \cdot O\Big(\frac{1}{\sqrt{d}}\Big) 
+& \tag{B.c. $d$ is sufficiently large by \Cref{assumption:target}} \\
+& \leq 4 \tau^{5/4} + O\Big(\frac{1}{\sqrt{d}}\Big)
+& \tag{B.c. $\tau \leq \frac{1}{2}$ by \Cref{assumption:target}} \\
+& \leq 5 \tau^{5/4} 
+& \tag{B.c. $d$ is sufficiently large by \Cref{assumption:target}}
+\end{align}
+Further rearranging gives
+\begin{align}
+\beta^{1/4} - \frac{1}{\sqrt{1 - \tau^5}}
+& \leq 5 \tau^{1/4}
+\end{align}
+This contradicts \Cref{assumption:target} --- since $\beta \geq 1.1$, the left-hand side is larger than an absolute constant, while the right-hand side can be made sufficiently small (since $\gamma_2 \leq c_2$ and $c_2$ is chosen to be sufficiently small). Thus, in the case that $r \geq \tau^{3/2}$, we obtain
+\begin{align}
+\Prob_{\w \sim \rho_t}(|w| \not\in [r - \tau^{3/2}, r + \tau^{3/2}]) \geq \tau^5
+\end{align}
+In summary, whether $r \geq \tau^{3/2}$ or $r \leq \tau^{3/2}$, we can conclude that
+\begin{align}
+\Prob_{\w \sim \rho_t}(|w| \not\in [r - \tau^{3/2}, r + \tau^{3/2}]) \geq \tau^5
+\end{align}
+Further assume that $\w_t(\iotaR) \leq 1 - \xi$, and note that by \Cref{lemma:case2_invariant}, for all $\iota > \iotaL$, we have $\w_t(\iota) \geq \xi^2 \kappa^2$. Thus, by \Cref{prop:probability_of_relevant_interval}, with probability $1 - O(\kappa)$ under $\rho_t$, we have $\xi^2 \kappa^2 \leq |\w| \leq 1 - \xi$. By a union bound, 
+\begin{align} \label{eq:w_large_away_from_root_prob}
+\Prob_{\w \sim \rho_t}(||\w| - r| \geq \tau^{3/2} \text{ and }\xi^2 \kappa^2 \leq |\w| \leq 1 - \xi)
+ \geq \tau^5 - O(\kappa) 
+ \geq \frac{\tau^5}{2}
+\end{align}
+Suppose $\w$ satisfies $||w| - r| \geq \tau^{3/2}$ and $\xi^2 \kappa^2 \leq |w| \leq 1 - \xi$, i.e. the conditions mentioned in \Cref{eq:w_large_away_from_root_prob}, and write
+\begin{align}
+P_t(\w)
+ = 2 \sigmaCoeffTwo^2 D_{2, t} \w + 4 \sigmaCoeffFour^2 D_{4, t} \w^3 
+ = 4 \sigmaCoeffFour^2 D_{4, t} \w (\w - r) (\w + r)
+\end{align}
+Then,
+\begin{align}
+|\vel_t(\w)|
+& \gtrsim |1 - \w^2| \cdot |P_t(\w) + Q_t(\w)|
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim |1 + \w| \cdot |1 - \w| \cdot |P_t(\w) + Q_t(\w)| \\
+& \gtrsim \xi |P_t(\w) + Q_t(\w)|
+& \tag{B.c. $|\w| \leq 1 - \xi$} \\
+& \gtrsim \xi \cdot \Big| 4 \sigmaCoeffFour^2 D_{4, t} \w (\w - r)(\w + r) - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\w| \Big| 
+& \tag{By \Cref{lem:1-d-traj}} \\
+& \gtrsim \xi \Big(4 \sigmaCoeffFour^2 |D_{4, t}| \xi^2 \kappa^2 \cdot \tau^{3/2} \cdot \tau^{3/2} - O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big)\Big)
+& \tag{By triangle inequality and b.c. $|w| \geq \xi^2 \kappa^2$ and $||\w| - r| \geq \tau^{3/2}$} \\
+& \gtrsim \xi \Big(4 \sigmaCoeffFour^2 |D_{4, t}| \tau^3 \xi^2 \kappa^2 - O\Big(\frac{\sigmaCoeffFour^2 |D_{4, t}|}{\xi d}\Big)\Big)
+& \tag{B.c. $|D_{2, t}| \leq |D_{4, t}|/\xi$ and $\sigmaCoeffTwo^2 \lesssim \sigmaCoeffFour^2$ by \Cref{assumption:target}} \\
+& \gtrsim \xi \cdot 4 \sigmaCoeffFour^2 |D_{4, t}| \tau^3 \xi^2 \kappa^2
+& \tag{B.c. $1/(\xi d) = \frac{\log \log d}{d}$ and $d$ is sufficiently large (\Cref{assumption:target})} \\
+& \gtrsim \sigmaCoeffFour^2 \tau^3 \xi^3 \kappa^2 |D_{4, t}|
+& \label{eq:velocity_away_from_root_lb}
+\end{align}
+and the average velocity is at least
+\begin{align}
+\E_{\w \sim \rho_t} |\vel_t(\w)|^2
+& \gtrsim \Prob_{\w \sim \rho_t}(||\w| - r| \geq \tau^{3/2} \text{ and }\xi^2 \kappa^2 \leq |\w| \leq 1 - \xi)
+\cdot \sigmaCoeffFour^4 \tau^6 \xi^6 \kappa^4 |D_{4, t}|^2
+& \tag{By \Cref{eq:velocity_away_from_root_lb}} \\
+& \gtrsim \tau^5 \cdot \sigmaCoeffFour^4 \tau^6 \xi^6 \kappa^4 |D_{4, t}|^2
+& \tag{By \Cref{eq:w_large_away_from_root_prob}} \\
+& \gtrsim \sigmaCoeffFour^4 \tau^{11} \xi^6 \kappa^4 |D_{4, t}|^2 \\
+& \gtrsim \sigmaCoeffFour^2 \tau^{11} \xi^6 \kappa^4 (\xi^2 L(\rho_t))
+& \tag{B.c. $|D_{4, t}| \geq \xi |D_{2, t}|$ and $\sigmaCoeffFour^2 \gtrsim \sigmaCoeffTwo^2$ by \Cref{assumption:target}} \\
+& \gtrsim \sigmaCoeffFour^2 \tau^{11} \xi^8 \kappa^4 L(\rho_t)
+\end{align}
+Thus, by \Cref{lemma:loss_decrease},
+\begin{align}
+\frac{dL(\rho_t)}{dt}
+& \lesssim -\sigmaCoeffFour^2 \tau^{11} \xi^8 \kappa^4 L(\rho_t)
+\end{align}
+Since the initial loss is $L(\rho_0) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2^2$ by \Cref{lemma:phase1_d2_d4_neg}, we can calculate using Gronwall's inequality (\Cref{fact:gronwall}) that the time spent when the conditions in the statement of this lemma simultaneously hold is at most $\frac{1}{\sigmaCoeffFour^2 \tau^{11} \xi^8 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$, as desired.
+\end{proof}
+
+To conclude, we show \Cref{lemma:phase3_case2_overall_time} which gives a bound on the running time during Phase 3, Case 2.
+
+\begin{proof}[Proof of \Cref{lemma:phase3_case2_overall_time}]
+By combining \Cref{lemma:phase3_case2_rootlarge_time}, \Cref{lemma:phase3_case2_d4_small_time}, \Cref{lemma:phase3_case2_movement_away_from_1}, and \Cref{lemma:phase3_case2_particles_away_from_root}, we find that the overall running time during Phase 3 Case 2 is at most
+\begin{align}
+O\Big(\frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
++ \frac{1}{\sigmaCoeffTwo^2 \xi^4 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
++ \frac{1}{\sigmaCoeffFour^2 \epsilon \xi^7 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
++ \frac{1}{\sigmaCoeffFour^2 \gamma_2^{11/2} \xi^8 \kappa^4} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)
+\end{align}
+and this can be upper bounded by $O\Big(\frac{1}{\sigmaCoeffTwo^2 \epsilon \gamma_2^{11/2}\xi^8 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)$, where we have used the fact that $\sigmaCoeffTwo^2 \asymp \sigmaCoeffFour^2$ (see \Cref{assumption:target}).
+\end{proof}
+
+\subsection{Summary of Phase 3}
+
+The following lemma provides a bound on the running time after $T_2$ that is required for $L(\rho_t) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.
+
+\begin{lemma}[Phase 3]\label{lemma:phase_3_runtime}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Then, $\Tstar - T_2 \lesssim \frac{(\log \log d)^{20}}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$.
+\end{lemma}
+
+\begin{proof}[Proof of \Cref{lemma:phase_3_runtime}]
+By combining \Cref{lemma:phase3_case1_final} and \Cref{lemma:phase3_case2_overall_time}, we find that the overall running time during Phase 3 is at most
+\begin{align}
+\max\Big(O\Big(\frac{1}{\sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big), O\Big(\frac{1}{\sigmaCoeffTwo^2 \epsilon \gamma_2^{11/2}\xi^8 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)\Big)
+\end{align}
+and this is at most $O\Big(\frac{1}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8 \xi^8 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)$, where we have used the fact that $\sigmaCoeffTwo^2 \asymp \sigmaCoeffFour^2$ (see \Cref{assumption:target})
+\end{proof}
+
+\subsection{Proof of Main Theorem for Population Case}
+
+Finally, we prove \Cref{thm:pop_main_thm}:
+
+\begin{proof}[Proof of \Cref{thm:pop_main_thm}]
+We combine \Cref{lemma:phase_1_summary}, \Cref{lemma:phase_2_runtime} and \Cref{lemma:phase_3_runtime} to find that the total runtime is at most
+\begin{align}
+\Tstar
+& \lesssim 
+\frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log d
++ \frac{(\log \log d)^{18}}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
++ \frac{(\log \log d)^{20}}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
+\end{align}
+and we can further simplify the above bound to obtain:
+\begin{align}
+\Tstar
+& \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log d + \frac{(\log \log d)^{20}}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8} \log\Big(\frac{\gamma_2}{\epsilon}\Big)
+\end{align}
+where we have used the fact that $\sigmaCoeffTwo^2 \asymp \sigmaCoeffFour^2$ by \Cref{assumption:target}.
+\end{proof}
+
+\subsection{Additional Lemmas}
+
+\begin{lemma} \label{lemma:saddle_point_construction}
+Suppose \Cref{assumption:target} holds. There exists some $r$, with $r \gtrsim \frac{1}{\log \log d}$ and $r \leq 1$, such that if $\rho$ is the singleton distribution under which $r$ has probability $1$, then the velocity at $r$ is $0.$
+\end{lemma}
+\begin{proof}
+Let $\rho$ be such that $r$ has probability $1$ under $\rho$, for some $r \in (0, 1)$. Applying the definitions of $D_2$ and $D_4$ to $\rho$, we have $D_2 = \PtwoD(r) - \gamma_2$ and $D_4 = \PfourD(r) - \gamma_4$. By \Cref{lemma:1d_velocity_final}, the velocity of $r$ is
+\begin{align}
+\vel(r)
+& = -(1 - r^2) (\sigmaCoeffTwo^2 D_2 \PtwoD'(r) + \sigmaCoeffFour^2 D_4 \PfourD'(r))
+\end{align}
+The second factor is equal to
+\begin{align}
+\sigmaCoeffTwo^2 (\PtwoD(r) - \gamma_2) \PtwoD'(r) + \sigmaCoeffFour^2 (\PfourD(r) - \gamma_4) \PfourD'(r)
+\end{align}
+and we denote this polynomial of $r$ by $F(r)$. Note that $\PtwoD(1) = \PfourD(1) = 1$ (see Equation (2.20) of \citet{atkinson2012spherical}). Thus, $F(1) > 0$ by \Cref{assumption:target}, since $\PtwoD'(1) > 0$ and $\PfourD'(1) > 0$ by \Cref{eq:legendre_polynomial_2_4}. On the other hand, suppose $r \asymp \frac{1}{\log \log d}$. Then,
+\begin{align}
+|\PtwoD(r)|
+& = \Big|\frac{d}{d - 1} r^2 - \frac{1}{d - 1}\Big|
+& \tag{By \Cref{eq:legendre_polynomial_2_4}} \\
+& \lesssim \frac{1}{(\log \log d)^2}
+\end{align}
+Similarly, $|\PfourD(r)| \lesssim \frac{1}{(\log \log d)^4}$. Thus, $\PtwoD(r) - \gamma_2 < 0$ and $\PfourD(r) - \gamma_4 < 0$ since $d$ can be chosen to be sufficiently large according to \Cref{assumption:target}. However, by \Cref{eq:legendre_polynomial_2_4}, one can show that $\PtwoD'(r) \gtrsim \frac{1}{\log \log d}$ and $\PfourD'(r) \gtrsim \frac{1}{(\log \log d)^3}$ as long as $d$ is sufficiently large. Thus, $F(r) < 0$ for $r \asymp \frac{1}{\log \log d}$. In summary, $F$ has a root between $\frac{C}{\log \log d}$ and $1$ for some universal constant $C$, and for this value of $r$, the velocity of $r$ is $0$.
+\end{proof}
+
+
+\begin{lemma}\label{lemma:time_T_star_minus_T1}
+In the setting of \Cref{thm:pop_main_thm}, $\Tstar - T_1 \lesssim \frac{(\log \log d)^{20}}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$. Thus, $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2 (\Tstar - T_1) \lesssim \frac{(\log \log d)^{20}}{\epsilon\gamma_2^7} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$.
+\end{lemma}
+\begin{proof}
+This follows from \Cref{lemma:phase_2_runtime} and \Cref{lemma:phase_3_runtime}.
+\end{proof}
+
+
+\subsection{Helper Lemmas}
+
+
+In this subsection, we give some convenient facts that we use in the following subsections.
+
+\begin{proposition} \label{prop:particle_order}
+If $0 \leq \iota_1 < \iota_2$, then for all $t \geq 0$, $\w_t(\iota_1) < \w_t(\iota_2)$.
+\end{proposition}
+\begin{proof}[Proof of \Cref{prop:particle_order}]
+Assume this is not the case, and let $t$ be the infimum of all times $s$ such that $\w_s(\iota_1) \geq \w_s(\iota_2)$. Then, $\w_t(\iota_1) = \w_t(\iota_2)$, meaning that for all $t' \geq t$, $\w_{t'}(\iota_1) = \w_{t'}(\iota_2)$. For convenience, let $\w_0 = \w_t(\iota_1) = \w_t(\iota_2)$. Note that $t > 0$ since $\iota_1 \neq \iota_2$. However, this implies that for $t' \in (0, t)$, $w_{t'}(\iota_1) < \w_{t'}(\iota_2)$, meaning that for any $\delta > 0$, $\w_s(\iota_1)$ and $\w_s(\iota_2)$ are non-identical solutions to the initial value problem on the time interval $(t - \delta, t + \delta)$ given by the conditions $f(t) = \w_0$ and $\frac{df}{dt} = \vel_t(f(t))$. This contradicts the Picard-Lindelof theorem, and thus there cannot exist a time $t$ such that $\w_t(\iota_1) \geq \w_t(\iota_2)$.
+\end{proof}
+
+\begin{proposition} \label{prop:d2<0}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}, and let $t \geq 0$ such that $D_{2, t} < 0$. Then, $\E_{\w \sim \rho_t}[\w^2] \leq \gamma_2 + O\Big(\frac{1}{d}\Big)$.
+\end{proposition}
+\begin{proof}[Proof of \Cref{prop:particle_order}]
+Suppose $D_{2, t} \leq 0$. Then, $\E_{\w \sim \rho_t}[\PtwoD(\w)] \leq \gamma_2$, which implies that 
+\begin{align}
+\frac{d}{d - 1} \E_{\w \sim \rho_t}[\w^2] - \frac{1}{d - 1} 
+& \leq \gamma_2
+\end{align}
+and rearranging gives
+\begin{align}
+\E_{\w \sim \rho_t}[\w^2] \leq \frac{d - 1}{d} \gamma_2 + \frac{1}{d}
+\leq \gamma_2 + O\Big(\frac{1}{d}\Big)
+\end{align}
+as desired.
+\end{proof}
+
+\begin{lemma}[Decrease in Loss and Average Velocity] \label{lemma:loss_decrease}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Then, $\frac{dL}{dt} = -\E_{\u \sim \rho_t} [\| \pgrad_{\u} L(\rho_t)\|_2^2]$.
+\end{lemma}
+
+We note that a similar result was shown in Lemma E.11 of \citet{WLLM19_generalization_matters}, but for gradient flow rather than projected gradient flow.
+
+\begin{proof}[Proof of \Cref{lemma:loss_decrease}]
+First, we can calculate
+\begin{align}
+\frac{d}{dt} L(\rho_t) 
+= \frac{1}{2} \frac{d}{dt} \E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - y(x))^2] 
+= \E_{x \sim \bbS^{d - 1}} \Big[ (f_{\rho_t}(x) - y(x)) \frac{d}{dt} f_{\rho_t}(x) \Big] \period
+\end{align}
+Furthermore, we can expand $\frac{d}{dt} f_{\rho_t}(x)$ as
+\begin{align}
+\frac{d}{dt} \E_{\u \sim \rho_t} [\sigma(\u \cdot x)]
+& = -\E_{\u \sim \rho_t} \Big[ \sigma'(\u \cdot x) x \cdot \pgrad_\u L(\rho_t) \Big] \period
+\end{align}
+Therefore,
+\begin{align}
+\frac{d}{dt} L(\rho_t)
+& = \E_{x \sim \bbS^{d - 1}} \Big[ (f_{\rho_t}(x) - y(x)) \frac{d}{dt} f_{\rho_t}(x) \Big] \\
+& = -\E_{x \sim \bbS^{d - 1}} \E_{\u \sim \rho_t} \Big[(f_{\rho_t}(x) - y(x)) \sigma'(\u \cdot x) x \cdot \pgrad_\u L(\rho_t) \Big] \\
+& = -\E_{\u \sim \rho_t} \Big[ \pgrad_\u L(\rho_t) \cdot \E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - y(x)) \sigma'(\u \cdot x) x]  \Big] \\
+& = - \E_{\u \sim \rho_t} \Big[\pgrad_\u L(\rho_t) \cdot \nabla_\u L(\rho_t) \Big] \\
+& = -\E_{\u \sim \rho_t} \Big[\|\pgrad_\u L(\rho_t)\|_2^2 \Big] \period
+& \tag{B.c. $\pgrad_\u = (I - \u\u^\top) \nabla_\u L(\rho_t)$ and $(I - \u\u^\top)^2 = (I - \u\u^\top)$}
+\end{align}
+This completes the proof.
+\end{proof}
+
+The above lemma implies that $L(\rho_t)$ is always decreasing. Note that frequently, when we apply the above lemma, we will only consider the first coordinate of $\pgrad_\u L(\rho_t)$.
+
+\begin{proposition} \label{prop:variance_difference_form}
+For any distribution $\rho$ on $\R$,
+\begin{align}
+\E_{\w, \w' \sim \rho} [|\w - \w'|^2]
+& = 2 \Var_{\w \sim \rho}[\w]
+\end{align}
+\end{proposition}
+\begin{proof}[Proof of \Cref{prop:variance_difference_form}]
+This follows from a short calculation:
+\begin{align}
+\E_{\w, \w' \sim \rho} [|\w - \w'|^2]
+ = \E_{\w, \w' \sim \rho} (\w^2 - 2 \w \w' + (\w')^2) 
+ = 2 \E_{\w \sim \rho} [\w^2] - 2 (\E_{\w \sim \rho}[\w])^2 
+ = 2 \Var_{\w \sim \rho}[\w]
+\end{align}
+as desired.
+\end{proof}

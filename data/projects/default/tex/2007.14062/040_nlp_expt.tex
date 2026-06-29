@@ -1,0 +1,170 @@
+\section{Experiments: Natural Language Processing} \label{sec:expt-nlp}
+
+In this section our goal is to showcase benefits of modeling longer input sequence for NLP tasks, for which we select three representative tasks.
+We begin with basic masked language modeling (MLM; \citealt{devlin2018bert}) to check if better contextual representations can be learnt by utilizing longer contiguous sequences.
+Next, we consider QA with supporting evidence, for which capability to handle longer sequence would allow us to retrieve more evidence using crude systems like TF-IDF/BM25.
+Finally, we tackle long document classification where discriminating information may not be located in first 512 tokens.
+Below we summarize the results for \bigb using sequence length 4096\footnote{code available at \url{http://goo.gle/bigbird-transformer}}, while we defer all other setup details including computational resources, batch size, step size, to~\Cref{sec:apndx-expt-nlp}. 
+
+
+\paragraph{Pretraining and MLM}
+We follow \citep{devlin2018bert, liu2019roberta} to create base and large versions of \bigb and pretrain it using MLM objective. 
+This task involves predicting a random subset of tokens which have been masked out. 
+We use four standard data-sets for pretraining (listed in \Cref{sec:app-expt-nlp:mlm}, \Cref{tab:mlm_data}), warm-starting from the public RoBERTa checkpoint\footnote{\url{https://github.com/pytorch/fairseq/tree/master/examples/roberta}}. 
+We compare performance in predicting the masked out tokens in terms of bits per character, following~\citep{beltagy2020longformer}. 
+As seen in~\Cref{sec:app-expt-nlp:mlm}, ~\Cref{tab:mlm_bpc},  both \bigb and Longformer perform better than limited length RoBERTa, with \bigb-\textsc{etc} performing the best.
+We note that we trained our models on a 
+reasonable $16GB$ memory/chip with batch size of 32-64.
+Our memory efficiency is due to efficient blocking and sparsity structure of 
+the sparse attention mechanism described in~\Cref{sec:arch}. 
+\begin{table}
+    \centering
+    \small
+    \begin{tabular}{@{}l c c c ccc c cc c c@{}}
+    \toprule
+    \multirow{2}{*}{Model} & & 
+    \multicolumn{3}{c}{HotpotQA} & &
+    \multicolumn{2}{c}{NaturalQ} & &
+    TriviaQA & & 
+    WikiHop\\
+    \cmidrule{3-5} \cmidrule{7-8} \cmidrule{10-10}  \cmidrule{12-12} 
+               && Ans & Sup & Joint  &&  LA & SA && Full && MCQ  \\
+    \midrule
+    RoBERTa     && 73.5 & 83.4 & 63.5 &&  -   &  -  && 74.3 && 72.4  \\
+    Longformer  && 74.3 & 84.4 & 64.4 &&  -   &  -  && 75.2 && 75.0  \\
+    \bigb-\textsc{itc}  && \textbf{75.7} & 86.8 & 67.7 && 70.8 & 53.3 && \textbf{79.5} && \textbf{75.9} \\
+    \bigb-\textsc{etc}  && 75.5 & \textbf{87.1} & \textbf{67.8} && \textbf{73.9} & \textbf{54.9} && 78.7 && \textbf{75.9} \\
+    \bottomrule
+    \end{tabular}
+    \vspace{2mm}
+    \caption{QA Dev results using Base size models. We report accuracy for WikiHop and F1 for HotpotQA, Natural Questions, and TriviaQA.}
+    \label{tab:QADev}
+\end{table}
+
+\begin{table}
+    \centering
+    \small
+    \begin{tabular}{@{}l c c ccc c cc c cc@{}}
+    \toprule
+    \multirow{2}{*}{Model} & 
+    \multicolumn{3}{c}{HotpotQA} & &
+    \multicolumn{2}{c}{NaturalQ} & &
+    \multicolumn{2}{c}{TriviaQA} & &
+    WikiHop\\
+    \cmidrule{2-4} \cmidrule{6-7} \cmidrule{9-10} \cmidrule{12-12} 
+    & Ans & Sup & Joint  &&  LA & SA && Full & Verified && MCQ  \\
+    \midrule
+    HGN \citep{fang2019hierarchical}         & \textbf{82.2} & 88.5 & \textbf{74.2} &&  -   &  -   &&  -   &  -   &&  -   \\
+    GSAN                                     & 81.6 & 88.7 & 73.9 &&  -   &  -   &&  -   &  -   &&  -   \\
+    ReflectionNet \citep{gong2020reflection} &  -   &  -   &  -   && 77.1 & \textbf{64.1} &&  -   &  -   &&  -   \\
+    RikiNet-v2 \citep{liu2020rikinet}           &  -   &  -   &  -   && 76.1 & 61.3 &&  -   &  -   &&  -   \\
+    Fusion-in-Decoder \citep{izacard2020fid} &  -   &  -   &  -   &&  -   &  -   && 84.4 & 90.3 &&  -   \\
+    SpanBERT \citep{joshi2020spanbert}       &  -   &  -   &  -   &&  -   &  -   && 79.1 & 86.6 &&  -   \\ 
+    MRC-GCN \citep{tang2020multi}            &  -   &  -   &  -   &&  -   &  -   &&  -   &  -   && 78.3 \\
+    MultiHop \citep{chen2019multi}           &  -   &  -   &  -   &&  -   &  -   &&  -   &  -   && 76.5 \\
+    Longformer \citep{beltagy2020longformer} & 81.2 & 88.3 & 73.2 &&  -   &  -   && 77.3 & 85.3 && 81.9 \\
+    \midrule
+    \bigb-\textsc{etc} & 81.2 & \textbf{89.1} & 73.6 && \textbf{77.8} & 57.9 && \textbf{84.5} & \textbf{92.4} && \textbf{82.3} \\
+    \bottomrule
+    \end{tabular}
+    \vspace{2mm}
+    \caption{Fine-tuning results on \textbf{Test} set for QA tasks. The Test results (F1 for HotpotQA, Natural Questions, TriviaQA, and Accuracy for WikiHop) have been picked from their respective leaderboard. For each task the top-3 leaders were picked not including \bigb-etc. \textbf{For Natural Questions Long Answer (LA), TriviaQA, and WikiHop, \bigb-ETC is the new state-of-the-art}. On HotpotQA we are third in the leaderboard by F1 and second by Exact Match (EM).}
+    \label{tab:QATest}
+\end{table}
+
+
+\paragraph{Question Answering (QA)} 
+We considered following four challenging datasets:
+\vspace{-1mm}
+\begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+\item  Natural Questions~\citep{kwiatkowski2019natural}: 
+For the given question, find a short span of answer (SA) from the given evidences as well highlight the paragraph from the given evidences 
+containing information about the correct answer (LA).
+\item HotpotQA-distractor~\citep{yang2018hotpotqa}: Similar to natural questions, it requires finding the answer (Ans) as well as the supporting facts (Sup) over different documents needed for multi-hop reasoning from the given evidences. 
+\item TriviaQA-wiki~\citep{JoshiTriviaQA2017}: We need to provide an answer for the given question using provided Wikipedia evidence, however, the answer might not be present in the given evidence. On a smaller \emph{verified} subset of question, the given evidence is guaranteed to contain the answer. Nevertheless, we model the answer as span selection problem in this case as well.
+\item  WikiHop~\citep{welbl2018constructing}: Chose correct option from multiple-choice questions (MCQ), by aggregating information spread across multiple documents given in the evidences.
+\end{enumerate}
+As these tasks are very competitive, multiple highly engineered systems have been designed specific each dataset confirming to respective output formats.
+For a fair comparison, we had to use some additional regularization for training \bigb, details of which are provided in~\Cref{sec:app-expt-nlp:qa} along with exact architecture description.
+We experiment using the base sized model and select the best configuration on the development set for each dataset (as reported in~\Cref{tab:QADev}).
+We can see that \bigb-\textsc{etc}, with expanded global tokens consistently outperforms all other models.
+Thus, we chose this configuration to train a large sized model to be used for evaluation on the hidden test set.
+
+In~\Cref{tab:QATest}, we compare \bigb-\textsc{etc} model to top-3 entries from the leaderboard excluding \bigb. 
+One can clearly see the importance of using longer context as both Longformer and \bigb outperform models with smaller contexts.
+Also, it is worth noting that \bigb submission is a single model, whereas the other top-3 entries for Natural Questions are  ensembles, which might explain the slightly lower accuracy in exact answer phrase selection.
+
+
+\paragraph{Classification} 
+We experiment on datasets of different lengths and contents, specifically various document classification and GLUE tasks.
+Following BERT, we used one layer with cross entropy loss on top of the first [CLS] token.
+We see that gains of using \bigb are more significant when we have longer documents and fewer training examples.
+For instance, using base sized model,
+\bigb improves state-of-the-art for Arxiv dataset by about $\bm{5\%}$ \textbf{points}.
+On Patents dataset, there is improvement over using simple BERT/RoBERTa, but given the large size of training data the improvement over SoTA (which is not BERT based) is not significant.
+Note that this performance gain is not seen for much
+smaller IMDb dataset.
+Along with experimental setup detail, we present detailed results in~\Cref{sec:app-expt-nlp:cls} which show competitive performance.
+
+
+\begin{table}[b]
+    \centering
+    \small
+    % \hspace*{-7mm}
+    \begin{tabular}{@{}p{1mm}l @{}p{3mm}@{} rrr @{}p{5mm}@{} rrr @{}p{5mm}@{} rrr@{}}
+    \toprule
+     \multicolumn{2}{l}{\multirow[b]{2}{*}{\hspace{-2mm}\normalsize{Model}}} & &
+     \multicolumn{3}{c}{Arxiv} & & \multicolumn{3}{c}{PubMed} & & \multicolumn{3}{c}{BigPatent}\\
+    \cmidrule{4-6} \cmidrule{8-10} \cmidrule{12-14}
+    & & & R-1 & R-2 & R-L & & R-1 & R-2 & R-L & & R-1 & R-2 & R-L \\
+    \midrule
+    \multirow{10}{*}{\rotatebox[origin=c]{90}{Prior Art}}
+    & SumBasic~\citep{nenkova2005impact}          & & 29.47 &  6.95 & 26.30 & & 37.15 & 11.36 & 33.43 & & 27.44 & 7.08 & 23.66\\
+    & LexRank~\citep{erkan2004lexrank}          & & 33.85 & 10.73 & 28.99 & & 39.19 & 13.89 & 34.59 & & 35.57 & 10.47 & 29.03 \\
+    & LSA~\citep{wiseman2017challenges}               & & 29.91 &  7.42 & 25.67 & & 33.89 &  9.93 & 29.70 & & - & - & - \\
+    & Attn-Seq2Seq~\citep{sutskever2014sequence}    & & 29.30 &  6.00 & 25.56 & & 31.55 &  8.52 & 27.38 & & 28.74 & 7.87 & 24.66 \\
+    & Pntr-Gen-Seq2Seq~\citep{see2017get} & & 32.06 &  9.04 & 25.16 & & 35.86 & 10.22 & 29.69 & &  33.14 & 11.63 & 28.55 \\
+    & Long-Doc-Seq2Seq~\citep{cohan2018discourse} & & 35.80 & 11.05 & 31.80 & & 38.93 & 15.37 & 35.21 & & - & - & - \\
+    & Sent-CLF~\citep{subramanian2019extractive}  & & 34.01 &  8.71 & 30.41 & & 45.01 & 19.91 & 41.16 & & 36.20 & 10.99 & 31.83 \\
+    & Sent-PTR~\citep{subramanian2019extractive}  & & 42.32 & 15.63 & 38.06 & & 43.30 & 17.92 & 39.47 & & 34.21 & 10.78 & 30.07 \\
+    & Extr-Abst-TLM~\citep{subramanian2019extractive} & & 41.62 & 14.69 & 38.03 & & 42.13 & 16.27 & 39.21 & & 38.65 & 12.31 & 34.09 \\
+    & Dancer~\citep{gidiotis2020divide}  & & 42.70 & 16.54 & 38.44 & & 44.09 & 17.69 & 40.27 & & - & - & - \\
+    \midrule
+    \multirow{4}{*}{\rotatebox[origin=c]{90}{Base}}
+    & Transformer & & 28.52 &  6.70 & 25.58 & & 31.71 &  8.32 & 29.42 & & 39.66 & 20.94 & 31.20 \\
+    & \; + RoBERTa~\citep{rothe2019leveraging} & & 31.98 &  8.13 & 29.53  & & 35.77 & 13.85 & 33.32 & & 41.11 & 22.10 & 32.58 \\
+    & \; + Pegasus~\citep{zhang2019pegasus}  & & 34.81 & 10.16 & 30.14 & & 39.98 & 15.15 & 35.89 & & 43.55 & 20.43 & 31.80 \\
+    & \bigb-RoBERTa & & \underline{41.22} & \underline{16.43} & \underline{36.96} & & \underline{43.70} & \underline{19.32} & \underline{39.99} & & \underline{55.69} & \underline{37.27} & \underline{45.56} \\
+    \midrule
+    \multirow{3}{*}{\rotatebox[origin=c]{90}{Large}}
+    & Pegasus (Reported)~\citep{zhang2019pegasus} & & 44.21 & 16.95 & 38.83 & & 45.97 & 20.15 & 41.34 & & 52.29 & 33.08 & 41.75 \\
+    & Pegasus (Re-eval)                          & & 43.85 & 16.83 & 39.17 & & 44.53 & 19.30 & 40.70 & & 52.25 & 33.04 & 41.80 \\
+    & \bigb-Pegasus & & \textbf{46.63} & \textbf{19.02} & \textbf{41.77}   & & \textbf{46.32} & \textbf{20.65} & \textbf{42.33}   & & \textbf{60.64} & \textbf{42.46} & \textbf{50.01}  \\
+    \bottomrule
+    \end{tabular}
+    \vspace{2mm}
+    \caption{Summarization ROUGE score for long documents.}
+    \label{tab:long_sum_res}
+\end{table}
+
+
+\subsection{Encoder-Decoder Tasks}
+\label{sec:seq2seq}
+For an encoder-decoder setup, one can easily see that both suffer from quadratic complexity due to the full self attention.
+We focus on introducing the sparse attention mechanism of \bigb only at the encoder side.
+This is because, in practical generative applications, the length of output sequence is typically small as compared to the input. 
+For example for text summarization, we see in realistic scenarios (c.f.~\Cref{sec:appn_summarization}~\Cref{tab:long_sum_data}) that the median output sequence length is $\sim 200$ where as the input sequence's median length is $>3000$.
+For such applications, it is more efficient to use sparse attention mechanism for the encoder and full self-attention for the decoder.
+
+\paragraph{Summarization}
+Document summarization is a task of creating a short and accurate summary of a text document. 
+We used three long document datasets for testing our model details of which are mention in~\Cref{tab:long_sum_data}.
+In this paper we focus on abstractive summarization of long documents where using a longer contextual encoder should improve performance.
+The reasons are two fold:
+First, the salient content can be evenly distributed in the long document, not just in first 512 tokens, and this is by design in the BigPatents dataset~\citep{sharma2019bigpatent}.
+Second, longer documents exhibit a richer discourse structure and summaries are considerably more abstractive, thereby observing more context helps.
+As has been pointed out recently ~\citep{rothe2019leveraging,zhang2019pegasus}, pretraining helps in generative tasks, we warm start from our general purpose MLM pretraining on base-sized models as well as utilizing state-of-the-art summarization specific pretraining from Pegasus~\citep{zhang2019pegasus} on large-sized models.
+The results of training \bigb sparse encoder along with full decoder on these long document datasets are presented in~\Cref{tab:long_sum_res}.
+We can clearly see modeling longer context brings significant improvement. 
+Along with hyperparameters, we also present results on shorter but more widespread datasets in~\Cref{sec:appn_summarization}, which show that using sparse attention does not hamper performance either.
+

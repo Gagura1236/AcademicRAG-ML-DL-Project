@@ -1,0 +1,385 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Ba et~al.(2016)Ba, Kiros, and Hinton}]{Ba2016LayerN}
+Jimmy Ba, Ryan Kiros, and Geoffrey~E. Hinton. 2016.
+\newblock Layer normalization.
+\newblock {\em CoRR\/} abs/1607.06450.
+
+\bibitem[{Belinkov et~al.(2017)Belinkov, Durrani, Dalvi, Sajjad, and
+  Glass}]{Belinkov2017WhatDN}
+Yonatan Belinkov, Nadir Durrani, Fahim Dalvi, Hassan Sajjad, and James~R.
+  Glass. 2017.
+\newblock What do neural machine translation models learn about morphology?
+\newblock In {\em ACL\/}.
+
+\bibitem[{Bojanowski et~al.(2017)Bojanowski, Grave, Joulin, and
+  Mikolov}]{Bojanowski2017EnrichingWV}
+Piotr Bojanowski, Edouard Grave, Armand Joulin, and Tomas Mikolov. 2017.
+\newblock Enriching word vectors with subword information.
+\newblock {\em TACL\/} 5:135--146.
+
+\bibitem[{Bowman et~al.(2015)Bowman, Angeli, Potts, and
+  Manning}]{snliemnlp2015}
+Samuel~R. Bowman, Gabor Angeli, Christopher Potts, and Christopher~D. Manning.
+  2015.
+\newblock A large annotated corpus for learning natural language inference.
+\newblock In {\em Proceedings of the 2015 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)\/}. Association for Computational
+  Linguistics.
+
+\bibitem[{Chelba et~al.(2014)Chelba, Mikolov, Schuster, Ge, Brants, Koehn, and
+  Robinson}]{Chelba2014OneBW}
+Ciprian Chelba, Tomas Mikolov, Mike Schuster, Qi~Ge, Thorsten Brants, Phillipp
+  Koehn, and Tony Robinson. 2014.
+\newblock One billion word benchmark for measuring progress in statistical
+  language modeling.
+\newblock In {\em INTERSPEECH\/}.
+
+\bibitem[{Chen et~al.(2017)Chen, Zhu, Ling, Wei, Jiang, and
+  Inkpen}]{Chen2017EnhancedLF}
+Qian Chen, Xiao-Dan Zhu, Zhen-Hua Ling, Si~Wei, Hui Jiang, and Diana Inkpen.
+  2017.
+\newblock Enhanced lstm for natural language inference.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Chiu and Nichols(2016)}]{chiu-nichols-2016}
+Jason Chiu and Eric Nichols. 2016.
+\newblock Named entity recognition with bidirectional {LSTM-CNNs}.
+\newblock In {\em TACL\/}.
+
+\bibitem[{Cho et~al.(2014)Cho, van Merrienboer, Bahdanau, and
+  Bengio}]{GRU:Cho2014}
+Kyunghyun Cho, Bart van Merrienboer, Dzmitry Bahdanau, and Yoshua Bengio. 2014.
+\newblock On the properties of neural machine translation: Encoder-decoder
+  approaches.
+\newblock In {\em SSST@EMNLP\/}.
+
+\bibitem[{Clark and Gardner(2017)}]{ClarkAdvancingRC}
+Christopher Clark and Matthew Gardner. 2017.
+\newblock Simple and effective multi-paragraph reading comprehension.
+\newblock {\em CoRR\/} abs/1710.10723.
+
+\bibitem[{Clark and Manning(2016)}]{Clark2016DeepRL}
+Kevin Clark and Christopher~D. Manning. 2016.
+\newblock Deep reinforcement learning for mention-ranking coreference models.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Collobert et~al.(2011)Collobert, Weston, Bottou, Karlen, Kavukcuoglu,
+  and Kuksa}]{NLPfromScratch:Collobert2011}
+Ronan Collobert, Jason Weston, L{\'e}on Bottou, Michael Karlen, Koray
+  Kavukcuoglu, and Pavel~P. Kuksa. 2011.
+\newblock Natural language processing (almost) from scratch.
+\newblock In {\em JMLR\/}.
+
+\bibitem[{Dai and Le(2015)}]{Dai2015SemisupervisedSL}
+Andrew~M. Dai and Quoc~V. Le. 2015.
+\newblock Semi-supervised sequence learning.
+\newblock In {\em NIPS\/}.
+
+\bibitem[{Durrett and Klein(2013)}]{Durrett2013EasyVA}
+Greg Durrett and Dan Klein. 2013.
+\newblock Easy victories and uphill battles in coreference resolution.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Gal and Ghahramani(2016)}]{Gal2016ATG}
+Yarin Gal and Zoubin Ghahramani. 2016.
+\newblock A theoretically grounded application of dropout in recurrent neural
+  networks.
+\newblock In {\em NIPS\/}.
+
+\bibitem[{Gong et~al.(2018)Gong, Luo, and Zhang}]{Gong2017NaturalLI}
+Yichen Gong, Heng Luo, and Jian Zhang. 2018.
+\newblock Natural language inference over interaction space.
+\newblock In {\em ICLR\/}.
+
+\bibitem[{Hashimoto et~al.(2017)Hashimoto, Xiong, Tsuruoka, and
+  Socher}]{joint-many-iclr07}
+Kazuma Hashimoto, Caiming Xiong, Yoshimasa Tsuruoka, and Richard Socher. 2017.
+\newblock A joint many-task model: Growing a neural network for multiple nlp
+  tasks.
+\newblock In {\em EMNLP 2017\/}.
+
+\bibitem[{He et~al.(2017)He, Lee, Lewis, and Zettlemoyer}]{He2017DeepSR}
+Luheng He, Kenton Lee, Mike Lewis, and Luke~S. Zettlemoyer. 2017.
+\newblock Deep semantic role labeling: What works and what's next.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Hochreiter and Schmidhuber(1997)}]{LSTM:Hochreiter1997}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber. 1997.
+\newblock Long short-term memory.
+\newblock {\em Neural Computation\/} 9.
+
+\bibitem[{Iacobacci et~al.(2016)Iacobacci, Pilehvar, and
+  Navigli}]{Iacobacci2016EmbeddingsFW}
+Ignacio Iacobacci, Mohammad~Taher Pilehvar, and Roberto Navigli. 2016.
+\newblock Embeddings for word sense disambiguation: An evaluation study.
+\newblock In {\em ACL\/}.
+
+\bibitem[{J{\'o}zefowicz et~al.(2016)J{\'o}zefowicz, Vinyals, Schuster,
+  Shazeer, and Wu}]{Jzefowicz2016ExploringTL}
+Rafal J{\'o}zefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui
+  Wu. 2016.
+\newblock Exploring the limits of language modeling.
+\newblock {\em CoRR\/} abs/1602.02410.
+
+\bibitem[{J{\'o}zefowicz et~al.(2015)J{\'o}zefowicz, Zaremba, and
+  Sutskever}]{Jzefowicz2015AnEE}
+Rafal J{\'o}zefowicz, Wojciech Zaremba, and Ilya Sutskever. 2015.
+\newblock An empirical exploration of recurrent network architectures.
+\newblock In {\em ICML\/}.
+
+\bibitem[{Kim et~al.(2015)Kim, Jernite, Sontag, and
+  Rush}]{kim2015characterNeuralLM}
+Yoon Kim, Yacine Jernite, David Sontag, and Alexander~M Rush. 2015.
+\newblock Character-aware neural language models.
+\newblock In {\em AAAI 2016\/}.
+
+\bibitem[{Kingma and Ba(2015)}]{Kingma2014AdamAM}
+Diederik~P. Kingma and Jimmy Ba. 2015.
+\newblock Adam: A method for stochastic optimization.
+\newblock In {\em ICLR\/}.
+
+\bibitem[{Kumar et~al.(2016)Kumar, Irsoy, Ondruska, Iyyer, James~Bradbury,
+  Zhong, Paulus, and Socher}]{kumar2015ask}
+Ankit Kumar, Ozan Irsoy, Peter Ondruska, Mohit Iyyer, Ishaan~Gulrajani
+  James~Bradbury, Victor Zhong, Romain Paulus, and Richard Socher. 2016.
+\newblock Ask me anything: Dynamic memory networks for natural language
+  processing.
+\newblock In {\em ICML\/}.
+
+\bibitem[{Lafferty et~al.(2001)Lafferty, McCallum, and
+  Pereira}]{CRF:Lafferty2001}
+John~D. Lafferty, Andrew McCallum, and Fernando Pereira. 2001.
+\newblock Conditional random fields: Probabilistic models for segmenting and
+  labeling sequence data.
+\newblock In {\em ICML\/}.
+
+\bibitem[{Lample et~al.(2016)Lample, Ballesteros, Subramanian, Kawakami, and
+  Dyer}]{lample-EtAl:2016:N16-1}
+Guillaume Lample, Miguel Ballesteros, Sandeep Subramanian, Kazuya Kawakami, and
+  Chris Dyer. 2016.
+\newblock Neural architectures for named entity recognition.
+\newblock In {\em NAACL-HLT\/}.
+
+\bibitem[{Lee et~al.(2017)Lee, He, Lewis, and Zettlemoyer}]{Lee2017EndtoendNC}
+Kenton Lee, Luheng He, Mike Lewis, and Luke~S. Zettlemoyer. 2017.
+\newblock End-to-end neural coreference resolution.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Ling et~al.(2015)Ling, Dyer, Black, Trancoso, Fermandez, Amir,
+  Marujo, and Lu\'{i}s}]{Ling2015FindingFI}
+Wang Ling, Chris Dyer, Alan~W. Black, Isabel Trancoso, Ramon Fermandez, Silvio
+  Amir, Lu{\'i}s Marujo, and Tiago Lu\'{i}s. 2015.
+\newblock Finding function in form: Compositional character models for open
+  vocabulary word representation.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Liu et~al.(2017)Liu, Shen, Duh, and Gao}]{liu2017stochastic}
+Xiaodong Liu, Yelong Shen, Kevin Duh, and Jianfeng Gao. 2017.
+\newblock Stochastic answer networks for machine reading comprehension.
+\newblock {\em arXiv preprint arXiv:1712.03556\/} .
+
+\bibitem[{Ma and Hovy(2016)}]{Ma2016EndtoendSL}
+Xuezhe Ma and Eduard~H. Hovy. 2016.
+\newblock End-to-end sequence labeling via bi-directional {LSTM-CNNs-CRF}.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Marcus et~al.(1993)Marcus, Santorini, and
+  Marcinkiewicz}]{Marcus1993BuildingAL}
+Mitchell~P. Marcus, Beatrice Santorini, and Mary~Ann Marcinkiewicz. 1993.
+\newblock Building a large annotated corpus of english: The penn treebank.
+\newblock {\em Computational Linguistics\/} 19:313--330.
+
+\bibitem[{McCann et~al.(2017)McCann, Bradbury, Xiong, and
+  Socher}]{McCann2017LearnedIT}
+Bryan McCann, James Bradbury, Caiming Xiong, and Richard Socher. 2017.
+\newblock Learned in translation: Contextualized word vectors.
+\newblock In {\em NIPS 2017\/}.
+
+\bibitem[{Melamud et~al.(2016)Melamud, Goldberger, and
+  Dagan}]{Melamud2016context2vecLG}
+Oren Melamud, Jacob Goldberger, and Ido Dagan. 2016.
+\newblock context2vec: Learning generic context embedding with bidirectional
+  lstm.
+\newblock In {\em CoNLL\/}.
+
+\bibitem[{Melis et~al.(2017)Melis, Dyer, and Blunsom}]{Melis2017OnTS}
+G{\'a}bor Melis, Chris Dyer, and Phil Blunsom. 2017.
+\newblock On the state of the art of evaluation in neural language models.
+\newblock {\em CoRR\/} abs/1707.05589.
+
+\bibitem[{Merity et~al.(2017)Merity, Keskar, and
+  Socher}]{Merity2017RegularizingAO}
+Stephen Merity, Nitish~Shirish Keskar, and Richard Socher. 2017.
+\newblock Regularizing and optimizing lstm language models.
+\newblock {\em CoRR\/} abs/1708.02182.
+
+\bibitem[{Mikolov et~al.(2013)Mikolov, Sutskever, Chen, Corrado, and
+  Dean}]{word2vec}
+Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg~S Corrado, and Jeff Dean. 2013.
+\newblock Distributed representations of words and phrases and their
+  compositionality.
+\newblock In {\em NIPS\/}.
+
+\bibitem[{Miller et~al.(1994)Miller, Chodorow, Landes, Leacock, and
+  Thomas}]{Miller1994UsingAS}
+George~A. Miller, Martin Chodorow, Shari Landes, Claudia Leacock, and Robert~G.
+  Thomas. 1994.
+\newblock Using a semantic concordance for sense identification.
+\newblock In {\em HLT\/}.
+
+\bibitem[{Munkhdalai and Yu(2017)}]{munkhdalaineural}
+Tsendsuren Munkhdalai and Hong Yu. 2017.
+\newblock Neural tree indexers for text understanding.
+\newblock In {\em EACL\/}.
+
+\bibitem[{Neelakantan et~al.(2014)Neelakantan, Shankar, Passos, and
+  McCallum}]{Neelakantan2014EfficientNE}
+Arvind Neelakantan, Jeevan Shankar, Alexandre Passos, and Andrew McCallum.
+  2014.
+\newblock Efficient non-parametric estimation of multiple embeddings per word
+  in vector space.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Palmer et~al.(2005)Palmer, Kingsbury, and
+  Gildea}]{Palmer2005propbank}
+Martha Palmer, Paul Kingsbury, and Daniel Gildea. 2005.
+\newblock The proposition bank: An annotated corpus of semantic roles.
+\newblock {\em Computational Linguistics\/} 31:71--106.
+
+\bibitem[{Pennington et~al.(2014)Pennington, Socher, and
+  Manning}]{Pennington2014GloveGV}
+Jeffrey Pennington, Richard Socher, and Christopher~D. Manning. 2014.
+\newblock Glove: Global vectors for word representation.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Peters et~al.(2017)Peters, Ammar, Bhagavatula, and
+  Power}]{Peters2017SemisupervisedST}
+Matthew~E. Peters, Waleed Ammar, Chandra Bhagavatula, and Russell Power. 2017.
+\newblock Semi-supervised sequence tagging with bidirectional language models.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Pradhan et~al.(2013)Pradhan, Moschitti, Xue, Ng, Bj\"{o}rkelund,
+  Uryupina, Zhang, and Zhong}]{Pradhan2013TowardsRL}
+Sameer Pradhan, Alessandro Moschitti, Nianwen Xue, Hwee~Tou Ng, Anders
+  Bj\"{o}rkelund, Olga Uryupina, Yuchen Zhang, and Zhi Zhong. 2013.
+\newblock Towards robust linguistic analysis using ontonotes.
+\newblock In {\em CoNLL\/}.
+
+\bibitem[{Pradhan et~al.(2012)Pradhan, Moschitti, Xue, Uryupina, and
+  Zhang}]{Pradhan2012CoNLL2012ST}
+Sameer Pradhan, Alessandro Moschitti, Nianwen Xue, Olga Uryupina, and Yuchen
+  Zhang. 2012.
+\newblock Conll-2012 shared task: Modeling multilingual unrestricted
+  coreference in ontonotes.
+\newblock In {\em EMNLP-CoNLL Shared Task\/}.
+
+\bibitem[{Raganato et~al.(2017{\natexlab{a}})Raganato, Bovi, and
+  Navigli}]{Raganato2017NeuralSL}
+Alessandro Raganato, Claudio~Delli Bovi, and Roberto Navigli.
+  2017{\natexlab{a}}.
+\newblock Neural sequence learning models for word sense disambiguation.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Raganato et~al.(2017{\natexlab{b}})Raganato, Camacho-Collados, and
+  Navigli}]{Raganato2017WordSD}
+Alessandro Raganato, Jose Camacho-Collados, and Roberto Navigli.
+  2017{\natexlab{b}}.
+\newblock Word sense disambiguation: A unified evaluation framework and
+  empirical comparison.
+\newblock In {\em EACL\/}.
+
+\bibitem[{Rajpurkar et~al.(2016)Rajpurkar, Zhang, Lopyrev, and
+  Liang}]{Rajpurkar2016SQuAD10}
+Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, and Percy Liang. 2016.
+\newblock Squad: 100, 000+ questions for machine comprehension of text.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Ramachandran et~al.(2017)Ramachandran, Liu, and
+  Le}]{Ramachandran2017ImproveSeq2SeqLMGal2016ATG}
+Prajit Ramachandran, Peter Liu, and Quoc Le. 2017.
+\newblock Improving sequence to sequence learning with unlabeled data.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Sang and Meulder(2003)}]{CoNLL2003NER}
+Erik F. Tjong~Kim Sang and Fien~De Meulder. 2003.
+\newblock Introduction to the {CoNLL-2003} shared task: Language-independent
+  named entity recognition.
+\newblock In {\em CoNLL\/}.
+
+\bibitem[{Seo et~al.(2017)Seo, Kembhavi, Farhadi, and
+  Hajishirzi}]{Seo2016BidirectionalAF}
+Min~Joon Seo, Aniruddha Kembhavi, Ali Farhadi, and Hannaneh Hajishirzi. 2017.
+\newblock Bidirectional attention flow for machine comprehension.
+\newblock In {\em ICLR\/}.
+
+\bibitem[{Socher et~al.(2013)Socher, Perelygin, Wu, Chuang, Manning, Ng, and
+  Potts}]{socher2013recursive}
+Richard Socher, Alex Perelygin, Jean~Y Wu, Jason Chuang, Christopher~D Manning,
+  Andrew~Y Ng, and Christopher Potts. 2013.
+\newblock Recursive deep models for semantic compositionality over a sentiment
+  treebank.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{S{\o}gaard and Goldberg(2016)}]{Sgaard2016DeepML}
+Anders S{\o}gaard and Yoav Goldberg. 2016.
+\newblock Deep multi-task learning with low level tasks supervised at lower
+  layers.
+\newblock In {\em ACL 2016\/}.
+
+\bibitem[{Srivastava et~al.(2014)Srivastava, Hinton, Krizhevsky, Sutskever, and
+  Salakhutdinov}]{Srivastava2014DropoutAS}
+Nitish Srivastava, Geoffrey~E. Hinton, Alex Krizhevsky, Ilya Sutskever, and
+  Ruslan Salakhutdinov. 2014.
+\newblock Dropout: a simple way to prevent neural networks from overfitting.
+\newblock {\em Journal of Machine Learning Research\/} 15:1929--1958.
+
+\bibitem[{Srivastava et~al.(2015)Srivastava, Greff, and
+  Schmidhuber}]{Srivastava2015TrainingVD}
+Rupesh~Kumar Srivastava, Klaus Greff, and J{\"u}rgen Schmidhuber. 2015.
+\newblock Training very deep networks.
+\newblock In {\em NIPS\/}.
+
+\bibitem[{Turian et~al.(2010)Turian, Ratinov, and Bengio}]{Turian2010WordRA}
+Joseph~P. Turian, Lev-Arie Ratinov, and Yoshua Bengio. 2010.
+\newblock Word representations: A simple and general method for semi-supervised
+  learning.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Wang et~al.(2017)Wang, Yang, Wei, Chang, and Zhou}]{Wang2017GatedSN}
+Wenhui Wang, Nan Yang, Furu Wei, Baobao Chang, and Ming Zhou. 2017.
+\newblock Gated self-matching networks for reading comprehension and question
+  answering.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Wieting et~al.(2016)Wieting, Bansal, Gimpel, and
+  Livescu}]{Wieting2016CharagramEW}
+John Wieting, Mohit Bansal, Kevin Gimpel, and Karen Livescu. 2016.
+\newblock Charagram: Embedding words and sentences via character n-grams.
+\newblock In {\em EMNLP\/}.
+
+\bibitem[{Wiseman et~al.(2016)Wiseman, Rush, and
+  Shieber}]{Wiseman2016LearningGF}
+Sam Wiseman, Alexander~M. Rush, and Stuart~M. Shieber. 2016.
+\newblock Learning global features for coreference resolution.
+\newblock In {\em HLT-NAACL\/}.
+
+\bibitem[{Zeiler(2012)}]{Zeiler2012ADADELTAAA}
+Matthew~D. Zeiler. 2012.
+\newblock Adadelta: An adaptive learning rate method.
+\newblock {\em CoRR\/} abs/1212.5701.
+
+\bibitem[{Zhou and Xu(2015)}]{Zhou2015EndtoendLO}
+Jie Zhou and Wei Xu. 2015.
+\newblock End-to-end learning of semantic role labeling using recurrent neural
+  networks.
+\newblock In {\em ACL\/}.
+
+\bibitem[{Zhou et~al.(2016)Zhou, Qi, Zheng, Xu, Bao, and Xu}]{zhou2016text}
+Peng Zhou, Zhenyu Qi, Suncong Zheng, Jiaming Xu, Hongyun Bao, and Bo~Xu. 2016.
+\newblock Text classification improved by integrating bidirectional lstm with
+  two-dimensional max pooling.
+\newblock In {\em COLING\/}.
+
+\end{thebibliography}

@@ -1,0 +1,204 @@
+\begin{thebibliography}{}
+
+\bibitem[Axelrod {\em et~al.}(2011)Axelrod, He, and Gao]{Axelrod2011}
+Axelrod, A., He, X., and Gao, J. (2011).
+\newblock Domain adaptation via pseudo in-domain data selection.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)\/}, pages 355--362. Association for
+  Computational Linguistics.
+
+\bibitem[Bastien {\em et~al.}(2012)Bastien, Lamblin, Pascanu, Bergstra,
+  Goodfellow, Bergeron, Bouchard, and Bengio]{Bastien-Theano-2012}
+Bastien, F., Lamblin, P., Pascanu, R., Bergstra, J., Goodfellow, I.~J.,
+  Bergeron, A., Bouchard, N., and Bengio, Y. (2012).
+\newblock Theano: new features and speed improvements.
+\newblock Deep Learning and Unsupervised Feature Learning NIPS 2012 Workshop.
+
+\bibitem[Bengio {\em et~al.}(1994)Bengio, Simard, and Frasconi]{Bengio-trnn93}
+Bengio, Y., Simard, P., and Frasconi, P. (1994).
+\newblock Learning long-term dependencies with gradient descent is difficult.
+\newblock {\em IEEE Transactions on Neural Networks\/}, {\bf 5}(2), 157--166.
+
+\bibitem[Bengio {\em et~al.}(2003)Bengio, Ducharme, Vincent, and
+  Janvin]{Bengio2003lm}
+Bengio, Y., Ducharme, R., Vincent, P., and Janvin, C. (2003).
+\newblock A neural probabilistic language model.
+\newblock {\em J. Mach. Learn. Res.}, {\bf 3}, 1137--1155.
+
+\bibitem[Bergstra {\em et~al.}(2010)Bergstra, Breuleux, Bastien, Lamblin,
+  Pascanu, Desjardins, Turian, Warde-Farley, and
+  Bengio]{bergstra+al:2010-scipy}
+Bergstra, J., Breuleux, O., Bastien, F., Lamblin, P., Pascanu, R., Desjardins,
+  G., Turian, J., Warde-Farley, D., and Bengio, Y. (2010).
+\newblock Theano: a {CPU} and {GPU} math expression compiler.
+\newblock In {\em Proceedings of the Python for Scientific Computing Conference
+  ({SciPy})\/}.
+\newblock Oral Presentation.
+
+\bibitem[Boulanger-Lewandowski {\em et~al.}(2013)Boulanger-Lewandowski, Bengio,
+  and Vincent]{Boulanger2013}
+Boulanger-Lewandowski, N., Bengio, Y., and Vincent, P. (2013).
+\newblock Audio chord recognition with recurrent neural networks.
+\newblock In {\em ISMIR\/}.
+
+\bibitem[Cho {\em et~al.}(2014a)Cho, van Merrienboer, Gulcehre, Bougares,
+  Schwenk, and Bengio]{Cho2014}
+Cho, K., van Merrienboer, B., Gulcehre, C., Bougares, F., Schwenk, H., and
+  Bengio, Y. (2014a).
+\newblock Learning phrase representations using {RNN} encoder-decoder for
+  statistical machine translation.
+\newblock In {\em Proceedings of the Empiricial Methods in Natural Language
+  Processing (EMNLP 2014)\/}.
+\newblock to appear.
+
+\bibitem[Cho {\em et~al.}(2014b)Cho, van Merri\"enboer, Bahdanau, and
+  Bengio]{Cho2014a}
+Cho, K., van Merri\"enboer, B., Bahdanau, D., and Bengio, Y. (2014b).
+\newblock On the properties of neural machine translation: {E}ncoder--{D}ecoder
+  approaches.
+\newblock In {\em Eighth Workshop on Syntax, Semantics and Structure in
+  Statistical Translation\/}.
+\newblock to appear.
+
+\bibitem[Devlin {\em et~al.}(2014)Devlin, Zbib, Huang, Lamar, Schwartz, and
+  Makhoul]{Devlin2014}
+Devlin, J., Zbib, R., Huang, Z., Lamar, T., Schwartz, R., and Makhoul, J.
+  (2014).
+\newblock Fast and robust neural network joint models for statistical machine
+  translation.
+\newblock In {\em Association for Computational Linguistics\/}.
+
+\bibitem[Forcada and \~Neco(1997)Forcada and \~Neco]{Forcada1997}
+Forcada, M.~L. and \~Neco, R.~P. (1997).
+\newblock Recursive hetero-associative memories for translation.
+\newblock In J.~Mira, R.~Moreno-D\'iaz, and J.~Cabestany, editors, {\em
+  Biological and Artificial Computation: From Neuroscience to Technology\/},
+  volume 1240 of {\em Lecture Notes in Computer Science\/}, pages 453--462.
+  Springer Berlin Heidelberg.
+
+\bibitem[Goodfellow {\em et~al.}(2013)Goodfellow, Warde-Farley, Mirza,
+  Courville, and Bengio]{Goodfellow2013}
+Goodfellow, I., Warde-Farley, D., Mirza, M., Courville, A., and Bengio, Y.
+  (2013).
+\newblock Maxout networks.
+\newblock In {\em Proceedings of The 30th International Conference on Machine
+  Learning\/}, pages 1319--1327.
+
+\bibitem[Graves(2012)Graves]{Graves2012}
+Graves, A. (2012).
+\newblock Sequence transduction with recurrent neural networks.
+\newblock In {\em Proceedings of the 29th International Conference on Machine
+  Learning (ICML 2012)\/}.
+
+\bibitem[{Graves}(2013){Graves}]{Graves2013}
+{Graves}, A. (2013).
+\newblock Generating sequences with recurrent neural networks.
+\newblock {\em ar{X}iv:{\tt 1308.0850 [cs.NE]}\/}.
+
+\bibitem[Graves {\em et~al.}(2013)Graves, Jaitly, and Mohamed]{Graves2013asru}
+Graves, A., Jaitly, N., and Mohamed, A.-R. (2013).
+\newblock Hybrid speech recognition with deep bidirectional {LSTM}.
+\newblock In {\em Automatic Speech Recognition and Understanding (ASRU), 2013
+  IEEE Workshop on\/}, pages 273--278.
+
+\bibitem[Hermann and Blunsom(2014)Hermann and Blunsom]{Hermann2014}
+Hermann, K. and Blunsom, P. (2014).
+\newblock Multilingual distributed representations without word alignment.
+\newblock In {\em Proceedings of the Second International Conference on
+  Learning Representations (ICLR 2014)\/}.
+
+\bibitem[Hochreiter(1991)Hochreiter]{Hochreiter91}
+Hochreiter, S. (1991).
+\newblock { Untersuchungen zu dynamischen neuronalen Netzen. Diploma thesis,
+  Institut f\"{u}r Informatik, Lehrstuhl Prof. Brauer, Technische
+  Universit\"{a}t M\"{u}nchen}.
+
+\bibitem[Hochreiter and Schmidhuber(1997)Hochreiter and
+  Schmidhuber]{Hochreiter+Schmidhuber-1997}
+Hochreiter, S. and Schmidhuber, J. (1997).
+\newblock Long short-term memory.
+\newblock {\em Neural Computation\/}, {\bf 9}(8), 1735--1780.
+
+\bibitem[Kalchbrenner and Blunsom(2013)Kalchbrenner and
+  Blunsom]{Kalchbrenner2013}
+Kalchbrenner, N. and Blunsom, P. (2013).
+\newblock Recurrent continuous translation models.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)\/}, pages 1700--1709. Association for
+  Computational Linguistics.
+
+\bibitem[Koehn(2010)Koehn]{Koehn2010}
+Koehn, P. (2010).
+\newblock {\em Statistical Machine Translation\/}.
+\newblock Cambridge University Press, New York, NY, USA.
+
+\bibitem[Koehn {\em et~al.}(2003)Koehn, Och, and Marcu]{Koehn2003}
+Koehn, P., Och, F.~J., and Marcu, D. (2003).
+\newblock Statistical phrase-based translation.
+\newblock In {\em Proceedings of the 2003 Conference of the North American
+  Chapter of the Association for Computational Linguistics on Human Language
+  Technology - Volume 1\/}, NAACL '03, pages 48--54, Stroudsburg, PA, USA.
+  Association for Computational Linguistics.
+
+\bibitem[Pascanu {\em et~al.}(2013a)Pascanu, Mikolov, and
+  Bengio]{Pascanu+al-ICML2013-small}
+Pascanu, R., Mikolov, T., and Bengio, Y. (2013a).
+\newblock On the difficulty of training recurrent neural networks.
+\newblock In {\em ICML'2013\/}.
+
+\bibitem[Pascanu {\em et~al.}(2013b)Pascanu, Mikolov, and Bengio]{Pascanu2013}
+Pascanu, R., Mikolov, T., and Bengio, Y. (2013b).
+\newblock On the difficulty of training recurrent neural networks.
+\newblock In {\em Proceedings of the 30th International Conference on Machine
+  Learning (ICML 2013)\/}.
+
+\bibitem[Pascanu {\em et~al.}(2014)Pascanu, Gulcehre, Cho, and
+  Bengio]{Pascanu2014rec}
+Pascanu, R., Gulcehre, C., Cho, K., and Bengio, Y. (2014).
+\newblock How to construct deep recurrent neural networks.
+\newblock In {\em Proceedings of the Second International Conference on
+  Learning Representations (ICLR 2014)\/}.
+
+\bibitem[Pouget-Abadie {\em et~al.}(2014)Pouget-Abadie, Bahdanau, van
+  Merri\"enboer, Cho, and Bengio]{Pouget2014}
+Pouget-Abadie, J., Bahdanau, D., van Merri\"enboer, B., Cho, K., and Bengio, Y.
+  (2014).
+\newblock Overcoming the curse of sentence length for neural machine
+  translation using automatic segmentation.
+\newblock In {\em Eighth Workshop on Syntax, Semantics and Structure in
+  Statistical Translation\/}.
+\newblock to appear.
+
+\bibitem[Schuster and Paliwal(1997)Schuster and Paliwal]{Schuster1997}
+Schuster, M. and Paliwal, K.~K. (1997).
+\newblock Bidirectional recurrent neural networks.
+\newblock {\em Signal Processing, IEEE Transactions on\/}, {\bf 45}(11),
+  2673--2681.
+
+\bibitem[Schwenk(2012)Schwenk]{Schwenk2012}
+Schwenk, H. (2012).
+\newblock Continuous space translation models for phrase-based statistical
+  machine translation.
+\newblock In M.~Kay and C.~Boitet, editors, {\em Proceedings of the 24th
+  International Conference on Computational Linguistics (COLIN)\/}, pages
+  1071--1080. Indian Institute of Technology Bombay.
+
+\bibitem[Schwenk {\em et~al.}(2006)Schwenk, Dchelotte, and
+  Gauvain]{Schwenk2006t}
+Schwenk, H., Dchelotte, D., and Gauvain, J.-L. (2006).
+\newblock Continuous space language models for statistical machine translation.
+\newblock In {\em Proceedings of the COLING/ACL on Main conference poster
+  sessions\/}, pages 723--730. Association for Computational Linguistics.
+
+\bibitem[Sutskever {\em et~al.}(2014)Sutskever, Vinyals, and Le]{Sutskever2014}
+Sutskever, I., Vinyals, O., and Le, Q. (2014).
+\newblock Sequence to sequence learning with neural networks.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS
+  2014)\/}.
+
+\bibitem[Zeiler(2012)Zeiler]{Zeiler2012}
+Zeiler, M.~D. (2012).
+\newblock {ADADELTA}: An adaptive learning rate method.
+\newblock {\em ar{X}iv:{\tt 1212.5701 [cs.LG]}\/}.
+
+\end{thebibliography}

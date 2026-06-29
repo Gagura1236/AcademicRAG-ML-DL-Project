@@ -1,0 +1,174 @@
+\documentclass{article}
+
+\usepackage[margin = 0.9in]{geometry}
+\usepackage{newtxtext}
+% \usepackage[left=1.25in, top=1in, bottom=1in, right=1.25in]{geometry}
+\usepackage[round,sort,compress]{natbib}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[C]{\bfseries Gradient Descent with Polyak's Momentum Finds Flatter Minima via Large Catapults}
+\usepackage[parfill]{parskip}
+
+\input{math_commands.tex}
+\usepackage{dsfont}
+\newcommand{\indicator}{\mathds{1}}
+
+\def\bigbrace#1{\left\{ #1 \right\}}
+\def\bignorm#1{\left\lVert #1 \right\rVert}
+\def\bigabs#1{\left| #1 \right|}
+\def\bigopen#1{\left( #1 \right)}
+\def\bigclosed#1{\left[ #1 \right]}
+
+% colors and hyperlink setup
+\usepackage{xcolor,hyperref}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.65}
+\definecolor{darkred}{rgb}{0.65,0.0,0.0}
+\definecolor{darkgreen}{rgb}{0.0,0.5,0.0}
+\definecolor{tab:blue}{RGB}{31,119,180}  % 1f77b4
+\definecolor{tab:red}{RGB}{214,39,40}  % d62728
+\definecolor{tab:green}{RGB}{44,160,44}  % 2ca02c
+\definecolor{tab:orange}{RGB}{255,127,14}  % ff7f0e
+\hypersetup{
+	colorlinks = true,
+	citecolor  = darkblue,
+	linkcolor  = darkred,
+	filecolor  = darkblue,
+	urlcolor   = darkblue,
+}
+
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{float}
+\usepackage{subfigure}
+% \usepackage{physics}
+\usepackage{lipsum}
+\usepackage{enumitem}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+\usepackage{caption}
+% \usepackage{subcaption}
+
+\theoremstyle{plain}
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{claim}{Claim}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{hypothesis}{Hypothesis}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\Dis}{\mathrm{Dis}}
+\newcommand{\diag}{\mathrm{diag}}
+
+\usepackage{wrapfig}
+\setlength\intextsep{0pt}
+\newcommand{\rulesep}{\unskip\ \vrule\ }
+
+% comments on drafts
+\newcommand{\junghyun}[1]{{\color{red}{\bf JL:} #1}}
+
+\allowdisplaybreaks
+
+
+\title{\textbf{Gradient Descent with Polyak's Momentum Finds Flatter Minima via Large Catapults}}
+
+\date{}
+\author{
+  Prin Phunyaphibarn\thanks{Equal contributions} \thanks{Work done as an undergraduate intern at KAIST AI.} \\
+  KAIST Math\\
+  \texttt{\small prin10517@kaist.ac.kr} \\
+  \and
+  Junghyun Lee\footnotemark[1] \\
+  KAIST AI\\
+  \texttt{\small jh\_lee00@kaist.ac.kr} \\
+  \and
+  Bohan Wang \\
+  USTC \& Microsoft Research Asia\\
+  \texttt{\small bhwangfy@gmail.com} \\
+  \and
+  Huishuai Zhang \\
+  Peking University \\
+  \texttt{\small zhanghuishuai@pku.edu.cn} \\
+  \and
+  Chulhee Yun \\
+  KAIST AI \\
+  \texttt{\small chulhee.yun@kaist.ac.kr} \\
+}
+ 
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Although gradient descent with Polyak's momentum is widely used in modern machine and deep learning, a concrete understanding of its effects on the training trajectory remains elusive.
+In this work, we empirically show that for linear diagonal networks and nonlinear neural networks, momentum gradient descent with a large learning rate displays large catapults, driving the iterates towards much flatter minima than those found by gradient descent.
+We hypothesize that the large catapult is caused by momentum ``prolonging'' the self-stabilization effect~\citep{damian2023stabilization}.
+We provide theoretical and empirical support for our hypothesis in a simple toy example and empirical evidence supporting our hypothesis for linear diagonal networks.
+\end{abstract}
+
+\input{001Introduction}
+\input{003LargeCatapults}
+% \begin{figure}[!t]
+%     \centering
+%     \includegraphics[width=0.49\linewidth]{figures/ldn_coordinates_0.0.png}
+%     \includegraphics[width=0.49\linewidth]{figures/ldn_coordinates_0.9.png}
+%     \caption{Evolution of coordinates of $\vw$ for GD (left) and PHB (right). The setting is the same with our LDN experiment in Section~\ref{sec:ldn}, except we set $\eta_f = 0.015$ and $T_{warmup} = 4000$. This aggressive schedule is to emphasize the sparsification effect of large catapults.
+%     {\color{red} make BIGGER}
+%     }
+%     \label{fig:ldn-coordinates}
+% \end{figure}
+
+\input{004Stabilization}
+\input{005ToyExample}
+\input{006LinearDiagonal}
+\input{007Conclusion}
+
+
+
+
+\section*{Acknowledgements}
+We thank the anonymous reviewers for their helpful comments in improving the paper.
+We also thank Alex Damian, Eshaan Nichani, Jeremy Cohen, Jason Lee, and Molei Tao for helpful discussions at the NeurIPS 2023 M3L Workshop.
+This project was funded by the 2023 Microsoft Research Asia Collaborative Research grant funded by Microsoft.
+J. Lee and C. Yun were supported by the Institute of Information \& Communications Technology Planning \& Evaluation (IITP) grant funded by the Korean government(MSIT) (No.2019-0-00075, Artificial Intelligence Graduate School Program(KAIST)).
+
+% \section*{Impact Statement}
+% This paper advances our understanding of heavy-ball momentum, widely used in machine learning.
+% As our work is largely theoretical, there are no significant societal consequences of our work.
+
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+
+\newpage
+\appendix
+\newpage
+\tableofcontents
+\newpage
+\input{002RelatedWorks}
+\newpage
+\input{901ToyTheory}
+\newpage
+\input{902Experiments}
+
+
+\end{document}

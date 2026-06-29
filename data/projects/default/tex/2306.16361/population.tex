@@ -1,0 +1,133 @@
+
+\section{Analysis of Population Dynamics}\label{sec:population-dynamics}
+
+In this section, we give an overview of the analysis for the population infinite-width dynamics $\rho_t$ (\Cref{thm:pop_main_thm}). The full proof is given in \Cref{appendix:population_case}.
+
+
+
+\subsection{Symmetry of the Population Dynamics} \label{subsec:pop_symmetry}
+
+A key observation is that due to the symmetry in the data, the population dynamics $\rho_t$ has a symmetric distribution in the subspace orthogonal to the vector $\truevector$. As a result, the dynamics $\rho_t$ can be precisely characterized by the dynamics in the direction of $\truevector$. 
+
+Recall that $\w = \truevector^\top u$ denotes the projection of a weight vector $\u$ in the direction of $\truevector$. Let $\otherCoords = (I-\truevector\truevector^\top)u$ be the remaining component. For notational convenience, without loss of generality, we can assume that {\boldmath $\truevector = e_1$} and write $\u = (\w, \otherCoords)$, where $\w \in [-1, 1]$ and $\otherCoords \in \sqrt{1 - \w^2}\cdot \bbS^{d - 2}$. \textit{We will use this convention throughout the rest of the paper}.  We will use $\w_t(\chi)$ to refer to the first coordinate of the particle $\u_t(\chi)$, and $\z_t(\chi)$ to refer to the last $(d - 1)$ coordinates.
+
+\begin{definition}[Rotational invariance and symmetry] \label{def:rot_inv_symmetry}
+We say a neural network $\rho$ is \em rotationally invariant \em if for $\u = (\w, \z)\sim \rho$, the distribution of $\z \mid \w$ is uniform over $\sqrt{1 - \w^2} \bbS^{d-2}$ almost surely. We also say the network is \em symmetric \em w.r.t a variable $\w$ if the density of $\w$ is an even function.  
+\end{definition}
+
+We note that any polynomial-width neural network (e.g., $\hat{\rho}$) is very far from rotationally invariant, and therefore the definition is specifically used for population dynamics.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+If $\rho$ is rotationally invariant and symmetric, then $L(\rho)$ has a simpler form that only depends on the marginal distribution of $\w$.
+
+\begin{lemma} \label{lemma:population_loss_formula}
+Let $\rho$ be a rotationally invariant neural network. Then, for any target function $h$ and any activation $\sigma$,
+\begin{align} \label{eq:rot_inv_loss_formula}
+\textstyle{L(\rho)
+ = \frac{1}{2}\sum_{k = 0}^\infty \Big( \legendreCoeff{\sigma}{k}\E_{u \sim \rho} [P_{k, d}(w)] - \hat{\target}_{k,d} \Big)^2 \period}
+\end{align}
+In addition, suppose $\target$ and $\sigma$ satisfy \Cref{assumption:target} and $\rho$ is symmetric. Then
+\begin{align} \label{eq:symmetric_loss_formula}
+\textstyle{L(\rho)
+ = \frac{\legendreCoeff{\sigma}{2}^2}{2} \Big( \E_{u \sim \rho} [P_{2, d}(w)] - \gamma_2\Big)^2 + \frac{\legendreCoeff{\sigma}{4}^2}{2} \Big( \E_{u \sim \rho} [P_{4, d}(w)] - \gamma_4 \Big)^2 \period}
+\end{align}
+\end{lemma}
+
+The proof of \Cref{lemma:population_loss_formula} is deferred to \Cref{app:pf-lem-plf}. \Cref{eq:rot_inv_loss_formula} says that if $\rho$ is rotationally invariant, then $L(\rho)$ only depends on the marginal distribution of $\w$. \Cref{eq:symmetric_loss_formula} says that if the distribution of $\w$ is additionally symmetric and $\sigma$ and $h$ are quartic,  then the terms corresponding to odd $k$ and the higher order terms for $k > 4$ in \Cref{eq:rot_inv_loss_formula} vanish. Note that $P_{2,d}(s) \approx s^2$ and $P_{4,d}(s) \approx s^4$ by \Cref{eq:legendre_polynomial_2_4}. Thus, $L(\rho)$ essentially corresponds to matching the second and fourth moments of $\w$ to some desired values $\gamma_2$ and $\gamma_4$. Inspired by this lemma, we define the following key quantities: for any time $t \geq 0$, we define $D_{2, t} = \E_{\u \sim \rho_t}[\PtwoD(\w)] - \gamma_2$ and $D_{4, t} = \E_{\u \sim \rho_t}[\PfourD(\w)] - \gamma_4$, where $\rho_t$ is defined according to the population, infinite-width dynamics (\Cref{eq:population_init}, \Cref{eq:population_derivative} and \Cref{eq:rho_t}).
+
+We next show that the rotational invariance and symmetry properties of $\rho_t$ are indeed maintained:
+
+\begin{lemma}\label{lemma:rho_rotational_invariant}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. At any time $t \in [0, \infty)$, $\rho_t$ is symmetric and rotationally invariant.
+\end{lemma}
+
+The proof of \Cref{lemma:rho_rotational_invariant} is deferred to \Cref{subsec:pop_symmetry_missing_proofs}. To show rotational invariance, we use \Cref{eq:projected_gradient_flow_population} and the rotational invariance of the data in the last $(d - 1)$ coordinates. To show symmetry, we use \Cref{eq:rot_inv_loss_formula}, and the facts that $\Pkd$ is an odd polynomial for odd $k$ and $\rho_t$ is symmetric at initialization.
+
+As a consequence of \Cref{lemma:population_loss_formula} and \Cref{lemma:rho_rotational_invariant}, we obtain a simple formula for the dynamics of $\w_t$:
+
+\begin{lemma} [1-dimensional dynamics] \label{lem:1-d-traj}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Then, for any $\chi \in \bbS^{d - 1}$, writing $\w_t := \w_t(\chi)$, we have
+    \begin{align}\label{equ:1-d-traj}
+\frac{dw_t}{dt} & = \underbrace{-(1 - \w_t^2) \cdot (P_t(\w_t) + Q_t(\w_t))}_{\triangleq \vel(\w_t)} \comma
+\end{align}
+where for any $\w \in [-1, 1]$, we have $P_t(w) = 2 \sigmaCoeffTwo^2 \DtwoT w + 4 \sigmaCoeffFour^2 \DfourT w^3$, and $Q_t(w) = \lambdaD^{(1)} w + \lambdaD^{(3)} w^3$, where $|\lambdaD^{(1)}|, |\lambdaD^{(3)}| \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}$. More specifically, $\lambdaD^{(1)} = 2 \sigmaCoeffTwo^2 D_{2, t} \cdot \frac{1}{d - 1} - 2 \sigmaCoeffFour^2 D_{4, t} \cdot \frac{6d + 12}{d^2 - 1}$ and $\lambdaD^{(3)} = 4 \sigmaCoeffFour^2 D_{4, t} \cdot \frac{6d + 9}{d^2 - 1}$.
+\end{lemma}
+
+
+\Cref{equ:1-d-traj} is a properly defined dynamics for $w$ because the update rule for $w_t$ only depends on $w_t$ and the quantities $D_{2, t}$ and $D_{4, t}$ --- additionally, $D_{2, t}$ and $D_{4, t}$ only depend on the distribution of $w$. As a slight abuse of notation, in the rest of this section, and in \Cref{appendix:population_case}, we will refer to the $\w_t(\chi)$ as particles --- this is well-defined by \Cref{lem:1-d-traj}. This does not lead to ambiguity because we no longer need to consider the $\u_t(\chi)$ when analyzing the population dynamics. We also use $\iota \in [-1, 1]$ to refer to the first coordinate of $\chi$, the initialization of a particle under the population dynamics. We note that $\iota = \dotp{\chi}{\e}$ and therefore, the distribution of $\iota$ is $\mu_d$. For any time $t \geq 0$, we use $\w_t(\iota)$ to refer to $\w_t(\chi)$ for any $\chi \in \bbS^{d - 1}$. This notation is also well-defined by \Cref{lem:1-d-traj}.
+
+\subsection{Analysis of One-Dimensional Population Dynamics} \label{sec:population_loss}
+
+We divide our proof of \Cref{thm:pop_main_thm} into three phases, which are defined as follows. The first phase corresponds to the period of time under which for most initializations $\iota$, $w_t(\iota)$ is still small. For ease of presentation, we will only consider particles $\w_t(\iota)$ for $\iota > 0$ in the following discussion. Our argument also applies for $\iota < 0$ by the symmetry of $\rho_t$ (\Cref{lemma:rho_rotational_invariant}).
+
+\begin{definition}[Phase 1] \label{def:phase_1}
+Let $\wmax = \frac{1}{\log d}$ and $\iotaU = \frac{\log d}{\sqrt{d}}$. Let $T_1 > 0$ be the minimum time such that $w_{T_1}(\iotaU) = \wmax := \frac{1}{\log d}$. We refer to the time interval $[0, T_1]$ as Phase 1.
+\end{definition}
+
+By tail bounds for $\mu_d$, at initialization, essentially all of the particles are less than $\iotaU = \frac{\log d}{\sqrt{d}}$ in magnitude. Since the magnitudes of the $\w_t(\iota)$ maintain their respective orders under the population dynamics (\Cref{prop:particle_order}), Phase 1 corresponds to the duration under which all but a negligible portion of the particles have $|\w_t(\iota)| \leq \wmax$. During Phase 1, we have $D_{2,t}, D_{4, t} < 0$, and the term corresponding to $D_{2, t}$ in the velocity (\Cref{equ:1-d-traj}) dominates, so all particles $\w$ grow by essentially the same $\frac{\sqrt{d}}{(\log d)^2}$ factor. Note that the particles do not have a large velocity in absolute terms, and thus the loss does not decrease much during this phase.
+
+
+\begin{definition}[Phase 2] \label{def:phase_2}
+Let $T_2 > 0$ be the minimum time such that either $D_{2, T_2} = 0$ or $D_{4, T_2} = 0$. We refer to the time interval $[T_1, T_2]$ as Phase 2. Note that $T_2 > T_1$ by \Cref{lemma:phase1_d2_d4_neg}.
+\end{definition}
+
+In other words, Phase 2 corresponds to the time period after Phase 1, during which $D_{2, t}$ and $D_{4, t}$ are still negative. Afterwards, at least one of $D_{2, t}$ or $D_{4, t}$ becomes nonnegative. During Phase 2, a large fraction of particles grows to $\poly(\frac{1}{\log \log d})$. Henceforth, for the rest of Phase 2, all of these particles will have a large velocity, and the loss will decrease quickly for the rest of Phase 2.
+
+\begin{definition}[Phase 3] 
+Phase 3 is defined as the time interval $[T_2, \infty)$.
+\end{definition}
+
+This phase presents two cases: (i) $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$, or (ii) $D_{2, T_2} < 0$ and $D_{4, T_2} = 0$. The analyses of the two cases are in \Cref{subsec:phase3_case1} and \Cref{subsec:phase3_case2} respectively. We give an overview of both cases below. Our main goal in Phase 3 is to show that if $(D_{2, t}, D_{4, t})$ is far from $(0, 0)$, then the velocity is large enough to allow a significant decrease in the loss function. Recall that the velocity $v(\w)=-(1 -\w^2)(P_t(\w)+Q_t(\w))$ defined in \Cref{lem:1-d-traj} is approximately given by
+\begin{align}
+\frac{d \w}{d t} \approx -(1 -\w^2)P_t(\w)=  -(1 - \w^2)\left(2 \sigmaCoeffTwo^2 \DtwoT w + 4 \sigmaCoeffFour^2 \DfourT w^3\right) \period
+\end{align}
+
+\noindent \textbf{Phase 3, First Case} If $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$, then for all $t \geq T_2$, we will have $D_{2, t} \geq 0$ and $D_{4, t} \leq 0$. (See \Cref{lemma:phase3_case1_fixedA} and \Cref{lemma:phase3_case1_fixedB}.) \Cref{lemma:case_1_mass_in_middle} implies that when $D_{2, t} \geq 0$ and $D_{4, t} \leq 0$, a $\poly(\gamma_2)$ fraction of particles will be far from $0$ and $1$, which are two of the roots of the velocity function. However, this does not guarantee a large average velocity --- unlike in Phases 1 and 2, the velocity %
+may have a positive root $r \in (0, 1)$, which can give rise to bad stationary points. As a concrete example, if \Cref{assumption:target} holds, there exists some $r$ with $\frac{1}{\log \log d} \lesssim r \leq 1$ such that if $\rho$ is the singleton distribution which assigns all of its probability to $r$, then the velocity under $\rho$ at $r$ is exactly $0$ (\Cref{lemma:saddle_point_construction}). This is because the velocity of $r$ under $\rho$ has a factor $\sigmaCoeffTwo^2 (\PtwoD(r) - \gamma_2) \PtwoD'(r) + \sigmaCoeffFour^2 (\PfourD(r) - \gamma_4) \PfourD'(r)$, and this sixth-degree polynomial in $r$ has a root between $\frac{1}{\log \log d}$ and $1$, by the definitions of $\PtwoD$ and $\PfourD$ (\Cref{eq:legendre_polynomial_2_4}).
+
+Thus, we must leverage some information about the trajectory to show that the average velocity is large when $D_{2, t}$ and $D_{4, t}$ have different signs. To show that the average velocity is large, it suffices to show that the particles are not concentrated abound the root, that is, that $\E_{\u \sim \rho_t}[(\w - r)^2] \gtrsim \E_{\w, \w' \sim \rho_t}(\w - \w')^2$ is large. However, it is quite possible that for two particles $w$ and $w'$, the distance $|\w - \w'|$ decreases over time. Our main technique to control the distance between pairs of particles is as follows. We define a potential function $\potential(\w) := \log (\frac{\w}{\sqrt{1 - \w^2}})$, and we show that $|\potential(\w) - \potential(\w')|$ is always increasing for any two particles $\w, \w'$ with the same sign, during Phases 1 and 2, as well as during Phase 3 if $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$ (\Cref{lemma:case_1_potential_increase}). Using the fact that there is a large portion of particles away from $0$ and $1$ as long as $D_{2, t} > 0$ and $D_{4, t} < 0$, and because $\potential$ is Lispchitz on an interval bounded away from $0$ and $1$, we show that the particles which are away from $0$ and $1$ also have large variance, implying that the average velocity is large.
+
+\noindent \textbf{Phase 3, Second Case} For the case $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, we use a somewhat different argument which also involves $\potential$. We again have to deal with the fact that the velocity $\vel(\w)$ may have a positive root $r$. The key point is that, due to the constraints $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$ which hold during Phase 3, Case 2 (\Cref{lemma:case2_invariant}), it is not possible for all the particles $\w$ to be stuck at the root $r$. This is because, by the definition of $D_{2, t}$ and $D_{4, t}$, we will approximately have $\E[\w^2] \leq \gamma_2$ and $\E[\w^4] \geq \gamma_4$, and if nearly all the particles $\w$ are stuck at $r$, then this will imply that $\gamma_4 \approx \gamma_2^2$. This would lead to a contradiction since \Cref{assumption:target} states that $\gamma_4 \geq 1.1 \gamma_2^2$.
+
+However, it is still possible for a large portion of particles $\w$ to be stuck at $0$ or $1$, meaning that these particles could have a very small velocity due to the factors $\w$ and $(1 - \w^2)$ in $\vel(\w)$. To deal with such particles, we use the following argument. First, by time $T_2$, nearly all of the particles have grown to at least $\poly(\frac{1}{\log \log d})$ in absolute value, as mentioned above in the discussion of Phase 2. Additionally, since we approximately have $\E[\w^4] \leq \gamma_4$ at time $T_2$ since $D_{4, T_2} = 0$, we can argue by Markov's inequality that an $O(\gamma_4)$ fraction of particles is at most $\frac{1}{2}$. For the purposes of this overview, we can refer to the set of particles which are larger than $\poly(\frac{1}{\log \log d})$ and smaller than $O(\gamma_4)$ as $\calS_1$. We also use $\w_t(\iotamid)$ to refer to the largest particle in $\calS_1$.
+
+Our key observation about $\potential$ in Phase 3, Case 2 is that for any two particles $\w, \w'$ with the same sign, $|\potential(\w) - \potential(\w')|$ is in fact \textit{decreasing} after the time $T_2$ (\Cref{lemma:case_2_potential_decrease}). Using this fact, along with our bound on the initial potential difference between any two particles in $\calS_1$ (\Cref{lemma:case_2_initial_potential}), we argue that if one of the particles in $\calS_1$ is extremely close to $0$, then all of the particles in $\calS_1$ are extremely close to $0$, and if one of the particles in $\calS_1$ is extremely close to $1$, then all of the particles in $\calS_1$ is extremely close to $1$ (see \Cref{lemma:case_2_neurons_stay_big} and its proof). By our definition of $\calS_1$, at most an $O(\gamma_4)$ fraction of particles are not in $\calS_1$, meaning that the constraints $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$ are violated if either all particles in $\calS_1$ are close to $0$ or all particles in $\calS_1$ are close to $1$ (we make this argument precise in \Cref{lemma:case_2_neurons_stay_big}). Thus, we can show that all the particles in $\calS_1$ are far from $0$ and $1$ during Phase 3, Case 2. 
+
+However, it may be the case that all of the particles in $\calS_1$ are stuck at $r$, since while we know that $\calS_1$ contains at least a $1 - O(\gamma_4)$ fraction of the particles, the best we can show using the constraints $D_{2, t} \leq 0$ and $D_{4, t} \geq 0$ is that an $\Omega(\gamma_4^{5/4})$ fraction of particles is away from $r$ (see the proof of \Cref{lemma:phase3_case2_particles_away_from_root}). Thus, in principle, it is possible that $\calS_1$, and the set of particles $\w$ which are far from $r$, are disjoint. We can circumvent this issue by finally considering the particles $\w$ which are larger than $\w_t(\iotamid)$. In principle, these particles can all be stuck at or near $1$. However, when the positive root $r$ of $\vel_t(\w)$ is less than $\frac{1}{2}$, then all the particles $\w$ which are close to $1$ will be drawn towards $r$, and will leave $1$ at an exponentially fast rate (see the proof of \Cref{lemma:phase3_case2_movement_away_from_1}). Additionally, we show that the positive root $r$ cannot be larger than $\frac{1}{2}$ for too long, leveraging our observations about $\calS_1$ (see the proof of \Cref{lemma:phase3_case2_rootlarge_time}). Thus, eventually, a $1 - \poly(\frac{1}{\log \log d})$ fraction of the particles will be away from $0$ and $1$. At this point, the average velocity of the particles in $\rho_t$ will be large since an $\Omega(\gamma_4^{5/4})$ fraction of the particles is away from $r$, as mentioned above.
+
+We now state our conclusions for each of the phases. Recall that $\Tstar$ is the amount of time $t$ needed until the loss $L(\rho_t)$ becomes less than $\frac{1}{2} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.
+
+\begin{lemma}[Phase 1]
+\label{lemma:phase_1_summary}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. At the end of phase 1, i.e. at time $T_1$, for all $\iota \in (0, \iotaU)$, we have $\w_{T_1}(\iota) \asymp \frac{\sqrt{d}}{(\log d)^2} \iota$. Furthermore, $T_1 \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log d$. Additionally, we have $\exp\Big(\int_0^{T_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big) \asymp \frac{\sqrt{d}}{(\log d)^2}$.
+\end{lemma}
+
+We do not make use of the explicit runtime $T_1$ of Phase 1, but we state it for reference. The quantity $\exp\Big(\int_0^{T_1} 2 \sigmaCoeffTwo^2 |D_{2, t}| dt \Big)$ is relevant for the analysis of the empirical, finite-width dynamics, as discussed in \Cref{section:finite_sample_analysis}. It is approximately the factor by which the $\w_t(\iota)$ grow during Phase 1.
+
+\begin{lemma} [Phase 2] \label{lemma:phase_2_runtime}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Let $T_2$ be the minimum time such that either $D_{2, T_2} = 0$ or $D_{4, T_2} = 0$, i.e. $T_2$ is the end of phase 2. Then, either $T_2 - T_1 \lesssim \frac{(\log \log d)^{18}}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ or $\Tstar - T_1 \lesssim \frac{(\log \log d)^{18}}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$.
+\end{lemma}
+
+This lemma, which summarizes Phase 2, states that within $\frac{(\log \log d)^{18}}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)} \log\Big(\frac{\gamma_2}{\epsilon}\Big)$ time, either Phase 2 ends, or the loss is less than the desired value $(\frac{1}{2} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.
+
+\begin{lemma}[Phase 3, Case 1] \label{lemma:phase3_case1_final}
+In the setting of \Cref{thm:pop_main_thm}, suppose that $D_{2, T_2} = 0$ and $D_{4, T_2} < 0$ (i.e. Phase 3, Case 1 holds). Then, the total amount of time $t \geq T_2$ such that $L(\rho_t) \geq \frac{1}{2} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$ is at most $O(\frac{1}{\sigmaCoeffFour^2 \gamma_2^8 \xi^4 \kappa^6} \log(\frac{\gamma_2}{\epsilon}))$.
+\end{lemma}
+
+\begin{lemma} [Phase 3, Case 2] \label{lemma:phase3_case2_overall_time}
+Suppose we are in the setting of \Cref{thm:pop_main_thm}. Assume $D_{4, T_2} = 0$ and $D_{2, T_2} < 0$, i.e. Phase 3 Case 2 holds. Then, at most $O\Big(\frac{1}{\sigmaCoeffTwo^2 \epsilon \gamma_2^{11/2}\xi^8 \kappa^{12}} \log\Big(\frac{\gamma_2}{\epsilon}\Big)\Big)$ time $t \geq T_2$ elapses while $L(\rho_t) \gtrsim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$.
+\end{lemma}
+
+Combining these lemmas gives \Cref{thm:pop_main_thm}.

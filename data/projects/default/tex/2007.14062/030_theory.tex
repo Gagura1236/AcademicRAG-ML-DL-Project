@@ -1,0 +1,135 @@
+\section{Theoretical Results about Sparse Attention Mechanism}
+\label{sec:theory}
+
+In this section, we will show that that sparse attention mechanisms are as 
+powerful and expressive as full-attention mechanisms in two respects.
+First, we show that when sparse attention mechanisms are used in a standalone encoder 
+(such as BERT), they are Universal Approximators of sequence 
+to sequence functions in the style of \citet{Yun19}. 
+We note that this property was also explored theoretically in contemporary work~\citet{yun2020on}.
+%
+Second, unlike~\citep{yun2020on}, we further show that sparse encoder-decoder transformers are Turing Complete 
+(assuming the same conditions defined in~\citep{Perez19}).
+%
+Complementing the above positive results, we also show that moving to a sparse-attention mechanism 
+incurs a cost, i.e.~there is no free lunch. In~\Cref{sec:limit}, we show lower bounds 
+by exhibiting a natural task where any  sufficiently sparse  mechanism will 
+require polynomially more layers. 
+
+\subsection{Notation}
+The complete Transformer {\em encoder} stack is nothing but the repeated application of a single-layer encoder (with independent parameters). 
+We denote class of such Transformer encoders stack, defined using  generalized encoder (\Cref{sec:arch}),  by $\mathcal{T}_{D}^{H,m,q}$ which consists of $H$-heads with head size $m$ and $q$ is the hidden layer size of the output network, and the attention layer is defined by the directed graph $D$. 
+
+The key difference between our proposed attention mechanism to that of \citet{vaswani2017attention,Yun19} is that we add a special token at the beginning of each sequence and assign it a special vector. 
+We will refer to this as $\vx_0$. 
+Therefore our graph $D$ will have vertex set $\set{0} \cup [n] = \set{0,1,2,\dots,n}$.
+We will assume that this extra node and its respective vector will be dropped at the final output layer of transformer. 
+To avoid cumbersome notation, we will still treat transformer as mapping sequences 
+$\mX \in \R^{n \times d}$ to $\R^{n \times d}$. We will also allow the 
+transformer to append position embeddings  $E \in \R^{d\times n}$ to 
+matrix $X$ in the input layer. 
+
+Finally, we need to define the function class and distance measure for proving universal approximation property. 
+Let $\mathcal{F}_{CD}$ denote the set of continuous functions $f: [0,1]^{n \times d} \to \R^{n \times d} $ 
+which are continuous with respect to the topology defined by  $\ell_p$ norm. 
+Recall for any  $p \geq 1$, the $\ell_p$ distance is $d_p(f_1,f_2)  = \left(\int \norm{f_1(X) - f_2(X)}_p^p dX \right)^{1/p}$.
+
+\subsection{Universal Approximators}
+\begin{definition}
+The star-graph $S$ centered at $0$ is the graph defined on $\set{0,\dots, n}$. 
+The neighborhood of all vertices $i$ is $N(i) = \{0,i\} $  for $i \in \{1\dots n\}$ and 
+$N(0) = \{1,\dots n\}$. 
+\end{definition} 
+Our main theorem is that the sparse attention mechanism defined by any graph containing $S$
+is a universal approximator:
+\begin{theorem}
+\label{thm:universal}
+    Given $1 < p < \infty$ and $\epsilon > 0 $, for any $f \in \mathcal{F}_{CD}$, there exists a 
+    transformer with sparse-attention, $g \in \mathcal{T}_D^{H,m,q}$  such that 
+    $d_p(f,g)\leq \epsilon$ where $D$ is any graph containing star graph $S$. 
+\end{theorem}
+To prove the theorem, we will follow the standard proof structure outlined in~\citep{Yun19}.
+
+\textbf{Step 1: Approximate $\mathcal{F}_{CD}$ by piece-wise constant functions.} 
+    Since $f$ is a continuous function with bounded domain $[0,1)^{n \times d}$, we will 
+    approximate it with a  suitable piece-wise constant function. This is accomplished by a suitable partition of the  region $[0,1)$ into a grid of granularity $\delta$ to get a discrete set $\Gd$. Therefore, we can assume that we are dealing with a function 
+    $\bar{f}: \Gd \to \R^{n \times d}$, where $d_p(f,\bar{f}) \leq \frac{\epsilon}{3}$. 
+    
+\textbf{Step 2:  Approximate piece-wise constant functions by modified transformers.} 
+    This is the key step  of the proof where  the self-attention mechanism is used to generate a \emph{contextual-mapping} of the input. Informally, a contextual mapping is a unique code
+    for the pair consisting of a matrix $(\mX,\vx_{i})$ and a column. Its uniqueness allows
+    the Feed forward layers to use each code to map it to a unique output column. 
+    
+    The main technical challenge is computing the contextual mapping using only sparse attention mechanism. 
+    This was done in \cite{Yun19} using a ``selective'' shift operator which shift up entries that are in a 
+    specific interval. Key to their proof was the fact that the shift, was exactly the range of the largest 
+    entry to the smallest entry.  
+    
+    Creating a contextual mapping with a sparse attention mechanism is quite a challenge.
+    In particular, because each query only attends to a few keys, it is not at all clear
+    that sufficient information can be corralled to make a contextual embedding of the 
+    entire matrix. To get around this, we develop a sparse shift operator which shifts the entries of the matrices if they lie in a certain range. The exact amount of the shift is controlled by the directed sparse attention graphg $D$. The second key ingredient is the use of additional global token.  By carefully applying the operator
+    to a set of chosen ranges, we will show that each column will contain a unique mapping of the
+    full mapping.   Therefore, we can   
+    augment the loss of inner-products in the self attention mechanism by using multiple 
+    layers and an auxiliary global token. 
+    
+\textbf{Step 3: Approximate modified transformers by original Transformers}: The final 
+step is to approximate the modified transformers by the original transformer which uses ReLU and 
+softmax. 
+
+We provide the full details in~\Cref{sec:apndx-universal}.
+
+\subsection{Turing Completeness}
+Transformers are a very general class. In the original paper of \citet{vaswani2017attention}, they were used 
+in both an encoder and a decoder. While the previous section outlined how powerful just the encoders were,  another natural question is to ask what the
+additional power of both a decoder along with an encoder is? \citet{Perez19} showed that the 
+full  transformer based on a quadratic attention mechanism is Turing Complete. This result 
+makes one  unrealistic assumption, which is that the model works on arbitrary precision 
+model. Of course,  this is necessary as otherwise, Transformers are bounded finite 
+state machines and cannot be Turing Complete. 
+
+It is natural to ask if the full attention mechanism is necessary. Or can a 
+sparse attention mechanism also be used to simulate any Turing Machine? 
+We show that this is indeed the case: we can use a sparse encoder and sparse decoder
+to simulate any Turing Machine. 
+
+To use the sparse attention mechanism in the transformer architecture, we need to 
+define a suitable modification where each token only reacts to previous tokens. 
+Unlike the case for BERT, where the entire attention mechanism is applied once, in  full 
+transformers, the sparse attention mechanism at decoder side is used token by token. 
+Secondly the work of \citet{Perez19}, uses each token as a representation of the tape 
+history and  uses the full attention to move and retrieve the correct tape symbol.
+Most of the construction of \citet{Perez19} goes through for sparse attentions, except for their 
+addressing scheme to point back in history (Lemma B.4 in \citep{Perez19}).
+We show how to simulate this using a sparse attention mechanism and defer the 
+details to~\Cref{sec:apndx-turing}.
+
+\subsection{Limitations}
+\label{sec:limit}
+We demonstrate a natural task which can be solved by the full attention mechanism in $O(1)$-layers.
+However, under standard complexity theoretic assumptions, this problem requires 
+$\tilde{\Omega}(n)$-layers for any sparse attention layers with $\tilde{O}(n)$ edges (not just \bigb). (Here $\tilde{O}$ hides poly-logarthmic  factors). 
+Consider the simple problem of finding the corresponding furthest vector 
+for each vector in the given sequence of length $n$. Formally,
+
+\textbf{Task 1.} \ Given $n$ unit vectors $\{u_1,\dots,u_n\}$, find $f(u_1,\dots,u_n) \to (u_{1^*}, \dots, u_{n^*})$  where for a fixed $j \in [n]$, we define $ j^* = \argmax_{k} \|u_k - u_j\|_2^2$.
+
+Finding vectors that are furthest apart boils down to minimize 
+inner product search in case of unit vectors. For a full-attention mechanism 
+with appropriate query 
+and keys, this task is very easy as we can evaluate all pair-wise inner products. 
+
+The impossibility for sparse-attention follows from hardness results 
+stemming from Orthogonal Vector Conjecture(OVC) \citep{abboud2014consequences,abboud2015tight,backurs2015edit,williams2005new}. The OVC  is a widely used assumption
+in fine-grained complexity. Informally, it states that one cannot determine if the minimum inner product among 
+$n$ boolean vectors is $0$ in subquadratic time. In~\Cref{sec:apndx-limit}, we show a 
+reduction using  OVC to show that if a transformer $g \in \mathcal{T}_D^{H=1,m=2d,q=0}$ for 
+any sparse directed graph $D$ can evaluate the Task $1$, it can solve the orthogonal vector problem.
+\begin{proposition}
+    There exists a single layer full self-attention $g\in\mathcal{T}^{H=1,m=2d,q=0}$ that can 
+    evaluate Task 1,  i.e. $g(u_1,...,u_n) = [u_{1^*},\dots, u_{n^*}]$, but for any sparse-attention 
+    graph $D$ with $\tilde{O}(n)$ edges (i.e.~inner product evaluations), would require $\tilde{\Omega}(n^{1-o(1)})$ layers.
+\end{proposition}
+\vspace{-3mm}
+We give a formal proof of this fact in~\Cref{sec:apndx-limit}.

@@ -1,0 +1,321 @@
+\begin{thebibliography}{44}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abadi et~al.(2015)Abadi, Agarwal, Barham, Brevdo, Chen, Citro,
+  Corrado, Davis, Dean, Devin, Ghemawat, Goodfellow, Harp, Irving, Isard, Jia,
+  Jozefowicz, Kaiser, Kudlur, Levenberg, Man\'{e}, Monga, Moore, Murray, Olah,
+  Schuster, Shlens, Steiner, Sutskever, Talwar, Tucker, Vanhoucke, Vasudevan,
+  Vi\'{e}gas, Vinyals, Warden, Wattenberg, Wicke, Yu, and
+  Zheng]{tensorflow2015-whitepaper}
+Mart\'{\i}n Abadi, Ashish Agarwal, Paul Barham, Eugene Brevdo, Zhifeng Chen,
+  Craig Citro, Greg~S. Corrado, Andy Davis, Jeffrey Dean, Matthieu Devin,
+  Sanjay Ghemawat, Ian Goodfellow, Andrew Harp, Geoffrey Irving, Michael Isard,
+  Yangqing Jia, Rafal Jozefowicz, Lukasz Kaiser, Manjunath Kudlur, Josh
+  Levenberg, Dan Man\'{e}, Rajat Monga, Sherry Moore, Derek Murray, Chris Olah,
+  Mike Schuster, Jonathon Shlens, Benoit Steiner, Ilya Sutskever, Kunal Talwar,
+  Paul Tucker, Vincent Vanhoucke, Vijay Vasudevan, Fernanda Vi\'{e}gas, Oriol
+  Vinyals, Pete Warden, Martin Wattenberg, Martin Wicke, Yuan Yu, and Xiaoqiang
+  Zheng.
+\newblock {TensorFlow}: Large-scale machine learning on heterogeneous systems,
+  2015.
+\newblock URL \url{https://www.tensorflow.org/}.
+\newblock Software available from tensorflow.org.
+
+\bibitem[Atwood \& Towsley(2016)Atwood and Towsley]{atwood2016diffusion}
+James Atwood and Don Towsley.
+\newblock Diffusion-convolutional neural networks.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  1993--2001, 2016.
+
+\bibitem[Bahdanau et~al.(2015)Bahdanau, Cho, and Bengio]{bahdanau2014neural}
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio.
+\newblock Neural machine translation by jointly learning to align and
+  translate.
+\newblock \emph{International Conference on Learning Representations (ICLR)},
+  2015.
+
+\bibitem[Belkin et~al.(2006)Belkin, Niyogi, and Sindhwani]{belkin2006manifold}
+Mikhail Belkin, Partha Niyogi, and Vikas Sindhwani.
+\newblock Manifold regularization: A geometric framework for learning from
+  labeled and unlabeled examples.
+\newblock \emph{Journal of machine learning research}, 7\penalty0
+  (Nov):\penalty0 2399--2434, 2006.
+
+\bibitem[Bruna et~al.(2014)Bruna, Zaremba, Szlam, and LeCun]{bruna2013spectral}
+Joan Bruna, Wojciech Zaremba, Arthur Szlam, and Yann LeCun.
+\newblock Spectral networks and locally connected networks on graphs.
+\newblock \emph{International Conference on Learning Representations (ICLR)},
+  2014.
+
+\bibitem[Cheng et~al.(2016)Cheng, Dong, and Lapata]{cheng2016long}
+Jianpeng Cheng, Li~Dong, and Mirella Lapata.
+\newblock Long short-term memory-networks for machine reading.
+\newblock \emph{arXiv preprint arXiv:1601.06733}, 2016.
+
+\bibitem[Cho et~al.(2014)Cho, Van~Merri{\"e}nboer, Gulcehre, Bahdanau,
+  Bougares, Schwenk, and Bengio]{cho2014learning}
+Kyunghyun Cho, Bart Van~Merri{\"e}nboer, Caglar Gulcehre, Dzmitry Bahdanau,
+  Fethi Bougares, Holger Schwenk, and Yoshua Bengio.
+\newblock Learning phrase representations using rnn encoder-decoder for
+  statistical machine translation.
+\newblock \emph{arXiv preprint arXiv:1406.1078}, 2014.
+
+\bibitem[Clevert et~al.(2016)Clevert, Unterthiner, and
+  Hochreiter]{clevert2015fast}
+Djork-Arn{\'e} Clevert, Thomas Unterthiner, and Sepp Hochreiter.
+\newblock Fast and accurate deep network learning by exponential linear units
+  (elus).
+\newblock \emph{International Conference on Learning Representations (ICLR)},
+  2016.
+
+\bibitem[Defferrard et~al.(2016)Defferrard, Bresson, and
+  Vandergheynst]{defferrard2016convolutional}
+Micha{\"e}l Defferrard, Xavier Bresson, and Pierre Vandergheynst.
+\newblock Convolutional neural networks on graphs with fast localized spectral
+  filtering.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  3844--3852, 2016.
+
+\bibitem[Denil et~al.(2017)Denil, Colmenarejo, Cabi, Saxton, and
+  de~Freitas]{denil2017programmable}
+Misha Denil, Sergio~G{\'o}mez Colmenarejo, Serkan Cabi, David Saxton, and Nando
+  de~Freitas.
+\newblock Programmable agents.
+\newblock \emph{arXiv preprint arXiv:1706.06383}, 2017.
+
+\bibitem[Duan et~al.(2017)Duan, Andrychowicz, Stadie, Ho, Schneider, Sutskever,
+  Abbeel, and Zaremba]{duan2017one}
+Yan Duan, Marcin Andrychowicz, Bradly Stadie, Jonathan Ho, Jonas Schneider,
+  Ilya Sutskever, Pieter Abbeel, and Wojciech Zaremba.
+\newblock One-shot imitation learning.
+\newblock \emph{arXiv preprint arXiv:1703.07326}, 2017.
+
+\bibitem[Duvenaud et~al.(2015)Duvenaud, Maclaurin, Iparraguirre, Bombarell,
+  Hirzel, Aspuru-Guzik, and Adams]{duvenaud2015convolutional}
+David~K Duvenaud, Dougal Maclaurin, Jorge Iparraguirre, Rafael Bombarell,
+  Timothy Hirzel, Al{\'a}n Aspuru-Guzik, and Ryan~P Adams.
+\newblock Convolutional networks on graphs for learning molecular fingerprints.
+\newblock In \emph{Advances in neural information processing systems}, pp.\
+  2224--2232, 2015.
+
+\bibitem[Frasconi et~al.(1998)Frasconi, Gori, and
+  Sperduti]{frasconi1998general}
+Paolo Frasconi, Marco Gori, and Alessandro Sperduti.
+\newblock A general framework for adaptive processing of data structures.
+\newblock \emph{IEEE transactions on Neural Networks}, 9\penalty0 (5):\penalty0
+  768--786, 1998.
+
+\bibitem[Gehring et~al.(2016)Gehring, Auli, Grangier, and
+  Dauphin]{GehringAGD16}
+Jonas Gehring, Michael Auli, David Grangier, and Yann~N. Dauphin.
+\newblock A convolutional encoder model for neural machine translation.
+\newblock \emph{CoRR}, abs/1611.02344, 2016.
+\newblock URL \url{http://arxiv.org/abs/1611.02344}.
+
+\bibitem[Glorot \& Bengio(2010)Glorot and Bengio]{glorot2010understanding}
+Xavier Glorot and Yoshua Bengio.
+\newblock Understanding the difficulty of training deep feedforward neural
+  networks.
+\newblock In \emph{Proceedings of the Thirteenth International Conference on
+  Artificial Intelligence and Statistics}, pp.\  249--256, 2010.
+
+\bibitem[Gori et~al.(2005)Gori, Monfardini, and Scarselli]{gori2005gnn}
+Marco Gori, Gabriele Monfardini, and Franco Scarselli.
+\newblock A new model for learning in graph domains.
+\newblock In \emph{IEEE International Joint Conference on Neural Networks},
+  pp.\  729–734, 2005.
+
+\bibitem[Hamilton et~al.(2017)Hamilton, Ying, and
+  Leskovec]{hamilton2017inductive}
+William~L Hamilton, Rex Ying, and Jure Leskovec.
+\newblock Inductive representation learning on large graphs.
+\newblock \emph{Neural Information Processing Systems (NIPS)}, 2017.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  770--778, 2016.
+
+\bibitem[Henaff et~al.(2015)Henaff, Bruna, and LeCun]{henaff2015deep}
+Mikael Henaff, Joan Bruna, and Yann LeCun.
+\newblock Deep convolutional networks on graph-structured data.
+\newblock \emph{arXiv preprint arXiv:1506.05163}, 2015.
+
+\bibitem[Hochreiter \& Schmidhuber(1997)Hochreiter and
+  Schmidhuber]{hochreiter1997long}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber.
+\newblock Long short-term memory.
+\newblock \emph{Neural computation}, 9\penalty0 (8):\penalty0 1735--1780, 1997.
+
+\bibitem[Hoshen(2017)]{Hoshen17}
+Yedid Hoshen.
+\newblock Vain: Attentional multi-agent predictive modeling.
+\newblock In I.~Guyon, U.~V. Luxburg, S.~Bengio, H.~Wallach, R.~Fergus,
+  S.~Vishwanathan, and R.~Garnett (eds.), \emph{Advances in Neural Information
+  Processing Systems 30}, pp.\  2698--2708. Curran Associates, Inc., 2017.
+\newblock URL
+  \url{http://papers.nips.cc/paper/6863-vain-attentional-multi-agent-predictive-modeling.pdf}.
+
+\bibitem[J{\'{e}}gou et~al.(2017)J{\'{e}}gou, Drozdzal, V{\'{a}}zquez, Romero,
+  and Bengio]{Jegou17}
+Simon J{\'{e}}gou, Michal Drozdzal, David V{\'{a}}zquez, Adriana Romero, and
+  Yoshua Bengio.
+\newblock The one hundred layers tiramisu: Fully convolutional densenets for
+  semantic segmentation.
+\newblock In \emph{Workshop on Computer Vision in Vehicle Technology CVPRW},
+  2017.
+
+\bibitem[Kingma \& Ba(2014)Kingma and Ba]{kingma2014adam}
+Diederik Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock \emph{arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem[Kipf \& Welling(2017)Kipf and Welling]{kipf2016semi}
+Thomas~N Kipf and Max Welling.
+\newblock Semi-supervised classification with graph convolutional networks.
+\newblock \emph{International Conference on Learning Representations (ICLR)},
+  2017.
+
+\bibitem[Li et~al.(2016)Li, Tarlow, Brockschmidt, and Zemel]{li2015gated}
+Yujia Li, Daniel Tarlow, Marc Brockschmidt, and Richard Zemel.
+\newblock Gated graph sequence neural networks.
+\newblock \emph{International Conference on Learning Representations (ICLR)},
+  2016.
+
+\bibitem[Lin et~al.(2017)Lin, Feng, Santos, Yu, Xiang, Zhou, and
+  Bengio]{lin2017structured}
+Zhouhan Lin, Minwei Feng, Cicero Nogueira~dos Santos, Mo~Yu, Bing Xiang, Bowen
+  Zhou, and Yoshua Bengio.
+\newblock A structured self-attentive sentence embedding.
+\newblock \emph{arXiv preprint arXiv:1703.03130}, 2017.
+
+\bibitem[Lu \& Getoor(2003)Lu and Getoor]{lu2003link}
+Qing Lu and Lise Getoor.
+\newblock Link-based classification.
+\newblock In \emph{Proceedings of the 20th International Conference on Machine
+  Learning (ICML-03)}, pp.\  496--503, 2003.
+
+\bibitem[Maaten \& Hinton(2008)Maaten and Hinton]{maaten2008visualizing}
+Laurens van~der Maaten and Geoffrey Hinton.
+\newblock Visualizing data using t-sne.
+\newblock \emph{Journal of Machine Learning Research}, 9\penalty0
+  (Nov):\penalty0 2579--2605, 2008.
+
+\bibitem[Monti et~al.(2016)Monti, Boscaini, Masci, Rodol{\`a}, Svoboda, and
+  Bronstein]{monti2016geometric}
+Federico Monti, Davide Boscaini, Jonathan Masci, Emanuele Rodol{\`a}, Jan
+  Svoboda, and Michael~M Bronstein.
+\newblock Geometric deep learning on graphs and manifolds using mixture model
+  cnns.
+\newblock \emph{arXiv preprint arXiv:1611.08402}, 2016.
+
+\bibitem[Niepert et~al.(2016)Niepert, Ahmed, and Kutzkov]{niepert16}
+Mathias Niepert, Mohamed Ahmed, and Konstantin Kutzkov.
+\newblock Learning convolutional neural networks for graphs.
+\newblock In \emph{Proceedings of The 33rd International Conference on Machine
+  Learning}, volume~48, pp.\  2014--2023, 2016.
+
+\bibitem[Perozzi et~al.(2014)Perozzi, Al-Rfou, and Skiena]{perozzi2014deepwalk}
+Bryan Perozzi, Rami Al-Rfou, and Steven Skiena.
+\newblock Deepwalk: Online learning of social representations.
+\newblock In \emph{Proceedings of the 20th ACM SIGKDD international conference
+  on Knowledge discovery and data mining}, pp.\  701--710. ACM, 2014.
+
+\bibitem[Roweis \& Saul(2000)Roweis and Saul]{Roweis00nonlineardimensionality}
+Sam~T. Roweis and Lawrence~K. Saul.
+\newblock Nonlinear dimensionality reduction by locally linear embedding.
+\newblock \emph{Science}, 290:\penalty0 2323--2326, 2000.
+
+\bibitem[Santoro et~al.(2017)Santoro, Raposo, Barrett, Malinowski, Pascanu,
+  Battaglia, and Lillicrap]{santoro2017simple}
+Adam Santoro, David Raposo, David~GT Barrett, Mateusz Malinowski, Razvan
+  Pascanu, Peter Battaglia, and Timothy Lillicrap.
+\newblock A simple neural network module for relational reasoning.
+\newblock \emph{arXiv preprint arXiv:1706.01427}, 2017.
+
+\bibitem[Scarselli et~al.(2009)Scarselli, Gori, Tsoi, Hagenbuchner, and
+  Monfardini]{scarselli2009graph}
+Franco Scarselli, Marco Gori, Ah~Chung Tsoi, Markus Hagenbuchner, and Gabriele
+  Monfardini.
+\newblock The graph neural network model.
+\newblock \emph{IEEE Transactions on Neural Networks}, 20\penalty0
+  (1):\penalty0 61--80, 2009.
+
+\bibitem[Sen et~al.(2008)Sen, Namata, Bilgic, Getoor, Galligher, and
+  Eliassi-Rad]{sen2008collective}
+Prithviraj Sen, Galileo Namata, Mustafa Bilgic, Lise Getoor, Brian Galligher,
+  and Tina Eliassi-Rad.
+\newblock Collective classification in network data.
+\newblock \emph{AI magazine}, 29\penalty0 (3):\penalty0 93, 2008.
+
+\bibitem[Sperduti \& Starita(1997)Sperduti and Starita]{Sperduti1997}
+A.~Sperduti and A.~Starita.
+\newblock Supervised neural networks for the classification of structures.
+\newblock \emph{Trans. Neur. Netw.}, 8\penalty0 (3):\penalty0 714--735, May
+  1997.
+\newblock ISSN 1045-9227.
+\newblock \doi{10.1109/72.572108}.
+
+\bibitem[Srivastava et~al.(2014)Srivastava, Hinton, Krizhevsky, Sutskever, and
+  Salakhutdinov]{srivastava2014dropout}
+Nitish Srivastava, Geoffrey~E Hinton, Alex Krizhevsky, Ilya Sutskever, and
+  Ruslan Salakhutdinov.
+\newblock Dropout: a simple way to prevent neural networks from overfitting.
+\newblock \emph{Journal of machine learning research}, 15\penalty0
+  (1):\penalty0 1929--1958, 2014.
+
+\bibitem[Subramanian et~al.(2005)Subramanian, Tamayo, Mootha, Mukherjee, Ebert,
+  Gillette, Paulovich, Pomeroy, Golub, Lander, et~al.]{subramanian2005gene}
+Aravind Subramanian, Pablo Tamayo, Vamsi~K Mootha, Sayan Mukherjee, Benjamin~L
+  Ebert, Michael~A Gillette, Amanda Paulovich, Scott~L Pomeroy, Todd~R Golub,
+  Eric~S Lander, et~al.
+\newblock Gene set enrichment analysis: a knowledge-based approach for
+  interpreting genome-wide expression profiles.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 102\penalty0
+  (43):\penalty0 15545--15550, 2005.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, Lukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock \emph{arXiv preprint arXiv:1706.03762}, 2017.
+
+\bibitem[Weston et~al.(2012)Weston, Ratle, Mobahi, and
+  Collobert]{weston2012deep}
+Jason Weston, Fr{\'e}d{\'e}ric Ratle, Hossein Mobahi, and Ronan Collobert.
+\newblock Deep learning via semi-supervised embedding.
+\newblock In \emph{Neural Networks: Tricks of the Trade}, pp.\  639--655.
+  Springer, 2012.
+
+\bibitem[Weston et~al.(2014)Weston, Chopra, and Bordes]{WestonCB14}
+Jason Weston, Sumit Chopra, and Antoine Bordes.
+\newblock Memory networks.
+\newblock \emph{CoRR}, abs/1410.3916, 2014.
+\newblock URL \url{http://arxiv.org/abs/1410.3916}.
+
+\bibitem[Yang et~al.(2016)Yang, Cohen, and Salakhudinov]{yang2016revisiting}
+Zhilin Yang, William Cohen, and Ruslan Salakhudinov.
+\newblock Revisiting semi-supervised learning with graph embeddings.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  40--48,
+  2016.
+
+\bibitem[Zhu et~al.(2003)Zhu, Ghahramani, and Lafferty]{zhu2003semi}
+Xiaojin Zhu, Zoubin Ghahramani, and John~D Lafferty.
+\newblock Semi-supervised learning using gaussian fields and harmonic
+  functions.
+\newblock In \emph{Proceedings of the 20th International conference on Machine
+  learning (ICML-03)}, pp.\  912--919, 2003.
+
+\bibitem[Zitnik \& Leskovec(2017)Zitnik and Leskovec]{zitnik2017predicting}
+Marinka Zitnik and Jure Leskovec.
+\newblock Predicting multicellular function through multi-layer tissue
+  networks.
+\newblock \emph{Bioinformatics}, 33\penalty0 (14):\penalty0 i190--i198, 2017.
+
+\end{thebibliography}

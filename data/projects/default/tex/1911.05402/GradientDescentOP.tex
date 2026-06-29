@@ -1,0 +1,1014 @@
+\documentclass[a4paper,11pt]{amsart}
+
+\usepackage{a4wide}
+\usepackage{centernot}
+\usepackage{url}
+
+
+\setcounter{secnumdepth}{2}
+
+
+\usepackage{color}
+\usepackage{tensor}
+\usepackage{enumitem} 
+%\usepackage{mathabx}
+%\usepackage{comment}
+\usepackage{amsfonts,amssymb,amsmath,amsthm,graphicx,latexsym}
+%\usepackage[all]{xy}
+%\usepackage{tikz}
+\usepackage{mathrsfs,dsfont}
+%\usepackage{bibtex}
+
+\newcommand{\dg}{\widehat{\qg}}
+\newcommand{\clb}{\clb}
+\newcommand{\bb}{\mathfrak{b}}
+\newcommand{\tl}{\widetilde{L}}
+\newcommand{\red}{\Lambda_{_{\qgdual}}}
+\newcommand{\pol}{\text{Pol}(SU_q(2))}
+\newcommand{\gramian}{(\cla\odot\mathcal{B})^T(\cla\odot\mathcal{B})}
+\newcommand{\IE}{\mathbb{E}}
+\newcommand{\innerl}{\Big\langle}
+\newcommand{\innerr}{\Big\rangle}
+\newcommand{\IP}{\mathbb{P}}
+\newcommand*{\Perm}[2]{{}^{#1}\!P_{#2}}%
+\newcommand*{\Comb}[2]{{}^{#1}C_{#2}}%
+
+
+\newcommand{\id}{\iota} %{\textup{id}}
+\DeclareMathOperator\linsp{span}
+
+\newcommand{\qg}{\mathbb{G}}
+\newcommand{\qh}{\mathbb{H}}
+
+
+
+\usepackage{dsfont}
+%\newcommand\mathds\relax
+\newcommand{\WW}{{\mathds{V}\!\!\text{\reflectbox{$\mathds{V}$}}}}
+\newcommand{\Ww}{\mathds{W}}
+\newcommand{\wW}{\text{\reflectbox{$\Ww$}}\:\!}
+\newcommand{\ww}{\textup{W}}  % better!!
+
+\newcommand\fs{B}
+\newcommand\eb{E}
+\newcommand\an{\mathcal A}
+\newcommand{\otol}{\overline{\otimes}}
+
+\newcommand\aphopf{\mathcal{AP}}
+\newcommand\ap{\textit{AP}}
+
+
+\newcommand{\rdual}{\widehat{R}_u}
+\newcommand{\duh}{\widehat{\IH}}
+\newcommand{\braH}{\innerl H|}
+\newcommand{\ketH}{|H\innerr}
+\newcommand{\sigmar}{\sigma^{\prime u}}
+\newcommand{\clpu}{\clp_u^\infty(\qg)}
+\newcommand{\qgu}{C_0^u(\qg)}
+\newcommand{\kac}{C(\qgdual^{\text{KAC}})}
+\newcommand{\delkac}{\Delta_{\text{KAC}}}
+\newcommand{\kacdual}{C_0(\widehat{\qgdual}^{\text{KAC}})}
+\newcommand{\delkacdual}{\widehat{\Delta}_{\text{KAC}}}
+\newcommand{\delp}{\varDelta \hspace{-1.05ex}
+\rule[.1ex]{.4ex}{.9ex}   \hspace{1.05ex}}
+
+%\renewcommand{\theequation}{\thesection .\arabic{equation}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%r
+%%%%%%%%%%%% THEOREMS ET AL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}[section]
+%\newtheorem{nota}[dfn]{Notation}
+
+\theoremstyle{plain}
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{lmma}[dfn]{Lemma}
+\newtheorem{hypo}[dfn]{Hypothesis}
+\newtheorem{ppsn}[dfn]{Proposition}
+\newtheorem{crlre}[dfn]{Corollary}
+
+\theoremstyle{remark}
+\newtheorem{xmpl}[dfn]{Example}
+\newtheorem{rmrk}[dfn]{Remark}
+
+\newcommand{\bdfn}{\begin{dfn}}
+\newcommand{\bthm}{\begin{thm}}
+
+\newtheorem{ass}{Assumption}
+
+\newcommand{\qito}{\Delta^{\textup{QS}}}
+\newcommand{\init}{\mathfrak{h}}
+
+
+
+\newcommand{\ptrace}{Tr_{|f><g|}}
+\newcommand{\Ptrace}{Tr_{|f^{\ot^m}><g^{\ot^n}|}}
+\newcommand{\till}{\widetilde{\cll}}
+\newcommand{\tld}{\widetilde}
+\newcommand{\uc}{\overline{U}}
+%\newcommand{\taudui}{(\taudu)^\ast_{-\frac{i}{2}}}
+\newcommand{\tauduz}{(\taudu)^\ast_{z}}
+
+\newcommand{\tauduii}{\widehat{\tau}^{u*}_{i/2}}
+
+\newcommand{\alphadui}{\alpha^\ast_{-\frac{i}{2}}}
+\newcommand{\astt}{{\ast\ast}}
+
+\newcommand\wot{\mathop{\overline\otimes}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%% SPECIAL SYMBOLS %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\cmath}{{\Bbb C}}
+
+\newcommand{\IC}{\mathbb{C}}
+
+
+\newcommand{\IH}{\mathbb{H}}
+\newcommand{\deltaext}{\widetilde{\Delta_u}}
+\newcommand{\IK}{\mathbb{K}}
+\newcommand{\IL}{\mathbb{L}}
+\newcommand{\IN}{\mathbb{N}_0}
+\newcommand{\IQ}{\mathbb{Q}}
+\newcommand{\mc}{\mathcal}
+\newcommand{\IR}{\mathbb{R}}
+\newcommand{\IT}{\mathbb{T}}
+\newcommand{\IU}{\mathbb{U}}
+\newcommand{\IW}{\mathbb{W}}
+\newcommand{\IZ}{\mathbb{Z}}
+\newcommand{\tf}{\widetilde{f}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%% ABBREVIATIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+
+
+\newcommand{\htpi}{\hat{\pi}}
+
+\newcommand{\clh}{\mathcal{H}}
+\newcommand{\cla}{\mathcal{A}}
+\newcommand{\clv}{\mathcal{V}}
+\newcommand{\clu}{\mathcal{U}}
+\newcommand{\clp}{\mathcal{P}}
+\newcommand{\cls}{\mathcal{S}}
+\newcommand{\clt}{\mathcal{T}}
+
+\newcommand{\capA}{\hspace{-.05in}{\bf A}}
+%\newcommand{\ap}{\mathbb{A}\mathbb{P}}
+\newcommand{\deltag}{\Delta_{\qg}}
+\newcommand{\deltar}{\Delta_{\IR}}
+\newcommand{\Mone}{L^\infty(\qg)}
+\newcommand{\Moned}{L^\infty(\widehat{\qg})}
+\newcommand{\Mtwo}{L^\infty(\IR)}
+\newcommand{\Mtwod}{L^\infty(\widehat{\IR})}
+\newcommand{\Hone}{L^2(\qg)}
+\newcommand{\Htwo}{L^2(\IR)}
+
+\newcommand{\deltadg}{\Delta_{\widehat{\qg}}}
+\newcommand{\Deltak}{\Delta_{\K}}
+\newcommand{\sigmap}{\sigma^\prime}
+\newcommand{\taudu}{\widehat{\tau}^u}
+\newcommand{\taud}{\widehat{\tau}}
+\newcommand{\cbg}{\mathbb{B}}
+\newcommand{\coliftd}{\widehat{\delp}}
+\newcommand{\colift}{\delp}
+
+\newcommand{\itt}{\int \limits}
+\newcommand{\qgdual}{{\widehat{\qg}}}
+\newcommand{\codu}{\widehat{\Delta}_u}
+\newcommand{\codr}{\widehat{\Delta}_r}
+\newcommand{\wht}{\widehat}
+\newcommand{\rglr}{\Re}
+\newcommand{\ot}{\otimes}
+\newcommand{\deltagd}{\Delta_{\qgdual}}
+\newcommand{\bgots}{\bigotimes}
+
+\DeclareMathOperator\Irr{Irr}
+
+
+\usepackage{comment}
+\newcommand\K{\mathcal{K}}
+\newcommand\cop{\Delta}
+\let\Im=\relax
+\DeclareMathOperator\Im{Im}
+\DeclareMathOperator\Ker{Ker}
+\DeclareMathOperator\Rep{Rep}
+\newcommand\set[2]{\{\,#1:#2\,\}}
+\DeclareMathOperator\Ran{Ran}
+\newcommand\dual{\widehat}
+\newcommand\conv{\star}
+\newcommand\conj{\overline}
+\newcommand\wt{\widetilde}
+\newcommand\inv{^{-1}}
+\newcommand\lone{L^1}
+\newcommand\ltwo{L^2}
+\newcommand\linf{L^\infty}
+\newtheorem{theoremA}{Theorem}
+
+%\newcommand\det{det}
+
+
+\newcommand{\tp}{\mathbin{\hbox{$\bigcirc$\hbox to
+      0pt{\hspace{-0.81em}$\scriptstyle\top$\hfil}}}}
+
+\begin{document}
+\title[
+  Quadratic number of nodes suffices to learn a dataset.
+]%
+{
+  %A new threshold on the number of neurons required in a neural network with one hidden layer so that training with gradient descent leads to the global minima
+  %Gradient descent provably optimizes a one hidden layer network, if the number of nodes is quadratic to the number of training points.
+  Quadratic number of nodes is sufficient to learn a dataset via gradient descent.
+}
+\author{Biswarup Das}
+\address{} 
+\address{Biswarup Das}
+\address{Laboratory of advanced combinatorics and network applications.}
+\address{Moscow Institute of Physics and Technology, Russia.}
+\email{das.b@mipt.ru} 
+\author{Eugene A. Golikov}
+\address{}
+\address{Eugene A. Golikov}
+\address{Laboratory of neural systems and deep learning.}
+\address{Moscow Institute of Physics and Technology, Russia.}
+\email{golikov.ea@mipt.ru}
+
+\begin{abstract}
+We prove that if an activation function satisfies some mild conditions and number of neurons in a two-layered fully connected neural network with this activation function is beyond a certain threshold, then gradient descent on quadratic loss function finds the optimal weights of input layer for global minima in linear time. 
+This threshold value is an improvement over previously obtained values in \cite{gdescentOverPara1, gdescentOverPara2}. 
+%In particular our result holds for the well known softplus activation functions. 
+%We also use our techniques to prove the same result for ReLU activation functions.
+\end{abstract}
+
+\maketitle 
+
+\section{Introduction}
+
+During the last decade deep learning has achieved remarkable success in several fields of practical applications, despite the fact that the reason for its success is still largely unclear.
+In particular, it is not yet well understood why neural nets used in practice generalize to data points not used in its training procedure.
+%In other words, it is not clear why neural nets learn the true data distribution.
+Alongside with this unexplained phenomenon, there is another issue, which is relatively simpler to state: {\it why do neural nets learn the training data?}
+In other words, it is not clear why our training algorithm (say gradient descent or stochastic gradient descent) manages to find a solution with zero training loss.
+
+There are theoretical results based on approximation theory~\cite{proofNeural} which establish that a large enough neural network with suitable weights can approximate any function.
+However, such theoretical considerations do not touch upon the issues raised above, for example, it is not  guaranteed that the corresponding optimal weights associated with the network can be found by performing say, a stochastic gradient descent (SGD) (one of the most commonly used optimization procedure).
+
+In practice however, we see that for networks of practical sizes SGD always succeeds in finding a point of the global minima of the associated loss function.
+One step towards understanding this phenomenon at a theoretical level was made by Du et al.~\cite{gdescentOverPara1}, who proved that with a probability of $1-\delta$, gradient descent finds global minimum of the loss function corresponding to an $l_2$ regression problem solved by a two-layer fully-connected network with ReLU activation, given that the number of hidden neurons is at least $\Omega \left(\frac{n^6}{\lambda_0^4\delta^3}\right)$, where $n$ is the number of training examples and $\lambda_0$ is the smallest eigenvalue of the gramian matrix made with the training data. Recently, Song \& Yang~\cite{gdescentOverPara2} improved this result to $\Omega \left(\frac{n^4}{\lambda_0^4}\ln\left(\frac{n}{\delta}\right)\right)$. 
+
+In a similar vein, our current work further improves this result to $\Omega \left(\frac{n^2}{\lambda_0^2}\ln\left(\frac{n}{\delta}\right)\right)$ under some mild assumptions on activation function that are satisfied by many ones used in practice. We hypothesise that this result is no longer improvable using the same technique.
+
+\subsection*{Acknowledgement}
+
+This work was supported by National Technology Initiative and PAO Sberbank project ID 0000000007417F630002.
+
+\section{A new activation function and statement of the main result}
+
+\subsection{A necessary and sufficient condition for a function to be an activation function}
+
+In \cite[Theorem 1]{proofNeural} the author gives a necessary and sufficient condition for a function $\sigma:\IR\longrightarrow\IR$ to be an activation function for a neural network. We state the result below:
+\begin{ppsn}\label{Proposition: From the neural proof paper}{\cite[Theorem 1]{proofNeural}}
+Suppose $\sigma:\IR\longrightarrow\IR$ is a function which is in $L^\infty_{\text{loc}}(\IR)$ and the closure of the set of discontinuities of $\sigma$ are of Lebesgue measure zero. Define 
+\[
+\Sigma_n:=\text{span}\{\sigma(w^Tx+b):~w\in\IR^n,b\in\IR\}.  
+\]
+Then $\Sigma_n$ is dense in $C(\IR^n)$ in the compact open topology if and only if $\sigma$ is not an algebraic polynomial (a.e.).
+\end{ppsn}
+% As has been mentioned in \cite[Section 5]{proofNeural}, the presence of the ``bias" term namely, the variable ``b", in the above expression is necessary and cannot be discarded. 
+
+It is worthwhile to note that all the standard activation functions used in neural networks satisfy the hypothesis of the above proposition. We will prove that under some mild conditions on an activation function, a two-layered neural network with number of hidden neurons beyond a certain improved threshold, can always be trained by gradient descent in linear time. Our new improved threshold is an improvement over previous threshold values obtained in \cite{gdescentOverPara1, gdescentOverPara2}.
+
+\subsection{Our set-up}\label{Subsection: our setup}
+Suppose $\sigma:\IR\longrightarrow\IR$ is a function which satisfies the conditions of Proposition \ref{Proposition: From the neural proof paper}, so that the single hidden layered fully connected neural network with this activation function given by 
+\begin{equation}\label{Equation: Neural network}
+f(W,x,a,b):=\frac{1}{\sqrt{m}}\sum_{r=1}^ma_r\sigma(w_r^Tx+b_r), 
+\end{equation}
+where $W:=\{w_i\}_{i=1}^m$ are the input weights, $b:=\{b_i\}_{i=1}^m$ are the input biases and $a:=\{a_i\}_{i=1}^m$ are the output weights, can approximate any element in $C(\IR^n)$ in the compact open topology with the right choice of $m, a_r,w_r,b_r$. To facilitate easy computation and avoid unecessary complications with notations, we will consider the above mentioned neural network without the ``bias" term, i.e. our working model will be 
+\[
+f(W,x,a):=\frac{1}{\sqrt{m}}\sum_{r=1}^ma_r\sigma(w_r^Tx). 
+\]
+
+
+\subsection*{Assumptions on the activation function}
+The only assumptions we make on the activation function $\sigma$ are the following:
+\begin{enumerate} 
+\item[(a)]
+{\it We assume that there exist constants $c_1,c_2$ such that $|\sigma^\prime(x)|<c_1$ and $|\sigma^{\prime\prime}(x)|<c_2$ for all $x\in\IR$.}
+\item[(b)]
+{\it Let $w\sim N(0,\mathbb{I}_d)$. We then assume that $\Big|\IE\Big[\sigma(w^Tx)^2\Big]\Big|\leq c_3$ for some constant $c_3$.}
+\end{enumerate}
+An important example of such an activation function is given  by the softplus activation function defined as
+$\sigma(x):= \ln(1+e^{x})$.
+% \[
+% \sigma_\alpha(x):=\frac{1}{\alpha}\ln(1+e^{\alpha x})\quad(\alpha>0).
+% \]
+Clearly, it satisfies Assumption (a). Using the inequality $\frac{x}{1+x}\leq \ln(1+x)\leq x$ for all $x>0$, it can be shown that $\sigma$ also satisfies Assumption (b). 
+
+\subsection*{}
+Suppose we are given a training data $\{x_i\}_{i=1}^n$, where for each $i$ $x_i\in\IR^d$ and corresponding responses $\{y_i\}_{i=1}^n$, where $y_i\in\IR$ for each $i$. Denoting the collection of input weights of the neural network \eqref{Equation: Neural network} by $W$ and output weights as $a$, we define the quadratic loss function $L(W,a)$ as
+\begin{equation}\label{Equation: Quadratic loss function}
+L(W,a):=\frac{1}{2}\sum_{i=1}^n(y_i-f(W,x_i,a))^2.
+\end{equation}
+We will give a new lower bound on $m$, the number of neurons in the hidden layer, and will prove that performing continuous-time gradient descent on the loss function $L$ with that many neurons, leads us to zero-loss solution, with the convergence rate being exponential. This new lower bound is better than the bounds available so far in the literature (\cite{gdescentOverPara1, gdescentOverPara2}). More precisely, we prove the following result:
+
+\renewcommand{\thetheoremA}{\ref{Theorem: main result}}
+\begin{theoremA}
+Consider an activation function $\sigma(x)$ satisfying the assumptions mentioned in Subsection \ref{Subsection: our setup}. 
+Suppose we are given a training data $\{x_i\}_{i=1}^n$ with $x_i\in\IR^d$, $\|x_i\|\leq1$, such that $x_i \neq x_j \; \forall i,j$, and responses $\{y_i\}_{i=1}^n$ with $y_i\in\IR$ and $|y_i|<\kappa$ for some number $\kappa$. Let $\lambda_0$ be the minimum eigenvalue of the matrix $H^\infty$, whose entries are given by 
+\[
+H^\infty_{pq}:=\IE_{z\sim N(0,\mathbb{I}_d)}\Big[\sigma^\prime(z^Tx_p)\sigma^\prime(z^Tx_q)\Big]\ot x_p^Tx_q\quad(p,q=1,2,\cdots n),.
+\]
+Then we have the following:
+
+\begin{itemize}
+
+\item[(a)]
+$\lambda_0>0$.
+
+\item[(b)]
+Fix a $\delta>0$ such that $n\delta+\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}<1$, where $D:=\sqrt{\kappa^2+c_3}$. 
+Let us select $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$ ($c_1,c_2$ are the constants appearing in the assumption in Subsection \ref{Subsection: our setup}) and consider the network with a single hidden layer:\[f(W,x,a):=\frac{1}{\sqrt{m}}\sum_{r=1}^m a_r\sigma(w_r^Tx).\]
+Then with random initializations: $a_r\sim\text{unif}\{-1,1\}$ and $w_r(0)\sim N(0,\mathbb{I}_d)$ for all $r=1,2,\cdots m$ and the condition that we do not train the output layer i.e. $a_r$'s are kept fixed upon initialization, with probability at least $1-\delta n-\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}$, gradient descent with small enough step size converges to $y_i$'s at an exponential rate.
+
+\item[(c)]
+Define $\delta' := \delta n+\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}$.
+There exists a constant $C$ such that $m > \frac{C n^2\ln(\frac{2n}{\delta'})}{\lambda_0^2}$ implies $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$.
+Then, as a corollary of point (b) we have that with random initialization as in the previous point, with probability at least $1-\delta'$, gradient descent with small enough step size converges to $y_i$'s at an exponential rate.
+
+\end{itemize}
+\end{theoremA}
+
+\subsection{Why this new bound on $m$ is better than the available bounds}
+
+To the best of our knowledge, the first mathematical proof that with high probability, gradient descent indeed finds the optimal input weights while training a two-layered neural network with ReLU activation function, provided the number of neurons in the hidden layer is above a certain threshold, appeared in the work \cite{gdescentOverPara1}. 
+The threshold was proven to be $\Omega\left(\frac{n^6}{\lambda_0^4\delta^3}\right)$ where $\delta$ is the failure probability (see \cite[Theorem 3.2]{gdescentOverPara1}). 
+%Mathematically this result is sound however, from practical perspective, the threshold is too big and computationally expensive. 
+Mathematically this result is sound however, it is too loose: indeed, as we observe in practice gradient descent easily finds a zero-loss solution with much fewer number of hidden nodes \cite[Section 6]{DLM}, a phenomenon whose mathematical explanation is still lacking to the best of our knowledge.
+%Moreover, numerical experiments seem to suggest that in practice gradient descent works with much smaller number of neurons \cite[Section 6]{DLM}, although we think that a proper mathematical understanding of this phenomenon is still lacking.  
+
+A subsequent improvement of the lower bounds appeared in the work \cite[Theorem 1.4]{gdescentOverPara2} namely, the bound was brought down to $\Omega\left(\frac{n^4\ln(\frac{n}{\delta})}{\lambda_0^4}\right)$, which is still too loose.
+%Although in \cite[Theorem 1.6]{gdescentOverPara2}, a threshold which looks like $\Omega(\frac{n^2\alpha(\alpha+\theta^2)\ln(\frac{n}{\delta})}{\lambda_0^4})$ has been proposed, a closer look reveals that this is not really an improvement on the previous threshold, about which we elaborate. 
+%The parameters $\alpha$ and $\theta$ always depend on the data \cite[Assumption 1.2]{gdescentOverPara2} and in the worst case, $\alpha=n$ and $\theta=\sqrt{n}$, so that this threshold actually is similar to that already proposed in \cite[Theorem 1.4]{gdescentOverPara2}. 
+Although in \cite[Theorem 1.6]{gdescentOverPara2}, a threshold which looks like $\Omega\left(\frac{n^2\alpha(\alpha+\theta^2)\ln(\frac{n}{\delta})}{\lambda_0^4}\right)$ has been proposed, this threshold introduces two quantities: $\alpha$ and $\theta$, which depend on training dataset.
+In the worst case $\alpha = n$ and $\theta = \sqrt{n}$.
+Hence \cite[Theorem 1.6]{gdescentOverPara2} does not improve over quartic lower bound of \cite[Theorem 1.4]{gdescentOverPara2} in the general case.
+In contrast, our result holds {\it without any additional assumptions on training data}.
+
+A recent work \cite{kawaGradientDescent} has considered the problem of convergence of gradient descent in light of deep neural networks with analytic activation functions. 
+It is worthwhile to say a few words about this work in the present context. 
+In particular, \cite[Theorem 1]{kawaGradientDescent} applied to a single layered fully connected network apparently yields a threshold $\Omega(n)$. 
+However, we would like to point out that the consideration in \cite{kawaGradientDescent} is fundamentally different from ours as well as that in \cite{gdescentOverPara1, gdescentOverPara2}, within the context of a network with single hidden layer.
+A closer look at the proof of \cite[Theorem 1]{kawaGradientDescent} after equation (19) in \cite[pp. 5]{kawaGradientDescent} reveals that, the proof proceeds by enforcing zero learning rate for all but the last (output) layer. 
+To put it differently, if we train our single layered network given by Equation \eqref{Equation: Neural network} by the methodology proposed in the proof of \cite[Theorem 1]{kawaGradientDescent} upon making some random initialization, the only weights which are being updated in the sequel are the output weights namely $a_1,a_2,\cdots a_m$. 
+This means that we are essentially training a single layered linear network with gradient descent on randomly extracted features.
+
+Let us show that in this case if the given number of nodes is at least $n$, and all of the training points are different, gradient descent finds the global minima almost surely with respect to initialization.
+We give a brief proof of this. 
+Recall the quadratic loss from Equation \eqref{Equation: Quadratic loss function}. 
+Denoting it by $L$, it follows that gradient of $L$ with respect to the output weights only has components given by 
+\[
+\frac{\partial L}{\partial a_r}=\sum_{i=1}^n\Big(y_i-f(W,x_i,a,b)\Big)\sigma(w_r^Tx_i+b_r)\quad(r=1,2,\cdots m).
+\]
+Denoting the gradient by $\nabla_aL$, we see that $\nabla_aL=Ae$, where $A\in\IR^{m\times n}$ is the matrix given by $A_{pq}:=\sigma(w_p^Tx_q+b_p)$ for $p=1,2,\cdots m$ and $q=1,2,\cdots n$ and $e\in \IR^n$ is the vector whose components are $e_i:=y_i-f(W,x_i,a,b)$. 
+At a critical point we must have that $\nabla_aL=0$ which means $Ae=0$. Multiplying the last equation from the left by $A^T$, this means $A^TAe=0$. 
+If $A^TA$ is invertible, this would mean that the only critical point is the one for which $e=0$ i.e. $f(W,x_i,a,b)=y_i$ for all $i=1,2,\cdots n$, which in that case would be a point of global minima. 
+$A^TA$ will be invertible if and only if $\det (A^TA)\neq 0$. Now we may observe that $\det (A^TA)$ is an analytic function of the input weights and biases. 
+By \cite[Lemma 1.2]{NguyenComplexPowers} it follows that either the set of zeroes of the analytic function $\det (A^TA)$ are of Lebesgue measure zero, or $\det (A^T A)$ is identically zero.
+Since the number of nodes $m$ is not less than the number of training points $n$, and all of the training points are different, there exist such $A$ for which $\det (A^T A)$ is not zero.
+Hence the first case holds.
+This means if we randomly initialize the input weights and biases by sampling from any distribution which has a density with respect to the Lebesgue measure, almost surely we will have the matrix $A^TA$ invertible, so that the loss function will have a unique critical point, which would be a point of global minima. 
+It follows now that gradient descent in this case will always converge to a global minimum with zero loss.
+In practice, however, networks are usually trained as a whole.
+Training the last layer only corresponds to so-called ``kernel" or ``lazy training" regime~\cite{lazy_training}, which is not our consideration.
+The above-mentioned work argues that it is unlikely that such a lazy training regime is behind many succeses of deep learning.
+
+\subsection*{}
+
+
+% {\color{red}
+% More precisely, our aim is to prove the following.
+% \begin{thm}\label{Theorem: main result}
+% Consider the activation function $\sigma(x):=\frac{1}{\sqrt{2\alpha}}\Big[(\frac{1}{2}-\Phi(-\frac{x}{\sqrt{2\alpha}}))x+\phi(-\frac{x}{\sqrt{2\alpha}})\Big]$ for $\alpha>0$. Suppose we are given a training data $\{x_i\}_{i=1}^n$ with $x_i\in\IR^d$ and $\|x_i\|\leq1$ and responses $\{y_i\}_{i=1}^n$, where $y_i\in\IR$. Fix a $\delta>0$ such that $\delta<\frac{1}{n}$ and let $\alpha=max\{\frac{16d^2n^2\ln(\frac{2n}{\delta})^2}{\lambda_0^4}+1, \frac{2\sqrt{n}d}{\lambda_0^2\sqrt{\delta}}+1\}$. Consider the one hidden layer network $f(W,x,a,b):=\frac{1}{\sqrt{m}}\sum_{r=1}^m a_r\sigma(w_r^Tx+b_r)$.  Then for $m=\Omega(\frac{n}{d})$ and random initialization as $a_r\sim\text{unif}\{-1,1\}$ and $w_r(0)\sim N(0,\mathbb{I}_d)$ and $b_r(0)\sim N(0,1)$ for all $r=1,2,\cdots m$ and the condition that we do not train the output layer i.e. $a_r$'s are kept fixed upon initialization, with probability at least $1-n\delta$  gradient descent with small enough step size converges to $y_i$'s.
+% \end{thm}
+% }
+
+In the next section we collect some preliminaries, towards proving our main result, Theorem \ref{Theorem: main result} in Subsection \ref{Subsection: Convergence of the gradient descent}.
+\section{Preliminaries}
+Throughout the section and henceforth, $\ot$ will denote the tensor product of matrices and $\oplus$ will denote the direct sum of matrices. We will not define these notions, as they could be found in any standard text book on linear algebra.
+\subsection{Khatri-Rao product of matrices}\label{Subsection: Khatri-Rao product of matrices}
+Suppose $A\in\IR^{m\times r}$ and $B\in\IR^{n\times r}$ be matrices. The  Khatri-Rao product of $A$ and $B$ \cite[Lemma 13]{khatrirao} denoted $A\odot B$ is a $mn\times r$ matrix, whose $i^{\text{th}}$ column is obtained by taking tensor product of the $i^{\text{th}}$ columns of $A$ and $B$. For example, let $A=\begin{pmatrix}
+                                                           a&b&c\\d&e&f\\x&y&z                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                \end{pmatrix}
+$ and $B=\begin{pmatrix}
+        m&n&l\\p&q&r
+       \end{pmatrix}
+$. Then $A\odot B$ would be the $6\times 3$ matrix obtained as: $\begin{pmatrix}
+                   \begin{pmatrix}
+                   a\\d\\x
+                   \end{pmatrix}\otimes\begin{pmatrix}m\\p\end{pmatrix}&\begin{pmatrix}
+                   b\\e\\y
+                   \end{pmatrix}\otimes\begin{pmatrix}n\\q\end{pmatrix}&\begin{pmatrix}
+                   c\\f\\z
+                   \end{pmatrix}\otimes\begin{pmatrix}l\\r\end{pmatrix}
+                                                                 \end{pmatrix}
+$, where we have the convention that $\begin{pmatrix}
+                   a_1\\a_2\\a_3
+                   \end{pmatrix}\otimes\begin{pmatrix}x_1\\x_2\end{pmatrix}=\begin{pmatrix}a_1x_1\\a_1x_2\\a_2x_1\\a_2x_2\\a_3x_1\\a_3x_2\end{pmatrix}$. 
+
+\subsection{Concentration inequalities for Lipschitz functions of Gaussian random variables}\label{Subsection: Concentration inequalities for Lipschitz image of Gaussian random variables}
+The following result is a very powerful concentration inequality, a nice proof of which could be found in the online lecture notes:\\ \url{https://www.stat.berkeley.edu/~mjwain/stat210b/Chap2_TailBounds_Jan22_2015.pdf} where it appears as Theorem 2.4.
+\begin{thm}
+Let $(X_1,X_2,\cdots X_n)$ be a vector of iid standard Gaussian variables, and let $f:\IR^n\longrightarrow\IR$ be $L$-Lipschitz with respect to the Euclidean norm. Then the variable\\ $f(X)-\IE(f(X))$ is sub-Gaussian with parameter at most $L$, and hence
+\[
+\IP\Big[|f(X)-\IE(f(X))|\geq t\Big]\leq 2e^{-\frac{t^2}{2L^2}}\quad(t\geq0).  
+\]
+\end{thm}
+
+\subsection{Minimal eigenvalues of perturbed matrices}\label{Subsection: minimal eigenvalues of perturbed matrices}
+\begin{lmma}\label{Lemma: close elements in L2 norm means the minimum eigenvalue is also close}
+For a $n\times n$ real matrix $M$, let $\|M\|_2$ denotes the $L^2$-norm (i.e. $\|M\|_2:=\sup_{\|x\|\leq1}\|Mx\|$) and $\lambda_{\min}(M)$ denotes the least eigenvalue. For two positive semidefinite matrices $A,B$, we have that $\lambda_{\min}(A)\geq\lambda_{\min}(B)-\|A-B\|_2$.
+\end{lmma}
+\begin{proof}
+Since $A$ and $B$ are positive semidefinite matrices, by spectral theorem it implies that $\min_{\|x\|=1}x^TAx=\lambda_{\min}(A)$ and $\min_{\|x\|=1}x^TBx=\lambda_{\min}(B)$. Now 
+\[
+-x^T(A-B)x\leq|x^T(A-B)x|\leq\|x\|\|(A-B)x\|\leq\|A-B\|_2, 
+\]
+so that we have 
+\[
+x^TAx=x^TBx+x^T(A-B)x\geq\lambda_{\min}(B)-\|A-B\|_2 
+\]
+for all $x\in\IR^n$, so that taking the minimum of the left hand side yields $\lambda_{\min}(A)\geq\lambda_{\min}(B)-\|A-B\|$, as desired.
+\end{proof}
+
+\begin{lmma}\label{Lemma: close elements in Frobenius normx means the minimum eigenvalue is also close}
+Suppose $A$ and $B$ are two $n\times n$ positive semidefinite matrices such that for each $i,j=1,2,\cdots n$ we have $|A_{ij}-B_{ij}|\leq\frac{\epsilon}{n^2}$. Then $\lambda_{\min}(A)\geq\lambda_{\min}(B)-\epsilon$.
+\end{lmma}
+
+\begin{proof}
+For a $n\times n$ matrix $M$, let $\|M\|_F$ denotes the Frobenius norm. Then it is a well known fact that $\|M\|_2\leq\|M\|_F$. Now
+\begin{equation*}
+\begin{split}
+\|A-B\|_2&\leq\|A-B\|_F\\
+&=\sqrt{\sum_{i,j=1}^n|A_{ij}-B_{ij}|^2}\\
+&\leq\sum_{i,j=1}^n|A_{ij}-B_{ij}|\leq\epsilon.
+\end{split}
+\end{equation*}
+Applying Lemma \ref{Lemma: close elements in L2 norm means the minimum eigenvalue is also close}, we have the result.
+\end{proof}
+
+\section{Dynamics of the Gramian matrix associated with the gradient of the loss function and related results}\label{Subsection: dynamics of the Gramian matrix associated with the gradient of the loss function} 
+Setting $f(W,x,a):=\frac{1}{\sqrt{m}}\sum_{r=1}^m a_r\sigma(w_r^Tx)$, we define\\ $L(W,a):=\frac{1}{2}\sum_{i=1}^n\Big(y_i-f(W,x_i,a)\Big)^2$. $L(W,a)$ is a differentiable function with respect to the input weights $W$. We make a random assignment for $a_r$ so that for each $r=1,2,\cdots m$, $a_r\sim\text{unif}\{-1,1\}$. Let us explicitly compute $\nabla L(W,a)$. 
+
+Recall each $w_r\in W$ is a vector in $\IR^d$, so that we can write $w_r=(w_r^{(1)},w_r^{(2)},\cdots w_r^{(d)})^T\in\IR^d$. This means that $\nabla L(W,a)$ is a function with variables in $\IR^{md}$. Now 
+\[
+\frac{\partial L(W,a)}{\partial w_r^{(l)}}=\sum_{i=1}^n(f(W,x_i,a)-y_i)\frac{\partial f(W,x_i,a)}{\partial w_r^{(l)}}. 
+\]
+We compute $\frac{\partial f(W,x_i,a)}{\partial w_r^{(l)}}$.
+\begin{equation}
+\begin{split}
+&\frac{\partial f(W,x_i,a)}{\partial w_r^{(l)}}\\
+&=\frac{1}{\sqrt{m}}\sum_{r=1}^ma_r\frac{\partial \sigma(w_r^Tx_i)}{\partial w_r^{(l)}}\\
+&=\frac{1}{\sqrt{m}} a_r x_i^{(l)}\sigma^\prime(w_r^Tx_i).
+\end{split}
+\end{equation}
+Let $e\in\IR^n$ be the vector whose components are given by $e_i:=f(W,x_i,a)-y_i$ for $i=1,2,\cdots n$. Let us define a $m\times n$ matrix $\cla$ whose entries are given by $\cla_{pq}:=\frac{1}{\sqrt{m}}a_p\sigma^\prime(w_p^Tx_q)$ for $p=1,2,\cdots m$ and $q=1,2,\cdots n$, as well as a $d\times n$ matrix $\mathcal{B}$ whose entries are given by $\mathcal{B}_{kl}:=x_l^{(k)}$ for $k=1,2,\cdots d$ and $l=1,2,\cdots n$. It then follows that 
+\[
+\frac{\partial L(W,a)}{\partial w_r^{(l)}}=\Big((\cla\odot\mathcal{B})e\Big)_{rl}\quad(r=1,2,\cdots m, l=1,2\cdots d), 
+\]
+% and
+% \[
+% \frac{\partial L(W,a,b)}{\partial b_r}=\Big(\cla e\Big)_{r}\quad(r=1,2,\cdots m)
+% \]
+or in other words we have that 
+\[
+\nabla L(W,a) = \Big((\cla\odot\mathcal{B})\Big)(e),
+\]
+where $\odot$ is the Khatri-Rao product of matrices as described in Subsection \ref{Subsection: Khatri-Rao product of matrices} and $\oplus$ denotes the direct sum of matrices. Let us look at a typical column of the $md\times n$ matrix $\cla\odot\mathcal{B}$. The j$^{th}$-column ($j=1,2,\cdots n$) looks like:
+\[
+\begin{pmatrix}
+a_1\frac{1}{\sqrt{m}}\sigma^\prime(w_1^Tx_j)\\
+a_2\frac{1}{\sqrt{m}}\sigma^\prime(w_2^Tx_j)\\
+a_3\frac{1}{\sqrt{m}}\sigma^\prime(w_3^Tx_j)\\
+\cdot\\
+\cdot\\
+\cdot\\
+a_m\frac{1}{\sqrt{m}}\sigma^\prime(w_m^Tx_j)
+\end{pmatrix}\otimes x_j.
+\]
+Let us consider the  matrix $(\cla\odot\mathcal{B})^T(\cla\odot\mathcal{B})$. The $(p,q)^{th}$ element of this matrix is given by 
+\[
+\Big(\sum_{r=1}^m \frac{1}{m}\sigma^\prime\Big(w_k^Tx_p\Big)\sigma^\prime\Big(w_k^Tx_q\Big)\Big)\ot x_p^Tx_q\quad(p,q=1,2,\cdots n),
+\]
+where we have used the fact that $a_r^2=1$ for all $r=1,2,\cdots m$.
+Let us consider $m$ iid normal variates $Z:=\{z_i\}_{i=1}^m$, where $z_i\sim N(0,\mathbb{I}_d)$ for each $i=1,2,\cdots m$ and $z\sim N(0,\mathbb{I}_d)$. We will prove a result similar to \cite[Theorem 3.1]{gdescentOverPara1}. Consider the $n\times n$ matrix $H^\infty$ given by 
+\[
+H^\infty_{pq}:=\IE_{z\sim N(0,\mathbb{I}_d)}\Big[\sigma^\prime(z^Tx_p)\sigma^\prime(z^Tx_q)\Big]\ot x_p^Tx_q\quad(p,q=1,2,\cdots n).
+\]
+
+\begin{thm}\label{Theorem: Theorem 3.1 in overparametrized paper}
+$\lambda_0:=\lambda_{\min}(H^\infty)>0$.    
+\end{thm}
+\begin{proof}
+Let $\Omega$ denotes the measure space $\IR^d$ with the measure induced by the random variable $z$ and $L^2(\Omega,\IR^d)$ denotes the Hilbert space of square integrable $\IR^d$-valued functions, so that for $f,g\in L^2(\Omega,\IR^d)$, we have that \[\innerl f,g\innerr_{L^2(\Omega,\IR^d)}=\IE_{z\sim N(0,\mathbb{I}_d)}\Big[f(z,v)^Tg(z,v)\Big].\] For $x\in\IR^d$, let us define $\phi(x):\Omega\longrightarrow\IR^d$ by $\phi(x)(\omega):=\sigma^\prime(\omega^T x)\ot x$. Clearly, $\phi(x)\in L^2(\Omega,\IR^d)$ for all $x\in\IR^d$. To prove the hypothesis of the theorem, we may note that the matrix $H^\infty$ is the Gramian matrix given by $\Big(\Big(\innerl\phi(x_i),\phi(x_j)\innerr\Big)\Big)_{i,j=1}^n$, so that the problem boils down to proving that the vectors $\{\phi(x_i)\}_{i=1}^n$ are linearly independent in $L^2(\Omega,\IR^d)$. So let $\sum_{i=1}^n\alpha_i\phi(x_i)=0$ for some scalars $\{\alpha_i\}_{i=1}^n$. This means for almost all $\omega\in\Omega$, we have that $\sum_{i=1}^n\alpha_i\phi(x_i)(\omega)=0$. Now $\Omega$ is a topological space (carries the topology of $\IR^d$) and the measure on $\Omega$ induced by $z$ is a Radon measure, which assigns positive mass to open subsets of $\Omega$. $\Omega\ni\omega\mapsto\sum_{i=1}^n\alpha_i\phi(x_i)(\omega)\in\IR^d$ is a continuous $\IR^d$-valued function which is almost everywhere (with respect to this measure on $\Omega$) zero. Thus it must be zero everywhere, i.e. we have $\sum_{i=1}^n\alpha_i\phi(x_i)(\omega)=0$ for all $\omega\in\Omega$ i.e. $\sum_{i=1}^n\alpha_i\sigma^\prime(\omega^Tx_i)(x_i)=0$ for all $\omega\in\Omega$, so that in particular $\sum_{i=1}^n\alpha_i\sigma^\prime(\lambda\omega^Tx_i)(x_i)=0$ for all $\lambda\in\IR$ and $\omega\in\Omega$. Let us select $\omega$ such that for each $i=1,2,\cdots n$ the numbers $f_i:=\omega^Tx_i$ are different from each other i.e. $f_i\neq f_j$ for $i\neq j$ (See Section \ref{Appendix} for a proof of this). Also, let us assume without loss of generality that $|f_1|>|f_2|>|f_3|>\cdots |f_n|$. With this $\omega$ we have that 
+\begin{equation}\label{Equation: lambda equals zero}
+\sum_{i=1}^n\alpha_i\sigma^\prime(\lambda f_i)(x_i)=0\quad(\forall~\lambda\in\IR). 
+\end{equation}
+It follows by a direct computation that $\frac{d^k}{dx^k}\sigma^\prime(x)|_{_{x=0}}\neq0$ for all $k$. Differentiating equation \eqref{Equation: lambda equals zero} with respect to $\lambda$ $k$-times and evaluating at zero, we see that 
+\[
+\frac{d^k}{dx^k}\sigma^\prime(x)|_{_{x=0}}\Big[\alpha_1x_1+\sum_{i=2}^n\alpha_i\Big(\frac{f_i}{f_1}\Big)^kx_i\Big]=0. 
+\]
+Recalling that for all $k$ we must have $\frac{d^k}{dx^k}\sigma^\prime(x)|_{_{x=0}}\neq0$, the above equation implies that 
+\[
+\alpha_1x_1+\sum_{i=2}^n\alpha_i\Big(\frac{f_i}{f_1}\Big)^kx_i=0\quad(\text{for all $k$}). 
+\]
+Now letting $k\longrightarrow\infty$, noting that $\Big|\frac{f_i}{f_1}\Big|<1$ for all $i=1,2,\cdots n$ so that $\Big(\frac{f_i}{f_1}\Big)^k\longrightarrow0$, we have that $\alpha_1x_1=0$ which implies that $\alpha_1=0$ as $x_1\neq0$. Considering the above sum from $2$ onwards, we can prove similarly that $\alpha_2=0,\alpha_3=0,\cdots\alpha_n=0$, which proves the linear independence, which in turn implies the hypothesis of the theorem.
+\end{proof}
+
+\begin{thm}\label{Theorem: with probability 1-ndelta the Gramian matrix is positive definite}
+Given any $0<\delta<1$ with $\delta<\frac{1}{n}$, for $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$ (see Subsection \ref{Subsection: our setup} for the definitions of $c_1,c_2$), with probability at least $1-n\delta$ (where the probability is the product probability on $\IR^{md}$ induced by $m$ iid random variables $\{z_i\}_{i=1}^m$), the  matrix $\mathcal{C}$ described by 
+\[
+\mathcal{C}_{pq}:=\Big(\sum_{r=1}^m \frac{1}{m}\sigma^\prime\Big(z_r^Tx_p\Big)\sigma^\prime\Big(z_r^Tx_q\Big)\Big)\ot x_p^Tx_q,
+\]
+satisfies $\lambda_{\min}(\mathcal{C})>\frac{3}{4}\lambda_0$.
+\end{thm}
+
+\begin{proof}
+For each $p,q$, let us define a random variable \[X_{pq}:=\sum_{r=1}^m \frac{1}{m}\sigma^\prime\Big(z_r^Tx_p\Big)\sigma^\prime\Big(z_r^Tx_q\Big),\] and the quantity given by 
+\[
+\mathsf{X}_{pq}:=\IE_{z\sim N(0,\mathbb{I}_d)}(\sigma^\prime(z^Tx_p)\sigma^\prime(z^Tx_q)).
+\]It follows that $\mathbb{E}[X_{pq}]=\mathsf{X}_{pq}$.  $X_{pq}$ can be thought of as a function in $md$ variables (a function of the input weights). Let us write $\nabla(X_{pq})$ in a convenient form. Consider the vectors \[P_x:=\begin{pmatrix}
+                                                                                                                                                                                                                                                                              \sigma^{\prime\prime}(z_1^Tx_p)\sigma^\prime(z_1^Tx_q)\\
+                                                                                                                                                                                                                                                                              \sigma^{\prime\prime}(z_2^Tx_p)\sigma^\prime(z_2^Tx_q)\\
+                                                                                                                                                                                                                                                                              \cdots\\
+                                                                                                                                                                                                                                                                              \sigma^{\prime\prime}(z_m^Tx_p)\sigma^\prime(z_m^Tx_q)
+                                                                                                                                                                                                                                                                             \end{pmatrix}
+\] and \[P_y:=\begin{pmatrix}
+                                                                                                                                                                                                                                                                              \sigma^{\prime}(z_1^Tx_p)\sigma^{\prime\prime}(z_1^Tx_q)\\
+                                                                                                                                                                                                                                                                              \sigma^{\prime}(z_2^Tx_p)\sigma^{\prime\prime}(z_2^Tx_q)\\
+                                                                                                                                                                                                                                                                              \cdots\\
+                                                                                                                                                                                                                                                                              \sigma^{\prime}(z_m^Tx_p)\sigma^{\prime\prime}(z_m^Tx_q)
+                                                                                                                                                                                                                                                                             \end{pmatrix}.\] Then it follows that $\nabla(X_{pq})=\frac{1}{m}\big(P_x\otimes x_p+P_y\otimes x_q\Big)$. Recalling that $\|x_i\|\leq1$ for all $i=1,2,\cdots n$, it follows that 
+\begin{equation}
+\begin{split}
+\|\nabla(X_{pq})\|&\leq\frac{1}{m}(\|P_x\ot x_p\|+\|P_y\ot x_q\|)\\
+&\leq\frac{1}{m}(\|P_x\|\| x_p\|+\|P_y\|\| x_q\|)\quad(\text{using $\|P_x\ot x_p\|\leq\|P_x\|\|x_p\|$})\\
+&\leq\frac{1}{m}(\|P_x\|+\|P_y\|).
+\end{split}
+\end{equation}                                                                                                                                                                                                                                                                             We have that $\sup_{x\in\IR}|\sigma^\prime(x)|< c_1$ and $\sup_{x\in\IR}|\sigma^{\prime\prime}(x)|<c_2$ by the assumption on activation function, as mentioned in Subsection \ref{Subsection: our setup}. This implies that \begin{equation}\begin{split}\|P_x\|&=\sqrt{\sum_{r=1}^m\Big(\sigma^{\prime}(z_r^Tx_p)\sigma^{\prime\prime}(z_r^Tx_q)\Big)^2}\\&\leq c_1c_2\sqrt{m}\end{split}\end{equation} and similarly $\|P_y\|\leq c_1c_2\sqrt{m}$. This implies that $\|\nabla(X_{pq})\|\leq\frac{2c_1c_2}{\sqrt{m}}$.                                                                                                                                                                                                                            By virtue of mean value theorem it now follows that $X_{pq}$ can be regarded as a Lipschitz function with parameter $\frac{2c_1c_2}{\sqrt{m}}$. Thus by the inequality stated in Subsection \ref{Subsection: Concentration inequalities for Lipschitz image of Gaussian random variables} we have that for any $s>0$
+                                                                                                                                                                                                                                                                             \[
+                                                                                                                                                                                                                                                                  \IP[|X_{pq}-\IE[X_{pq}]|\geq s]\leq2e^{-\frac{s^2m}{4c_1^2c_2^2}}. 
+                                                                                                                                                                                                                                                                             \]
+Putting $s=\sqrt{\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}$, we get 
+\[
+\IP\Big[|X_{pq}-\IE[X_{pq}]|\geq \sqrt{\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}\Big]\leq 2e^{-\ln(\frac{2n}{\delta})}=\frac{\delta}{n}. 
+\]
+We now have
+\begin{equation*}
+\begin{split}
+&P\Big[\sum_{p,q=1}^n|X_{pq}-\mathsf{X}_{pq}|^2\geq n^2\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}\Big]\\
+&=P\Big[\sum_{p,q=1}^n|X_{pq}-E[X_{pq}]|^2\geq n^2\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}\Big]\\
+&\leq P\Big[\cup_{p,q=1}^n\Big(|X_{pq}-E[X_{pq}]|\geq\sqrt{\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}\Big)\Big]\\
+&\leq\sum_{p,q=1}^nP\Big[|X_{pq}-E[X_{pq}]|\geq\sqrt{\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}\Big]\quad(\text{using Boole's inequality})\\
+&\leq n\delta.
+\end{split}
+\end{equation*}
+Let us relate the elements $X_{pq},\IE[X_{pq}]$ and matrices $\mathcal{C}$ and $H^\infty$. We may note that \[\mathcal{C}_{pq}=X_{pq}x_p^Tx_q\] and \[H^\infty_{pq}=\IE[X_{pq}]x_p^Tx_q.\]
+Let us also recall that $\|x_i\|\leq1$ for all $i=1,2,\cdots n$. Thus we have that 
+\begin{equation*}
+\begin{split}
+\|\mathcal{C}-H^\infty\|_2&\leq\|\mathcal{C}-H^\infty\|_F\\
+&=\sqrt{\sum_{p,q=1}^n\Big|X_{pq}x_p^Tx_q-\IE[X_{pq}]x_p^Tx_q\Big|^2}\\
+&=\sqrt{\sum_{p,q=1}^n\Big|x_p^Tx_q\Big|^2\Big|X_{pq}-\IE[X_{pq}]\Big|^2}\\
+&\leq\sqrt{\sum_{p,q=1}^n\Big|X_{pq}-\IE[X_{pq}]\Big|^2}\quad(\text{as $\|x_i\|\leq1$ for all $i$}).
+\end{split}
+\end{equation*}
+Thus we have that for any $t>0$, $P\Big[\|\mathcal{C}-H^\infty\|_2<t\Big]\geq P\Big[\sqrt{\sum_{p,q=1}^n\Big|X_{pq}-\IE[X_{pq}]\Big|^2}<t\Big]$.
+This in turn means \[
+P\Big[\|\mathcal{C}-H^\infty\|_2\leq\sqrt{n^2\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}\Big]\geq 1-n\delta. 
+\]
+Since $n\delta<1$, this means that the event $\Big\{\|\mathcal{C}-H^\infty\|_2\leq\sqrt{n^2\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}\Big\}$ has a probability of at least $1-n\delta$. Now $\sqrt{n^2\ln(\frac{2n}{\delta})\frac{4c_1^2c_2^2}{m}}<\frac{\lambda_0}{4}$ would imply that $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$, which means with probability at least $1-n\delta$, $\lambda_{\min}(\mathcal{C})>\frac{3\lambda_0}{4}$, as required.
+\end{proof}
+
+\subsection{Convergence of gradient descent}\label{Subsection: Convergence of the gradient descent}
+In our discourse, we will not train the output weights, we will only train the input weights. Let us make a random initialization of the output weights $\{a_r\}_{r=1}^m$ by selecting them uniformly from the set $\{-1,1\}$. Then the loss function $L(W,a)$ becomes a function of the input weights only, so that we can regard it as a function in $md$ variables (recall that each of the input weights $w_i\in\IR^d$ and there are $m$ many of them). The gradient descent then proceeds by updating the input weights as:
+\[
+W(k+1):=W(k)-\eta\nabla L_t(W(k),a), 
+\]
+where $\eta>0$ is the step size and $W(0)$ is some random initialization and by $W(k)$ we are denoting the vector consisting of input weights i.e. $W(k):=(w_1(k),w_2(k),\cdots w_m(k))^T$ which is a vector in $\IR^{md}$. We would like to select a very small step size, and moreover, let us note that our loss function is differentiable as $\sigma$ is a differentiable function. So we can rephrase the above equation in terms of a differential equation:
+\[
+\frac{dw_r(t)}{dt}=-\frac{\partial L(W(t))}{\partial w_r(t)}, 
+\]a solution of which will be a continuous curve in $\IR^{md}$ given by $t\mapsto W(t)$.
+At any given time point $W(t):=\{w_r(t)\}_{r=1}^m$, let us consider the matrix $\mathcal{C}[W(t)]$ described by 
+\[
+\mathcal{C}[W(t)]_{pq}:=\Big(\sum_{r=1}^m \frac{1}{m}\sigma^\prime\Big(w_k(t)^Tx_p\Big)\sigma^\prime\Big(w_k(t)^Tx_q\Big)\Big)\ot x_p^Tx_q). 
+\]
+We now closely follow the technique outlined in \cite[p. 5--6]{gdescentOverPara1}. Let $u_i(t):=f(W(t),x_i)$ for $i=1,2,\cdots n$. Then $\frac{du_i(t)}{dt}=\sum_{r=1}^m\Big\langle\frac{\partial f(W(t),x_i)}{\partial w_r(t)},\frac{dw_r(t)}{dt}\Big\rangle=\sum_{j=1}^n\mathcal{C}[W(t)]_{ij}(y_j-u_j)$ for $i=1,2,\cdots n$, so that letting $u(t):=(u_1,u_2,\cdots u_n)^T$ and $y:=(y_1,y_2,\cdots y_n)^T$, we can write in the vectorial form as $\frac{du(t)}{dt}=\mathcal{C}[W(t)](y-u)$. The following lemma can be proven exactly as in \cite[Lemma 3.3]{gdescentOverPara1}, so we skip the proof.
+
+\begin{lmma}\label{Lemma: Lemma 3.3 from Overparametrization}
+ Suppose for $0\leq s\leq t$ we have that $\lambda_{\min}(\mathcal{C}[W(s)])>\frac{1}{2}\lambda_0$. Then 
+ \begin{itemize}
+  \item[(a)]
+  $\|y-u(t)\|^2\leq e^{-\lambda_0 t}\|y-u(0)\|^2$.
+  \item[(b)]
+  For all $r=1,2,3,\cdots m$, we have $\|w_r(t)-w(0)\|\leq\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}$.
+ \end{itemize}
+\end{lmma}
+\begin{rmrk}\label{Remark: Lipschitz coefficient allows us to control least eigenvalue in general}
+Let us observe the elements of the matrix $\mathcal{C}[W(t)]$ more closely, namely elements of the form 
+\[
+\mathcal{C}[W(t)]_{pq}:=\Big(\sum_{r=1}^m \frac{1}{m}\sigma^\prime\Big(w_r(t)^Tx_p\Big)\sigma^\prime\Big(w_r(t)^Tx_q\Big)\Big)\ot x_p^Tx_q. 
+\]
+For a fixed $p,q$, thinking of $\mathcal{C}[W(t)]_{pq}$ as a function in $md$ variables, following the proof of Theorem \ref{Theorem: with probability 1-ndelta the Gramian matrix is positive definite} and recalling that $\|x_i\|\leq1$ for all $i=1,2,\cdots n$, we must have that $\|\nabla(\mathcal{C}[W(t)]_{pq})\|\leq\frac{4c_1c_2}{\sqrt{m}}$, so that by virtue of mean value theorem we have that 
+\[
+\Big|\mathcal{C}[W(t)]_{pq}-\mathcal{C}[W(s)]_{pq}\Big|\leq\frac{4c_1c_2}{\sqrt{m}}\|W(t)-W(s)\|, 
+\]
+where $W(v):=\begin{pmatrix}
+w_1(v)\\w_2(v)\\\cdots\\\cdots\\\cdots\\w_m(v)              
+             \end{pmatrix}
+\in\IR^{md}$ \Big(recall for each $r$, $w_r(v)\in\IR^d$ so that\\ $\|W(t)-W(s)\|=\sqrt{\sum_{r=1}^m\|w_r(t)-w_r(s)\|^2}$\Big). This immediately implies that if it turns out that $\|W(t)-W(s)\|<\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$, we have that $\|\mathcal{C}[W(t)]-\mathcal{C}[W(s)]\|_F<\frac{\lambda_0}{4}$. We will be using this in the sequel.
+\end{rmrk}
+% Let us now observe closely the quantity $\|y-u(0)\|$. Let us recall that $u(0)=\begin{pmatrix}
+% u_1(0)\\u_2(0)\\u_3(0)\\\cdots\\\cdots\\u_n(0)                                                                                
+%                                                                                \end{pmatrix}
+% $, where $u_i(0):=\frac{1}{\sqrt{m}}\sum_{r=1}^ma_r\sigma(w_r(0)^Tx_i+b_r(0))$, and $y:=\begin{pmatrix}
+%                                                  y_1\\y_2\\y_3\\\cdots\\\cdots\\y_n                                   
+%                                                                                    \end{pmatrix}
+% $. Then 
+% \begin{equation*}
+% \begin{split}
+% \|y-u(0)\|^2&=\sum_{i=1}^n|y_i-u_i(0)|^2\\
+% &=\sum_{i=1}^n\Big[y_i^2+2y_iu_i(0)+u_i^2(0)\Big],
+% \end{split}
+% \end{equation*}
+% so that taking expectation with respect to all the initializing variables (recall $a_r\sim\text{unif}\{-1,1\}$, so that $\IE[a_r]=0$ and $a_r$'s are independent from $w_r(0)$'s and $b_r(0)$'s) we have
+% \begin{equation*}
+% \begin{split}
+% &\IE[\|y-u(0)\|^2]\\
+% &=\sum_{i=1}^n\Big[y_i^2+\IE[u_i(0)^2]\Big]\\
+% &=\sum_{i=1}^n\Big[y_i^2+\frac{1}{m}\IE[\sum_{r=1}^m a_r^2\sigma(w_r(0)^Tx_i+b_r(0))^2+\sum_{r\neq r^\prime}a_ra_{r^\prime}\sigma(w_r(0)^Tx_i+b_r(0))\sigma(w_{r^\prime}(0)^Tx_i+b_{r^\prime}(0))]\Big]\\
+% &=\sum_{i=1}^n\Big[y_i^2+\frac{1}{m}\sum_{r=1}^m \IE[\sigma(w_r(0)^Tx_i+b_r(0))^2]\Big]\\
+% &=\sum_{i=1}^n\Big[y_i^2+\IE[\sigma(w^Tx_i+v)^2]\Big],
+% \end{split}
+% \end{equation*}
+% where $w\sim N(0,\mathbb{I}_d)$ and $v\sim N(0,1)$. Let us analyze $\IE[\sigma(w^Tx_i+v)^2]$.
+% \begin{equation*}
+% \begin{split}
+% &\IE[\sigma(w^Tx_i-v)^2]\\
+% &=\frac{1}{\sqrt{2}\alpha}\IE[(\frac{1}{2}-\Phi(-w^Tx_i-v))^2(w^Tx_i+v)^2+2(\frac{1}{2}-\Phi(-w^Tx_i-v))(w^Tx_i+v)\phi(-w^Tx-v)\\
+% &+\phi(-w^Tx-v)^2]\\
+% &=\frac{1}{\sqrt{2}\alpha}\Big[\IE[(\frac{1}{2}-\Phi(-w^Tx_i-v))^2(w^Tx_i+v)^2]+\IE[2(\frac{1}{2}-\Phi(-w^Tx_i-v))(w^Tx_i+v)\phi(-w^Tx-v)]\\
+% &+\IE[\phi(-w^Tx-v)^2]\Big].\\
+% \end{split}
+% \end{equation*}
+% Now since $\|x_i\|\leq1$  and $w\sim N(0,\mathbb{I}_d)$ and $v\sim N(0,1)$ are independent random variables, this implies that $w^Tx_i+v\sim N(0,\sqrt{2})$. Then $\IE[(w^Tx_i+v)^2]=2$ and $\IE[|w^Tx_i+v|]=\frac{2}{\sqrt{\pi}}$ (this follows by observing that $|w^Tx_i+v|$ follows a {\it folded} normal distribution). Thus we have 
+% \[
+% \IE[\sigma(w^Tx_i-v)^2]\leq\frac{1}{\sqrt{2}\alpha}[2+\frac{4}{\sqrt{\pi}}+1]\leq \frac{\kappa}{\sqrt{2}\alpha},
+% \]
+% where $\kappa:=3+\frac{4}{\sqrt{\pi}}$. {\it Let us now assume that $|y_i|<C$ for all $i=1,2,\cdots n$, for some number $C$}. Thus we ended up proving 
+% \[
+% \IE[\alpha\|y-u(0)\|^2]\leq (C^2+\frac{\kappa}{\sqrt{2}})n=O(n), 
+% \]
+% we have used the fact that $\alpha$ has been chosen to be {\it small} i.e. less than $1$.
+% 
+% {\color{blue} Note that we are still keeping our choice of $\alpha$ as made in the proof of Theorem \ref{Theorem: with probability 1-ndelta the Gramian matrix is positive definite}. We are only using the fact that $\alpha<1$.} {\it We use Markov's inequality:  $P[|X|>t]<\frac{\IE[|X|]}{t}$ for $t>0$.} Let us now choose $\delta$ such that $\delta(C^2+\frac{\kappa}{\sqrt{2}})n<1$. By virtue of Markov's inequality, we then have that with probability at least $1-\delta(C^2+\frac{\kappa}{\sqrt{2}})n$, $\sqrt{\alpha}\|y-u(0)\|\leq\frac{1}{\sqrt{\delta}}$. This in turn implies that with probability at least $1-\delta(C^2+\frac{\kappa}{\sqrt{2}})n$, $\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}\leq\frac{\sqrt{d}}{\lambda_0\sqrt{\delta}\sqrt{\alpha}}=\frac{\sqrt{2}\sqrt{d}\sqrt{\alpha}}{\beta_0\sqrt{\delta}}$ (recall $m\geq\frac{n}{d}$ and $\lambda_0=\frac{\beta_0}{\sqrt{2}\alpha}$). 
+
+It remains to be computed what is the probability of the event that for $0\leq s\leq t$, $\lambda_{\min}(\mathcal{C}[W(s)])>\frac{\lambda_0}{2}$. We summarize this in the next proposition.
+
+\begin{ppsn}\label{Proposition: Main theorem}
+Suppose the training data $x:=\{x_i\}_{i=1}^n$ and the corresponding responses $\{y_i\}_{i=1}^n$ satisfy:
+\begin{itemize}
+    \item 
+$\|x_i\|\leq1$ for all $i=1,2,\cdots n$;
+\item
+$\|y_i\|<\kappa$ for some constant $\kappa$, for all $i=1,2,\cdots n$.
+\end{itemize}
+Let $C$ denotes the event that for all $s\geq0$, $\lambda_{\min}(\mathcal{C}[W(s)])>\frac{\lambda_0}{2}$. We have
+
+\[\IP[C]\geq1-n\delta-\frac{K}{\ln(\frac{2n}{\delta})}\]
+for some constant $K$ independent of $n$ and $\delta$.
+\end{ppsn}
+\begin{proof}
+Note that $\|y-u(0)\|$ is a random variable defined on $\IR^{md}$ in its own right. Let us define the events $A_\gamma$ for $\gamma>0$ and $B$ as follows:
+\[
+A_\gamma:=\Big\{\|y-u(0)\|\leq\frac{1}{\gamma}\Big\}\quad(\gamma>0); 
+\]
+\[
+B:=\Big\{\lambda_{\min}[\mathcal{C}[W(0)]>\frac{3\lambda_0}{4}\Big\}. 
+\]
+Let us note that $\{A_\gamma\}_\gamma$ is an increasing net of events with decreasing values of $\gamma$ i.e. $A_\gamma\subset A_{\gamma^\prime}$ if $\gamma^\prime<\gamma$. Moreover we have that $\cup_{\gamma}A_\gamma=\IR^{md}$. By continuity property of probability measures, it now follows that 
+\[
+\lim_{\gamma\longrightarrow0^+}\IP[B\cap A_\gamma]=\IP[B], 
+\]
+i.e. $\lim_{\gamma\longrightarrow0^+}\IP[B\cap A_\gamma]>1-n\delta$. 
+
+Let us now observe closely the quantity $\|y-u(0)\|$. Let us recall that $u(0)=\begin{pmatrix}
+u_1(0)\\u_2(0)\\u_3(0)\\\cdots\\\cdots\\u_n(0)                                                                                
+                                                                               \end{pmatrix}
+$, where $u_i(0):=\frac{1}{\sqrt{m}}\sum_{r=1}^ma_r\sigma(w_r(0)^Tx_i)$, and $y:=\begin{pmatrix}
+                                                 y_1\\y_2\\y_3\\\cdots\\\cdots\\y_n                                   
+                                                                                   \end{pmatrix}
+$. Then 
+\begin{equation*}
+\begin{split}
+\|y-u(0)\|^2&=\sum_{i=1}^n|y_i-u_i(0)|^2\\
+&=\sum_{i=1}^n\Big[y_i^2+2y_iu_i(0)+u_i^2(0)\Big],
+\end{split}
+\end{equation*}
+so that taking expectation with respect to all the initializing variables (recall $a_r\sim\text{unif}\{-1,1\}$, so that $\IE[a_r]=0$ and $a_r$'s are independent from $w_r(0)$'s) we have
+\begin{equation*}
+\begin{split}
+&\IE[\|y-u(0)\|^2]\\
+&=\sum_{i=1}^n\Big[y_i^2+\IE[u_i(0)^2]\Big]\\
+&=\sum_{i=1}^n\Big[y_i^2+\frac{1}{m}\IE[\sum_{r=1}^m a_r^2\sigma(w_r(0)^Tx_i)^2+\sum_{r\neq r^\prime}a_ra_{r^\prime}\sigma(w_r(0)^Tx_i)\sigma(w_{r^\prime}(0)^Tx_i)]\Big]\\
+&=\sum_{i=1}^n\Big[y_i^2+\frac{1}{m}\sum_{r=1}^m \IE[\sigma(w_r(0)^Tx_i)^2]\Big]\\
+&=\sum_{i=1}^n\Big[y_i^2+\IE[\sigma(w^Tx_i)^2]\Big],
+\end{split}
+\end{equation*}
+where $w\sim N(0,\mathbb{I}_d)$. Since $\IE[\sigma(w^Tx)^2]<c_3$ (the inequality follows from the assumption in Subsection \ref{Subsection: our setup}), and $|y_i|<\kappa$ for all $i=1,2,\cdots n$, for some number $\kappa$, we have 
+\[
+\IE[\|y-u(0)\|^2]\leq (\kappa^2+c_3)n.\]
+Since $(\IE[\|y-u(0)\|])^2\leq\IE[\|y-u(0)\|^2]$, this implies that $\IE[\|y-u(0)\|]\leq D\sqrt{n}$, where $D:=\sqrt{\kappa^2+c_3}$. Thus by Markov's inequality, we have that $\IP[A_\gamma]\geq1-D\sqrt{n}\gamma$. Let $\gamma_0:=\frac{1}{4c_1c_2\sqrt{n}\ln(\frac{2n}{\delta})}$. Recalling that $m>\frac{64c_1^2c_2^2 n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$, we see that 
+\[
+\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}<\frac{\|y-u(0)\|}{8c_1c_2\sqrt{n\ln(\frac{2n}{\delta})}}, 
+\]
+so that occurrence of the event $A_{\gamma_0}$ implies \[\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}<\frac{\|y-u(0)\|}{8c_1c_2\sqrt{n\ln(\frac{2n}{\delta})}}\leq\frac{1}{8c_1c_2\sqrt{n\ln(\frac{2n}{\delta})}\gamma_0}=\frac{1}{2}\sqrt{\ln\Big(\frac{2n}{\delta}\Big)}<\frac{\sqrt{m}\lambda_0}{16c_1c_2n}.\]
+We now prove that occurrence of the event $B\cap A_{\gamma_0}$ implies the occurrence of the event $C$. Suppose $B\cap A_{\gamma_0}$ has occurred. Suppose there exists some $t>0$ such that $\lambda_{\min}(\mathcal{C}[W(t)])\leq\frac{\lambda_0}{2}$. This would imply that $\|W(t)-W(0)\|\geq\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$ as otherwise by Remark \ref{Remark: Lipschitz coefficient allows us to control least eigenvalue in general}, combined with Lemma \ref{Lemma: close elements in Frobenius normx means the minimum eigenvalue is also close}, it would imply that $\lambda_{\min}(\mathcal{C}[W(t))>\frac{\lambda_0}{2}$. Let \[t_0:=\inf\{t\in(0,+\infty):~\|W(t)-W(0)\|\geq\frac{\sqrt{m}\lambda_0}{16c_1c_2n}\}.\] Since $t\mapsto W(t)$ is a continuous curve (being a solution of a differential equation with differentiable coefficients), this implies that $t_0>0$ and we must have $\|W(t_0)-W(0)\|=\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$. Now for $s\in(0,t_0)$ we must have that $\|W(s)-W(0)\|<\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$ implying by Remark \ref{Remark: Lipschitz coefficient allows us to control least eigenvalue in general} and Lemma \ref{Lemma: close elements in Frobenius normx means the minimum eigenvalue is also close} that $\lambda_{\min}(\mathcal{C}[W(s)])>\frac{\lambda_0}{2}$. By Lemma \ref{Lemma: Lemma 3.3 from Overparametrization}-(b) we arrive at the inequality \[\|W(s)-W(0)\|\leq\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}<\frac{\sqrt{m}\lambda_0}{16c_1c_2n}\quad(\text{for all $s\in(0,t_0)$},\] which by virtue of continuity implies $\|W^\prime(t_0)-W^\prime(0)\|\leq\frac{\sqrt{n}\|y-u(0)\|}{\sqrt{m}\lambda_0}<\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$, contradiction to the fact that $\|W^\prime(t_0)-W^\prime(0)\|=\frac{\sqrt{m}\lambda_0}{16c_1c_2n}$. This proves that $B\cap A_{\gamma_0}\implies C$ so that as $B\cap A_{\gamma_0}\subset C$, we have $\IP[C]\geq\IP[B\cap A_{\gamma_0}]$. Let us compute $\IP[B\cap A_{\gamma_0}]$ (in the following $\overline{A}$ denotes complement of the set $A$).
+
+\begin{equation*}
+\begin{split}
+\IP[B\cap A_{\gamma_0}]&=1-\IP\Big[\overline{B\cap A_{\gamma_0}}\Big]\\
+&=1-\IP\Big[\overline{B}\cup\overline{A_{\gamma_0}}\Big]\\
+&\geq1-\IP[\overline{B}]-\IP[\overline{A_{\gamma_0}}]\\
+&=\IP[B]+\IP[A_{\gamma_0}]-1\\
+&\geq\IP[A_{\gamma_0}]-n\delta\\
+&\geq1-D\sqrt{n}\gamma_0-n\delta\quad(\text{recall $D:=\sqrt{\kappa^2+c_3}$})\\
+&=1-n\delta-\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})},
+\end{split}
+\end{equation*}
+so that we ended up proving that $\IP[C]\geq1-n\delta-\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}$. This finishes the proof.
+\end{proof}
+
+Thus we ended up proving the following result:
+
+\begin{thm}\label{Theorem: main result}
+Consider an activation function $\sigma(x)$ satisfying the assumptions mentioned in Subsection \ref{Subsection: our setup}. 
+Suppose we are given a training data $\{x_i\}_{i=1}^n$ with $x_i\in\IR^d$, $\|x_i\|\leq1$, such that $x_i \neq x_j \; \forall i,j$, and responses $\{y_i\}_{i=1}^n$ with $y_i\in\IR$ and $|y_i|<\kappa$ for some number $\kappa$. Let $\lambda_0$ be the minimum eigenvalue of the matrix $H^\infty$, whose entries are given by 
+\[
+H^\infty_{pq}:=\IE_{z\sim N(0,\mathbb{I}_d)}\Big[\sigma^\prime(z^Tx_p)\sigma^\prime(z^Tx_q)\Big]\ot x_p^Tx_q\quad(p,q=1,2,\cdots n),.
+\]
+Then we have the following:
+
+\begin{itemize}
+
+\item[(a)]
+$\lambda_0>0$.
+
+\item[(b)]
+Fix a $\delta>0$ such that $n\delta+\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}<1$, where $D:=\sqrt{\kappa^2+c_3}$. 
+Let us select $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$ ($c_1,c_2$ are the constants appearing in the assumption in Subsection \ref{Subsection: our setup}) and consider the network with a single hidden layer:\[f(W,x,a):=\frac{1}{\sqrt{m}}\sum_{r=1}^m a_r\sigma(w_r^Tx).\]
+Then with random initializations: $a_r\sim\text{unif}\{-1,1\}$ and $w_r(0)\sim N(0,\mathbb{I}_d)$ for all $r=1,2,\cdots m$ and the condition that we do not train the output layer i.e. $a_r$'s are kept fixed upon initialization, with probability at least $1-\delta n-\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}$, gradient descent with small enough step size converges to $y_i$'s at an exponential rate.
+
+\item[(c)]
+Define $\delta' := \delta n+\frac{D}{4c_1c_2\ln(\frac{2n}{\delta})}$.
+There exists a constant $C$ such that $m > \frac{C n^2\ln(\frac{2n}{\delta'})}{\lambda_0^2}$ implies $m>\frac{64c_1^2c_2^2n^2\ln(\frac{2n}{\delta})}{\lambda_0^2}$.
+Then, as a corollary of point (b) we have that with random initialization as in the previous point, with probability at least $1-\delta'$, gradient descent with small enough step size converges to $y_i$'s at an exponential rate.
+
+\end{itemize}
+\end{thm}
+
+\begin{rmrk}
+It is perhaps worthwhile to point out that if we introduce the input biases, essentially the same analysis holds with according changes in the constants appearing in the threshold value of $m$ in Theorem \ref{Theorem: main result}.
+\end{rmrk}
+
+% \begin{rmrk}
+% A widely used activation function in neural network is ReLU which is defined by:
+% \[
+% \sigma(x):=\begin{cases}
+% 1~\text{if $x>0$}\\0~\text{if $x\leq0$}
+% \end{cases}.
+% \]
+% We may note from the above definition that ReLU is a non-differentiable function, with $0$ being the point of non-differentiability. As a consequence, considering a single layered network with ReLU, the associated quadratic loss function \eqref{Equation: Quadratic loss function} will be a highly non-differentiable function, so that the analysis we did so far does not apply directly in this case. Let us define the following family of softplus activation functions:
+% \[
+% \sigma_\alpha(x):=\frac{1}{\alpha}\ln(1+e^{\alpha x})\quad(\alpha>0).
+% \]
+% It can be shown that for any $x\in\IR$ such that $x\neq0$, $\sigma_\alpha(x)\longrightarrow\sigma(x)$. Moreover, we may note that each member of the family $\{\sigma_\alpha(\cdot)\}_{\alpha}$ satisfies the assumptions of Subsection \ref{Subsection: our setup}, so that Theorem \ref{Theorem: main result} holds with each of them as the activation function. So we could find a softplus function very close to ReLU for which Theorem \ref{Theorem: main result} holds. We hypothesize that the threshold given by Theorem \ref{Theorem: main result} also holds for ReLU.
+% \end{rmrk}
+
+
+\section{Appendix}\label{Appendix}
+\begin{lmma}
+Suppose $\{x_i\}_{i=1}^n$ is a set of vectors in $\IR^d$ such that $x_i\neq x_j$ for $i\neq j$. Then we can select $w\in\IR^T$ such that the numbers $\{w^Tx_i\}_{i=1}^n$ are all different.
+\end{lmma}
+\begin{proof}
+Consider the vectors in $\IR^{^{\Comb{n}{2}\cdot d}}$ given by $((x_i-x_j))_{i<j}$. Consider the map $f$ given by $f:\IR^d\ni w\mapsto ((w^Tx_i-w^Tx_j))_{i<j}\in\IR^{^{\Comb{n}{2}}}$. Clearly this is a continuous map. Consider the set $S$ in $\IR^{^{\Comb{n}{2}}}$ given by $S:=\{y:=(y_1,y_2,\cdots y_{_{\Comb{n}{2}}})\in\IR^{^{\Comb{n}{2}}}:~y_i\neq0$ for each $i\}$. Clearly, this is an open subset of $\IR^{^{\Comb{n}{2}}}$, so that $f$ being a continuous function, we must have that $f^{-1}(S)$ is an open subset of $\IR^d$. If $f^{-1}(S)=\emptyset$, this implies that $f^{-1}(S^c)=\IR^d$. Now $f$ is an open map (i.e. if $U\subset\IR^d$ is open $\implies$ $f(U)\subset\IR^{^{\Comb{n}{2}}}$ is also open), so that $f(\IR^d)=S^c$ should also be an open subset of $\IR^{^{\Comb{n}{2}}}$, so that $S^c$ is both a closed and an open subset of $\IR^{^{\Comb{n}{2}}}$, a contradiction to the fact that as a topological space, $\IR^{^{\Comb{n}{2}}}$ is connected. Thus $f^{-1}(S)\neq\emptyset$. Now we simply take $w\in f^{-1}(S)$, which serves the purpose.
+\end{proof}
+
+
+
+
+
+% 
+% 
+% \section{Training both the layers}
+% \subsection*{Rationale being training both layers}
+% Lets go back to the statement of Proposition \ref{Proposition: From the neural proof paper}. We have that $\text{span}\{\sigma(w^Tx+v):w\in\IR^d,v\in\IR\}$ is dense in $C(\IR^d)$ in the compact open topology. If $\sigma(x):=x1_{[0,+\infty)}(x)$ (ReLU), then $\sum_{i}c_i\sigma(w_i^Tx+v_i)=\sum_{i}sgn(c_i)\sigma(|c_i|w_i^Tx+|c_i|v_i)$ so that if we initialize the output layer with random selection from $\text{unif}\{-1,1\}$ and train only the input layer, we might get a good predictor. However, if $\sigma(\cdot)$ is for example, the activation function as we have considered, it turns out that in order to get a better predictor, its better to train both the layers simultaneously. In this section we do this. 
+% 
+% \subsection*{The way we train both the layers}
+% We first initialize the input weights $W:\{w_r\}_{r=1}^m$ and input biases $b:=\{b_r\}_{r=1}^m$ by $w_r\sim N(0,\mathbb{I}_d)$ and $b_r\sim\text{unif}\{-1,1\}$ for each $r=1,2,\cdots m$. Having done that we train all the layers.  
+% 
+% More or less our analysis will be the same as in the previous sections. Let us first compute $\nabla L_t(W,a,b)$. A direct computation yields that we have the following form:
+% \[
+% \nabla L_t(W,a,b):=(\cla\odot\mathcal{B}\oplus\cla\oplus\mathsf{B})(e\oplus e\oplus e), 
+% \]
+% where matrices $\cla,\mathcal{B}$ and $e$ are as in Subsection \ref{Subsection: dynamics of the Gramian matrix associated with the gradient of the loss function} and $\mathsf{B}$ is given by 
+% \[
+% \mathsf{B}_{ij}:=\frac{1}{\sqrt{m}}\sigma_t(w_i^T x_j+b_i)\quad(i=1,2,\cdots m, j=1,2,\cdots n). 
+% \]
+% ***********************************************************************************************************************************************************************************************
+% {\color{blue} The following result is a by-product, but do we really need this result?}
+% 
+% We have a result similar to Theorem \ref{Theorem: Theorem 3.1 in overparametrized paper} which we prove below.
+% 
+% \begin{thm}\label{Theorem: Similar to Theorem 3.1 in Overparametrization, this time with the output layer}
+% Let us consider the matrix $\mathsf{H}^\infty$ whose entries are described by:
+% \begin{equation*}
+% \begin{split}
+% \mathsf{H}^\infty_{pq}&:=\IE_{w\sim N(0,\mathbb{I}_d),v\sim N(0,1)}\Big[\sigma^\prime_t(w^Tx_p+v)\sigma^\prime_t(w^Tx_q+v)\Big](1+x^T_px_q)\\&+\IE_{w\sim N(0,\mathbb{I}_d),v\sim N(0,1)}\Big[\sigma_t(w_Tx_p+v)\sigma_t(w^Tx_q+v)\Big] 
+% \end{split}
+% \end{equation*}
+% satisfies $\beta_0:=\lambda_{\min}(\mathsf{H}^\infty)>0$.
+% \end{thm}
+% \begin{proof}
+% Let us note that  $\mathsf{H}^\infty=H^\infty+G$, where $H^\infty$ is the matrix appearing in Theorem \ref{Theorem: Theorem 3.1 in overparametrized paper} and the entries of $G$ are given by 
+% \[
+% G_{pq}:= \IE_{w\sim N(0,\mathbb{I}_d),v\sim N(0,1)}\Big[\sigma_t(w_Tx_p+v)\sigma_t(w^Tx_q+v)\Big] .
+% \]
+% Both the matrices $H^\infty$ and $G$ are non-negative definite, hence obviously $\mathsf{H}^\infty$ being a sum of two non-negative definite matrices, is also non-negative definite. Moreover, it follows that for $x\in\IR^n$, $\innerl x, \mathsf{H}^\infty x\innerr=\innerl x, H^\infty x\innerr+\innerl x, Gx\innerr\geq\innerl x, H^\infty x\innerr\geq\lambda_0>0$ (recall from Theorem \ref{Theorem: Theorem 3.1 in overparametrized paper} that $\lambda_0:=\lambda_{\min}(H^\infty)>0$). Recalling that in general, for any non-negative definite matrix $A$, $\min_{x\in\IR^d}\frac{1}{\|x\|}\innerl x,Ax\innerr=\lambda_{\min}(A)$, it follows that $\beta_0\geq\lambda_0>0$, which proves the hypothesis.
+% \end{proof}
+% *************************************************************************************************************************************************************************************************
+% We need an analogous version of Theorem \ref{Theorem: with probability 1-ndelta the Gramian matrix is positive definite} as well, which we prove next. 
+% 
+% \begin{thm}\label{Theorem: analogous to the result that with probability 1-delta the Gramian matrix is positive definite, this time with output layer}
+% Given any $0<\delta<1$ with $\delta<\frac{1}{n}$, there exists $t(\delta)>0$ such that for $m\geq\frac{n}{d}$, with probability at least $1-n\delta$ (where the probability is the product probability on $\IR^{md}\oplus\IR^m$ induced by $m$ iid random variables $\{z_i\}_{i=1}^m$, $z_i\sim N(0,\mathbb{I}_d)$ and $m$ iid random variables $\{v_r\}_{r=1}^m$, $v_r\sim N(0,1)$) the  matrix $\mathsf{C}$ described by 
+% \begin{equation*}
+% \begin{split}
+% \mathsf{C}_{pq}&:=\Big(\sum_{k=1}^m \frac{1}{m}\sigma^\prime_{t(\delta)}\Big(z_k^Tx_p+v_k\Big)\sigma^\prime_{t(\delta)}\Big(z_k^Tx_q+v_k\Big)\Big)\ot (1+x_p^Tx_q)\\
+% &+\sum_{k=1}^m \frac{1}{m}\sigma_{t(\delta)}\Big(z_k^Tx_p+v_k\Big)\sigma_{t(\delta)}\Big(z_k^Tx_q+v_k\Big)
+% \end{split}
+% \end{equation*}
+% satisfies $\lambda_{\min}(\mathsf{C})\geq\frac{1}{2}\lambda_0$.
+% \end{thm}
+% \begin{proof}
+% Here we may notice that $\mathsf{C}=\mathcal{C}+G$, where $\mathcal{C}$ is the matrix appearing in Theorem \ref{Theorem: with probability 1-ndelta the Gramian matrix is positive definite} and entries of $G$ are described by 
+% \[
+% G_{pq}:=\sum_{k=1}^m \frac{1}{m}\sigma_{t(\delta)}\Big(z_k^Tx_p+v_k\Big)\sigma_{t(\delta)}\Big(z_k^Tx_q+v_k\Big). 
+% \]
+% Exploiting the fact that finite sums of non-negative definite matrices are also non-negative definite, we have that the matrix $\mathsf{C}$ is non-negative definite. Thus for $x\in\IR^n$, we have that $\innerl x, \mathsf{C}x\innerr\geq\innerl x, \mathcal{C}x\innerr\geq\lambda_{\min}(\mathcal{C})$, proving that $\lambda_{\min}(\mathsf{C})\geq\lambda_{\min}(\mathcal{C})$. By Theorem \ref{Theorem: with probability 1-ndelta the Gramian matrix is positive definite} we have that with probability at least $1-n\delta$, $\lambda_{\min}(\mathcal{C})\geq\frac{\lambda_0}{2}$, which implies that with probability at least $1-n\delta$, we must have that $\lambda_{\min}(\mathsf{C})\geq\frac{1}{2}\lambda_0$, as we were required to show.
+% \end{proof}
+% \subsection*{Gradient descent while training all the layers}
+% We mnake similar considerations here as in Subsection \ref{Subsection: Convergence of the gradient descent}. Let us make a random initialization of the output weights $\{a_r\}_{r=1}^m$ by selecting them uniformly from the set $\{-1,1\}$. The gradient descent then proceeds by updating the input weights, biases and output weights as:
+% \[
+% W^\prime(k+1):=W^\prime(k)-\eta\nabla L_t(W(k),a_k,b_k), 
+% \]
+% where $\eta>0$ is the step size and $W(0),b(0),a(0)$ are some random initializations and by $W^\prime(k)$ we are denoting the vector consisting of input weights, biases and output weights i.e. $W^\prime(k):=W(k)\oplus b(k)\oplus a_k$, where $b(k):=(b_1(k),b_2(k),\cdots b_m(k))^T$ and $a_k:=(a_1,a_2,\cdots a_m)^T$. We would like to select a very small step size, and moreover, let us note that our loss function is a real analytic function. So we can rephhrase the above equation in terms of a differential equation:
+% \[
+% \frac{dw^\prime_r(t)}{dt}=-\frac{\partial L_t(W(t),a(t),b(t))}{\partial w^\prime_r(t)}, 
+% \]solutions of which will be a continuous curve in $\IR^{md}\oplus\IR^m\oplus\IR^m$ given by $t\mapsto W^\prime(t)$.
+% At any given time point $W^\prime(t):=\{w_r(t),a(t),b_r(t)\}_{r=1}^m$, let us consider the matrix $\mathcal{C}[W^\prime(t)]$ described by 
+% \begin{equation*}
+% \begin{split}
+% \mathcal{C}[W^\prime(t)]_{pq}&:=\Big(\sum_{k=1}^m \frac{a_k(t)^2}{m}\sigma^\prime_t\Big(w_k(t)^Tx_p+b_k(t)\Big)\sigma^\prime_t\Big(w_k(t)^Tx_q+b_k(t)\Big)\Big)\ot(1+x_p^Tx_q)\\
+% &+\sum_{k=1}^m \frac{1}{m}\sigma_t\Big(w_k(t)^Tx_p+b_k(t)\Big)\sigma_t\Big(w_k(t)^Tx_q+b_k(t)\Big)
+% \end{split}
+% \end{equation*}
+% Let $u_i(t):=f_t(W(t),x_i,b(t))$ for $i=1,2,\cdots n$. Then $\frac{du_i(t)}{dt}=\sum_{r=1}^m\Big\langle\frac{\partial f_t(W(t),x_i,b(t))}{\partial w^\prime_r(t)},\frac{dw^\prime_r(t)}{dt}\Big\rangle=\sum_{j=1}^n\mathcal{C}[W^\prime(t)]_{ij}(y_j-u_j)$ for $i=1,2,\cdots n$, so that letting $u(t):=(u_1,u_2,\cdots u_n)^T$ and $y:=(y_1,y_2,\cdots y_n)^T$, we can write in the vectorial form as $\frac{du(t)}{dt}=\mathcal{C}[W^\prime(t)](y-u)$. We need to prove a result similar to \cite[Lemma A.2]{gdescentOverPara1} and the discussions thereof. For this, we need to compute the quantities $\|\frac{dw_r(t)}{dt}\|,\|\frac{db_r(t)}{dt}\|$ and $\|\frac{da_r(t)}{dt}\|$.
+% 
+% Using the differential equation 
+% \[
+% \frac{dw^\prime_r(t)}{dt}=-\frac{\partial L_t(W(t),a(t),b(t))}{\partial w^\prime_r(t)}, 
+% \]
+% and recalling that $\|x_i\|\leq1$ for all $i$, it can be shown that
+% \[
+% \|\frac{dw_r(t)}{dt}\|\leq\frac{\sqrt{n}}{\sqrt{m}}\|y-u(t)\|\Big[|a_r(s)-a_r(0)|+1\Big], 
+% \]
+% \[
+% \|\frac{db_r(t)}{dt}\|\leq\frac{\sqrt{n}}{\sqrt{m}}\|y-u(t)\|\Big[|a_r(s)-a_r(0)|+1\Big] 
+% \]
+% and 
+% \[
+% \|\frac{da_r(t)}{dt}\|\leq\frac{\sqrt{n}}{\sqrt{m}}\|y-u(t)\|\Big[\|w_r(t)-w_r(0)\|+\|w_r(0)\|+1\Big].
+% \]
+% The following lemma can be proven exactly as in \cite[Lemma A.2]{gdescentOverPara1}, so we skip the proof. 
+% \begin{lmma}\label{Lemma: Lemma 3.3 from Overparametrization}
+% Suppose for $0\leq s\leq t$ we have that $\lambda_{\min}(\mathcal{C}[W^\prime(s)])\geq\frac{1}{2}\lambda_0$. Then \[\|y-u(t)\|^2\leq e^{-\lambda_0 t}\|y-u(0)\|^2.\]
+% \end{lmma}
+% 
+% 
+% 
+% 
+% \section{Things to think about}
+% \begin{itemize}
+%  \item
+%  Can we somehow guarantee that $w^\prime_r(t)\not\longrightarrow\infty$?  This will lead to almost sure convergence.
+%  \item
+%  Need to pin down the exact rate of convergence. Clearly its better than linear being exponential.
+%  \item
+%  Do we really need discrete analysis here?  Note that we are in the analytic set-up. 
+%  \item
+%  Can we prove something for small $t$?  This will bring us close to ReLU.
+%  \item
+%  Can we train both the layers and `say something?  This might be very easy here.
+% \end{itemize}
+
+\bibliographystyle{unsrt}
+\bibliography{bibliography}
+
+% \begin{thebibliography}{99}
+% \bibitem{khatrirao}
+% Allman, E.S.,~Matias, C.~and~Rhodes, J.:
+% \newblock{Identifiability of parameters in latent structure models with many observed variables},
+% \emph{Ann. \!Statist.} \textbf{37} (2009) no. 6A, 3099--3132.
+
+
+% \bibitem{gdescentOverPara1}
+% Du, Simon S.,~Zhai, X.,~Barnab\'as, P.~and~Singh, A.:
+% \newblock{Gradient descent provably optimizes over-parametrized neural networks},
+% \newblock arXiv: 1810.02054v2 [cs.LG], 2019.
+
+% \bibitem{kawaGradientDescent}
+% Kawaguchi, K.~and~Huang, J.:
+% \newblock{Gradient descent finds global minima for generalizable deep neural networks of practical sizes},
+% \newblock{arXiv: 1908.02419 [stat.ML]}
+
+% \bibitem{gdescentExplained}
+% Lee, J.D.,~Simchowitz, M.,~Jordan, M.L.~and~Recht, B.:
+% \newblock{Gradient descent converges to minimizers},
+% \newblock arXiv: 1602.04915v2 [stat.ML], 2016.
+
+% \bibitem{proofNeural}
+% Leshno, M.,~Lin, V.Y.,~Pinkus, A.~and~Schocken, S.:
+% \newblock{Multilayer Feedforward Networks With a Nonpolynomial
+% Activation Function Can Approximate Any Function},
+% \newblock{Neural \!Networks} \textbf{6} (1993), 861--867.
+
+% \bibitem{NguyenComplexPowers}
+% Nguyen, V.D.:
+% \newblock{Complex powers of analytic functions and meromorphic renormalization in qft, 2015}, 
+% \newblock arXiv: 1503.00995
+
+% \bibitem{NguyenHein}
+% Nguyen, V.D.~and~Hein, M.:
+% \newblock{The loss surface of deep and wide neural networks},
+% \newblock arXiv: 1704.08045 [cs.LG]
+
+% \bibitem{gdescentOverPara2}
+% Song, Z.~and~Yang, X.:
+% \newblock{Quadric suffices for over-parametrization via matrix chernoff bound},
+% \newblock arXiv: 1906.03593v1 [cs.LG], 2019.    
+
+
+% \bibitem{DLM}
+% Soudry, D.~and~Carmon, Y.:
+% \newblock{No bad local minima: Data independent training error guarantees for multilayer neural networks},
+% \newblock arXiv: 1605.08361v2 [stat.ML], 2016.
+
+% \bibitem{YuChen}
+% Yu, X.H.~and~Chen, G.A.:
+% \newblock{On the local minima free condition of Backpropogation Learning},
+% \newblock{IEEE \!Transactions \!on \!Neural \!Networks} \textbf{6} (1995), 1300--1303.
+
+% \end{thebibliography}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

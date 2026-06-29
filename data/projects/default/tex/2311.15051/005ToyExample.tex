@@ -1,0 +1,298 @@
+\section{Verifying our Hypothesis in Simple Networks}
+\label{sec:toy}
+In this section, we verify Hypothesis~\ref{hypothesis} in two simple networks: a ReLU scalar network and LDNs.
+We first empirically verify our hypothesis and provide a theoretical characterization of the sharpness reduction for GD and PHB for the ReLU scalar network.
+We then provide additional empirical evidence for our hypothesis in LDNs.
+% In this section, we will verify our hypothesis theoretically and empirically through a toy example.
+% {\color{red}Outline}
+% To build some intuition and solidify our hypothesis regarding the mechanism behind the large catapults
+
+\subsection{Simple Network \#1. ReLU Scalar Network}
+The ReLU scalar network is defined as $f(x; u, v) = v \sigma(ux)$ where $\sigma: \sR \to \sR$ is the ReLU activation function, $\sigma(\cdot) = \max(\cdot, 0)$.
+We consider the single data point case $(x,y)=(1,0)$ trained using MSE loss function, given by $\gL(u, v) = \tfrac{1}{2} u^2 v^2 \indicator[u \geq 0],$ where $\indicator[\cdot]$ is the indicator function.
+The sharpness values at the minima $(u, 0)$ are $S(u, 0) = u^2$ for $u \geq 0$ and $S(u, v) = 0$ for $u < 0$.
+% \begin{equation*}
+%     S(u, 0) = u^2, \quad S(u, v) = 0, \ u \leq 0.
+% \end{equation*}
+% \begin{align*}
+%     S(u,v) &=
+%     \begin{cases}
+%         u^2 & \text{ if } v = 0, \\
+%         0 &\text{ if } u \le 0.
+%     \end{cases}
+% \end{align*}
+We consider constant learning rate $(1 + \beta) \eta$ to simplify the analysis.\footnote{In Figure~\ref{fig:toy-model-warmup} of \Cref{app:warmup-necessity}, we show that catapults can also be observed in this model with linear warmup.}
+% Note that due to our choice of initialization, we are On the other hand, in our theoretical analyses, we can focus choose a constant step size given a proper choice of initialization close to the minima with sharpness slightly above the MSS thus not requiring the use of warmup.
+Recall from Remark~\ref{rmk:roleofwarmup} that catapults under linear warmup occur when the learning rate is just large enough so that the sharpness is slightly above the MSS. We reproduce this setup for constant learning rates by fixing the learning rate $\eta$ and initializing close to an unstable minimum: $(u_0,v_0)$ with $u_0^2 = \frac{2 + \epsilon}{\eta}$ for some small $\epsilon, |v_0| \in (0, 1)$.
+
+%Although this paper mainly considers PHB with linear warmup, our experiment with step warmup shows that constant (but large) $\eta$ can induce catapults if the parameters are initialized close to a minimum.}
+% The divergent behavior occurs when $\eta > 2/u_0^2$.
+% Via some tedious computations, one can see that for $u \geq 0$,
+% \begin{equation}
+%     \lambda_{\max}(u, v) := \lambda_{\max} \left(\nabla^2 \gL(u, v)\right) = u^2 \frac{1 + \left( \frac{v}{u} \right)^2 + \sqrt{\left( 1 + \left( \frac{v}{u} \right)^2 \right)^2 + 12 \left( \frac{v}{u} \right)^2}}{2}.
+% \end{equation}
+% When $v = 0$ and $u \geq 0$, the sharpness is $\lambda_{\max}(u, 0) = u^2$.
+% Especially note that $\lambda_{\max}(u, 0) = u^2$, and if $u < 0$, then the loss, gradient, and sharpness are all zero.
+
+
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/scalar-net/scalar-net-switch1.pdf} %0.45
+\caption{(Left) Trajectories of {\color{blue} GD}, {\color{orange} PHB}, {\color{darkgreen} GD $\to$ PHB}, {\color{red} PHB $\to$ GD} with $\beta=0.9$, $\eta = (2+\epsilon)/u_0^2$ where $\epsilon=0.01$, $(u_0, v_0)=(10, 10^{-6})$, and no warmup. (Right) The self-stabilization stages for {\color{blue}GD} are highlighted and labeled in the sharpness plot. The MSS is shown as the red dotted line.
+}
+\label{fig:scalar-net-toy}
+\end{figure}
+% \begin{figure}
+%     \centering
+%     \subfigure[$u_\infty$ bounds for the toy example. The derived bound (blue) and $u_\infty$ (red dashed line) overlap, showing that the bound is tight.]{
+%         \includegraphics[width=0.32\textwidth]{figures/scalar-net/scalar-loss-Cu-Cv-beta.pdf}
+%     }
+%     \hfill
+%     \subfigure[Experiments switching momentum on/off]{
+%         \includegraphics[width=0.64\textwidth]{figures/scalar-net/scalar-net-switch1.pdf}
+%         \label{subfig:toy-momentum-on-off}
+%     }
+%     \caption{Toy example experiments}
+%     \label{fig:ub-bound}
+% \end{figure}
+
+
+\subsubsection{Qualitative Observations}
+In Figure~\ref{fig:scalar-net-toy}, we provide the trajectory and sharpness plots of GD and PHB for our toy model to illustrate the self-stabilization and our hypothesis.
+First, we note that we do not observe any PS due to the model's simplicity. Since the initialization is already unstable, both trajectories start from Stage 2 (Blowup) in the language of self-stabilization.
+% We denote the GD/PHB iterates initialized at $(u_0, v_0)$ as $(u_t, v_t)$.
+
+\paragraph{GD Dynamics.}
+% Given a sufficiently large learning rate $\eta > 2/u_0^2$, the dynamics are initially divergent.
+% As long as $u_t^2 > 2/\eta$, $v_t$ alternates signs and $|v_t|$ increases monotonically. This regime occurs when the iterates are above the red dashed line depicting the $u$-value corresponding to the MSS. As $|v_t|$ monotonically increases, $1 - \eta v_t^2$ decreases, thus $u_t$ monotonically decreases at an increasingly fast rate.
+As the initial sharpness is already above the MSS, the dynamics go through divergent oscillations in the $v$-direction (Stage 2).
+This, in turn, amplifies the movement in the negative $u$-direction, reducing the sharpness and stabilizing the dynamics (Stage 3).
+Eventually, the sharpness decreases below the MSS, and the oscillations in the $v$-direction are dampened until the iterates converge to a minimum of sharpness {\it just below the MSS} (Stage 4).
+This is illustrated in Figure~\ref{fig:scalar-net-toy} with color {\color{blue} blue}, where one can actually see an approximate symmetry of the {\color{blue} GD} dynamics around $(\sqrt{2/\eta}, 0)$ (dashed {\color{red}red} line).
+This interplay between oscillation and stabilization is precisely the self-stabilization for GD~\citep{damian2023stabilization}.
+
+% {\color{red} {\bf OPTIONAL; delete?} To see this more clearly, we consider the GD update equation of our model.
+% At first, due to our initialization, we have that $1 - \eta u_t^2 \approx -1 - \varepsilon < -1$, causing an increasing oscillation in the $v$-direction (blowup).
+% At the same time, as $0 < 1 - \eta v_t^2 < 1$, $u_t$ slowly decreases (unnoticeably).
+% When $|v_t|$ is sufficiently large, $u_t$ decreases more aggressively (self-stabilization).
+% Once $u_t < \sqrt{\frac{2}{\eta}}$, as $-1 < 1 - \eta u_t^2$, oscillation in the $v$-direction starts to dampen until convergence, and even during the dampening, $u_t$ continues to decrease (at a slower rate as $t$ progresses).}
+
+
+\paragraph{PHB Dynamics.} 
+The dynamics of PHB are initially similar to GD dynamics when the sharpness is above the MSS. However, momentum further accelerates the negative $u$-direction in Stages 2--3. This momentum persists even after the sharpness is below the MSS (Stage 4), allowing momentum to \emph{prolong} the oscillation along $v$ direction, at the same time driving the iterates to flatter minima.
+This is illustrated in Figure~\ref{fig:scalar-net-toy} with color {\color{orange} orange}, where one can see that momentum does not simply accelerate the GD dynamics but shows a \emph{qualitatively} different behavior, breaking the symmetry around $(\sqrt{2/\eta}, 0)$ that was present for {\color{blue} GD}.
+We also note that although we rescale $\eta$ to $\eta (1 + \beta)$ for {\color{orange} PHB}, the sharpness reduction and the distance traveled in the $u$-direction of PHB is about 3.89 and 3.915 times that of {\color{blue} GD}, respectively.
+Both are by a factor more than $1 + \beta = 1.9$, which confirms that the increased sharpness drop is not simply the result of the rescaled learning rate.
+
+
+\paragraph{Further Verifying Hypothesis~\ref{hypothesis}.}
+To further empirically validate our Hypothesis~\ref{hypothesis}, we consider two additional settings: {\color{darkgreen} GD $\to$ PHB} and {\color{red} PHB $\to$ GD}, where $A \to B$ means that we first run $A$, then switch to $B$ (with learning rate rescaling) once the sharpness crosses the MSS.
+% In {\color{blue} (1)} and {\color{orange} (2)}, we fully train the toy model using {\color{blue} GD} and {\color{orange} PHB} (respectively) as usual. For {\color{darkgreen} (3)}, we first train using GD up until the sharpness crosses the MSS and then switch to training using PHB (adjusting $\eta$ as needed to match the MSS). Similarly, for {\color{red} (4)}, we begin training using PHB and switch to GD after the sharpness crosses the MSS (and adjusting $\eta$ as needed).
+If Hypothesis~\ref{hypothesis}.\ref{hyp:stage2-3} holds, then due to the effect of momentum before crossing the MSS, one would expect {\color{red} PHB $\to$ GD} to experience a larger sharpness reduction than {\color{blue} GD}.
+Similarly, if Hypothesis~\ref{hypothesis}.\ref{hyp:stage4} holds, then one would expect {\color{darkgreen} GD $\to$ PHB} to experience a larger sharpness reduction than {\color{blue} GD}.
+Indeed, as shown in Figure~\ref{fig:scalar-net-toy}, in increasing order of sharpness reduction, we have {\color{blue} GD} < {\color{red} PHB $\to$ GD} < {\color{darkgreen} GD $\to$ PHB} < {\color{orange} PHB}. Indeed, this shows that although the effect of each part of our hypothesis (Stages 2--3 and Stage 4) is already sufficient to display a larger sharpness reduction, the \emph{combination} of these two factors results in an even larger sharpness reduction for {\color{orange} PHB}.
+% Additionally, one can see that momentum has a greater effect in Stage 4 than it does in Stages 2-3 since {\color{darkgreen} GD $\to$ PHB} undergoes a larger sharpness reduction than {\color{red} PHB $\to$ GD}.
+
+
+\subsubsection{Theoretical Analysis}
+The GD/PHB dynamics of the toy example with learning rate $\eta > 0$ and momentum parameter $\beta \in [0, 1)$ are given as follows:
+\begin{align*}
+    u_{t+1} &= \left( 1 - \eta (1 + \beta) v_t^2 \indicator[u_t \geq 0] \right) u_t + \beta(u_t - u_{t-1}) \\
+    v_{t+1} &= \left( 1 - \eta (1 + \beta) u_t^2 \indicator[u_t \geq 0] \right) v_t + \beta(v_t - v_{t-1}).
+\end{align*}
+Note that the learning rate is rescaled by a factor of $1 + \beta$ to keep the MSS constant at $\sqrt{\frac{2}{\eta}}$.
+The proofs for all the statements provided here are deferred to Appendix~\ref{app:proofs}.
+% Note that the coefficient $(1 - \eta u_t^2)$ in the update rule for $v_t$ is negative when $u_t^2 > 1/\eta$. Also, $|1 - \eta u_t^2| > 1$ when $u_t^2 > 2/\eta$ which corresponds to the regime where the sharpness is larger than the MSS.
+
+% The following assumption constrains the setting ($\beta, \eta, \epsilon, v_0$) such that the GD/PHB dynamics don't suddenly end up in the $u_t < 0$ region, where the gradient completely vanishes.
+% \begin{assumption}
+% \label{assumption:positive}
+%     $\inf_{t \geq 0} u_t \geq 0$.
+% \end{assumption}
+The following lemma states that for our dynamics, $\{u_t\}$ is monotone decreasing and convergent:
+\begin{lemma}
+\label{lem:u}
+    $u_\infty := \lim_{t \rightarrow \infty} u_t \leq u_{t+1} \leq u_t$ for all $t \geq 0$.
+    Furthermore, if $\tau_0 := \inf\left\{ t \geq 0 : u_t < 0 \right\} < \infty$, then we have that $u_\infty = \frac{u_{\tau_0} - \beta u_{\tau_0 - 1}}{1 - \beta}$.
+\end{lemma}
+Notice that our experiments correspond to the $\tau_0 = \infty$. So the question remains: how to characterize $u_\infty$ when $\tau_0 = \infty$, which we will assume from hereon and forth.
+
+For that, we first introduce the following quantities:
+\begin{equation}
+\label{eq:CuCv}
+    \tau_u := \inf\left\{ t \geq 0 : u_t^2 < \frac{2 - \epsilon}{\eta} \right\}, \quad
+    C_u := \frac{u_{\tau_u} - \beta u_{\tau_u - 1}}{1-\beta},\quad
+    C_v := \frac{1+\beta}{1-\beta}\sum_{t = \tau_u}^\infty v_t^2.
+\end{equation}
+They all are deterministic functions of ($\beta, \eta, \epsilon, v_0$), as GD/PHB are deterministic.
+For our analysis, we fix some $\beta, \eta, \epsilon, v_0$, with appropriate conditions that will be elaborated in the statements.
+We will drop the dependency from hereon and forth for notational simplicity.
+
+The following theorem characterizes an upper bound on $u_\infty$:
+\begin{theorem}
+\label{thm:toy}
+Suppose that $\tau_0 = \infty$ and $\epsilon, |v_0| < 1$.
+Then, we have that
+\begin{equation}
+\label{eq:uinfub}
+    u_\infty = \lim_{t \rightarrow \infty} u_t \leq 
+    \frac{C_u}{1 + \eta C_v}
+    =: 
+    \overline{u}_\infty ,
+    %\leq \frac{1}{1 + \eta \frac{1 + \beta}{1 - \beta} C_v} \sqrt{\frac{2 - \epsilon}{\eta}},
+\end{equation}
+which implies a lower bound on the ``asymptotic'' sharpness reduction $\Delta S_\infty := S(u_0, 0) - S(u_\infty, 0) = u_0^2 - u_\infty^2$.
+\end{theorem}
+
+Several observations can be made here.
+According to Theorem~\ref{thm:toy}, the RHS decreases (i.e., larger displacement in the $-u$ direction) with larger $C_v$ and smaller $C_u$. 
+First, notice that $C_u$ can be rewritten as $C_u = u_{\tau_u} + \frac{\beta}{1-\beta} (u_{\tau_u} - u_{\tau_u-1})$. Considering that $u_{\tau_u} \approx \sqrt{\frac{2-\epsilon}{\eta}}$, the key to understanding the behavior of $C_u$ is the second term, which can be viewed as the ``momentum'' that has built up in the $+\nabla S$ direction \emph{during} Stages 2--3. As per Hypothesis~\ref{hypothesis}.\ref{hyp:stage2-3}, it is natural to expect that $C_u$ will decrease for larger values of $\beta$ (recall that $u_{\tau_u} - u_{\tau_u-1} < 0$).
+On the other hand, $C_v$ accumulates when there is more oscillation in the $v$ direction. Connecting this to Hypothesis~\ref{hypothesis}.\ref{hyp:stage4}, $C_v$ measures the movement in the $-\nabla S$ direction caused by divergence along $w_{\max}$ {\it after} the iterates cross the MSS (Stage 4), with the scaling factor $\frac{1+\beta}{1-\beta}$ capturing the ``prolonging'' effects of momentum.
+%Thus, Theorem~\ref{thm:toy} provides a rigorous proof of our Hypothesis~\ref{hypothesis}.
+
+% First, the RHS decreases with stronger momentum ($\beta \uparrow 1$), greater movement in the $v$-direction ($C_v \uparrow$), or larger movement at the time the iterates cross the MSS ($C_u \downarrow$), all of which match well with our intuition. The effect of smaller $C_u$ aligns well with Hypothesis~\ref{hypothesis}.\ref{hyp:stage2-3} since $C_u$ decreases as the accumulated momentum in the direction of $-\nabla S$ til the iterates cross the MSS (Stages 2--3) increases.
+% On the other hand, $C_v$ measures the movement in the $-\nabla S$ direction caused by divergence along $w_{\max}$ {\it after} the iterates cross the MSS (Stage 4), with the scaling factor $\frac{1+\beta}{1-\beta}$ capturing the ``prolonging'' effects of momentum in Hypothesis~\ref{hypothesis}.\ref{hyp:stage4}.
+
+% Importantly, the $C_v$ measures the total divergence along the unstable direction in the self-stabilization (Stage 4), and thus, \emph{Theorem~\ref{thm:toy} provides a rigorous proof of our Hypothesis~\ref{hypothesis}.\ref{hyp:stage4}} {\color{red} INCLUDE $C_u$ and rewrite discussion on $C_v$ and $C_u$. $\eta C_v \frac{1+\beta}{1-\beta}$ captures the effect of oscillations on movement in the $-\nabla S$ direction: $\eta (1+\beta) C_v$ is the update in the $u$-direction, $\frac{1}{1-\beta}$ captures the effect of momentum.}
+
+\begin{figure*}[!t]
+    \centering
+    \subfigure[Change of of $C_u$ and $\frac{1}{1 + \eta C_v}$]{
+        \includegraphics[width=0.4\textwidth]{figures/scalar-net/scalar-loss-Cu-Cv-beta.pdf}
+        \label{subfig:scalar-Cu-Cv-bound}
+    }
+    \hfill
+    \subfigure[Comparing sharpness reduction]{
+        \includegraphics[width=0.4\textwidth]{figures/scalar-net/scalar-loss-sharpness-reduction-beta.pdf}
+        \label{subfig:scalar-sharpness-reduction}
+    }
+    \caption{Numerical verification of Theorem~\ref{thm:toy}.}
+    \label{fig:ub-bound}
+\end{figure*}
+
+% \begin{wrapfigure}[24]{r}[1pt]{0.4\textwidth}
+%   \centering
+%     \includegraphics[width=0.4\textwidth]{figures/scalar-net/scalar-loss-sharpness-reduction-beta.pdf}
+%     \includegraphics[width=0.4\textwidth]{figures/scalar-net/scalar-loss-Cu-Cv-beta.pdf}
+%   \caption{\label{fig:ub-bound}Numerical verification of Theorem~\ref{thm:toy}.
+%   % $u_\infty$ bounds for the toy example. The derived bound (blue) and $u_\infty$ (red dashed line) overlap, showing that 0the bound is tight.
+%   }
+% \end{wrapfigure}
+We show numerically that Theorem~\ref{thm:toy} is tight by rerunning the scalar ReLU network experiment with PHB for varying $\beta \in \{0.0, 0.01, \cdots, 0.99\}$ for $T = 10^5$ iterations.
+In Figure~\ref{subfig:scalar-Cu-Cv-bound}, we plot $C_u$ and $\frac{1}{1 + \eta C_v}$ across $\beta$. 
+We expect that both terms will decrease with increasing $\beta$, which turns out to be true; this confirms Hypothesis~\ref{hypothesis} for the scalar ReLU network case.
+%, we expect the sharpness reduction to increase as both quantities decrease, which is the case. 
+Connecting this observation to our previous experiment in Figure~\ref{fig:scalar-net-toy}, {\color{red} PHB $\to$ GD} corresponds to smaller $C_u$ due to the effects of momentum in stages 2-3 while {\color{darkgreen} GD $\to$ PHB} corresponds to larger $C_v$ (hence a smaller $\frac{1}{1 + \eta C_v}$) due to momentum prolonging the oscillations in stage 4. Each of these terms explains the increased sharpness reduction in {\color{red} PHB $\to$ GD} and {\color{darkgreen} GD $\to$ PHB} when compared to {\color{blue} GD}. The combined effect of these two quantities is shown in Figure~\ref{subfig:scalar-sharpness-reduction} where we plot the theoretical sharpness reduction $u_0^2 - \overline{u}_\infty^2$ and $\Delta S = u_0^2 - u_T^2$.
+Note that $u_0^2 - \overline{u}_\infty^2$ is a tight lower bound on $\Delta S$.
+
+
+As a counterpart, in the following theorem, we provide an asymptotic (sufficiently small $\epsilon$ and $v_0^2$, and moderate learning rate $\eta$) lower bound on $u_\infty$ for {\it GD}:
+\begin{theorem}[Informal]
+\label{thm:toy-GD}
+    For GD ($\beta = 0$), suppose that $\epsilon = o(1)$, $v_0^2 = \gO(\epsilon)$, and $\eta = \Theta(1)$.
+    Then, we have that 
+    $u_\infty \geq \sqrt{\frac{2}{\eta}} - \gO( \sqrt{\epsilon} ),$ which implies $\Delta S_\infty \leq \gO(\sqrt{\epsilon}).$
+\end{theorem}
+\begin{proof}[Proof sketch.]
+    Inspired by the empirical observations that the GD iterates' envelope resembles an ellipse ({\color{blue} blue} trajectory in Figure~\ref{fig:scalar-net-toy}), we show that the elliptical ``energy'' $P_t := \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2}v_t^2$ is approximately conserved over $t$ and $P_\infty = \gO(\epsilon)$, which implies the desired bound on $u_\infty$.
+\end{proof}
+
+
+In Theorem~\ref{thm:toy}, for GD ($\beta = 0$), we have that $u_\infty \leq \frac{1}{1 + \gO(1)} \sqrt{\frac{2 - \epsilon}{\eta}}$.
+This follows from the fact that $C_v = \gO(1)$ for GD, which we show in the process of proving Theorem~\ref{thm:toy-GD}.
+This then implies that $\Delta S_\infty \geq \Omega(\epsilon)$, off by a factor of $\sqrt{\epsilon}$ compared to Theorem~\ref{thm:toy-GD}.
+% Comparing this to Theorem~\ref{thm:toy-GD}, we have tight lower and upper asymptotic bounds for $\Delta S$.
+We leave extending Theorem~\ref{thm:toy-GD} to PHB for future work. The key difficulty is that the energy argument fails; this can be seen empirically in the PHB trajectory ({\color{orange} orange}) in Figure~\ref{fig:scalar-net-toy}.
+
+% \begin{figure}
+%     \centering
+%     \subfigure[$u_\infty$ bounds for the toy example. The derived bound (blue) and $u_\infty$ (red dashed line) overlap, showing that the bound is tight.]{
+%         \includegraphics[width=0.32\textwidth]{figures/scalar-net/scalar-loss-Cu-Cv-beta.pdf}
+%     }
+%     \hfill
+%     \subfigure[Experiments switching momentum on/off]{
+%         \includegraphics[width=0.64\textwidth]{figures/scalar-net/scalar-net-switch1.pdf}
+%         \label{subfig:toy-momentum-on-off}
+%     }
+%     \caption{Toy example experiments}
+%     \label{fig:ub-bound}
+% \end{figure}
+
+\paragraph{Comparisons to Prior Works.}
+Our model is essentially identical to the 1D $uv$-model analyzed in \citet{kalra2023catapult,lewkowycz2020catapult}.
+However, neither work considers the {\it PHB} dynamics in the parameter space $(u_t, v_t)$. Furthermore, \cite{lewkowycz2020catapult} additionally require NTK scaling with a finite but sufficiently large width.
+Our characterization of the GD dynamics share many characteristics with the single-neuron neural network described and analyzed by \citet{ahn2022threshold}, like the quasi-static principle (an ellipse-like envelope) and final resulting sharpness being close to the MSS.
+However, their analysis cannot be directly applied to our scenario, as $\ell(u) = \frac{1}{2} u^2$ does not satisfy their assumptions ($\ell$ is globally Lipschitz and $\ell'(u) / u$ decays locally away from $u = 0$).
+Although we focus on a simple model, our Theorems~\ref{thm:toy} and \ref{thm:toy-GD} provide a rigorous characterization of the parameter dynamics of GD/PHB with large learning rates beyond the previously considered assumptions.
+
+% {\color{red}
+% \begin{remark}[Another Toy Example with Logistic Loss]
+%     One may wonder if the choice of MSE loss is necessary for inducing and explaining the catapults.
+%     Inspired by \cite{liu2023logistic}, which showed that catapults occur for separable logistic regression, in Appendix~\ref{}, we show that by adding momentum, one can indeed have larger catapults in that setting as well.
+% \end{remark}
+% }
+
+% In Figure~\ref{fig:scalar-net-toy}, one main observation is the GD trajectory has an approximate symmetry around the $y$-value corresponding to the MSS at the minima (dashed red line). At the same time, PHB seems to break that symmetry and travel {\it further} in the $-u$ direction, landing at a flatter minimum than GD.
+
+% % Let $\lambda_{\max}^{(t)} := \lambda_{\max}(u_t, v_t)$ be the sharpness of the iterate at time $t$.
+
+% % Throughout, we consider the initialization $(u_0, v_0)$ satisfying $0 < |v_0| \ll u_0$ so that $\lambda_{max}^{(0)} \approx u_0^2$.
+% % For the learning rate, we consider the regime in which the dynamics is unstable, i.e., when $\eta > \frac{2(1+\beta)}{u_0^2}$.
+% Let $\tau$ be the first time at which the $(u_t, 0)$, which is the minimum closest to the $t$-th iterate $(u_t, v_t)$ given that $u_t > v_t$, becomes stable:
+% \begin{equation}
+%     \tau_\beta := \inf \left\{ t \geq 1 \ : \ u_t^2 < \frac{2(1 + \beta)}{\eta} \right\}.
+% \end{equation}
+% Also, let $\gT$ be the first time at which $u_t < 0$:
+% \begin{equation}
+%     \gT := \inf \left\{ t \geq 1 \ : \ u_t < 0 \right\}.
+% \end{equation}
+% One important observation is that for GD, when $\gT < \infty$, then $(u_t, v_t) = (u_\gT, v_\gT)$ for all $t \geq \gT$, i.e., the whole GD dynamics become degenerate.
+% For PHB, due to the momentum, the iterates monotonically (and at exponential speed) converge to $(u_\infty, v_\infty) = \left( u_\gT + \frac{1}{1 - \beta}(u_{\gT + 1} - u_\gT), v_\gT + \frac{1}{1 - \beta}(v_{\gT + 1} - v_\gT) \right)$.
+
+% Either way, this is a degenerate case wherein the final sharpness is identically zero for GD and PHB.
+% Noting that for both cases, 
+% Accordingly, we impose the following assumption throughout:
+% \begin{assumption}
+% \label{assumption}
+%     $\gT = \infty$.
+% \end{assumption}
+% Indeed, in the simulation results shown in Figure~\ref{fig:scalar-net-toy}, one can see that with suitable initialization (large $u_0$, small $v_0$), above assumption is satisfied.
+
+% With this assumption, our update rules are as follows:
+% \begin{align}
+%     u_{t+1} &= \left( 1 - \eta v_t^2 \right) u_t + \beta(u_t - u_{t-1}) \\
+%     v_{t+1} &= \left( 1 - \eta u_t^2 \right) v_t + \beta(v_t - v_{t-1}).
+% \end{align}
+
+
+
+
+
+
+
+% Let $M := \sqrt{\frac{\epsilon}{2+\epsilon}}u_0$ denote an upper bound on $|u_\star - u_0|$ where $u_\star$ is the $u$-value corresponding to the MSS (i.e. $\lambda_{max}(u_\star,0)=2/\eta$). This approximate symmetry is captured by theorem \ref{thm:scalar-net-gd-bound}:
+% \begin{theorem}
+%     \label{thm:scalar-net-gd-bound}
+%     Let $\eta = \frac{2+\epsilon}{u_0^2} > \lambda_{max}(u_0, 0)$. For GD dynamics, if $\epsilon \lesssim v_0^2$ and $|v_0| \lesssim 1/u_0^2$, then
+%     \begin{align}
+%         u_0 - u_{2\tau} \le (1+\mathcal{O}(1))(u_0 - u_{\tau-1}) + \mathcal{O}(\frac{1}{u_0}) 
+%     \end{align}
+% \end{theorem}
+
+% Intuitively, given an initialization close to the minima (i.e. $|v_0| \ll 1 < u_0$) and sufficiently small $0 < \epsilon \ll 1$, the distance between $u_0$ to the MSS is roughly equal to the distance between the MSS and $u_{2\tau}$. This symmetry bounds the sharpness reduction induced by GD. Indeed, as $v_0 \to 0$, $|u_\infty - u_0|_{GD} \le O(M)+O(1)$. The addition of momentum, however, breaks this symmetry and causes a large catapult resulting in a much larger sharpness reduction. If $|u_\infty - u_0|_{GD} = O(M)$ and $\epsilon = \Theta(v_0^6)$ with $v_0$ sufficiently small, then PHB undergoes a larger sharpness reduction than GD: 
+% \begin{theorem}
+%     \label{thm:scalar-net-phb-bound}
+%     Let $\eta = \frac{2+\epsilon}{u_0^2} > \lambda_{max}(u_0, 0)$ and define $\tau := \argmin_t u_t^2 < 2/\eta$, $M := \sqrt{\frac{\epsilon}{2+\epsilon}}u_0$. For PHB dynamics,
+%     % \begin{align*}
+%     %     \big\vert u_\infty - u_0 \big\vert &\ge \min \Bigg( A_\tau M, B_\tau \Bigg) \\
+%     %     A_\tau &= 1+\frac{\beta}{\tau(1-\beta)} \\
+%     %     B_\tau &= M + \frac{\beta}{1-\beta} (1 + 2\beta)^2 \frac{v_0^2}{u_0} \sqrt{2(1+\beta)}(1+\beta-\beta^2)^{2\tau-4}
+%     % \end{align*}
+% \end{theorem}
+
+% \begin{corollary}
+%     \label{cor:phb-greater-gd}
+%     Let $\eta = \frac{2+\epsilon}{u_0^2} > \lambda_{max}(u_0, 0)$ and define $\tau := \argmin_t u_t^2 < 2/\eta$, $M := \sqrt{\frac{\epsilon}{2+\epsilon}}u_0$.
+% \end{corollary}

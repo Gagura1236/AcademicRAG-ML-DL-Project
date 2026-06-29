@@ -1,0 +1,496 @@
+
+%\section{Pretraining and Finetuning \model}
+\section{Pretraining and Finetuning}
+\label{sec:pretrain}
+
+Current state-of-the-art systems for many NLP tasks finetune a pretrained model with task supervision (e.g. BERT).
+One of our main motivations is to develop such a model suitable for long document tasks.
+To do so, we pretrained \model on a document corpus and finetune it for six tasks, including classification, QA and coreference resolution.
+The resulting model can process sequences up to 4,096 tokens long (8 times longer than BERT)\footnote{Sequences up to 16K are possible on current GPUs.}.
+
+
+%One of our main motivations in this work has been to develop a general purpose pretrained model that can transfer to long document NLP tasks.  Recent state-of-the-art results across various tasks in NLP has been possible by pretraining a model (e.g., BERT \cite{bert}) and then finetuning it on the downstream relevant tasks. We follow this paradigm and pretrain \model on a large corpus of unannotated data and show how it can be applied to various downstream tasks involving processing long documents including QA, coreference resolution and classification. Our pretrained \model has the capacity to process 4,096 tokens (which is 8 times larger than most existing pretrained models like BERT).\footnote{Pretraining \model for even longer sequences (up to 16K tokens) is still computationally practical.}
+%\ib{we need to mention that even longer sequence can still work, but we didn't pretrain such model}
+
+
+% The main goal of our work is to develop a pretrained model (e.g. as in BERT~\cite{bert})
+% that can be fine tuned for document-level downstream tasks like question 
+% answering, coreference resolution and summarization.
+% Our pretrained model can process sequences of length \seqlen.
+% This section describes our pretraining and fine tuning procedure, 
+% and the attention patterns we use on each. 
+
+%\subsection{Pretraining }
+We pretrain \model with masked language modeling (MLM), where the goal is to recover randomly masked tokens in a sequence. 
+Since MLM pretraining is expensive, we continue pretraining from the RoBERTa~\cite{roberta} released checkpoint, while only making the minimal changes necessary to support \model's attention mechanism.
+Note that our attention pattern can be plugged into any pretrained transformer model without the need to change the model architecture. 
+
+%Following \citet{bert,roberta}, we pretrain our model on the masked language modeling (MLM) task where the goal is to recover randomly masked tokens in a sequence. 
+%Since MLM pretraininig is expensive and resource-intensive, it is infeasible for us to pretrain our model from scratch. 
+%We instead, start our pretraining
+%from the RoBERTa's~\cite{roberta} released checkpoint, then continue pretraining on the MLM objective on long documents to allow the model learn to use the new attention patterns and position embeddings. Note that our attention patterns can be plugged into any pretrained transformer model without the need to change the model architecture. 
+
+\paragraph{Attention Pattern}
+%We use the sliding window attention with window size of 512 on all layers. This matches RoBERTa's sequence length, and therefore uses the same amount of computation as RoBERTa.
+We use sliding window attention with window size of 512, therefore using the same amount of computation as RoBERTa.\footnote{Adding dilation on a few heads as in \S\ref{sec:charlm_attn} hurt performance, likely because it is not compatible with the pretrained RoBERTa weights. Retraining such model from scratch might be needed to improve performance.
+%We tried adding the additional dilation pattern on a few heads as in \S\ref{sec:charlm_attn} but found it to hurt performance, likely because it is not compatible with the pretrained RoBERTa weights. We suspect that retraining such model from scratch might be needed to get improved performance.
+%for the dilated attention pattern.
+}
+%The attention pattern we use for pretraining is the sliding window attention with window size of 512 on all layers. We chose 512 because it matches the sequence length of RoBERTa, making it easy for the model to start from the pretrained checkpoint.\footnote{We tried adding the additional dilation pattern on a few heads as in section~\ref{sec:charlm_attn} but found it to hurt performance, likely because it is not compatible with the pretrained RoBERTa weights. We suspect that retraining such model from scratch might be needed to get improved performance for the dilated attention pattern.}
+
+\paragraph{Position Embeddings}
+RoBERTa uses learned absolute position embeddings with the maximum 
+position being 512. To support longer documents, we add extra position embeddings to support up to position 4,096. 
+To leverage RoBERTa's pretrained weights, instead of randomly initializing the new position embeddings, we initialize them by copying the 512 position
+embeddings from RoBERTa multiple times as analysis of BERT's attention heads shows a strong learned bias to attending to local context, including the previous or next token \cite{Clark2019WhatDB}.  Using the copy initialization preserves this local structure everywhere except at the partition boundaries.
+Despite its simplicity, we found this to be a very effective (see Tab.~\ref{tab:roberta}), allowing \model pretraining to rapidly converge with a small number of gradient updates.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lrr@{}}
+    \toprule
+    Model &  base & large\\
+    \midrule
+    RoBERTa (seqlen: 512)  & 1.846 & 1.496 \\
+    \model  (seqlen: \seqlen) & 10.299 & 8.738 \\
+    ~~~ + copy position embeddings & 1.957 & 1.597\\
+    ~~~~~~ + 2K gradient updates & 1.753 & 1.414 \\
+    ~~~~~~ + 65K gradient updates & 1.705 & 1.358\\
+    %\model - frozen RoBERTa weights & 1.850 & 1.504 \\
+    \model (train extra pos. embed. only) & 1.850 & 1.504 \\
+    \bottomrule
+    \end{tabular}
+    \caption{MLM BPC for RoBERTa and various pretrained \model configurations. 
+    %\ib{frozen RoBERTa weights or train extra PosEmbd only}
+    }
+    \label{tab:roberta}
+\end{table}
+
+
+
+\paragraph{Continued MLM Pretraining}
+% Starting from the RoBERTa checkpoint, adding our sliding window attention, and the additional position embeddings, gives us a reasonable initial model that can process long documents. The next step is to continue  pretraining this model on MLM objective. This allows the model to learn how to best use the sliding window attention pattern as well as optimal position embeddings for the ones outside the range of 512.
+
+%Following RoBERTa's architecture,
+%We pretrain\footnote{using fairseq~\cite{ott2019fairseq}} 
+We pretrain \model using fairseq \cite{ott2019fairseq} on a corpus of long documents that we compiled (see Appendix~\ref{sec:mlm_data} for corpus details).
+We train two model sizes, a base model and a large model.
+%starting from the corresponding RoBERTa model size. 
+Both models are trained for 65K gradient updates with sequences length \seqlen, batch size 64 ($2^{18}$ tokens), maximum learning rate of 3e-5, linear warmup of 500 steps, followed by a power 3 polynomial decay. The rest of the hyperparameters are the same as RoBERTa. 
+%We train both model sizes for 65K gradient updates on sequences of length \seqlen with batch size 64 ($2^{18}$ tokens), maximum lr = 3e-5, linear warmup of 500 steps, followed by a power 3 polynomial lr decay. The rest of the hyperparameters are similar to that used for training RoBERTa. 
+
+\begin{table}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3pt} 
+    \begin{tabular}{@{}lrrrrrr@{}}
+    \toprule
+    Wordpieces & WH & TQA & HQA & ON & IMDB & HY \\ \midrule
+    avg.    & 1,535 & 6,589 & 1,316 & 506 & 300 & 705   \\
+    95th pctl.     & 3,627 & 17,126 & 1,889 & 1,147 & 705 & 1,975 \\ \bottomrule
+    \end{tabular}
+    \caption{Average and 95th percentile of context length of datasets in wordpieces. WH: WikiHop, TQA: TriviaQA, HQA: HotpotQA, ON: OntoNotes, HY: Hyperpartisan news} 
+    \label{tab:doc-len}
+\end{table}
+
+
+\begin{table*}[t]
+    \centering
+    \small
+    % \aboverulesep=1.2ex
+    % \belowrulesep=0.8ex
+    % \renewcommand{\arraystretch}{1}
+    \begin{tabular}{@{}lrrrrrr@{}}
+    \toprule
+     & \multicolumn{3}{c}{QA} & \multicolumn{1}{c}{Coref.} & \multicolumn{2}{c}{Classification} \\
+     \cmidrule(lr){2-4} \cmidrule(lr){5-5} \cmidrule(l){6-7}
+    Model &  WikiHop & TriviaQA & HotpotQA & OntoNotes & IMDB & Hyperpartisan \\
+    \midrule
+    RoBERTa-base    & 72.4 & 74.3 & 63.5  & 78.4 & 95.3 & 87.4 \\
+    \model-base     & \textbf{75.0} & \textbf{75.2} & \textbf{64.4} & \textbf{78.6} & \textbf{95.7} & \textbf{94.8} \\
+    \bottomrule
+    \end{tabular}
+    \caption{Summary of finetuning results on QA,  
+    coreference resolution, and document classification. 
+    Results are on the development sets comparing our
+    \model-base with RoBERTa-base.
+    TriviaQA, Hyperpartisan metrics are F1, WikiHop and IMDB use accuracy, HotpotQA is joint F1, OntoNotes is average F1.
+    }
+    \label{tab:finetune}
+\end{table*}
+
+
+
+Tab.~\ref{tab:roberta} shows the BPC on the development 
+set of our training corpus. The first row shows a 1.846 BPC using 
+RoBERTa-base, which is comparable to the 1.880 BPC reported
+on the RoBERTa paper on their corpus. This indicates 
+our training corpus is from a distribution close to that used to train RoBERTa.
+The following two rows show the performance of \model
+before pretraining 
+with randomly initialized position embeddings and with 
+copied position embeddings. The significant difference indicates the importance of the copy initialization, and the relative small difference between the RoBERTa BPC and the initialized BPC indicates that our sliding window attention is working well with the RoBERTa weights.
+%Also the relatively low BPC \model achieves without pretraining on long documents is an indication that our sliding window attention, and the position embedding copying are working well with the weights of the RoBERTa checkpoint. 
+The following two rows show the impact of continuing pretraining. 
+Traininig for 2K steps improves BPC from 1.957 to 1.753, which further decreases to 1.705 after 65K steps, demonstrating the model is learning to better utilize the sliding window attention and longer context.
+%Traininig for 2K steps improve BPC from 1.957 to 1.753, then continue training for 65K steps improve BPC to 1.705, indicating that the model is learning to better utilize the sliding window attention and possibly the longer context.
+Similar patterns are observed with RoBERTa-large and \model-large.
+
+
+
+
+\paragraph{Frozen RoBERTa Weights}
+%\ib{review this paragraph. Suggestion for a better name? consider calling it \model-train extra PosEmbd Only}
+We also pretrained \model while freezing all RoBERTa weights, and only training the new position embeddings.  The motivation for this configuration is to perfectly preserve 
+the RoBERTa performance on short documents.
+This configuration has a BPC of 1.850 (down from 1.957 at initialization), but higher than 1.705 where all the weights 
+are trainable.
+%Finetuning results are in Tab.~\ref{tab:finetune_ablation}.
+%We include finetuning results of this configuration in the ablation study in Tab.~\ref{tab:finetune_ablation}.
+ 
+
+
+% \begin{table*}[t]
+%     \centering
+%     \small
+%     \begin{tabular}{@{}lrr|r|rr@{}}
+%     \toprule
+%     Model &  WikiHop & TriviaQA & OntoNotes & IMDB & Hyperpartisan  \\
+%     \midrule
+%     \textbf{Dev set} & & & & &  \\
+%     RoBERTa-base    & 72.2 & 74.3  & 78.4 & ? & 87.4 \\
+%     \model-base     & 75.0 & 75.2  & 78.3 & ? & 89.7 \\
+%     \model-large    & ?    & 77.6  & ?    & ? & 94.9 \\
+%     \midrule
+%     \textbf{Test set} & & & & &  \\
+%     \model-large    & \textbf{81.9} & \textbf{77.3}  & ? &  ? & - \\
+%     Current SOTA                   & 78.3 & 73.2 & ? & ? & - \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{Summary of finetuning results on question answering,  
+%     coreference resolution, and document classification. 
+%     Results on the top half are on the development set comparing our
+%     \model-base with RoBERTa-base. The bottom part 
+%     are test set results
+%     on the best configuration of our \model-large.}
+%     \label{tab:finetune}
+% \end{table*}
+
+% \begin{table*}[t]
+%     \centering
+%     \small
+%     \begin{tabular}{@{}lrrr|r|rr@{}}
+%     \toprule
+%     Model &  WikiHop & TriviaQA & HotpotQA & OntoNotes & IMDB & Hyperpartisan  \\
+%     \midrule
+%     \textbf{Dev set} & & & & & & \\
+%     RoBERTa-base    & 72.4 & 74.3 & 63.5  & 78.4 & 95.3 & 87.4 \\
+%     \model-base     & \textbf{75.0} & \textbf{75.2} & \textbf{64.4} & \textbf{78.6} & \textbf{95.7} & \textbf{89.7} \\
+%      \midrule
+%     \textbf{Test set} & & & & & &\\
+%      Current SOTA                   & 78.3 & 73.2 & ? & 79.6 & \textbf{97.4} & -\\
+%      \model-large    & \textbf{81.9} & \textbf{77.3}  & ? &  ? & 96.1 & \textbf{94.9} \\
+%      \bottomrule
+%     \end{tabular}
+%     \caption{Summary of finetuning results on question answering,  
+%     coreference resolution, and document classification. 
+%     Results are on the development sets comparing our
+%     \model-base with RoBERTa-base. TriviaQA, Hyperpartisan metrics are F1, Wikihop and Imdb use accuracy, Hotpotqa is joint F1, Ontonotes is average F1. }
+%     \label{tab:finetune}
+% \end{table*}
+
+
+%\paragraph{Global attention pattern}
+%\matt{move to this next section}
+%For the task specific finetuning, in addition to the sliding window attention pattern, we use global attention patterns (\S\ref{sec:attn}) according to the task. We also add linear projection specific to this global attention.  
+% We use the same attention pattern used for pretraining (sliding window of size 512 on all layers), with the only difference being the ability to add
+% task-specific  global attention and their linear projections (section~\ref{sec:attn}).
+
+\section{Tasks}
+
+We apply \model to multiple long document tasks, including QA, coreference resolution and classification.  Tab.~\ref{tab:doc-len} shows the evaluation datasets have contexts significantly longer than 512 wordpieces.
+Our primary goal is to evaluate whether our attention mechanism can act as a replacement for the standard self-attention mechanism in BERT style models, and to perform controlled trials against a strong baseline.
+We are also interested in evaluating whether we can replace complicated task specific models necessitated by BERT's limited context with simpler models that just concatenate all available context into a single sequence.
+
+%Our model is a modification of a corresponding RoBERTa baseline that breaks the context into the longest possible segment, passes each individually through RoBERTa, and concatenates the activations for further processing.
+Our baseline is a RoBERTa based model that breaks the context into the longest possible segment, passes each individually through RoBERTa, and concatenates the activations for further processing.
+For QA tasks, we also concatenate the question to each segment so that RoBERTa can condition it's contextual representations of the context on the question.
+The \model variant replaces the RoBERTa self-attention mechanism with our windowed attention used during pretraining, plus a task motivated global attention.  The global attention uses additional linear projections (\S\ref{sec:attn}).% , and described in detail below).
+
+
+%In addition to the sliding window attention pattern used during pretraining, we also use global attention patterns with additional linear projections (\S\ref{sec:attn}, and described in detail below). Tab.~\ref{tab:doc-len} provides document lengths for the datasets we use for evaluation, showing they are longer than the typical 512.
+
+%\ib{average and 95 percentile document length of all tasks}\ac{maybe a table?}
+\subsection{Question answering}
+%We evaluate on QA datasets that require reasoning over long context and consider the following datasets:
+We used three datasets: WikiHop \cite{Welbl2018ConstructingDF-Wikihop}, TriviaQA \cite[][Wikipedia setting]{Joshi2017TriviaQAAL}, and HotpotQA, \cite[][distractor setting]{Yang2018-HotpotQAAD}.\footnote{We use the full version of TriviaQA and HotpotQA, not the simplified versions in MRQA~\cite{mrqa}.} 
+
+% As shown in Tab.~\ref{tab:doc-len} the average context length in these dataset is larger than typiecal 512 token limit of existing pretrained BERT-style models.  
+%\st{We are particularly interested in approaches that simply concatenate all available context into a single sequence, instead of complicated multi-stage systems utilized in prior work that combine a retrieval component with an answer span component.}
+% \st{Given a question, TriviaQA involves extracting answer spans from context while WikiHop focuses on multiple choice questions. HotpotQA involves two tasks where the goal is to find the answer span as well as supporting sentences from the context that is formed by a total of 10 paragraphs from 10 Wikipedia articles. }
+% \ib{for space}
+
+For WikiHop and TriviaQA we follow the simple QA model of BERT~\cite{bert}, and concatenate question and documents into one long sequence, run it through \model, then have a dataset-specific prediction layer. WikiHop uses a classification layer for the candidate while TriviaQA uses the loss function of~\citet{Clark2017SimpleAE} to predict answer span.  We include global attention to question tokens and answer candidates for WikiHop and to question tokens for TriviaQA.
+
+% HotpotQA is a multihop QA dataset that involves extracting answer spans and evidence sentences from 10 Wikipedia paragraphs, 2 of which are relevant and the rest are distractors. We use a two-stage \model model, the first stage model's goal is to eliminate distractor paragraphs from a total 10 paragraphs in the context, and the second stage jointly extracts evidence sentences and answer spans from the remaining highly relevant paragraphs. Both models concatenate question and context into one sequence, run it through \model and use task-specific prediction layers. While for each question there are two gold paragraphs, the first stage model keeps up to 5 high scoring paragraphs from the context to maximize coverage. Per design of this dataset, identifying answer spans and evidence sentences are tied. Therefore, we train the models in a multi-task way to predict relevant paragraphs, evidence sentences, answer spans and question types (yes/no/span) jointly.
+HotpotQA is a multihop QA dataset that involves extracting answer spans and evidence sentences from 10 Wikipedia paragraphs, 2 of which are relevant and the rest are distractors. We use a two-stage model
+that first selects the most relevant paragraphs then passes them to a second stage for answer extraction. Both stages concatenate question and context into one sequence, run it through \model, then use task-specific prediction layers. 
+% While for each question there are two gold paragraphs, the first stage model keeps up to 5 high scoring paragraphs from the context to maximize coverage. Per design of this dataset, identifying answer spans and evidence sentences are tied. 
+We train the models in a multi-task way to predict relevant paragraphs, evidence sentences, answer spans and question types (yes/no/span) jointly.
+% For HotpotQA, we used a two-stage model that first extracts evidence paragraphs
+% and passes them to a second stage for answer extraction. The single stage model combines a span extraction loss with a question type (yes/no/span) classification head over the first token and an evidence
+% extraction loss predicted from special tokens at the
+% end of sentences and paragraphs. We also include
+% global attention to sentence and paragraph tokens.
+Note that this model is simpler than recent SOTA models that include complex task-specific architectures (e.g.,~\cite{Tu2019SelectAA,Chen2019MultihopQA,Tu2020GraphSN,quark2020}). 
+See Appendix~\ref{sec:taskdetails} for further details about the models and hyperparameters.
+
+%and HotpotQA jointly predicts answer span (using same loss function) and evidence sentences.
+%Note that our approach is significantly simpler than recent SOTA models that include two stages and highly customized architectures (e.g.,~\cite{Tu2019SelectAA,Chen2019MultihopQA,Tu2020GraphSN}).
+%We include global attention to question tokens to give the model more expressive power to read the question. For WikiHop we also include global attention to answer candidates and for HotpotQA we include global attention to sentence and paragraph tokens.
+%See Appendix~\ref{sec:taskdetails} for details.
+
+% \st{For TriviaQA and HotpotQA answer spans we use the loss function of 
+% % \citet{Clark2017SimpleAE}. 
+% Since HotpotQA has two tasks (span detection and evidence sentence extraction), we apply a multitask approach on 
+% % \model's
+% the output that predicts answers and evidence sentences jointly by an additional evidence classification head on top of special tokens at end of each sentence.}
+% \ib{summarized above}
+
+% For WikiHop we followed the model of \ib{CITE}, and for TriviaQA we followed the model of \citet{Clark2017SimpleAE}.
+
+% \ac{keep this: we can move to appendix}
+%For HotpotQA we develop a model that combines both answer span extraction and evidence extraction in one joint model. For answer span extraction we use BERT's QA model \cite{bert} with addition of a question type (yes/no/span) classification head over the first token. For evidence extraction, we include additional special tokens at the end of the sentences and paragraphs. We then apply a 2 layer feedforward networks on top of the representations corresponding to these tokens to get the corresponding sentence and paragraph prediction scores and use binary cross entropy loss to train the model. We combine span, question classification, sentence, and paragraphs losses and train the model in a multitask way. 
+
+%Given a question, TriviaQA involves extracting answer spans from context while WikiHop focuses on multiple choice questions. HotpotQA involves two tasks where the goal is to find the answer span as well as supporting sentences from the context that is formed by a total of 10 paragraphs from 10 Wikipedia articles.
+%For WikiHop we followed the model of \ib{CITE}, and for TriviaQA we followed the model of \citet{Clark2017SimpleAE}.
+%For HotpotQA we develop a model that combines both answer span extraction and evidence extraction in one joint model. For answer span extraction we use BERT's QA model \cite{bert} with addition of a question type (yes/no/span) classification head over the first token. For evidence extraction, we include additional special tokens at the end of the sentences and paragraphs. We then apply a 2 layer feedforward networks on top of the representations corresponding to these tokens to get the corresponding sentence and paragraph prediction scores and use binary cross entropy loss to train the model. We combine span, question classification, sentence, and paragraphs losses and train the model in a multitask way. 
+
+%For all the QA models, we compare with a corresponding RoBERTa baseline that works similar to the above mentioned \model-based QA models but breaks the context into chunks of 512 wordpieces that fit within the context limit of RoBERTa. Note that the only difference between these two QA models is the sparse attention of \model versus full self-attention of RoBERTa. We then concatenate activations from the 512-wordpiece long segments to form the activations for the entire context and use the same approach as ours to predict answers. 
+%\ib{drop this paragraph if already mentioned at the beginning of section 5.1 for all tasks}
+
+% Our RoBERTa baseline runs RoBERTa on separate blocks of size 512 then concatenate them, while our \model outputs embeddings for all tokens of the document at once. 
+% We use global attention on all the tokens of the question and 
+% the answer candidates. 
+% \ib{add details for the global attention}
+
+
+
+\subsection{Coreference Resolution}
+We use OntoNotes \cite{pradhan-etal-2012-conll}, and the model from \citet{joshi-etal-2019-bert}, a modification of the system from \citet{lee-etal-2018-higher} to replace ELMo with BERT.
+The \model system is a straightforward adaption of the baseline model by replacing RoBERTa with \model and extending the sequence length.
+We didn't use global attention for this task. 
+
+\subsection{Document Classification }
+We evaluate on IMDB \cite{imdb} and Hyperpartisan news detection \cite{hyperpartisan} datasets.\footnote{%For Hyperpartisan we split the training data into train/dev/test sets using standard 90/10/10 splits and performed each experiment five times with different seeds to control variability associated with the small dataset.
+For Hyperpartisan we split the training data into 80/10/10 train/dev/test sets, and report mean F1 across five seeds.} IMDB is a standard sentiment classification datasets consisting of movie reviews. While most documents in this dataset are short, about 13.6\% of them are larger than 512 wordpieces (Tab.~\ref{tab:doc-len}).
+Documents in Hyperpartisan are relatively long, and it is small with only 645 documents making it a good test for \model's ability to adapt to limited data. We use global attention 
+on the \texttt{[CLS]} token. 
+%The Hyperpartisan dataset is relatively small with only 645 documents making it a good test for \model's ability to adapt to limited data.
+%In the Hyperpartisan dataset, documents are relatively long (see Tab.~\ref{tab:doc-len}).
+%% (90th percentile is 1.1K tokens and 51.0\% of the documents are longer than 512 wordpieces).
+%Further, the dataset is small with only 645 documents making it a good test for \model's ability to adapt to limited data.
+
+
+\subsection{Results}
+%As our pretrained \model only differs with RoBERTa in the self-attention pattern, our main goal is to evaluate how our attention mechanism compares with RoBERTa's full self-attention for downstream long context natural language tasks in a controlled setting. We particularly evaluate the hypothesis that \model's  attention mechanism  and processing document in one stage results in better performance than breaking the document into smaller pieces and using RoBERTa's full self-attention. \ac{this paragraph has some redundancy}
+
+\paragraph{Main Result}
+Tab.~\ref{tab:finetune} summarizes the results of all our finetuning experiments. We observe that \model consistently outperforms the RoBERTa baseline. 
+Its performance gain is especially obvious for tasks that require long context such as WikiHop and Hyperpartisan.
+%WikiHop is such an example, because it requires multihop reasoning across the document. Hyperpartisan dataset also includes mostly long documents and we observe 2 points improvements.
+For TriviaQA, the improvement is more modest as the local context is often sufficient to answer the question.
+In the case of HotpotQA, the supporting fact auxiliary supervision allows models to easily find relevant contexts and then focus on local context, leading to smaller gains.  This is contrasted with WikiHop that only includes distant supervision of intermediate reasoning chains, where our approach excels by reasoning over the entire context.
+%For TriviaQA and HotpotQA, the improvement is about 0.9 points and in these datasets we found the local context to provide powerful signals for answering the question, which makes the baseline to perform well.
+On the IMDB and OntoNotes datasets the performance gains are smaller. For IMDB, the majority of the dataset consists of short documents and thus it is expected to see smaller improvements.
+For OntoNotes, we found that the distance between any two mentions is typically quite small so that a baseline that processes smaller chunks separately is able to stitch together mentions into coreference chains without considering cross chunk interactions.
+
+%It is worth mentioning that even in the cases where our model performance is comparable to the baseline, our model is significantly easier to use because it doesn't require any tricks to deal with long sequences. 
+
+% \ac{paragraphs above are too defensive}
+
+
+
+\paragraph{\model-large for QA}
+We also evaluate the performance of \model-large on long context QA tasks. Tab.~\ref{tab:leaderboard}
+shows that our \model-large achieves new state-of-the-art
+results\footnote{At submission time, May 2020. Later, BigBird \cite{Zaheer2020BigBT} improved leaderboard results on these datasets. There are confounding factors such as using 16X more compute in BigBird's pretraining compared with Longformer, potentially affecting the performance.} on WikiHop and TriviaQA by large margins (3.6 and 4 points respectively), and for HotpotQA, it underperforms the current state-of-the-art \cite{hotpotqasota} by a point.
+Tab.~\ref{tab:hotpotqa} shows the detailed results of HotpotQA compared with published and unpublished concurrent models. \model places second on the published leaderboard, outperforming all other published results except for HGN~\cite{hotpotqasota}. All published top performing models in this task \cite{Tu2019SelectAA,hotpotqasota,Shao2020IsGS} use GNNs \cite{kipf2017semi} or graph network of entities, which seem to encode an important inductive bias for the task and can potentially improve our results further. 
+% HGN and some other top performing models on this dataset (e.g., SAE) 
+% \ib{can we say "all"}\ac{we can't, c2reader is not}  \ib{}
+%  use GNNs \cite{kipf2017semi} or graph network of entities, which seem to encode an important inductive bias for the task and can potentially improve our results further.
+Nevertheless, \model performs strongly outperforming all other methods including the recent non-GNN methods~\cite{Gla2019SpanSP,Shao2020IsGS,quark2020}.
+% In addition, the 10 \ib{line 636 says they are 5}\ac{the 5 is for second stage} paragraphs come from 10 different documents and the concatenated context is therefore not coherent. In this case we suspect that \model has less chance to use information from pretraining due to difference between the pretraining and finetuning input structure. Additional pretraining objectives could help further improve results \ib{but such incoherent concatenation of strings works well for BERT. Is there a specific reason we think it is not working for us? if not, I would suggest removing this argument }.
+
+
+
+% The two-stage model improves the results even further, likely because of the increased capacity that allows each stage to specialize on one task. 
+% This model matches performance of TAP2~\cite{Gla2019SpanSP}, which is the 
+% the best performing single model that doesn't use a form of graph neural networks \cite[GNN; ][]{kipf2017semi}.
+% However, our model is simpler than TAP2 where they use a three-stage approach consisting of extracting paragraphs, evidence sentences and finally answer spans with an additional specialized span selection pretraining. All the better performing models for HotpotQA~\cite{Shao2020IsGS,hotpotqasota}
+% use multi-stage approaches plus GNNs or graph network of entities, which seem to encode an important inductive 
+% bias for the task.
+%\footnote{We can encode this inductive bias using global attention over entities, but we leave this for future work. \ib{matt suggested removing this}}
+% Furthermore,
+%, unlike WikiHop and TriviaQA,
+% the 10 paragraphs come from 10 different documents and the concatenated context is therefore not coherent. In this case we suspect that \model has less chance to use information from pretraining due to difference between the pretraining and finetuning input structure. Additional pretraining tasks could help further improve results.
+% Therefore models that score the paragraphs individually are able to achieve strong results. 
+%\ib{drop the rest of the section. I also removed the span-only experiments from table 10}
+
+% For the HotpotQA dataset, we found that \model with minimal task-specific change can achieve close results to the SOTA but does not outperform it. Existing SOTA for this task often involves complex models carefully designed for the task and such models often include components that are in addition and orthogonal to contextualized representations such as RoBERTa. SOTA for this task is currently the HGN model \cite{hotpotqasota} where by using a 2 stage model with a hierarchical graph network and RoBERTa contextualizer, it achieves a joint F1 performance of 73.0 (compared with \model-large F1 of 71.4). Therefore, we suspect that while using just \model for HotpotQA is not sufficient to get SOTA, replacing the RoBERTa component in these models with our \model, where applicable, further improves the SOTA results.
+
+
+
+% -------- backing it up ---------------
+% \paragraph{\model-large on Question Answering}
+% We also evaluated the performance of \model-large on the 
+% question answering tasks. Table~\ref{tab:leaderboard}
+% shows that our \model-large achieves new state-of-the-art (SOTA)
+% results on WikiHop and TriviaQA by large margins (3.6 and 4 points respectively).
+
+% For other datasets, we found that \model without any task-specific change can achieve close results to the SOTA but does not outperform it. Exisiting SOTA for other tasks often involves complex models carefully designed for the task and such models often include components that are in addition and orthogonal to contextualized representations such as RoBERTa. For example for Imdb, \citet{imdbsota} achieve performance of 97.4 (compared with 96.1 of \model-large) and this model uses document embeddings, an approach different than pretrained language models. For HotpotQA, \citet{hotpotqasota} uses a 2 stage model including a hierarchical graph network and RoBERTa contextualizer and achieves joint F1 performance of 73.0, compared with \model-large F1 of 71.4). Therefore, we suspect that while using just \model for these tasks is not sufficient to get SOTA, replacing the RoBERTa component in these models with our \model, where applicable, further improves the SOTA results.
+% -----------------------------------
+
+% For HotpotQA our baseline based on~\ib{cite dirk'a paper} \ac{dirk's paper is not on arxiv yet} has been recently 
+% outperformed by~\citet{hotpotqasota}. For coreference resolution, 
+% \citet{joshi-etal-2019-bert} is outperformed by~\citet{ontonotesota}, 
+% and for document classification, the chunking-based RoBERTa baseline 
+% is outperformed by~\citet{imdbsota}. 
+% While replacing \model-base with \model-large 
+% doesn't outperform state of the art \ib{lol, reviewer will be like, you already have the numbers, put them in the paper}
+% on these datasets, their contributions are orthogonal to ours, and we expect 
+% plugging out attention into their models to improve their results further. 
+% Below we discuss our HotPotQA results in more detail. 
+
+% We next discuss more details about HotpotQA experiments. Table~\ref{tab:hotpotqa} reports
+% performance on the dev set of HotpotQA distractor setting. 
+% Our model for HotpotQA substantially improves over the RoBERTa-base baseline that decomposes the input into multiple sections and then aggregates information across the input. State-of-the-art model in HotpotQA is currently the HGN model \cite{hotpotqasota} which includes a 2 stage approach where a first model finds few paragraphs related to the question and then a second stage model task focuses on extract answers by combining a hierarchical graph network with RoBERTa. These models typically have larger number of parameters and are carefully designed for the task. 
+
+% We next discuss more details about HotpotQA experiments (Tab.~\ref{tab:hotpotqa}).
+% On this particular dataset since the 10 paragraphs come from 10 different documents, the concatenated context, unlike WikiHop and TriviaQA, is not coherent. Therefore models that score the paragraphs individually are able to achieve strong results. In addition, since the context is incoherent, it is likely that our \model has less chance to leverage information from pretraining. Nevertheless, we observe that \model with a simple multitask loss can be a strong baseline for the HotpotQA dataset,  substantially outperforming RoBERTa. We suspect that when \model is used as a drop in replacement for RoBERTa in models like HGN, it can help improving results further.
+
+% The last row of Tab.~\ref{tab:hotpotqa} shows how two stage models can achieve closer results to SOTA using a \model-large, partly due to larger capacity and parameters. Here we report the result of a simple two stage model using \model where \model is used to first extract related sentences to a question and then pass the result to a second BERT model for QA~\cite{bert}. This results in about 2 points improvement over the joint multitask model and even matches performance of HGN in answer span extraction. This suggests that it would be easy to use \model instead of RoBERTa in task-specific models to get additional improvements. 
+
+% In the case of HotpotQA, we also found that compared with RoBERTa in a controlled experiment, our \model is better able to find related spans if there is no additional supervision on supporting evidence. This is shown in rows 5 and 6 of Tab.~\ref{tab:hotpotqa}. We observe that if we remove the evidence supervision from the models (by setting the sentence/paragraph prediction losses to zero), RoBERTa model's performance drops by 0.9 while \model's performance only decreases by 0.4 points. This suggests that the evidence supervision allows existing models to decompose the problem into smaller subproblems while our \model can locate related parts without additional auxiliary supervision.}
+
+
+% \begin{table}[t]
+% \centering
+% \small
+% \setlength{\tabcolsep}{3pt} 
+% \begin{tabular}{@{}lrrrr@{}}
+% \toprule
+% Model            & WikiHop & TriviaQA & HotpotQA & HotpotQA  \\ 
+%                  &         &.         &  (joint)  & (stages) \\
+% \midrule
+% Current SOTA                   & 78.3 & 73.3 &  ? &  \textbf{73.0} \\
+% \model-large    & \textbf{81.9} & \textbf{77.3}  & 69.5 & 71.4  \\
+% \bottomrule
+% \end{tabular}
+% \caption{Leaderboard results of \model-large on WikiHop and TriviaQA. 
+% Distractor setting dev results on HotpotQA.} 
+% \matt{table running off the margin, needs to shrink}
+% \label{tab:qalarge}
+% \end{table}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Model            & WikiHop & TriviaQA & HotpotQA \\ 
+\midrule
+Current$^*$ SOTA                   & 78.3 & 73.3 & \textbf{74.2} \\
+\model-large    & \textbf{81.9} & \textbf{77.3} & 73.2\\
+\bottomrule
+\end{tabular}
+\caption{Leaderboard results of \model-large at time of submission (May 2020). All numbers are F1 scores.
+} 
+\label{tab:leaderboard}
+\end{table}
+
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt} 
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Model            & ans. & supp. & joint \\ \midrule
+% RoBERTa-base     & 73.5   & 83.4    & 63.5     \\
+% \model-base  & 74.3   & 84.4    & 64.4     \\ \hdashline[0.4pt/2pt]
+% % RoBERTa-base (span only)  & 72.6 & - & - \\
+% % \model-base (span only) & 73.9 & - & - \\ \hdashline[0.4pt/2pt]
+% \model-large & 78.8   & 86.0    & 69.5     \\ 
+TAP 2 (ensemble)~\cite{Gla2019SpanSP}     &  79.8	   & 86.7	    & 70.7  \\
+% \hdashline[0.4pt/2pt]
+SAE \cite{Tu2019SelectAA} & 79.6 & 86.7 & 71.4 \\
+Quark (dev) \cite{quark2020} & 81.2 & 87.0 & 72.3  \\
+C2F Reader~\cite{Shao2020IsGS} & 81.2	& 87.6 &	72.8 \\
+[0.5ex]
+\hdashline[0.4pt/2pt]\noalign{\vskip 0.5ex}
+\model-large & 81.3 &	88.3 &	73.2 \\ 
+[0.5ex]
+\hdashline[0.4pt/2pt]\noalign{\vskip 0.5ex}
+ETC-large$^\dag$ \cite{ainslie-etal-2020-etc} & 81.2 & 89.1 & 73.6 \\
+GSAN-large$^\dag$ & 81.6 & 88.7 & 73.9 \\
+HGN-large~\cite{hotpotqasota}       & 82.2   & 88.5	    & 74.2  \\
+\bottomrule
+\end{tabular}
+\caption{
+%HotpotQA results, distractor setting on the dev set. All numbers are F1 scores.
+HotpotQA results in distractor setting test set. Quark's test results are not available. All numbers are F1 scores. $^\dag$ shows contemporaneous leaderboard submissions.
+%\footnotemark
+% \ib{missing numbers are not available publicly. 
+% also better resulting models are already in the leaderboard
+% but we couldn't find their scores. }
+% \ib{footnote doesn't  show up}
+} 
+\label{tab:hotpotqa}
+\end{table}
+%\footnotetext{We report numbers from dev set scores of published papers. Missing values are not publicly available. Leaderboard test results will be included in the future. \ib{report leaderboard results}}
+
+\subsection{Ablations on WikiHop}
+
+\begin{table}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{-2pt}
+    \begin{tabular}{lr}
+    \toprule
+    Model  & Accuracy / $\Delta$ \\
+    \midrule
+    \model (seqlen: 4,096) & 73.8 \\
+    [0.6ex]
+    \hdashline[0.2pt/0.4pt]\noalign{\vskip 0.6ex}
+    RoBERTa-base (seqlen: 512) & 72.4 / -1.4\\
+    \model (seqlen: 4,096, 15 epochs) & 75.0 / +1.2\\
+    \model (seqlen: 512, attention: $n^2$) & 71.7 / -2.1 \\
+%    \model (seqlen: 512, attention: window no global atten.) & 68.8 / -5.0 \\
+    \model (seqlen: 2,048) & 73.1 / -0.7 \\
+    \model (no MLM pretraining) & 73.2 / -0.6 \\
+    \model (no linear proj.) & 72.2 / -1.6 \\
+    \model (no linear proj. no global atten.) & 65.5 / -8.3 \\
+    \model (pretrain extra position embed. only) & 73.5 / -0.3 \\
+    \bottomrule
+    \end{tabular}
+    \caption{WikiHop development set ablations
+    }
+    \label{tab:finetune_ablation}
+\end{table}
+
+Tab.~\ref{tab:finetune_ablation} presents an ablation study for WikiHop on the development set. All results use \model-base, fine-tuned for five epochs with identical hyperparameters except where noted.  \model benefits from longer sequences, global attention, separate projection matrices for global attention, MLM pretraining, and longer training.  In addition, when configured as in RoBERTa-base (seqlen: 512, and $n^2$ attention) \model performs slightly worse then RoBERTa-base, confirming that performance gains are not due to additional pretraining.  Performance drops slightly when using the RoBERTa model pretrained when only unfreezing the additional position embeddings, showing that \model can learn to use long range context in task specific fine-tuning with large training datasets such as WikiHop.
+
+%Performance drops slightly with frozen RoBERTa weights during pretraining.
+
+%studies if the gain in performance 
+%is from the processing of long sequence, or from the additional pretraining. 
+%We use pretrained \model but configure it as RoBERTa-base (seqlen: 512, and $n^2$
+%attention). The table shows that this configuration is performing 
+%comparable to RoBERTa-base, confirming that the performance gain is 
+%because of the processing of long sequence. 
+
+%Table~\ref{tab:finetune_ablation} shows the impact of the global attention 
+%and the linear projections. As the result shows, both are crucial for 
+%the model to perform well. 

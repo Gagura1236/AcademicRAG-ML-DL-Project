@@ -1,0 +1,949 @@
+
+\section{Proofs for Finite-Samples and Finite-Width Dynamics}\label{section:proof_finite_sample}
+
+In this section we give the proof for results related to the empirical dynamics, where the number of samples and network width are both polynomial in $d$. The end goal is to prove \Cref{thm:empirical-main}, the proof of which is given below.
+\begin{proof}[Proof of \Cref{thm:empirical-main}]
+We have
+\begin{align}
+    L(\rhohat_{\Tstar}) &= \Exp_{x\sim\Sp}[(f_{\rhohat_{\Tstar}}(x) - y(x))^2]\\
+    &\le 3  \Exp_{x\sim\Sp}[(f_{\rhohat_{\Tstar}}(x) - f_{\rhobar_{\Tstar}}(x))^2] + 3 \Exp_{x\sim\Sp}[(f_{\rhobar_{\Tstar}}(x) - f_{\rho_{\Tstar}}(x))^2] \\
+    &\nextlinespace+3  \Exp_{x\sim\Sp}[(f_{\rho_{\Tstar}}(x) - y(x))^2] \\
+    &\lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \frac{1}{d^{\frac{\samplebound - 1}{2}}} + \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^2 (\log d)^{O(1)}}{m}  + (\sigmaCoeffTwo^2 +  \sigmaCoeffFour^2) \epsilon^2.
+\end{align}
+where the first inequality is by Cauchy-Schwarz inequality, and the second inequality is by \Cref{lemma:finite_sample_width_main_lemma}, \Cref{lemma:final_bound_Delta_avg} and \Cref{thm:pop_main_thm}. Since $\epsilon = \frac{1}{\log \log d}$, the last term dominates because the conditions of \Cref{thm:empirical-main} imply that $m \gtrsim d^3$, and because $\frac{\mu - 1}{2} > 1$, meaning that the first term is at most $\frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d}$.
+\end{proof}
+
+To complete the proof, we give proofs for results in \Cref{section:finite_sample_analysis}.
+We first give a proof for \Cref{lemma:finite_sample_width_main_lemma}:
+\begin{proof}[Proof of \Cref{lemma:finite_sample_width_main_lemma}]
+For the first statement, for any fixed $t \leq T$, by \Cref{lemma:finite_width_error}, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (d^2 + \log \frac{1}{\delta}) (\log d)^C}{m} + \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+\end{align}
+with probability $1 - \delta$ --- we will choose $\delta$ shortly. In addition, for any $t, t' \in [0, T]$, by \Cref{lemma:gradient_bounds}, we have that $\|\u_t(\chi) - \u_{t'}(\chi)\|_2 \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4 |t - t'|$, which by \Cref{lemma:sigma_bound} implies that for any $x \in \bbS^{d - 1}$, 
+\begin{align}
+|f_{\rho_t}(x) - f_{\rho_{t'}}(x)|
+& \leq \E_{\chi \sim \rho_0} |\sigma(\u_t(\chi) \cdot x) - \sigma(\u_{t'}(\chi) \cdot x)| \\
+& \lesssim (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \cdot (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4 |t - t'|
+\end{align}
+In particular, if $|t - t'| \leq \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^{\Omega(\log d)}}$, then for all $x \in \bbS^{d - 1}$ we have
+\begin{align}
+|f_{\rho_t}(x) - f_{\rho_{t'}}(x)| 
+& \lesssim \frac{|\sigmaCoeffTwo| + |\sigmaCoeffFour|}{d^{\Omega(\log d)}}
+\end{align}
+meaning that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rho_{t'}}(x))^2]
+& \lesssim \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+\end{align}
+By the same argument, we have that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rhobar_t}(x) - f_{\rhobar_{t'}}(x))^2]
+& \lesssim \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+\end{align}
+Now, we perform a union bound over all times $t$ such that $t \leq T$ and $t$ is an integer multiple of $\frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^{H \log d}}$ for some sufficiently large absolute constant $H > 0$. Since $T \leq \frac{d^C}{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}$, the number of such times is at most $d^{C + H \log d}$. Thus, with probability at least $1 - \delta \cdot d^{C + H \log d}$, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (d^2 + \log \frac{1}{\delta}) (\log d)^{O(1)}}{m} + \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+\end{align}
+for all $t \in [0, T]$. In particular, in order to have exponentially small failure probability, we set $\delta = \frac{1}{e^{d^2} d^{C + H \log d}}$, and by our assumption that $m \leq d^{O(\log d)}$, we obtain
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^2 (\log d)^{O(1)}}{m}
+\end{align}
+for all $t \leq T$, with probability at least $1 - e^{-d^2}$, since $\log \frac{1}{\delta} = d^2 + O((\log d)^2)$. This completes the proof of the first statement of the lemma. Additionally, by \Cref{lemma:point_error_to_fn_error}, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rhohat_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \E_{(\ubar, \uhat) \sim \coup} [\|\uhat_t - \ubar_t\|_2^2]
+\end{align}
+which proves the second statement of the lemma.
+\end{proof}
+
+The rest of the section is dedicated to prove \Cref{lemma:final_bound_Delta_avg}. To begin with, we first introduce the following lemma which formalizes the decomposition of $\frac{d}{dt} \|\uhat_t-\ubar_t\|_2^2$ discussed in \Cref{section:finite_sample_analysis}.
+\begin{lemma}[Decomposition of $\frac{d}{dt} \|\uhat_t-\ubar_t\|_2^2$] \label{lemma:delta_decomposition_ABC}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Then, $\frac{d}{dt} \|\uhat_t-\ubar_t\|_2^2 = A_t + B_t + C_t$, where $A_t =- 2 \langle \pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle$, $B_t = -2 \langle \pgrad_{\uhat} L(\rhohat_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle$, and $C_t = -2 \langle \pgrad_{\uhat} \Lhat(\rhohat_t) - \pgrad_{\uhat} L(\rhohat_t), \uhat_t - \ubar_t \rangle$. 
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:delta_decomposition_ABC}]
+By the chain rule,
+\begin{align}
+ \frac{d}{dt} \| \uhat_t - \ubar_t \|_2^2   = 2 \Big\langle \frac{d}{dt} \uhat_t - \frac{d}{dt} \ubar_t, \uhat_t - \ubar_t \Big\rangle 
+ = -2 \langle \pgrad_{\rhohat} \Lhat(\rhohat_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle
+\end{align}
+We can expand the difference in gradients as
+\begin{align}
+\pgrad_{\rhohat} \Lhat(\rhohat_t) - \pgrad_{\ubar} L(\rho_t)
+& = \Big( \pgrad_{\uhat} \Lhat(\rhohat_t) - \pgrad_{\uhat} L(\rhohat_t) \Big) + \Big(\pgrad L_{\uhat}(\rhohat_t) - \pgrad L_{\uhat}(\rho_t) \Big) \\ 
+& \nextlinespace + \Big(\pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t) \Big)
+\end{align}
+Thus,
+\begin{align}
+\frac{d}{dt} \| \uhat_t - \ubar_t \|_2^2
+& = -2 \langle \pgrad_{\uhat} \Lhat(\rhohat_t) - \pgrad_{\uhat} L(\rhohat_t), \uhat_t - \ubar_t \rangle - 2 \langle \pgrad L_{\uhat}(\rhohat_t) - \pgrad L_{\uhat}(\rho_t) , \uhat_t - \ubar_t \rangle \\
+& \nextlinespace - 2 \langle \pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle \\
+& = C_t + B_t + A_t
+\end{align}
+as desired.
+\end{proof}
+
+Next, we give a proof of \Cref{lemma:final_bounds_ABC}, which gives an upper bound for each of $A_t$, $B_t$ and $C_t$.
+
+\begin{proof}[Proof of \Cref{lemma:final_bounds_ABC}]
+The proof directly follows from \Cref{lemma:At_bound_later}, \Cref{lemma:At_bound_first}, \Cref{lemma:bt_bound_individual}, \Cref{lemma:bt_bound_avg} and \Cref{lemma:ct_bound}.
+\end{proof}
+
+Combining the upper bounds in \Cref{lemma:final_bounds_ABC} and the decomposition in \Cref{lemma:delta_decomposition_ABC}, we have the following \Cref{lemma:growth_rate_with_N} which upper bounds the growth of $\norm{\uhat_t - \ubar_t}$.
+Recall that $\Tstar$ is the total runtime for the algorithm (see \Cref{thm:pop_main_thm}), and $T_1$ is the time such that $\w_{T_1}(\iotaU) = \frac{1}{\log d}$ (see \Cref{def:phase_1}).
+
+\begin{lemma}[Growth Rate of $\|\delta_t\|_2^2$ With Dependency on $n$] \label{lemma:growth_rate_with_N}
+	In the setting of \Cref{thm:empirical-main}, suppose that the inductive hypothesis in \Cref{assumption:inductive_hypothesis} holds for some $\avgbound$ and $\maxbound$ up until $t$ for some $t\le \Tstar$. Further assume that $\maxbound < \frac{1}{2}$ and $\avgbound > \frac{1}{2}$. Then, when $t\le T_1$ we have
+\begin{align}
+\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big) \|\uhat_t - \ubar_t\|_2^2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{d (\log d)^{O(1)}}{\sqrt{m}} \|\uhat_t - \ubar_t\|_2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{1}{d^{\avgbound}} + \sqrt{\frac{d}{n}} + \frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}\Big) \|\uhat_t - \ubar_t\|_2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{d^{2 - 2\maxbound - \avgbound}}{n} + \frac{d^{4 - 4\maxbound - 2\avgbound}}{n} \Big) \|\uhat_t - \ubar_t\|_2^2
+\end{align}
+and
+\begin{align}
+\frac{d}{dt} \deltaBar_t^2
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big) \deltaBar_t^2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\sqrt{\frac{d}{n}} + \frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}\Big) \deltaBar_t \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{1}{d^{\avgbound}} + \frac{d^{2 - 2\maxbound - \avgbound}}{n} + \frac{d^{4 - 4\maxbound - 2\avgbound}}{n} \Big) \deltaBar_t^2 \period
+\end{align}
+When $t \in [T_1, \Tstar]$, we have
+\begin{align}
+\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2 \|\uhat_t - \ubar_t\|_2^2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{d (\log d)^{O(1)}}{\sqrt{m}} \|\uhat_t - \ubar_t\|_2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{1}{d^{\avgbound}} + \sqrt{\frac{d}{n}} + \frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}\Big) \|\uhat_t - \ubar_t\|_2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{d^{2 - 2\maxbound - \avgbound}}{n} + \frac{d^{4 - 4\maxbound - 2\avgbound}}{n} \Big) \|\uhat_t - \ubar_t\|_2^2
+\end{align}
+and
+\begin{align}
+\frac{d}{dt} \deltaBar_t^2
+& \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \gamma_2 \deltaBar_t^2 \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\sqrt{\frac{d}{n}} + \frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}\Big) \deltaBar_t \\
+& + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \Big(\frac{1}{d^{\avgbound}} + \frac{d^{2 - 2\maxbound - \avgbound}}{n} + \frac{d^{4 - 4\maxbound - 2\avgbound}}{n} \Big) \deltaBar_t^2 \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:growth_rate_with_N}]
+This result follows directly from \Cref{lemma:final_bounds_ABC} and the inductive hypothesis. By the inductive hypothesis, we have $\deltaBar_t \leq d^{-\avgbound}$. We apply this to the bound for $C_t$ in \Cref{lemma:final_bounds_ABC} to obtain the desired bounds above. Note that in our bounds for $\frac{d}{dt} \deltaBar_t^2$, it is important that we use the upper bound for $\E[B_t]$ in \Cref{lemma:final_bounds_ABC} instead of the upper bound for $B_t$.
+\end{proof}
+
+Using this bound on the growth rate, we can show that the inductive hypothesis is maintained.
+
+\begin{lemma}[IH is Maintained] \label{lemma:IH_is_maintained}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Suppose $\maxbound>0$ and $1 > \avgbound>\frac{1}{2}+\maxbound$. Let $n=d^{\samplebound} (\log d)^{C}$ where $\mu\geq\max\{2+2\avgbound, 4-2\avgbound-4\maxbound\}$ and $C$ is a sufficiently large universal constant. 
+	Suppose the inductive hypothesis in \Cref{assumption:inductive_hypothesis} holds for all $t\le T$ where $T<\Tstar$.
+	Then, when $m \gtrsim d^{3 + 2\avgbound} (\log d)^{\Omega(1)}$ and $m \leq d^C$ for a sufficiently large universal constant $C$, we have that the inductive hypothesis holds for all $t\le T+\cInd$ where $\cInd>0$ is a constant that only depends on $d$, $\avgbound$, $\maxbound$, $\sigmaCoeffTwo$, $\sigmaCoeffFour$.
+\end{lemma}
+\begin{proof}
+Suppose the inductive hypothesis holds for all $t \leq T$ where $T \leq T_1$. Then, by \Cref{lemma:growth_rate_with_N} we have
+\begin{align}
+\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big) \Big) \|\uhat_t - \ubar_t\|_2^2 + \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \|\uhat_t - \ubar_t\|_2 \\
+& \nextlinespace\nextlinespace + O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)}}{d^\avgbound} \|\uhat_t - \ubar_t\|_2\Big) \\
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big) \Big) \|\uhat_t - \ubar_t\|_2^2 + O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)}}{d^\avgbound} \|\uhat_t - \ubar_t\|_2\Big) \period
+\end{align}
+Here we have used the fact that $n = d^\mu (\log d)^{O(1)}$ where $\mu \geq \max(4 - 4 \maxbound - 2 \avgbound, 2 + 2 \avgbound)$ as well as the fact that $\avgbound > \frac{1}{2}$, as follows:
+\begin{itemize}
+    \item In the third term in the bound for $\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2$ from \Cref{lemma:growth_rate_with_N}, only the $\frac{1}{d^\avgbound}$ term is important --- this term dominates the $\sqrt{\frac{d}{n}}$ and $\frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}$ terms, using the fact that $\mu > 2 + 2\avgbound$.
+    \item In the fourth term in the bound for $\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2$, the $\frac{d^{2 - 2\maxbound - \avgbound}}{n} \|\uhat_t - \ubar_t\|_2^2$ term is dominated by the $\frac{1}{d^\avgbound} \|\uhat_t - \ubar_t\|_2$ term --- this is because $\mu \geq 2 + 2 \avgbound$.
+    \item Since $\mu \geq 4 - 4\maxbound - 2\avgbound$, if we increase $n$ by a $(\log d)^{O(1)}$ factor, then the $\frac{d^{4 - 4\maxbound - 2\avgbound}}{n} \|\uhat_t - \ubar_t\|_2^2$ term can be absorbed into the first term, as it is dominated by the $4 \sigmaCoeffTwo^2 |D_{2, t}| O\Big(\frac{1}{\log d}\Big) \|\uhat_t - \ubar_t\|_2^2$ term. (Recall that by \Cref{lemma:phase1_d2_d4_neg}, $|D_{2, t}| \gtrsim \gamma_2$ during Phase 1).
+\end{itemize}
+In the second inequality above, we have used the fact that $m \gtrsim d^{3 + 2 \avgbound} (\log d)^{\Omega(1)}$ --- this implies that the term involving $m$ is dominated by the $\frac{(\log d)^{O(1)}}{d^\avgbound} \|\uhat_t - \ubar_t\|_2$ term.
+
+Additionally, by \Cref{lemma:growth_rate_with_N}, we have
+\begin{align}
+\frac{d}{dt} \deltaBar_t^2 
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big)\Big) \deltaBar_t^2 + \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t \\
+& \nextlinespace\nextlinespace + O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)}{d^{0.5 + \avgbound} (\log d)^{O(1)}} \deltaBar_t\Big) \\
+& \leq \Big(4 \sigmaCoeffTwo^2 |D_{2, t}| \Big(1 + O\Big(\frac{1}{\log d}\Big)\Big)\Big) \deltaBar_t^2 + O\Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)}{d^{0.5 + \avgbound} (\log d)^{O(1)}} \deltaBar_t\Big) \period
+\end{align}
+Here, we apply the bound for $\frac{d}{dt} \deltaBar_t^2$ from \Cref{lemma:growth_rate_with_N}. In the third term in this bound, the $\sqrt{\frac{d}{n}}$ term dominates the $\frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n}$ term, using the fact that $\avgbound > \frac{1}{2}$ and $\mu \geq 2 + 2\avgbound > 3$, meaning $\frac{d^{2.5 - 2\maxbound - 2\avgbound}}{n} \leq \frac{d^{1.5}}{n} \leq \frac{1}{\sqrt{n}}$. In the fourth term, we deal with the $\frac{d^{4 - 4\maxbound - 2\avgbound}}{n}$ term similarly to our calculations for the bound for $\frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2$. We can also deal with the $\frac{d^{2 - 2\maxbound - \avgbound}}{n}$ term similarly, since by our definition of $\mu$, this will be at most $\frac{1}{d^{3 \avgbound}} \leq \frac{1}{(\log d)^{O(1)}}$, and will thus be absorbed into the first term involving $|D_{2, t}|$. Using $\mu \geq 2 + 2\avgbound$, we then obtain $\sqrt{\frac{d}{n}} \leq \frac{1}{d^{0.5 + \avgbound}}$ as the coefficient of the $\deltaBar_t$ term (i.e. the first-order term involving $\deltaBar_t$). Note that here we need to have $m \gtrsim d^{3 + 2 \avgbound} (\log d)^{\Omega(1)}$ in order to absorb the term involving $m$ into the $\frac{1}{d^{0.5 + \avgbound}} \deltaBar_t$ term.
+
+Now using \Cref{lemma:integral_bound} we have
+\begin{align}
+\deltaBar_t^2 \lesssim \frac{1}{(\log d)^{O(1)}} \Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) O(\frac{1}{d^{0.5 + \avgbound}})}{4\sigmaCoeffTwo^2 \min_t|D_{2,t}| }\Big)^2\exp\Big( \int_{0}^T 4\sigmaCoeffTwo^2|D_{2,t}| \Big(1+O\Big(\frac{1}{\log d}\Big)\Big) dt  \Big)
+\end{align}
+and
+\begin{align}
+\deltaMaxt{T}^2 \lesssim (\log d)^{O(1)} \Big(\frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) O(\frac{1}{d^{\avgbound}})}{4\sigmaCoeffTwo^2 \min_t|D_{2,t}| }\Big)^2\exp\Big( \int_{t}^T 4\sigmaCoeffTwo^2|D_{2,t}| \Big(1+O\Big(\frac{1}{\log d}\Big)\Big) dt  \Big)
+\end{align}
+By \Cref{lemma:phase_1_summary} we have
+\begin{align}
+\exp\Big(\int_{t = 0}^T 4 \sigmaCoeffTwo^2 |D_{2, t}| dt\Big) 
+& \lesssim d
+\end{align}
+and by \Cref{lemma:phase1_d2_d4_neg} we know that $|D_{2, t}| \gtrsim \gamma_2$ during Phase 1. Thus,
+\begin{align}\label{eq:induction_1}
+	\deltaMaxt{T}^2 \le O\Big(\frac{(\log d)^{O(1)}}{\gamma_2^2 d^{2\avgbound-1}}\Big).
+\end{align}
+Since $2\avgbound-1>2\maxbound$ and $d$ is chosen to be sufficiently large after $\gamma_2$ is chosen (\Cref{assumption:target}), we have that $\deltaMaxt{T} < \sqrt{\frac{1}{d^{\maxbound + \avgbound - 1/2}}} = \frac{1}{d^{\frac{1}{2}\avgbound + \frac{1}{2}\maxbound - \frac{1}{4}}}< \frac{1}{d^{\maxbound}}$. Note that $\deltaMaxt{t}$ is continuous in $t$ and we have
+\begin{align}
+\frac{d}{dt} \deltaMaxt{t}
+& \leq \max_\chi \frac{d}{dt} \|\uhat_t - \ubar_t\|_2 \\
+& = \max_\chi \frac{1}{\|\uhat_t - \ubar_t\|_2} \frac{d}{dt} \|\uhat_t - \ubar_t\|_2^2 \\
+& \leq \max_\chi \frac{1}{\|\uhat_t - \ubar_t\|_2} |\langle \uhat_t - \ubar_t, \pgrad_{\uhat_t} \Lhat(\uhat_t) - \pgrad_{\ubar_t} L(\ubar_t) \rangle| \\
+& \leq \max_\chi \|\pgrad_{\uhat_t} \Lhat(\uhat_t) - \pgrad_{\ubar_t} L(\ubar_t)\|_2
+& \tag{By Cauchy-Schwarz Inequality} \\
+& \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4 \period
+& \tag{By \Cref{lemma:gradient_bounds}}
+\end{align}
+Thus, for $\mu_1= \Big(\frac{1}{d^{\maxbound}} -\frac{1}{d^{\frac{1}{2}\avgbound + \frac{1}{2}\maxbound - \frac{1}{4}}}\Big) \cdot \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4}$ we still have the inductive hypothesis for $\deltaMax$ until time $T+\mu_1$, that is, $\deltaMaxt{T+\mu_1} \le \frac{1}{d^{\maxbound}}$. Similarly, our calculation above using \Cref{lemma:integral_bound} gives us
+\begin{align} \label{eq:induction_2}
+\deltaBar_T^2 
+& \leq O\Big(\frac{1}{\gamma_2^2 d^{2\avgbound} (\log d)^{O(1)}}\Big)
+\end{align}
+Thus, we have $\deltaBar_T < \frac{1}{d^{\avgbound} (\log d)^{O(1)}} < \frac{1}{d^\avgbound}$ (where in the middle expression, we choose a smaller power of $(\log d)^{O(1)}$ so that the inequality holds). Observe that $\deltaBar_t$ is continuous in $t$, and
+\begin{align}
+\frac{d}{dt} \deltaBar_t
+& = \frac{1}{\deltaBar_t} \frac{d}{dt} \deltaBar_t^2 \\
+& = \frac{1}{\deltaBar_t} \E_{\chi} [\langle \uhat_t - \ubar_t, \uhat_t' - \ubar_t' \rangle] \\
+& \leq \frac{1}{\deltaBar_t} \E_{\chi} [\|\uhat_t - \ubar_t\|_2 \|\uhat_t' - \ubar_t'\|_2]
+& \tag{By Cauchy-Schwarz Inequality} \\
+& \leq \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4}{\deltaBar_t} \E_{\chi} [\|\uhat_t - \ubar_t\|_2]
+& \tag{By \Cref{lemma:gradient_bounds}} \\
+& \leq (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4 \period
+\end{align}
+Thus, for $\mu_2 = \Big(\frac{1}{d^\avgbound} - \frac{1}{d^\avgbound (\log d)^{O(1)}}\Big) \cdot \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4}$ we still have the inductive hypothesis for $\deltaBar$ until time $T + \mu_2$, i.e. $\deltaBar_{T + \mu_2} \leq \frac{1}{d^\avgbound}$. As a result, assuming the inductive hypothesis holds up to time $T$, it holds up to time $T + \min(\mu_1, \mu_2)$.
+
+Our above proof strategy applies to all times $T \leq T_1$. For the induction when $T \in [T_1, \Tstar]$ we follow a similar argument but instead use the bound on $A_t$ obtained from \Cref{lemma:At_bound_later}. Since we know from \Cref{lemma:time_T_star_minus_T1} and the assumption that $\epsilon = O(\frac{1}{\log \log d})$ that
+\begin{align}
+	\int_{T_1}^{\Tstar} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\gamma_2 dt \le (\Tstar - T_1)(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\gamma_2 \le \frac{\poly(\log \log d)}{\gamma_2^{O(1)}},
+\end{align}
+we know that this additional phase will at most add another $\exp(\poly(\log \log d))$ factor to the growth of $\deltaMaxt{t}$ which is smaller than any polynomial in $d$. Thus, \Cref{eq:induction_1} and \Cref{eq:induction_2} still hold for this period, which finishes the proof.
+\end{proof}
+
+Finally, we prove \Cref{lemma:final_bound_Delta_avg}:
+
+
+\begin{proof}[Proof of \Cref{lemma:final_bound_Delta_avg}]
+The proof directly follows \Cref{lemma:IH_is_maintained} with $\avgbound = \frac{\samplebound-1}{4}$ and $\maxbound = \frac{\samplebound-3}{8}$.
+\end{proof}
+
+\subsection{Upper bound on $A_t$}\label{sec:proof_at}
+
+The goal of this section is to obtain an upper bound on
+\begin{align}
+A_t(\chi) := - 2 \langle \pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t(\chi) - \ubar_t(\chi) \rangle \period
+\end{align}
+When there is no risk of confusion, we simply use $A_t$, $\uhat_t$, and $\ubar_t$, omitting the dependence on $\chi$.
+
+We first obtain a strong upper bound on this inner product during Phase 1 of the population projected gradient flow. To obtain an upper bound on this inner product, we separately consider the contributions from the first coordinates of the vectors, and the remaining $(d - 1)$ coordinates --- in other words, the gradients with respect to $\w$ and the gradients with respect to $\z$. For convenience, let $\pgrad_\w L(\rho)$ denote the gradient with respect to $\w$ and $\pgrad_\z L(\rho)$ denote the gradient with respect to $\z$. The following lemma is about the contribution of the first coordinates of the particles to $A_t$, and is useful during Phase 1.
+
+\begin{lemma}[Contribution of $\w$'s] \label{lemma:A_bound_first_coord}
+Suppose we are in the setting of \Cref{thm:empirical-main}, and let $\rho_t$ be the projected gradient flow on population loss, initialized with the uniform distribution on $\bbS^{d - 1}$, defined in \Cref{eq:population_derivative}. Suppose $D_{2,t} < 0$ and $D_{4,t} < 0$, where $D_{2, t}$ and $D_{4, t}$ are as defined in \Cref{subsec:pop_symmetry}. Then, the contribution of the first coordinates to $A_t$ can be bounded by
+\begin{align}
+-2 \Big(\pgrad_{\what} L(\rho_t) & - \pgrad_{\wbar} L(\rho_t) \Big) \cdot (\what_t - \wbar_t) \\
+& \leq 4 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O(\sigmaCoeffFour^2 |D_{4,t}| \wmax (\what_t - \wbar_t)^2) \\
+& \nextlinespace + O\Big(\sigmaCoeffFour^2 |D_{4,t}| \deltaMax (\what_t - \wbar_t)^2\Big) \\
+& \nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} \cdot (\what_t - \wbar_t)^2 \Big) \period
+\end{align}
+where $\wmax$ is as defined in \Cref{def:phase_1}.
+\end{lemma}
+The constant $4$ at the beginning of the first term is particularly important since it determines the growth rate of $\|\delta_t\|_2^2$, and in turn affects the number of samples we will need. At least during Phase 1, the contribution of the first coordinates will be the dominant term in $A_t$, as we will see in the next few lemmas.
+\begin{proof}[Proof of \Cref{lemma:A_bound_first_coord}]
+The contribution of the first coordinate to the dot product defining $A_t$ is
+\begin{align}
+-2 \Big(\pgrad_{\what} L(\rho_t) - & \pgrad_{\wbar} L(\rho_t) \Big) \cdot (\what_t - \wbar_t) \\
+& = 2 (\vel(\what_t) - \vel(\wbar_t)) \cdot (\what_t - \wbar_t)
+\end{align}
+where $\vel(\w)$ is as defined in \Cref{lem:1-d-traj}. We can further simplify $\vel(\what_t) - \vel(\wbar_t)$ using \Cref{lem:1-d-traj}. Let $P_t$ and $Q_t$ be defined as in \Cref{lem:1-d-traj}. Then,
+\begin{align}
+\vel(\what_t) - \vel(\wbar_t)
+& = -(1 - \what_t^2) (P_t(\what_t) + Q_t(\what_t)) + (1 - \wbar_t^2) (P_t(\wbar_t) + Q_t(\wbar_t)) \period
+\end{align}
+Let us upper bound the term corresponding to $Q_t$ first. Since each coefficient of $Q_t$ is bounded above by $O(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d})$ (by the conclusion of \Cref{lem:1-d-traj}) and $Q_t$ only has linear and cubic terms, we have
+\begin{align}
+\Big|-(1 - \what_t^2) Q_t(\what_t) + (1 - \wbar_t^2) Q_t(\wbar_t) \Big| \cdot |\what_t - \wbar_t|
+& \lesssim \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} |\what_t - \wbar_t|^2
+\end{align}
+by \Cref{lemma:polynomial_difference}. The terms corresponding to $P_t(\wbar_t)$ in $(\vel(\what_t) - \vel(\wbar_t)) (\what_t - \wbar_t)$ can be bounded as follows:
+\begin{align}
+(- &(1 - \what_t^2) P_t(\what_t) + (1 - \wbar_t^2) P_t(\wbar_t) ) \cdot (\what_t - \wbar_t) \\
+& = 2 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + 4 \sigmaCoeffFour^2 |D_{4,t}| (\what_t - \wbar_t)^2 (\what_t^2 + \what_t \wbar_t + \wbar_t^2) \\
+& \nextlinespace - 2 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 (\what_t^2 + \what_t \wbar_t + \wbar_t^2) - 4 \sigmaCoeffFour^2 |D_{4,t}| (\what_t - \wbar_t)^2 (\what_t^2 + \what_t \wbar_t  + \wbar_t^2) \\
+& \leq 2 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + 4 \sigmaCoeffFour^2 |D_{4,t}| (\what_t - \wbar_t)^2 (\what_t^2 + \what_t \wbar_t + \wbar_t^2)  \tag{Since last two terms are nonnegative} \\
+& \leq 2 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O(\sigmaCoeffFour^2 |D_{4,t}| |\what_t + \wbar_t| (\what_t - \wbar_t)^2) & \tag{Since $\wbar_t, \what_t \leq 1$}
+\end{align}
+Thus, the overall bound on the contribution of the first coordinates to $A_t$ is
+\begin{align}
+2(\vel(\what_t) - \vel(\wbar_t)) \cdot (\what_t - \wbar_t)
+& \leq 2 \cdot (-(1 - \what_t^2) P_t(\what_t) + (1 - \wbar_t^2) P_t(\wbar_t) ) \cdot (\what_t - \wbar_t) \\
+& \nextlinespace + \Big|-(1 - \what_t^2) Q_t(\what_t) + (1 - \wbar_t^2) Q_t(\wbar_t) \Big| \cdot |\what_t - \wbar_t| \\
+& \leq 4 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O(\sigmaCoeffFour^2 |D_{4,t}| |\what_t + \wbar_t| (\what_t - \wbar_t)^2) \\
+& \nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} (\what_t - \wbar_t)^2 \Big)
+\end{align}
+We can simplify this bound further in terms of $\wmax$ and $\deltaMaxt{t}$. First observe that
+\begin{align}
+|\what_t - \wbar_t| \leq \|\delta_t\|_2 \leq \deltaMaxt{t}
+\end{align}
+Thus, by the triangle inequality, we have $|\wbar_t| \leq \wmax$ and $|\what_t| \leq \wmax + \deltaMaxt{t}$ meaning
+\begin{align}
+2(\vel(\what_t) - \vel(\wbar_t)) \cdot (\what_t - \wbar_t)
+& \leq 4 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O(\sigmaCoeffFour^2 |D_{4,t}| |\what_t + \wbar_t| (\what_t - \wbar_t)^2) \\
+& \nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} (\what_t - \wbar_t)^2 \Big) \\
+& \leq 4 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O(\sigmaCoeffFour^2 |D_{4,t}| \wmax (\what_t - \wbar_t)^2) \\
+& \nextlinespace + O\Big(\sigmaCoeffFour^2 |D_{4,t}| \deltaMaxt{t} (\what_t - \wbar_t)^2\Big) \\
+& \nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} (\what_t - \wbar_t)^2 \Big) \\
+\end{align}
+as desired.
+\end{proof}
+
+Next, we study the contribution of the last $(d - 1)$ coordinates of the particles to $A_t(\chi)$ during Phase 1. We first introduce the following formula for the projected gradient of the population loss with respect to the last $(d - 1)$ coordinates of a particle.
+
+\begin{lemma}\label{lemma:at_1}
+Let $\rho$ be a distribution which is rotationally invariant, as in \Cref{def:rot_inv_symmetry}. Let $\pgrad_\u L(\rho)$ be defined as in \Cref{eq:projected_gradient_flow_population}. In addition, let $\pgrad_\z L(\rho)$ denote the last $(d - 1)$ coordinates of $\pgrad_\u L(\rho)$, for any particle $\u = (\w, \z)$. Then, for any particle $\u = (\w, \z)$, we have $\pgrad_z L(\rho) = -\Big(\frac{\w}{1-\w^2}\cdot \pgrad_\w L(\rho) \Big)\z$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:at_1}]
+    Notice that $\w^2 + \z^2=1$ for any $\u = (\w, \z) \in \bbS^{d - 1}$, and this equality is maintained by projected gradient descent on the population loss, as in \Cref{eq:population_derivative}. Also, by \Cref{lemma:gradient_is_scaler_multiple_of_z}, we have $\pgrad_z L(\rho) = cz$ for some scalar $c$, since $\rho$ is rotationally invariant. Thus,
+    \begin{align}
+        0 &= \frac{d}{dt} (w^2 + z^2)\\
+        &= -2w \pgrad_w L(\rho) -2 \langle z , \pgrad_z L(\rho) \rangle\\
+        &= -2w \pgrad_w L(\rho) -2c\norm{z}^2\\
+        &= -2w \pgrad_w L(\rho) -2c(1-w^2).
+    \end{align}
+Rearranging gives us
+\begin{align}
+    c = -\frac{w}{1-w^2} \pgrad_w L(\rho).
+\end{align}
+\end{proof}
+
+By directly applying this formula for the last $(d - 1)$ coordinates of the projected gradient, we have the following upper bound on the contribution of the last $(d - 1)$ coordinates to $A_t$ during Phase 1.
+
+\begin{lemma}[Contribution of $z$'s During Phase 1.]\label{lemma:A_bound_other_coord}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Let $t \leq T_1$ (where $T_1$ is as defined in \Cref{def:phase_1}). Let $\rho_t$ be defined according to the population projected gradient flow as in \Cref{eq:population_derivative}. Let $\pgrad_\u L(\rho)$ be as in \Cref{eq:projected_gradient_flow_population}, and let $\pgrad_\z L(\rho)$ denote the last $(d - 1)$ coordinates of $\pgrad_\u L(\rho)$ for any particle $\u = (\w, \z)$. Then, we have the following upper bound:
+\begin{align}
+-2 \big\langle \pgrad_{\zhat} L(\rho_t) - & \pgrad_{\zbar} L(\rho_t), \zhat_t - \zbar_t\big\rangle \\
+& \lesssim \sigmaCoeffTwo^2|D_{2,t}| (|\wbar_t| + |\what_t|) \norm{\ubar_t-\uhat_t}^2 + \sigmaCoeffFour^2|D_{4,t}|(|\wbar_t^3| + |\what_t^3|) \norm{\ubar_t-\uhat_t}^2 \\ 
+&\nextlinespace\nextlinespace\nextlinespace + \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} \|\ubar_t - \uhat_t\|_2^2 \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:A_bound_other_coord}]
+    Using the formula for projected gradient in \Cref{lemma:at_1}, we have that
+    \begin{align}
+        &- \big\langle \pgrad_{\zhat} L(\rho_t)  - \pgrad_{\zbar} L(\rho_t), \zhat_t - \zbar_t\big\rangle \\
+        & \nextlinespace\nextlinespace = \Big\langle \frac{\what_t}{1-\what_t^2}\cdot \pgrad_{\what} L(\rho_t)\cdot \zhat_t - \frac{\wbar_t}{1-\wbar_t^2}\cdot \pgrad_{\wbar} L(\rho_t)\cdot \zbar_t,  \zhat_t - \zbar_t\Big\rangle \\
+        & \nextlinespace\nextlinespace = \Big(\frac{\what_t \pgrad_{\what} L(\rho_t)}{1 - \what_t^2} - \frac{\wbar_t \pgrad_{\wbar} L(\rho_t)}{1 - \wbar_t^2}\Big) \zhat^\top (\zhat_t - \zbar_t) + \frac{\wbar_t \pgrad_{\wbar} L(\rho_t)}{1 - \wbar_t^2} \|\zhat_t - \zbar_t\|_2^2
+    \end{align}
+    The second term is always negative for $t \leq T_1$, because \Cref{lemma:w_increasing_phase2} implies that $\vel(\wbar_t)$ has the same sign as $\wbar_t$, meaning that $\pgrad_{\wbar} L(\rho_t)$ has the opposite sign. We bound the first term as    
+    \begin{align}
+    &\Big( \frac{\what_t\pgrad_{\what} L(\rho_t)}{1-\what_t^2} - \frac{\wbar_t \pgrad_{\wbar} L(\rho_t)}{1-\wbar_t^2}\Big) \zhat_t^\top (\zbar_t-\zhat_t) \\
+    & \nextlinespace\nextlinespace \le \Big|  \frac{\what_t\pgrad_{\what} L(\rho_t)}{1-\what_t^2} - \frac{\wbar_t \pgrad_{\wbar} L(\rho_t)}{1-\wbar_t^2}\Big| \cdot \norm{\zbar_t-\zhat_t} 
+    & \tag{B.c. $|\zhat_t\|_2 \leq \|\uhat_t\|_2 = 1$} \\
+    & \nextlinespace\nextlinespace = |\what_t (P_t(\what_t) + Q_t(\what_t)) - \wbar_t (P_t(\wbar_t) + Q_t(\wbar_t)) | \cdot \|\zbar_t - \zhat_t\|_2
+    & \tag{By \Cref{lem:1-d-traj}} \\
+    & \nextlinespace\nextlinespace \leq 2 \sigmaCoeffTwo^2 |D_{2, t}| |\what_t^2 - \wbar_t^2| \|\zbar_t - \zhat_t\|_2 + 4 \sigmaCoeffFour^2 |D_{4, t}| |\what_t^4 - \wbar_t^4 | \|\zbar_t - \zhat_t\|_2 \\
+    & \nextlinespace\nextlinespace\nextlinespace + |Q_t(\wbar_t) - Q_t(\what_t)| \cdot \|\zbar_t - \zhat_t\|_2
+    & \tag{By \Cref{lem:1-d-traj} and Def. of $P_t$} \\
+    & \nextlinespace\nextlinespace \leq 2 \sigmaCoeffTwo^2 |D_{2, t}| |\what_t^2 - \wbar_t^2| \|\zbar_t - \zhat_t\|_2 + 4 \sigmaCoeffFour^2 |D_{4, t}| |\what_t^4 - \wbar_t^4 | \|\zbar_t - \zhat_t\|_2 \\
+    & \nextlinespace\nextlinespace\nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d}\Big) |\wbar_t - \what_t| \|\zbar_t - \zhat_t\|_2
+    & \tag{By \Cref{lemma:polynomial_difference} and Def. of $Q_t$ from \Cref{lem:1-d-traj}} \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 |D_{2, t}| (|\wbar_t| + |\what_t|) \|\uhat_t - \ubar_t\|_2^2 + \sigmaCoeffFour^2 |D_{4, t}| (|\wbar_t|^3 + |\what_t|^3) \|\uhat_t - \ubar_t\|_2^2 \\
+    & \nextlinespace\nextlinespace\nextlinespace + \frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} \|\uhat_t - \ubar_t \|_2^2
+    & \tag{B.c. $|\wbar_t - \what_t| \leq \|\ubar_t - \uhat_t\|_2$ and $|\zbar_t - \zhat_t\|_2 \leq \|\ubar_t - \uhat_t\|_2$}
+    \end{align}
+as desired.
+\end{proof}
+
+We can combine \Cref{lemma:A_bound_first_coord} and \Cref{lemma:A_bound_other_coord} and get the following bound on $A_t$ during Phase 1.
+
+\begin{lemma}\label{lemma:At_bound_first}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Let $t \leq T_1$ (where $T_1$ is as defined in \Cref{def:phase_1}). Then,
+\begin{align}
+A_t 
+& \leq 4 \sigmaCoeffTwo^2 |D_{2,t}| (\what_t - \wbar_t)^2 + O((\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4,t}|) \wmax) \|\uhat_t - \ubar_t\|_2^2 \\
+& \nextlinespace + O\Big((\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4,t}|) \deltaMax \Big) \|\uhat_t - \ubar_t\|_2^2 \\
+& \nextlinespace + O\Big(\frac{\sigmaCoeffTwo^2 |D_{2, t}| + \sigmaCoeffFour^2 |D_{4, t}|}{d} \Big) \|\uhat_t - \ubar_t\|_2^2 \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:At_bound_first}]
+This directly follows from \Cref{lemma:A_bound_first_coord} and \Cref{lemma:A_bound_other_coord}.
+\end{proof}
+
+Next, we give a potentially looser bound for $A_t$ which holds even after Phase 1. The running time after Phase 1 is at most $(\log \log d)^{O(1})$ (aside from the dependency on $\sigmaCoeffTwo, \sigmaCoeffFour$, etc.), meaning that even the following growth rate is enough to ensure that the coupling error grows by only a sub-polynomial factor after Phase 1.
+
+\begin{lemma}\label{lemma:At_bound_later}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Then, for all $t \geq 0$, we have
+    \begin{align}
+        |A_t| \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\gamma_2 \norm{\ubar_t-\uhat_t}^2.    
+    \end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:At_bound_later}]
+    We first consider the part of $A_t$ that originates from the non-projected gradients, which is defined as
+    \begin{align}
+        A_t'  &:= -2\langle \nabla_{\ubar} L(\rho_t) - \nabla_{\uhat} L(\rho_t), \ubar_t-\uhat_t \rangle\\
+        &= -2 \mathbb{E}_{x\sim\Sp} \big[ (f_\rho(x) - y(x))(\sigma'(\ubar_t^\top x) - \sigma'(\uhat_t^\top x))(\ubar_t^\top x  -\uhat_t^\top x) \big].
+    \end{align}
+    By the Cauchy-Schwarz inequality, we have
+    \begin{align}
+        |A_t'| \lesssim \mathbb{E}_{x\sim\Sp} [(f_\rho(x) - y(x))^2 ]^{\frac{1}{2}} \cdot \mathbb{E}_{x\sim\Sp} [(\sigma'(\ubar_t^\top x) - \sigma'(\uhat_t^\top x))^2(\ubar_t^\top x  -\uhat_t^\top x)^2]^{\frac{1}{2}}. \label{eq:at_6}
+    \end{align}
+    We bound the first factor in the equation above by the loss at initialization, which is
+    \begin{align}
+        \frac{1}{2} \mathbb{E}_{x\sim\Sp} [(f_{\rho_0}(x)-y)^2] \lesssim (\sigmaCoeffTwo^2+\sigmaCoeffFour^2)\gamma_2^2. \label{eq:at_4}
+    \end{align}
+    by \Cref{lemma:phase1_d2_d4_neg}. Thus, plugging \Cref{eq:at_4} and \Cref{eq:at_5} (from the statement of \Cref{lemma:sigma_dot_product_bound}) into \Cref{eq:at_6} gives us
+    \begin{align}
+        |A_t'| \lesssim (\sigmaCoeffFour^2 + \sigmaCoeffTwo^2) \gamma_2\norm{\vv_t}^2.\label{eq:at_9}
+    \end{align}
+    Next, we bound the difference between $A_t$ and $A_t'$. We have
+    \begin{align}
+    A_t - A_t'
+    & = - \langle \pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle + \langle \nabla_{\uhat} L(\rho_t) - \nabla_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle \\
+    & = \langle \nabla_{\uhat} L(\rho_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle - \langle \nabla_{\ubar} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle \label{eq:projected_diff_At}
+    \end{align}
+    For the first term of \Cref{eq:projected_diff_At}, we have
+    \begin{align}
+    \langle \nabla_{\uhat} L(\rho_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle
+    & = \langle \uhat_t \uhat_t^\top \nabla_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle \\
+    & = \langle \nabla_{\uhat} L(\rho_t), (\uhat_t \uhat_t^\top) \uhat_t - (\uhat_t \uhat_t^\top) \ubar_t \rangle \\
+    & = \langle \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot (1 - \langle \uhat_t, \ubar_t \rangle) \\
+    & = \langle \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot \frac{\| \uhat_t - \ubar_t \|_2^2}{2}
+    & \tag{B.c. $\|\uhat_t\|_2 = \|\ubar_t\|_2 = 1$} \\
+    & = \E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - y(x)) \sigma'(\uhat_t^\top x) \uhat_t^\top x] \cdot \frac{\|\uhat_t - \ubar_t\|_2^2}{2} \\
+    & = \E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - y(x)) \sigma'(\uhat_t^\top x) \uhat_t^\top x] \cdot \frac{\|\delta_t\|_2^2}{2}
+    \end{align}
+    and by an argument similar to the one used to bound $A'_t$ (here using \Cref{eq:sigma_dp_2} from \Cref{lemma:sigma_dot_product_bound} instead of \Cref{eq:at_5}), we can thus show that
+    \begin{align}
+        |\langle \nabla_{\uhat} L(\rho_t) - \pgrad_{\uhat} L(\rho_t), \ubar_t - \uhat_t\rangle| \lesssim (\sigmaCoeffTwo^2+\sigmaCoeffFour^2)\gamma_2\norm{\vv_t}^2. \label{eq:at_7}
+    \end{align}
+    Similarly, for the second term we have
+    \begin{align}
+        |\langle \nabla_{\ubar} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \ubar_t - \uhat_t\rangle|\lesssim (\sigmaCoeffTwo^2+\sigmaCoeffFour^2)\gamma_2\norm{\vv_t}^2. \label{eq:at_8}
+    \end{align}
+    Combining \Cref{eq:at_7}, \Cref{eq:at_8} and \Cref{eq:at_9} finishes the proof.
+\end{proof}
+
+\subsection{Upper Bound on $B_t$}\label{sec:proof_bt}
+
+The goal of this section is to obtain an upper bound on 
+\begin{align}
+B_t(\chi) := -2 \langle \pgrad_{\uhat} L(\rhohat_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t(\chi) - \ubar_t(\chi) \rangle.
+\end{align}
+When there is no risk of confusion, we simply use $B_t$, $\uhat_t$, and $\ubar_t$, omitting the $\chi$ dependency. In the next lemma, we first obtain a bound on $B_t(\chi)$, and after that, we obtain a bound on $\E_\chi[B_t(\chi)]$. The proof of the following lemma is mostly a straightforward calculation, and follows mostly from \Cref{lemma:finite_sample_width_main_lemma} and the definition of $\deltaBar$.
+
+\begin{lemma}\label{lemma:bt_bound_individual}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Suppose $T \lesssim \frac{d^C}{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}$ for any absolute constant $C$. Assume the width $m$ of $\rhobar, \rhohat$ is at most $d^{O(\log d)}$. Then, with probability at least $1 - e^{-d^2}$, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhohat_t}(x))^2] 
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^2 (\log d)^{O(1)}}{m}
+\end{align}
+for all times $t \in [0, T]$. Additionally, with probability at least $1 - e^{-d^2}$, for all $t \in [0, T]$ and $\chi \in \rhohat_0$, we have
+\begin{align}
+B_t(\chi) 
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t \Big) \|\delta_t\|_2 \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:bt_bound_individual}]
+We first decompose $B_t$ into two terms:
+\begin{align}
+B_t
+& = -2 \langle \pgrad_{\uhat} L(\rhohat_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle \\
+& = -2 \langle (I - \uhat_t \uhat_t^\top) \nabla_{\uhat} L(\rhohat_t) - (I - \uhat_t \uhat_t^\top) \nabla_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle \\
+& = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), (I - \uhat_t \uhat_t^\top) (\uhat_t - \ubar_t) \rangle \\
+& = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle + 2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \uhat_t^\top (\uhat_t - \ubar_t) \rangle \\
+& = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle + 2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot (1 - \langle \uhat_t, \ubar_t \rangle) \\
+& = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle + 2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot \frac{\|\uhat_t - \ubar_t\|_2^2}{2}
+\end{align}
+where the last equality is because $\frac{\|\uhat_t - \ubar_t\|_2^2}{2} = 1 - \langle \uhat_t, \ubar_t \rangle$ since $\| \uhat_t\|_2 = \|\ubar_t\|_2 = 1$. For convenience, define $\vv_t := \uhat_t - \ubar_t$. Then, we have
+\begin{align}
+B_t = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \vv_t \rangle + \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot \|\vv_t\|_2^2 \label{eq:Bt_decomposition}
+\end{align}
+We first focus on the first term in \Cref{eq:Bt_decomposition}, which is the main contributor to $B_t$.
+
+\paragraph{Analysis of First Term in \Cref{eq:Bt_decomposition}.} For convenience, we refer to the first term in \Cref{eq:Bt_decomposition} as $B_t'$. Observe that we can expand $B_t'$ as
+\begin{align}
+B_t' 
+& = -2 \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \vv_t \rangle \\
+& = -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rho}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle]
+& \tag{By \Cref{eq:projected_gradient_flow_population}} \\
+& = -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_\rho(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] \label{eq:bt_1}
+\end{align}
+Let us bound the first term of \Cref{eq:bt_1}. By \Cref{lemma:finite_sample_width_main_lemma}, with probability $e^{-d^2}$, for all $t \leq T$ we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^2 (\log d)^{O(1)}}{m} \period \label{eq:finite_width_bound}
+\end{align}
+Thus, we can bound the first term of \Cref{eq:bt_1} by
+\begin{align}
+& \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_\rho(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] \Big| \\
+& \nextlinespace\nextlinespace \leq \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_{\rho}(x))^2]^{1/2} \E_{x \sim \bbS^{d - 1}} [\sigma'(\langle \uhat_t, x \rangle)^2 \langle \vv_t, x \rangle^2]^{1/2}
+& \tag{By Cauchy-Schwarz inequality} \\
+& \nextlinespace\nextlinespace \lesssim \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_\rho(x))^2]^{1/2} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \|\delta_t\|_2
+& \tag{By \Cref{lemma:sigma_dot_product_bound}, \Cref{eq:sigma_dp_2}} \\
+& \nextlinespace\nextlinespace \lesssim \frac{\sqrt{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2} \cdot d (\log d)^{O(1)}}{\sqrt{m}} \cdot (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \|\delta_t\|_2
+& \tag{By \Cref{eq:finite_width_bound}} \\
+& \nextlinespace\nextlinespace \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot d (\log d)^{O(1)}}{\sqrt{m}} \|\delta_t\|_2 \period \label{eq:bt_2}
+\end{align}
+Next, we bound the second term in \Cref{eq:bt_1}. By applying the Cauchy-Schwarz inequality, we have
+\begin{align}
+& \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat, x \rangle) \langle \delta_t, x \rangle] \Big| \\
+& \nextlinespace\nextlinespace \leq \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x))^2]^{1/2} \E_{x \sim \bbS^{d - 1}} [\sigma'(\langle \uhat, x \rangle)^2 \langle \vv_t, x \rangle^2]^{1/2} \\
+& \nextlinespace\nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \deltaBar_t \cdot \E_{x \sim \bbS^{d - 1}} [\sigma'(\langle \uhat_t, x \rangle)^2 \langle \vv_t, x \rangle^2]^{1/2}
+& \tag{By \Cref{lemma:finite_sample_width_main_lemma}} \\
+& \nextlinespace\nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \deltaBar_t \cdot (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \|\delta_t\|_2
+& \tag{By \Cref{lemma:sigma_dot_product_bound} (\Cref{eq:sigma_dp_2})} \\
+& \nextlinespace\nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t \|\delta_t\|_2
+\label{eq:bt_3}
+\end{align}
+Combining \Cref{eq:bt_2} and \Cref{eq:bt_3} with \Cref{eq:bt_1}, we find that
+\begin{align}
+|B_t'|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t\Big) \|\delta_t\|_2 \period
+\end{align}
+
+\paragraph{Analysis of Second Term in \Cref{eq:Bt_decomposition}.} For convenience, we write this term as $B_t''$, i.e. we define $B_t'' := \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot \|\delta_t\|_2^2$. It suffices to show that the first dot product in the definition of $B_t''$ is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)$ up to constant factors. To start, we have
+\begin{align}
+|\langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle|
+& \lesssim \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_\rho(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \uhat_t, x \rangle] \Big| \\
+& \lesssim \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rho}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle\uhat_t, x \rangle] \Big| \\
+& \nextlinespace +  \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_{\rhohat}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle\uhat_t, x \rangle] \Big| \label{eq:bt_higher_order_pointwise}
+\end{align}
+Both terms in \Cref{eq:bt_higher_order_pointwise} can be bounded as before. For the first term we use \Cref{eq:finite_width_bound}:
+\begin{align}
+& \Big| \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \uhat_t, x \rangle] \Big| \\
+& \nextlinespace\nextlinespace \leq \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x))^2]^{1/2} \E_{x \sim \bbS^{d - 1}} [\sigma'(\langle \uhat_t, x \rangle)^2 \langle \uhat_t, x \rangle^2]^{1/2}
+& \tag{By Cauchy-Schwarz Inequality} \\
+& \nextlinespace\nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \frac{d (\log d)^{O(1)}}{\sqrt{m}} \period
+& \tag{By \Cref{eq:finite_width_bound} and \Cref{lemma:sigma_dot_product_bound}, \Cref{eq:sigma_dp_2}}
+\end{align}
+For the second term, we use \Cref{lemma:point_error_to_fn_error}:
+\begin{align}
+& \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_{\rhohat}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \uhat_t, x \rangle] \Big| \\
+& \nextlinespace\nextlinespace \lesssim \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_{\rhohat}(x))^2]^{1/2} \E_{x \sim \bbS^{d - 1}} [\sigma'(\langle \uhat_t, x \rangle)^2 \langle \uhat_t, x \rangle^2]^{1/2} 
+& \tag{By Cauchy-Schwarz Inequality} \\
+& \nextlinespace\nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t
+& \tag{By \Cref{lemma:point_error_to_fn_error} and \Cref{lemma:sigma_dot_product_bound}, \Cref{eq:sigma_dp_2}}
+\end{align}
+Thus, we can conclude that
+\begin{align} \label{eq:bt_double_prime_bound}
+|B_t''|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t \Big) \cdot \|\delta_t\|_2^2
+\end{align}
+
+\paragraph{Overall Bound on $B_t$.} Combining our bounds on $B_t'$ and $B_t''$, and using the fact that $\|\delta_t\|_2 \leq 2$ to absorb the bound for $B_t''$ into the bound for $B_t'$, we find that
+\begin{align}
+|B_t|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t \Big) \|\delta_t\|_2
+\end{align}
+with probability $1 - e^{-d^2}$ (recall that \Cref{eq:finite_width_bound} held with probability $1 - e^{-d^2}$). This completes the proof.
+\end{proof}
+
+Next, we show a tighter bound when we take the expectation of $B_t$ over the neurons, i.e. over $\chi$. Taking the expectation allows us to obtain a tighter bound because of the term
+\begin{align} \label{eq:bt_expectation_intuition}
+-2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] \period
+\end{align}
+For a single $\uhat_t$, the best bound we can obtain is by using the Cauchy-Schwarz inequality. However, the key point in the following lemma is that when we take the expectation over $(\uhat_t, \ubar_t) \sim \coup_t$, this term becomes
+\begin{align}
+-2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x))^2] \leq 0
+\end{align}
+together with a third-order term which is at most $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3$, which is a significantly better bound than $(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t \|\delta_t\|_2$, which we obtained in the previous lemma. This is because to simplify \Cref{eq:bt_expectation_intuition}, we can use
+\begin{align}
+\sigma(\langle \ubar_t, x \rangle)
+& = \sigma(\langle \uhat_t, x \rangle) + \sigma'(\langle \uhat_t, x \rangle) \langle \ubar_t - \uhat_t, x \rangle + O(\sigma''(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle^2 )
+\end{align}
+meaning that we can essentially substitute $\sigma'(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle \approx \sigma(\langle \uhat_t, x \rangle) - \sigma(\langle \ubar_t, x \rangle)$ in \Cref{eq:bt_expectation_intuition}. Note that we need this better bound on the growth rate of $\deltaBar_t$ since our inductive hypothesis imposes a stricter condition on $\deltaBar_t$.
+
+\begin{lemma}\label{lemma:bt_bound_avg}
+Suppose we are in the setting of \Cref{lemma:bt_bound_individual}, and in particular, suppose $T$ satisfies the same assumptions as in the statement of \Cref{lemma:bt_bound_individual}. Then, for all $t \leq T$, we have
+\begin{align}
+\E_{\chi \sim \rhohat_0} [B_t(\chi)] 
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3 \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:bt_bound_avg}]
+We again make use of \Cref{eq:Bt_decomposition}, and we recall from the proof of the previous lemma that $B_t = B_t' + B_t''$, where
+\begin{align}
+B_t'
+& = -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - f_\rho(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \vv_t, x \rangle] 
+\end{align}
+and
+\begin{align}
+B_t'' 
+& = \langle \nabla_{\uhat} L(\rhohat_t) - \nabla_{\uhat} L(\rho_t), \uhat_t \rangle \cdot \|\delta_t\|_2^2 \period
+\end{align}
+The main difference between \Cref{lemma:bt_bound_individual} is that we now bound the second term of $B_t'$ in expectation. By Taylor's theorem, we can write
+\begin{align}
+\sigma(\langle \ubar_t, x \rangle)
+& = \sigma(\langle \uhat_t, x \rangle) + \sigma'(\langle \uhat_t, x \rangle) (\langle \ubar_t, x \rangle - \langle \uhat_t, x \rangle) + \frac{\sigma''(\lambda)}{2} (\langle \ubar_t, x \rangle - \langle \uhat_t, x \rangle)^2
+\end{align}
+for some $\lambda$ which is a convex combination of $\langle \uhat, x \rangle$ and $\langle \ubar, x \rangle$. Rearranging gives
+\begin{align} \label{eq:taylor_to_complete_square}
+\sigma'(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle
+= \sigma'(\langle \uhat_t, x \rangle) \langle \uhat_t - \ubar_t, x \rangle
+= \sigma(\langle \uhat_t, x \rangle) - \sigma(\langle \ubar_t, x \rangle) + \frac{\sigma''(\lambda)}{2} \langle \delta_t, x \rangle^2
+\end{align}
+Thus, taking the expectation of the second term of $B_t'$ over $(\uhat_t, \ubar_t) \sim \coup_t$ gives
+\begin{align}
+& -2 \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle] \\
+& \nextlinespace\nextlinespace = -2 \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) (\sigma(\langle \uhat_t, x \rangle) - \sigma(\langle \ubar_t, x \rangle))] \\
+& \nextlinespace\nextlinespace\nextlinespace - \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma''(\lambda) \langle \delta_t, x \rangle^2]
+& \tag{By \Cref{eq:taylor_to_complete_square}} \\
+& \nextlinespace\nextlinespace = -2 \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x))^2] \\
+& \nextlinespace\nextlinespace\nextlinespace - \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma''(\lambda) \langle \delta_t, x \rangle^2]
+& \tag{By \Cref{eqn:12}} \\
+& \nextlinespace\nextlinespace \leq - \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma''(\lambda) \langle \delta_t, x \rangle^2]
+& \label{eq:completing_square}
+\end{align}
+Next, let us bound the inner expectation in \Cref{eq:completing_square}. By the Cauchy-Schwarz inequality, we have
+\begin{align}
+& \Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma''(\lambda) \langle \delta_t, x \rangle^2] \Big| \\
+& \nextlinespace \leq \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x))^2]^{1/2} \E_{x \sim \bbS^{d - 1}} [\sigma''(\lambda)^2 \langle \delta_t, x \rangle^4]^{1/2} \\
+& \nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \deltaBar_t \cdot \E_{x \sim \bbS^{d - 1}} [\sigma''(\lambda)^2 \langle \delta_t, x \rangle^4]^{1/2}
+& \tag{By \Cref{lemma:point_error_to_fn_error}} \\
+& \nextlinespace \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \deltaBar_t \cdot \Big(\E_{x \sim \bbS^{d - 1}} [\sigma''(\langle \uhat_t, x \rangle)^2 \langle \delta_t, x \rangle^4]^{1/2} 
++ \E_{x \sim \bbS^{d - 1}} [\sigma''(\langle \ubar_t, x \rangle)^2 \langle \delta_t, x \rangle^4]^{1/2} \Big)
+\end{align}
+Here to obtain the last inequality, we observe that $\sigma''$ is convex because $\PtwoD''$ is a constant function and $\PfourD''$ is a quadratic function by \Cref{eq:legendre_polynomial_2_4} --- additionally, we used the inequality $(a + b)^2 \lesssim a^2 + b^2$ and the fact that $\lambda$ is a convex combination of $\langle \uhat_t, x \rangle$ and $\langle \ubar_t, x \rangle$.
+
+By an argument similar to the proof of \Cref{lemma:sigma_dot_product_bound}, we can show that $\E_{x \sim \bbS^{d - 1}} [\sigma''(\langle \uhat_t, x \rangle)^2 \langle \delta_t, x \rangle^4]^{1/2} \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \|\delta_t\|_2^2$ and $\E_{x \sim \bbS^{d - 1}} [\sigma''(\langle \ubar_t, x \rangle)^2 \langle \delta_t, x \rangle^4]^{1/2} \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)^{1/2} \|\delta_t\|_2^2$. Combining this with \Cref{eq:completing_square}, we have that
+\begin{align}
+\Big| \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle] \Big| 
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t \|\delta_t\|_2^2
+\end{align}
+and thus,
+\begin{align}
+-2 \E_{(\uhat, \ubar) \sim \coup_t} \E_{x \sim \bbS^{d - 1}} [(f_{\rhohat}(x) - f_{\rhobar}(x)) \sigma'(\langle \uhat_t, x \rangle) \langle \delta_t, x \rangle]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3
+\end{align}
+by the definition of $\deltaBar_t^3$. This gives a bound on the second term of $B_t'$. Combining this with \Cref{eq:bt_2} to bound the first term of $B_t'$, we have
+\begin{align} \label{eq:bt_prime_expectation}
+\E_{(\uhat, \ubar) \sim \coup_t} [B_t']
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \E_{(\uhat, \ubar) \sim \coup_t} \|\delta_t\|_2 + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3 \\
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3
+& \tag{By Cauchy-Schwarz}
+\end{align}
+Combining this with \Cref{eq:bt_double_prime_bound} (for which we also take the expectation over $(\uhat_t, \ubar_t) \sim \coup_t$), we have that
+\begin{align}
+\E_{(\uhat, \ubar) \sim \coup_t} |B_t''|
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t \Big) \cdot \deltaBar_t^2
+\end{align}
+which is at most the bound that we have for $B_t'$, and thus,
+\begin{align}
+\E_{(\uhat, \ubar) \sim \coup_t} [B_t]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3
+\end{align}
+as desired.
+\end{proof}
+
+\subsection{Upper Bound on $C_t$}\label{sec:proof_ct}
+The goal of this section is to obtain an upper bound on
+\begin{align}
+C_t(\chi)
+:= -2 \langle \pgrad_{\uhat} \Lhat(\rhohat_t) - \pgrad_{\uhat} L(\rhohat_t), \uhat_t(\chi) - \ubar_t(\chi) \rangle \period
+\end{align}
+This quantity is essentially the part of the growth of $\|\delta_t\|_2^2$ which is due to the difference between the gradient using finite samples and the gradient using infinitely many samples. When there is no risk of confusion, we simply use $C_t$, $\uhat_t$, and $\ubar_t$, omitting the $\chi$ dependency.
+We bound this term with the following lemma:
+
+\begin{lemma}\label{lemma:ct_bound}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Assume that the number of samples $x_i$ is $n \leq d^C$, for any universal constant $C > 0$. Assume that the width $m \leq d^C$ for any universal constant $C > 0$. Let $T  > 0$. Assume for all $t \in [0, T]$ we have a bound $B_1$ on $\deltaBar_t$ with $B_1 \leq \frac{1}{\sqrt{d}}$. Additionally, assume for all $t \in [0, T]$ that we have a bound $B_2$ on $\deltaMaxt{t}$ such that $B_2 \geq \frac{1}{\sqrt{d}}$. Then, with probability $1 - \frac{1}{d^{\Omega(\log d)}}$, for all $t \in [0, T]$ and $\chi \in \bbS^{d - 1}$, we have
+\begin{align}
+|C_t(\chi)|
+& \lesssim \sigmaCoeffMax^2 (\log d)^{O(1)} \cdot \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2 + \frac{d^2}{n} B_2^2 \deltaBar \|\delta_t\|_2^2 + \frac{d^{2.5}}{n} \deltaBar^2 B_2^2 \|\delta_t\|_2  + \frac{d^4}{n} B_2^4 \deltaBar^2 \|\delta_t\|_2^2 \Big) \period
+\end{align}
+where $\delta_t = \uhat_t(\chi) - \ubar_t(\chi)$.
+
+\end{lemma}
+
+\begin{proof}
+We bound $C_t$ by expanding $\pgrad_{\uhat} L(\rhohat_t)$ as the sum of several monomials, as well as expanding $\pgrad_{\uhat} \Lhat(\rhohat_t)$, and then applying \Cref{lemma:main_concentration_lemma} to each term from $\pgrad_{\uhat} L(\rhohat_t)$ and the corresponding term from $\pgrad_{\uhat} \Lhat(\rhohat_t)$. For convenience, we use $\ell^{(x)}(\rhohat)$ to denote the loss of $f_{\rhohat}$ on a single data point $x \in \bbS^{d - 1}$, and $\pgrad_{\uhat} \ell^{(x)}(\rhohat)$ to denote the projected gradient of $\ell^{(x)}(\rhohat)$ with respect to $\uhat$. We have
+\begin{align}
+\langle \pgrad_{\uhat} \ell^{(x)}(\rhohat_t), \uhat_t - \ubar_t \rangle
+& = \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, (I - \uhat_t \uhat_t^\top) (\uhat_t - \ubar_t) \rangle \\
+& = \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, \uhat_t - \ubar_t \rangle \\ 
+& \nextlinespace\nextlinespace - \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, \uhat_t \rangle \cdot (1 - \langle \uhat_t, \ubar_t \rangle) \\
+& = \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, \uhat_t - \ubar_t \rangle \\ 
+& \nextlinespace\nextlinespace - \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, \uhat_t \rangle \cdot \frac{\|\uhat_t - \ubar_t\|_2^2}{2}
+\end{align}
+For convenience, define $\delta_t := \uhat_t - \ubar_t$. Then we can rewrite the above as
+\begin{align} \label{eq:ct_decompose_datapoint_grad}
+\langle \pgrad_{\uhat} \ell^{(x)}(\rhohat_t), \delta_t \rangle
+& = \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) \langle x, \delta_t \rangle \\ 
+& \nextlinespace\nextlinespace - \langle (f_{\rhohat}(x) - y(x)) \sigma'(\langle \uhat_t, x \rangle) x, \uhat_t \rangle \cdot \frac{\|\delta_t\|_2^2}{2}
+\end{align}
+For illustration, define $\concop(g)$ as
+\begin{align}
+\concop(g) := \Big|\frac{1}{n} \sum_{i = 1}^n g(x_i) - \E_{x \sim \bbS^{d - 1}} [g(x)] \Big|
+\end{align}
+i.e. how close the empirical mean of the $g(x_i)$ is to its expected value. We will show that $\concop(g)$ is small when $g$ corresponds to each of the terms on the right-hand side of \Cref{eq:ct_decompose_datapoint_grad}, even when we take the supremum over the $\uhat_t$, which may depend on the $x_i$.
+
+\paragraph{Concentration for Mean of First Term in \Cref{eq:ct_decompose_datapoint_grad}.} As a first step, we list all of the terms we obtain when expanding the first term on the right-hand side of \Cref{eq:ct_decompose_datapoint_grad}. The $\sigma'(\langle \uhat_t, x \rangle)$ factor consists of the following terms: (1) a $\sigmaCoeffTwo \sqrt{N_{2, d}} \langle \uhat_t, x \rangle$ term, (2) a $\sigmaCoeffFour \sqrt{N_{4, d}} \langle \uhat_t, x \rangle^3$ term, and (3) a $\frac{\sigmaCoeffFour \sqrt{N_{4, d}}}{d} \langle \uhat_t, x \rangle$ term --- here, we have stated these terms up to absolute constant factors for convenience. In the $f_{\rhohat}(x) - y(x)$ factor, $f_{\rhohat}(x)$ contributes (1) a $\sigmaCoeffTwo \sqrt{N_{2, d}} \langle \uhat_t', x \rangle^2$ term, (2) a $\sigmaCoeffFour \sqrt{N_{4, d}} \langle \uhat_t', x \rangle^4$ term, and (3) a $\frac{\sigmaCoeffFour \sqrt{N_{4, d}}}{d} \langle \uhat_t', x \rangle^2$ term. Here note that $\uhat_t'$ is not a single vector, but ranges over the entire support of $\rhohat_t$. Thus we implicitly perform a union bound over the $m$ vectors in the support of $\rhohat_t$ --- this does not affect the proof since the failure probability of \Cref{lemma:main_concentration_lemma} is $\frac{1}{d^{\Omega(\log d)}}$, while we assume the width $m$ is at most $d^C$ where $C$ can be any absolute constant. Additionally, $y(x)$ consists of the following terms: (1) a $\sigmaCoeffTwo \gamma_2 \sqrt{N_{2, d}} \langle \e, x \rangle^2$ term, (2) a $\sigmaCoeffFour \gamma_4 \sqrt{N_{4, d}} \langle \e, x \rangle^4$ term, and (3) a $\frac{\sigmaCoeffFour \gamma_4 \sqrt{N_{4, d}}}{d} \langle \e, x \rangle^2$ term. Finally, there is a factor of $\langle \delta_t, x \rangle$.
+
+For convenience, throughout this proof, let $\normdelta_t = \frac{\delta_t}{\|\delta_t\|_2}$. In each of the above factors, for every occurrence of $\langle \uhat_t, x \rangle$, we substitute $\uhat_t = \ubar_t + \delta_t$ and further expand. This is useful since originally $\uhat_t$ depends on the $x_i$ and thus, when we applied \Cref{lemma:main_concentration_lemma} we would have to take the supremum over $\uhat_t$ --- however, now $\ubar_t$ can be considered a fixed vector with respect to the $x_i$, and while we need to take the supremum over $\delta_t$, in each term where $\delta_t$ occurs, we obtain an additional factor of $\|\delta_t\|_2$, which reduces the error from uniform convergence. We now completely expand the first term on the right-hand side of \Cref{eq:ct_decompose_datapoint_grad}. First we consider the contribution to $\concop(g)$ of $f_{\rhohat}(x)$ and later study $y(x)$. Up to constant factors, it suffices to obtain an upper bound on the concentration of
+\begin{align} \label{eq:concentration_goal}
+\sum_{\substack{p + r = 1, 3 \\ q + s = 2, 4}} \sigmaCoeffMax^2 d^{\frac{p + 1 + q + r + s}{2}} \langle \delta_t, x \rangle^{p + 1} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s
+\end{align}
+where we have let $\sigmaCoeffMax = \max(|\sigmaCoeffTwo|, |\sigmaCoeffFour|)$. Here, the sum ranges over $p + q = 1, 3$ and $q + s = 2, 4$ since the $\delta_t$ and $\ubar_t$ terms are due to the $\sigma'(\langle \uhat_t, x \rangle)$ factor, while the $\delta_t'$ and $\ubar_t'$ terms are due to the $f_{\rhohat}(x)$ factors.
+
+We now obtain concentration bounds for each of the terms in \Cref{eq:concentration_goal}. First, we consider the case where $p + q \geq 1$, as in this case, \Cref{lemma:main_concentration_lemma} can be applied (since we can choose $p_1, p_2, p_3, p_4$ in \Cref{lemma:main_concentration_lemma} so that $u_1 = \normdelta_t$ and $p_1 = p + 1$, and $u_2 = \normdelta_t'$ and $p_2 = q$, and $p_3 = p_4 = 0$ --- the hypotheses are then satisfied since $p_1 + p_2 + p_3 + p_4 \geq 2$). From \Cref{lemma:main_concentration_lemma}, we obtain the bound
+\begin{align}
+& \sigmaCoeffMax^2 d^{\frac{p + q + r + s + 1}{2}} \Big|\frac{1}{n} \sum_{i = 1}^n \langle \delta_t, x \rangle^{p + 1} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s - \E_{x \sim \bbS^{d - 1}} [\langle \delta_t, x \rangle^{p + 1} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s] \Big| \\
+& \nextlinespace\nextlinespace \lesssim \sigmaCoeffMax^2 (\log d)^{O(1)} \Big(\sqrt{\frac{d}{n}} + \frac{d^{\frac{p + 1 + q}{2}}}{n} \Big) \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q
+\end{align}
+Here in applying \Cref{lemma:main_concentration_lemma}, we have assumed that the number of samples $n$ is at most $d^C$ for some absolute constant $C$, meaning that the $\frac{1}{d^{\Omega(\log d)}}$ term in the conclusion is a lower-order term. Lastly, we consider the case where $p + q = 0$. To apply \Cref{lemma:main_concentration_lemma}, we can let $u_1 = \ubar_t$, $p_1 = 1$, $u_2 = \frac{\delta_t}{\|\delta_t\|_2}$, $p_2 = 1$, and let $p_3 = p_4 = 0$, with $w_1 = \ubar_t$, $q_1 = r - 1$ and $w_2 = \ubar_t'$, $q_2 = s$ --- since $p_1 + p_2 = 2$, the hypotheses of \Cref{lemma:main_concentration_lemma} are still satisfied. This leads to us obtaining only one power of $\|\delta_t\|_2$ in the bound for this term: if $p = q = 0$, then we have the bound
+\begin{align}
+& \sigmaCoeffMax^2 d^{\frac{p + q + r + s + 1}{2}} \Big|\frac{1}{n} \sum_{i = 1}^n \langle \delta_t, x \rangle^{p + 1} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s - \E_{x \sim \bbS^{d - 1}} [\langle \delta_t, x \rangle^{p + 1} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s] \Big| \\
+& \nextlinespace\nextlinespace \lesssim \sigmaCoeffMax^2 (\log d)^{O(1)}\Big(\sqrt{\frac{d}{n}} + \frac{d}{n}\Big) \|\delta_t\|_2
+\end{align}
+Summing over the possible values of $p, q, r, s$, we find that the overall contribution to the concentration error of the term with $f_{\rhohat}$ is, up to logarithmic factors and a $\sigmaCoeffMax^2$ factor,
+\begin{align}
+& \E_{\delta' \sim \rhohat} \sum_{p, q, r, s} \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q + \frac{d^{\frac{p + 1 + q}{2}}}{n} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q \Big) \\
+& \nextlinespace\nextlinespace \lesssim \E_{\delta' \sim \rhohat} \sum_{p \leq 3, q \leq 4} \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q + \frac{d^{\frac{p + 1 + q}{2}}}{n} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q \Big) \\
+& \nextlinespace\nextlinespace \lesssim \sqrt{\frac{d}{n}} \|\delta_t\|_2 + 
+\E_{\delta' \sim \rhohat} \sum_{p \leq 3, q \leq 4} \frac{d^{\frac{p + q + 1}{2}}}{n} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q \\
+& \nextlinespace\nextlinespace \lesssim \sqrt{\frac{d}{n}} \|\delta_t\|_2 + 
+\E_{\delta' \sim \rhohat} \sum_{p \leq 3, q \leq 4} \frac{d^{\frac{p + q + 1}{2}}}{n} \|\delta_t\|_2^{p + 1} \|\delta_t'\|_2^q \\
+& \nextlinespace\nextlinespace \lesssim \sqrt{\frac{d}{n}} \|\delta_t\|_2 + \sum_{p \leq 3, q \leq 4} \frac{d^{\frac{p + q + 1}{2}}}{n} \|\delta_t\|_2^{p + 1} 
+\E_{\delta' \sim \rhohat} \|\delta_t'\|_2^q
+\end{align}
+Finally, in order to simplify this bound, we isolate the dominant terms among the terms of the form $\frac{d^{\frac{p + q + 1}{2}}}{n} \|\delta_t\|_2^{p + 1} \E_{\delta' \sim \rhohat} \|\delta_t'\|_2^q$, with the following cases. First, consider all the terms where $p = 0$. For $q \leq 2$ we can bound these terms by $\frac{d^{\frac{p + q + 1}{2}}}{n} \deltaBar^q \|\delta_t\|_2$, and for $q > 2$ we can bound these terms by $\frac{d^{\frac{p + q + 1}{2}}}{n} \cdot \deltaBar^2 \cdot B_2^{q - 2} \|\delta_t\|_2$. Thus, out of these terms, the term with $q = 4$ is dominant, and it contributes
+\begin{align}
+\frac{d^{2.5}}{n} \cdot \deltaBar^2 \cdot B_2^2 \|\delta_t\|_2
+\end{align}
+Next, consider the case where $p \geq 1$. In this case, since the bound $B_2$ on $\deltaMaxt{t}$ is greater than $\frac{1}{d^{1/2}}$, the term with $p = 3$ and $q = 4$ dominates, and it contributes
+\begin{align}
+\frac{d^4}{n} \cdot B_2^2 \deltaBar^2 \cdot B_2^2 \|\delta_t\|_2^2 = \frac{d^4}{n} B_2^4 \deltaBar^2 \|\delta_t\|_2^2
+\end{align}
+However, we must lastly consider the case where $p \geq 1$ and $q < 2$ --- the bound on the concentration error may be larger for $q = 1$ than $q = 2$ since $\deltaBar < \frac{1}{\sqrt{d}}$. In this case, since $B_2 > \frac{1}{\sqrt{d}}$, we must consider the $p = 3, q = 1$ and $p = 3, q = 0$ terms, which respectively contribute
+\begin{align}
+\frac{d^{2.5}}{n} \deltaBar B_2^2 \|\delta_t\|_2^2
+\end{align}
+and
+\begin{align}
+\frac{d^2}{n} B_2^2 \|\delta_t\|_2^2
+\end{align}
+Note that the $p = 3, q = 0$ term dominates since our bound on $\deltaBar$ is less than $\frac{1}{\sqrt{d}}$, meaning we can ignore the $p = 3, q = 1$ term. Thus our overall bound on the concentration error originating from the first term in \Cref{eq:ct_decompose_datapoint_grad} is
+\begin{align}
+\sigmaCoeffMax^2 (\log d)^{O(1)} \cdot \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2 + \frac{d^2}{n} B_2^2 \deltaBar \|\delta_t\|_2^2 + \frac{d^{2.5}}{n} \deltaBar^2 B_2^2 \|\delta_t\|_2  + \frac{d^4}{n} B_2^4 \deltaBar^2 \|\delta_t\|_2^2 \Big)
+\end{align}
+To deal with the terms originating from $y(x)$, we observe that we can simply treat $\langle \e, x \rangle$ in the same way as we deal with $\langle \ubar_t, x \rangle$, and thus the terms originating from $y(x)$ do not make any new contributions to the concentration error. 
+
+\paragraph{Concentration for Mean of Second Term in \Cref{eq:ct_decompose_datapoint_grad}.} Finally, to deal with the second term on the right-hand side of \Cref{eq:ct_decompose_datapoint_grad}, we note that we can follow the same proof, but instead obtaining an upper bound on the concentration of 
+\begin{align} \label{eq:concentration_goal_higher_order}
+\|\delta_t\|_2^2 \sum_{\substack{p + r = 2, 4 \\ q + s = 2, 4}} \sigmaCoeffMax^2 d^{\frac{p + q + r + s}{2}} \langle \delta_t, x \rangle^{p} \langle \delta_t', x \rangle^q \langle \ubar_t, x \rangle^r \langle \ubar_t', x \rangle^s
+\end{align}
+and as before, the contribution of the terms originating from $y(x)$ is at most the contribution of the terms in \Cref{eq:concentration_goal_higher_order}. Due to the additional $\|\delta_t\|_2^2$ factor, we can in fact ignore the contribution of the terms in \Cref{eq:concentration_goal_higher_order}, as the dominant terms will be less than the dominant terms from \Cref{eq:concentration_goal}.
+
+\paragraph{Concluding to Bound $C_t$.} In summary, with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$, for all choices of $\delta_t, \delta_t'$, we have
+\begin{align}
+|\concop(g)| 
+& \lesssim \sigmaCoeffMax^2 (\log d)^{O(1)} \cdot \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2 + \frac{d^2}{n} B_2^2 \deltaBar \|\delta_t\|_2^2 + \frac{d^{2.5}}{n} \deltaBar^2 B_2^2 \|\delta_t\|_2  + \frac{d^4}{n} B_2^4 \deltaBar^2 \|\delta_t\|_2^2 \Big)
+\end{align}
+where $g(x) = \langle \pgrad_{\uhat} \ell^{(x)}(\rhohat_t), \delta_t \rangle$. Since $C_t$ is exactly equal to
+\begin{align}
+\frac{1}{n} \sum_{i = 1}^n g(x_i) - \E_{x \sim \bbS^{d - 1}} [g(x)]
+\end{align}
+up to signs and constant factors, we therefore have
+\begin{align}
+|C_t|
+& \lesssim \sigmaCoeffMax^2 (\log d)^{O(1)} \cdot \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2 + \frac{d^2}{n} B_2^2 \deltaBar \|\delta_t\|_2^2 + \frac{d^{2.5}}{n} \deltaBar^2 B_2^2 \|\delta_t\|_2  + \frac{d^4}{n} B_2^4 \deltaBar^2 \|\delta_t\|_2^2 \Big) \period
+\end{align}
+
+
+\end{proof}
+
+\subsection{Additional Lemmas}
+
+\begin{lemma}[Uniform Bound on $\sigma$ and $\sigma'$] \label{lemma:sigma_bound}
+For any $t \in [-1, 1]$, we have $|\sigma(t)| \leq |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$, and additionally, $|\sigma'(t)| \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$. Finally, we have $|\sigma''(t)| \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:sigma_bound}]
+The first statement is by the definition of $\sigma$, and because $|\PtwoD(t)|, |\PfourD(t)| \leq 1$ for any $t \in [-1, 1]$, by \citet{atkinson2012spherical}, Eq. (2.116). The second and third statements are by the definition of $\sigma$ and using \Cref{eq:legendre_polynomial_2_4}.
+\end{proof}
+
+\begin{lemma} [Error from Finite Width] \label{lemma:finite_width_error}
+Let $\rho$ be a distribution on $\bbS^{d - 1}$, and let $\rhobar$ be a distribution on $\bbS^{d - 1}$ of support at most $m$, where the elements of the support of $\rhobar$ are sampled i.i.d. from $\rho$. Additionally, let $\delta > 0$. Then, for some absolute constant $C > 0$,
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (d^2 + \log \frac{1}{\delta}) (\log d)^C}{m} + \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+\end{align}
+with probability at least $1 - \delta$, where $f_\rho$ and $f_{\rhobar}$ are defined as in \Cref{eqn:12}.
+\end{lemma}
+\begin{proof} [Proof of \Cref{lemma:finite_width_error}]
+We can write $f_\rho(x) = \E_{\u \sim \rho} [\sigma(\langle u, x \rangle)]$, and $f_{\rhobar}(x) = \frac{1}{m} \sum_{i = 1}^m \sigma(\langle \u_i, x \rangle)$. Now, let $B \in (0, 1)$, which we will choose appropriately later, and define the function $\truncB : [-1, 1] \to [-1, 1]$ by
+\begin{align}
+\truncB(t)
+= \begin{cases}
+t & t \in [-B, B] \\
+B & t > B \\
+-B & t < -B
+\end{cases}
+\end{align}
+Additionally, define $\ftilde_\rho(x) = \E_{\u \sim \rho} [\sigma(\truncB(\langle u, x \rangle))]$, and define $\ftilde_{\rhobar}(x) = \frac{1}{m} \sum_{i = 1}^m \sigma(\truncB(\langle \u_i, x \rangle))$. Let us analyze the error incurred from replacing $f_\rho$ be $\ftilde_\rho$ and $f_{\rhobar}$ by $\ftilde_{\rhobar}$. Observe that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x)  -\ftilde_\rho(x))^2]
+& = \E_{x \sim \bbS^{d - 1}} (f_\rho(x))^2 - 2 \E_{x \sim \bbS^{d - 1}} f_\rho(x) \ftilde_\rho(x) + \E_{x \sim \bbS^{d - 1}} (\ftilde_\rho(x))^2
+\end{align}
+We can simplify the second term on the right-hand side by expanding $f_\rho$ and $\ftilde_\rho$:
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} f_\rho(x) \ftilde_\rho(x)
+& = \E_{x \sim \bbS^{d - 1}} \E_{\u_1, \u_2 \sim \rho} \sigma(\langle \u_1, x \rangle) \sigma(\truncB(\langle \u_2, x \rangle)) \\
+& = \E_{\u_1, \u_2 \sim \rho} \E_{x \sim \bbS^{d - 1}} \sigma(\langle \u_1, x \rangle) \sigma(\truncB(\langle \u_2, x \rangle)) \label{eq:tilde_expansion}
+\end{align}
+To simplify the inner expectation, we use \Cref{prop:sphere-tail-bound} to find that $\truncB(\langle \u_2, x \rangle) = \langle \u_2, x \rangle$ with probability at least $1 - 2 \exp(-\frac{B^2 d}{2})$. Thus,
+\begin{align}
+& \Big|\E_{x \sim \bbS^{d - 1}} (f_\rho(x))^2 - \E_{x \sim \bbS^{d - 1}} f_\rho(x) \ftilde_\rho(x) \Big| \\
+& \nextlinespace\nextlinespace \leq \E_{\u_1, \u_2 \sim \rho} \E_{x \sim \bbS^{d - 1}} |\sigma(\langle \u_1, x \rangle)| \Big|\sigma(\truncB(\langle \u_2, x \rangle)) - \sigma(\langle \u_2, x \rangle) \Big| \\
+& \nextlinespace\nextlinespace \leq (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \E_{\u_2 \sim \rho} \E_{x \sim \bbS^{d - 1}} \Big|\sigma(\truncB(\langle \u_2, x \rangle)) - \sigma(\langle \u_2, x \rangle) \Big|
+& \tag{By \Cref{lemma:sigma_bound}} \\
+& \nextlinespace\nextlinespace \lesssim \exp\Big(-\frac{B^2 d}{2} \Big) \cdot (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d})
+& \tag{By \Cref{prop:sphere-tail-bound} and \Cref{lemma:sigma_bound}}
+\end{align}
+Similarly, we can show that
+\begin{align}
+\Big|\E_{x \sim \bbS^{d - 1}} (f_\rho(x))^2 - \E_{x \sim \bbS^{d - 1}} (\ftilde_\rho(x))^2 \Big| 
+& \lesssim \exp\Big(-\frac{B^2 d}{2} \Big) \cdot (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d} )
+\end{align}
+and therefore,
+\begin{align} \label{eq:ftilde_rho_bound}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - \ftilde_\rho(x))^2] 
+& \lesssim \exp\Big(-\frac{B^2 d}{2} \Big) \cdot (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d})
+\end{align}
+By the same argument, we can show that
+\begin{align} \label{eq:ftilde_rhobar_bound}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rhobar}(x) - \ftilde_{\rhobar}(x))^2]
+& \lesssim \exp\Big(-\frac{B^2 d}{2} \Big) \cdot (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d})
+\end{align}
+Therefore, it suffices to show that $\E_{x \sim \bbS^{d - 1}} [(\ftilde_\rho(x) - \ftilde_{\rhobar}(x))^2]$ is small with high probability over $\u_1, \ldots, \u_m$. Observe that for $|t| \leq B$, we have $|\PtwoD(t)| \leq B^2 + O(1/d)$, and $|\PfourD(t)| \leq B^4 + O(B^2/d) + O(1/d^2)$. Thus, if we choose $B \geq 1/\sqrt{d}$, then for $|t| \leq B$ we have $|\PtwoD(t)| \lesssim B^2$ and $|\PfourD(t)| \lesssim B^4$. In particular, we have
+\begin{align}
+|\sigma(t)|
+& \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} B^2 + |\sigmaCoeffFour| \sqrt{N_{4, d}} B^4 \period
+\end{align}
+Now, letting $x \in \bbS^{d - 1}$, and using Hoeffding's inequality, we find that if $\u_1, \ldots, \u_m$ are i.i.d. samples from $\rho$, then
+\begin{align}
+\Big| \frac{1}{m} \sum_{i = 1}^m \sigma(\truncB(\langle \u_1, x \rangle) - \E_{\u \sim \rho} [\sigma(\truncB(\langle \u, x \rangle))] \Big| \leq t
+\end{align}
+with probability at least $1 - 2 \exp\Big(-\frac{Cmt^2}{\sigmaCoeffTwo^2 N_{2, d} B^4 + \sigmaCoeffFour^2 N_{4, d} B^8}\Big)$ for some universal constant $C$. Now, by Corollary 4.2.13 of \citet{vershynin2018high}, for any $\gamma > 0$, there exists $\calN \subset \bbS^{d - 1}$ of size at most $(\frac{C}{\gamma})^d$ such that for any $x \in \bbS^{d - 1}$, there exists $y \in \bbS^{d - 1}$ such that $\|x - y\|_2 \leq \gamma$. Thus, with probability at least $1 - 2 \Big(\frac{C}{\gamma}\Big)^d \exp\Big(-\frac{Cmt^2}{\sigmaCoeffTwo^2 N_{2, d} B^4 + \sigmaCoeffFour^2 N_{4, d} B^8}\Big)$, for all $y \in \calN$, we have
+\begin{align} \label{eq:finite_width_net_bound}
+\Big| \frac{1}{m} \sum_{i = 1}^m \sigma(\truncB(\langle \u_1, y \rangle) - \E_{\u \sim \rho} [\sigma(\truncB(\langle \u, y \rangle))] \Big| \leq t \period
+\end{align}
+If \Cref{eq:finite_width_net_bound} holds for any $y \in \calN$, then for any $x \in \bbS^{d - 1}$, since $|\sigma'(t)| \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$ for any $t \in [-1, 1]$ (see \Cref{lemma:sigma_bound}), if we let $y \in \calN$ such that $\|x - y\|_2 \leq \gamma$, then we have
+\begin{align}
+\Big|\frac{1}{m} \sum_{i = 1}^m \sigma(\truncB(\langle \u_1, x \rangle)) - \E_{\u \sim \rho}[\sigma(\truncB(\langle \u, x \rangle))] \Big| \leq t + (|\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}) \gamma \period
+\end{align}
+In summary, with probability at least $1 - 2 \Big(\frac{C}{\gamma}\Big)^d \exp\Big(-\frac{Cmt^2}{\sigmaCoeffTwo^2 N_{2, d} B^4 + \sigmaCoeffFour^2 N_{4, d} B^8}\Big)$, we have
+\begin{align} \label{eq:rho_vs_rhobar_tilde}
+\E_{x \sim \bbS^{d - 1}} [(\ftilde_\rho(x) - \ftilde_{\rhobar}(x))^2]
+& \leq t^2 + (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}) \gamma^2 \period
+\end{align}
+Combining \Cref{eq:rho_vs_rhobar_tilde}, \Cref{eq:ftilde_rho_bound} and \Cref{eq:ftilde_rhobar_bound}, we have that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x))^2]
+& \lesssim t^2 + (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d})\gamma^2 \\
+& \nextlinespace\nextlinespace + \exp\Big(-\frac{B^2 d}{2} \Big) \cdot (\sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d})
+\end{align}
+with probability at least $1 - 2 \Big(\frac{C}{\gamma}\Big)^d \exp\Big(-\frac{Cmt^2}{\sigmaCoeffTwo^2 N_{2, d} B^4 + \sigmaCoeffFour^2 N_{4, d} B^8}\Big)$. Choosing $B = \frac{C' (\log d)^2}{\sqrt{d}}$ for a sufficiently large universal constant $C'$, and using the fact that $N_{2, d} \lesssim d^2$ and $N_{4, d} \lesssim d^4$ (by Eq. (2.10) of \citet{atkinson2012spherical}) we have that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x))^2]
+& \lesssim t^2 + (\sigmaCoeffTwo^2 d^2 + \sigmaCoeffFour^2 d^4) \gamma^2 + \frac{\sigmaCoeffTwo^2 d^2 + \sigmaCoeffFour^2 d^4}{d^{\Omega(\log d)}}
+\end{align}
+with probability at least $1 - 2 \Big(\frac{C}{\gamma}\Big)^d \exp\Big(-\Omega\Big(\frac{mt^2}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{16}}\Big)\Big)$. We can rearrange the failure probability to find that, up to constant factors, it is at most $\exp\Big(-\Omega\Big(\frac{mt^2}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{16}}\Big) + d \log \frac{C}{\gamma} \Big)$. Finally, choosing $\gamma = \frac{1}{d^{\Omega(\log d)}}$, and choosing $t$ so that the failure probability is at most $\delta$, we obtain
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rhobar}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{16} (d \log \frac{C}{\gamma} + \log \frac{1}{\delta})}{m} + \frac{\sigmaCoeffTwo^2 d^2 + \sigmaCoeffFour^2 d^4}{d^{\Omega(\log d)}} \\
+& = \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{16} (d^2 \log d + \log \frac{1}{\delta})}{m} + \frac{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}{d^{\Omega(\log d)}}
+& \tag{B.c. $\gamma = \frac{1}{d^{\Omega(\log d)}}$}
+\end{align}
+with probability at least $1 - \delta$, as desired.
+\end{proof}
+
+\begin{lemma} [Bound on Gradient] \label{lemma:gradient_bounds}
+Let $\u \in \bbS^{d - 1}$ and $\rho$ be a distribution with support on $\bbS^{d - 1}$. In addition, let $\nabla_\u L(\rho)$ and $\pgrad_\u L(\rho)$ be defined as in \Cref{eq:projected_gradient_flow_population}. Then, we have $\|\nabla_\u L(\rho)\|_2 \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4$ and $\|\pgrad_\u L(\rho)\|_2 \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4$.
+
+Similarly, let $\nabla_\u \Lhat(\rho)$ and $\pgrad_\u \Lhat(\rho)$ be defined as in \Cref{eq:projected_gradient_flow_empirical}. Then, we have $\|\nabla_\u \Lhat(\rho)\|_2 \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4$ and $\|\pgrad_\u \Lhat(\rho)\|_2 \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:gradient_bounds}]
+First, we will bound $\nabla_\u L(\rho)$ for any $\u \in \bbS^{d - 1}$ and distribution $\rho$ with support in $\bbS^{d - 1}$:
+\begin{align}
+\|\nabla_\u L(\rho) \|_2
+& = \Big\| \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - y(x)) \sigma'(\langle u, x \rangle) x] \Big\|_2 \\
+& \leq \E_{x \sim \bbS^{d - 1}} |f_\rho(x) - y(x)| |\sigma'(\langle \u, x \rangle)|
+\end{align}
+By \Cref{lemma:sigma_bound}, for any $\u, x \in \bbS^{d - 1}$, we have $|\sigma'(\langle \u, x \rangle)| \lesssim |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$. Additionally, by \Cref{eqn:12} and by the definition of $y(x)$, we have $|f_\rho(x) - y(x)| \leq |\sigmaCoeffTwo| \sqrt{N_{2, d}} + |\sigmaCoeffFour| \sqrt{N_{4, d}}$ by \Cref{lemma:sigma_bound}. Thus,
+\begin{align}
+\| \nabla_\u L(\rho) \|_2
+\lesssim \sigmaCoeffTwo^2 N_{2, d} + \sigmaCoeffFour^2 N_{4, d}
+\lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4
+\end{align}
+because $N_{2, d} \lesssim d^2$ and $N_{4, d} \lesssim d^4$ by Eq. (2.10) of \citet{atkinson2012spherical}. By the same argument, for any $\u \in \bbS^{d - 1}$,
+\begin{align}
+\|(I - \u\u^\top) \nabla_\u L(\rho)\|_2
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^4
+\end{align}
+because $I - \u\u^\top$ is an orthogonal projection matrix. This completes the proof --- the proof of the analogous statements for $\nabla_u \Lhat(\rho)$ and $\pgrad_\u \Lhat(\rho)$ follow from the same arguments.
+\end{proof}
+
+\begin{lemma} \label{lemma:sigma_dot_product_bound}
+Let $\u, \u' \in \bbS^{d - 1}$. Then, we have
+\begin{align} \label{eq:at_5}
+\E_{x \sim \bbS^{d - 1}} [(\sigma'(\u^\top x) - \sigma'(\u'^\top x))^2 (\u^\top x - \u'^\top x)^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\u - \u'\|_2^4
+\end{align}
+and
+\begin{align} \label{eq:sigma_dp_2}
+\E_{x \sim \bbS^{d - 1}} [\sigma'(\u^\top x)^2 (\u'^\top x)^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:sigma_dot_product_bound}]
+For convenience, let $\vv := \u' - \u$. Then, we have
+    \begin{align}
+    & \E_{x \sim \bbS^{d - 1}} [(\sigma'(\u^\top x) - \sigma'(\u'^\top x))^2 (\u^\top x - \u'^\top x)^2] \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 N_{2, d} \E_{x \sim \bbS^{d - 1}} [(\PtwoD'(\u^\top x) - \PtwoD'(\u'^\top x))^2 (\u^\top x - \u'^\top x)^2] \\
+    & \nextlinespace\nextlinespace\nextlinespace + \sigmaCoeffFour^2 N_{4, d} \E_{x \sim \bbS^{d - 1}} [(\PfourD'(\u^\top x) - \PfourD'(\u'^\top x))^2 (\u^\top x - \u'^\top x)^2]
+    & \tag{By definition of $\sigma$ and $\Pkdbar$ and b.c. $(a + b)^2 \lesssim a^2 + b^2$} \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 N_{2, d} \E_{x \sim \bbS^{d - 1}} [(\vv^\top x)^4] + \sigmaCoeffFour^2 N_{4, d} \E_{x \sim \bbS^{d - 1}} [((\u^\top x)^3 - (\u'^\top x)^3)^2 (\u^\top x - \u'^\top x)^2] \\
+    & \nextlinespace\nextlinespace\nextlinespace + \frac{\sigmaCoeffFour^2 N_{4, d}}{d^2} \E_{x \sim \bbS^{d - 1}} [(\u^\top x - \u'^\top x)^4]
+    & \tag{By \Cref{eq:legendre_polynomial_2_4} and expanding the term with $\PfourD'$} \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 N_{2, d} \E_{x \sim \bbS^{d - 1}} [(\vv^\top x)^4] + \sigmaCoeffFour^2 N_{4, d} \sum_{p + q = 2} \E_{x \sim \bbS^{d - 1}} [(\u^\top x)^{2p} (\u'^\top x)^{2q} (\vv^\top x)^4] \\
+    & \nextlinespace\nextlinespace\nextlinespace + \frac{\sigmaCoeffFour^2 N_{4, d}}{d^2} \E_{x \sim \bbS^{d - 1}} [(\vv^\top x)^4] \label{eq:sphere_dp_exp}
+    \end{align}
+    Here the last inequality is due to the identity $a^3 - b^3 = (a - b)(a^2 + ab + b^2)$, which gives $((\u'^\top x)^3 - (\u^\top x)^3)^2 = ((\u'^\top x)^2 + (\u'^\top x)(\u^\top x) + (\u^\top x)^2)^2 (\u'^\top x - \u^\top x)^2$ --- expanding the first factor fully gives terms of the form $(\u'^\top x)^p (\u^\top x)^q$ where $p$ and $q$ are both even and $p + q = 4$. Thus, applying \Cref{lemma:sphere_moment} to the final expression above gives
+    \begin{align}
+    & \E_{x \sim \bbS^{d - 1}} [(\sigma'(\u^\top x) - \sigma'(\u'^\top x))^2 (\u^\top x - \u'^\top x)^2] \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 N_{2, d} \cdot \frac{1}{d^2} \|\vv\|_2^4 + \sigmaCoeffFour^2 N_{4, d} \sum_{p + q = 2} \frac{1}{d^{p + q + 2}} \|\vv\|_2^4 + \frac{\sigmaCoeffFour^2 N_{4, d}}{d^2} \cdot \frac{1}{d^2} \|\vv\|_2^4
+    & \tag{By \Cref{lemma:sphere_moment}} \\
+    & \nextlinespace\nextlinespace \lesssim \sigmaCoeffTwo^2 \|\vv\|_2^4 + \sigmaCoeffFour^2 \|\vv\|_2^4
+    & \tag{B.c. $N_{2, d} \lesssim d^2$ and $N_{4, d} \lesssim d^4$ (see Equation 2.10 of \citet{atkinson2012spherical})}
+    \end{align}
+which completes the proof of the first statement. The proof of the second statement is similar --- we expand using the definition of $\sigma$ and then apply \Cref{lemma:sphere_moment} to each of the terms. We omit the details of the calculation.
+\end{proof}
+
+\begin{lemma} \label{lemma:point_error_to_fn_error}
+Let $\rho$ and $\rho'$ be two distributions on $\bbS^{d - 1}$ which both have support size $m < \infty$, and consider a coupling $(\u, \u') \sim (\rho, \rho')$ of the two distributions. Additionally, let $f_\rho$ and $f_{\rho'}$ be defined as in \Cref{eqn:12}. Then,
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rho'}(x))^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \E_{(\u, \u') \sim (\rho, \rho')} \|\u - \u'\|_2^2
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:point_error_to_fn_error}]
+We can write the left-hand side as
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rho'}(x))^2]
+& = \E_{x \sim \bbS^{d - 1}} \Big[ \Big( \E_{(\u, \u') \sim (\rho, \rho')}[\sigma(\langle \u, x \rangle) - \sigma(\langle \u', x \rangle)] \Big)^2 \Big] \\
+& \leq \E_{x \sim \bbS^{d - 1}} \E_{(\u, \u') \sim (\rho, \rho')} \Big(\sigma(\langle \u, x \rangle) - \sigma(\langle \u', x \rangle)\Big)^2 \\
+& = \E_{(\u, \u') \sim (\rho, \rho')} \E_{x \sim \bbS^{d - 1}} \Big(\sigma(\langle \u, x \rangle) - \sigma(\langle \u', x \rangle)\Big)^2
+\end{align}
+For any $\u, \u' \in \bbS^{d - 1}$ and $x \in \bbS^{d - 1}$, by the mean-value theorem, there exists $\lambda$ which is a convex combination of $\langle \u, x \rangle$ and $\langle \u', x \rangle$ such that
+\begin{align}
+\sigma(\langle \u, x \rangle) - \sigma(\langle \u', x \rangle)
+& = \sigma'(\lambda) (\langle \u, x \rangle - \langle \u', x \rangle) \period
+\end{align}
+Using a similar argument as in the proof of \Cref{lemma:sigma_dot_product_bound}, we can show that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} \Big[ \sigma'(\lambda)^2 (\langle \u, x \rangle - \langle \u', x \rangle)^2 \Big] 
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \|\u - \u'\|_2^2 \period
+\end{align}
+The proof proceeds by expanding $\sigma'(\lambda)$ into each of its terms and using the inequality $|a + b|^3 \lesssim |a|^3 + |b|^3$ (which holds for any two real numbers $a, b$) in order to consider only terms which involve one of $\u$ or $\u'$ --- the resulting terms are of the same form as those which appear in \Cref{eq:sphere_dp_exp}. We omit the details of the calculation. Thus,
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - f_{\rho'}(x))^2]
+& \leq \E_{(\u, \u') \sim (\rho, \rho')} \E_{x \sim \bbS^{d - 1}} \Big(\sigma(\langle \u, x \rangle) - \sigma(\langle \u', x \rangle)\Big)^2 \\
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \E_{(\u, \u') \sim (\rho, \rho')} \|\u - \u'\|_2^2
+\end{align}
+as desired.
+\end{proof}

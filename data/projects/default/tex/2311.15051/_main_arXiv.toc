@@ -1,0 +1,43 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {paragraph}{Contributions.}{2}{section*.1}%
+\contentsline {section}{\numberline {2}Large Catapults in Momentum Gradient Descent}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Motivating Example: Linear Diagonal Networks}{2}{subsection.2.1}%
+\contentsline {paragraph}{Implicit Bias of LDN.}{2}{section*.2}%
+\contentsline {paragraph}{Experimental Setting.}{3}{section*.3}%
+\contentsline {paragraph}{Results.}{3}{section*.4}%
+\contentsline {paragraph}{Momentum Induces Larger Catapults.}{3}{section*.6}%
+\contentsline {subsection}{\numberline {2.2}Nonlinear Neural Networks}{4}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Why Large Catapult? Because Momentum Prolongs Self-Stabilization}{5}{section.3}%
+\contentsline {section}{\numberline {4}Verifying our Hypothesis in Simple Networks}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Simple Network \#1. ReLU Scalar Network}{6}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Qualitative Observations}{6}{subsubsection.4.1.1}%
+\contentsline {paragraph}{GD Dynamics.}{6}{section*.9}%
+\contentsline {paragraph}{PHB Dynamics.}{6}{section*.10}%
+\contentsline {paragraph}{Further Verifying Hypothesis\nobreakspace {}\ref {hypothesis}.}{6}{section*.11}%
+\contentsline {subsubsection}{\numberline {4.1.2}Theoretical Analysis}{7}{subsubsection.4.1.2}%
+\contentsline {paragraph}{Comparisons to Prior Works.}{8}{section*.13}%
+\contentsline {subsection}{\numberline {4.2}Simple Network \#2. Linear Diagonal Networks}{8}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Conclusion and Future Work}{9}{section.5}%
+\contentsline {section}{\numberline {A}Related Works}{15}{appendix.A}%
+\contentsline {paragraph}{Catapults in (S)GD.}{15}{section*.18}%
+\contentsline {paragraph}{Edge of Stability.}{15}{section*.19}%
+\contentsline {paragraph}{Role of Momentum in Generalization.}{15}{section*.20}%
+\contentsline {section}{\numberline {B}Missing Proofs for Section\nobreakspace {}\ref {sec:toy}}{16}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Proof of Lemma\nobreakspace {}\ref {lem:u}}{16}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Proof of Theorem\nobreakspace {}\ref {thm:toy}}{16}{subsection.B.2}%
+\contentsline {subsection}{\numberline {B.3}Proof of Theorem\nobreakspace {}\ref {thm:toy-GD}}{17}{subsection.B.3}%
+\contentsline {section}{\numberline {C}Additional Experimental Results}{19}{appendix.C}%
+\contentsline {paragraph}{Additional Experimental Details}{19}{section*.33}%
+\contentsline {subsection}{\numberline {C.1}Is Linear Warmup Necessary?}{19}{subsection.C.1}%
+\contentsline {paragraph}{Other Warmup in the LDN.}{19}{section*.35}%
+\contentsline {paragraph}{Linear Warmup in the Toy Model.}{19}{section*.36}%
+\contentsline {subsection}{\numberline {C.2}Effects of ``Overshooting'' by Larger Catapults}{19}{subsection.C.2}%
+\contentsline {subsection}{\numberline {C.3}More experiments on Nonlinear Neural Networks}{20}{subsection.C.3}%
+\contentsline {subsubsection}{\numberline {C.3.1}Additional FCN Experiments}{20}{subsubsection.C.3.1}%
+\contentsline {subsubsection}{\numberline {C.3.2}ResNet20 Experiments}{20}{subsubsection.C.3.2}%
+\contentsline {subsubsection}{\numberline {C.3.3}Cross-Entropy Loss Experiments}{21}{subsubsection.C.3.3}%
+\contentsline {subsection}{\numberline {C.4}Additional Results for $\beta = 0.99$}{23}{subsection.C.4}%
+\contentsline {subsubsection}{\numberline {C.4.1}Linear Diagonal Networks}{23}{subsubsection.C.4.1}%
+\contentsline {subsubsection}{\numberline {C.4.2}Shallow Nonlinear Neural Networks}{23}{subsubsection.C.4.2}%
+\contentsline {subsubsection}{\numberline {C.4.3}ResNet20}{23}{subsubsection.C.4.3}%
+\contentsline {subsection}{\numberline {C.5}Details for Sharpness Displacement Lower bound Experiment for LDN}{25}{subsection.C.5}%

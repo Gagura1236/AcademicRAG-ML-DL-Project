@@ -1,0 +1,159 @@
+\newcommand{\maxbound}{\psi}
+\newcommand{\avgbound}{\phi}
+\newcommand{\samplebound}{\mu}
+\newcommand{\samplediffbound}{\bar{\mu}}
+\newcommand{\vv}{\delta}
+\newcommand{\vvnorm}{\bar{\delta}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\sigmaCoeffMax}{\hat{\sigma}_{\textup{max}}}
+
+
+
+
+\newcommand{\leg}[1]{P_{#1, d}}
+\newcommand{\legn}[1]{\overline{P}_{#1, d}}
+\newcommand{\w}{w}
+\renewcommand{\u}{u}
+\newcommand{\z}{z}
+\newcommand{\otherCoords}{z}
+\newcommand{\ubar}{\bar{u}}
+\newcommand{\uhat}{\hat{u}}
+\newcommand{\uGD}{\tilde{u}}
+\newcommand{\what}{\hat{w}}
+\newcommand{\wbar}{\bar{w}}
+\newcommand{\zhat}{\hat{z}}
+\newcommand{\zbar}{\bar{z}}
+\newcommand{\wmax}{{w_{\textup{max}}}}
+\newcommand{\omegamax}{{\omega_{\textup{max}}}}
+\newcommand{\wlarge}{{w_{\textup{large}}}}
+\newcommand{\omegalarge}{{\omega_{\textup{large}}}}
+\newcommand{\wsmall}{{w_{\textup{small}}}}
+\newcommand{\omegasmall}{{\omega_{\textup{small}}}}
+\newcommand{\iotaU}{\iota_{\textup{U}}}
+\newcommand{\iotaL}{\iota_{\textup{L}}}
+\newcommand{\iotaR}{\iota_{\textup{R}}}
+\newcommand{\iotamid}{\iota_{\textup{M}}}
+\newcommand{\wR}{{\w_{\textup{R}}}}
+
+\newcommand{\TR}{{T_{\textup{R}}}}
+\newcommand{\Tstar}{T_{*, \epsilon}}
+\newcommand{\Tesc}{{T_{\textup{esc}}}}
+
+\newcommand{\supp}{\textup{supp}}
+\newcommand{\barrho}{{\bar{\rho}}}
+\newcommand{\hatrho}{{\hat{\rho}}}
+\newcommand{\hatu}{\uhat}
+\newcommand{\rhobar}{{\bar{\rho}}}
+\newcommand{\rhohat}{{\hat{\rho}}}
+\newcommand{\rhoGD}{{\tilde{\rho}}}
+\newcommand{\truevector}{q_\star}
+
+\newcommand{\ftilde}{\tilde{f}}
+\newcommand{\Lhat}{\widehat{L}}
+\newcommand{\pgrad}{{\textup{grad}}}
+\newcommand{\vel}{v}
+\newcommand{\target}{h}
+\newcommand{\signal}{\theta}
+\newcommand{\scaledError}{\overline{\epsilon}}
+\newcommand{\coup}{\Gamma}%
+\newcommand{\error}{\epsilon} %
+
+\newcommand{\deltaMax}{\Delta_{\textup{max}}}
+\newcommand{\deltaMaxt}[1]{\Delta_{\textup{max}, #1}}
+\newcommand{\deltaBar}{\overline{\Delta}}
+\newcommand{\normdelta}{\bar{\delta}}
+\newcommand{\cInd}{c_{\textup{IH}}}
+\newcommand{\deltaSingleGD}{{\tilde{\delta}}}
+
+\newcommand{\legendreCoeff}[2]{\hat{#1}_{#2, d}}
+\newcommand{\sigmafour}{\sigmaCoeffFour}
+\newcommand{\sigmatwo}{\sigmaCoeffTwo}
+\newcommand{\sigmaCoeffTwo}{\legendreCoeff{\sigma}{2}}
+\newcommand{\sigmaCoeffFour}{\legendreCoeff{\sigma}{4}}
+\newcommand{\targetCoeffTwo}{\legendreCoeff{\target}{2}}
+\newcommand{\targetCoeffFour}{\legendreCoeff{\target}{4}}
+\newcommand{\PtwoD}{{P_{2, d}}}
+\newcommand{\PfourD}{{P_{4, d}}}
+\newcommand{\PtwoDbar}{{\bar{P}_{2, d}}}
+\newcommand{\PfourDbar}{{\bar{P}_{4, d}}}
+
+\newcommand{\Pkd}{{P_{k, d}}}
+\newcommand{\Pkdbar}{\overline{P}_{k, d}}
+\newcommand{\Nkd}{{N_{k, d}}}
+\newcommand{\legendreDotp}[2]{\left<#1, #2\right>_{(d - 3)/2}}
+\newcommand{\legendreL}{{L^2_{(d - 3)/2}}}
+
+\newcommand{\B}{B}
+\newcommand{\cOne}{{c_1}}
+\newcommand{\cThree}{{c_3}}
+\newcommand{\lambdaD}{{\lambda_d}}
+\newcommand{\etaD}{{\eta_d}}
+\newcommand{\concBound}{U}
+\newcommand{\concBoundTrunc}{{U'}}
+\newcommand{\Dtwo}{{D_2}}
+\newcommand{\DtwoT}{{D_{2, t}}}
+\newcommand{\Dfour}{{D_4}}
+\newcommand{\DfourT}{{D_{4, t}}}
+\newcommand{\FL}{F_{\textup{L}}}
+\newcommand{\FU}{F_{\textup{U}}}
+\newcommand{\F}{F}
+
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Esymb}{\mathbb{E}}
+\newcommand{\iidsim}{\overset{\textup{i.i.d}}{\sim}}
+\DeclareMathOperator*{\E}{\Esymb}
+\DeclareMathOperator*{\Exp}{\Esymb}
+\DeclareMathOperator*{\Var}{Var}
+
+\newcommand{\Ebasic}{\mathbb{E}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\bbS}{\mathbb{S}}
+\newcommand{\bbsd}{\bbS^{d-1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calH}{\mathcal{H}}
+\newcommand{\Y}{\mathbb{Y}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\RS}{{R_S}}
+\newcommand{\RN}{{R_N}}
+\newcommand{\truncB}{{\varphi_B}}
+\newcommand{\truncBprime}{{\varphi_{B'}}}
+\newcommand{\Esparse}{{E_{\textup{sparse}}}}
+\newcommand{\potential}{\Phi}
+\newcommand{\Egood}{{E_{\textup{good}}}}
+\newcommand{\concop}{\mathcal{C}}
+\newcommand{\idx}[1]{i_{#1}}
+
+\newcommand{\srv}{x}
+\newcommand{\srvL}{X}
+
+\newcommand{\poly}{\textup{poly}}
+\newcommand{\nextlinespace}{\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,}
+\newcommand{\ddimId}{{I_{d \times d}}}
+\newcommand{\normal}{\calN(0, \ddimId)}
+\newcommand{\wlargelogbound}{\zeta}
+\newcommand{\e}{e_1}
+\newcommand{\boldone}{\mathbbm{1}}
+
+\newcommand{\dotp}[2]{\left<#1, #2\right>}
+\newcommand{\Sp}{\mathbb{S}^{d-1}}
+\DeclareMathOperator*{\argmin}{argmin}
+\newcommand{\ind}[1]{\mathbf{1}\left[ #1 \right]}
+
+\def\({\left(}
+\def\){\right)}
+\def\[{\left[}
+\def\]{\right]}
+\newcommand*{\defeq}{\triangleq}
+\newcommand{\dd}{\mathrm{d}}
+
+\newcommand{\Proj}{\Pi}
+\newcommand{\Kernel}{K}
+\newcommand{\kernel}{\kappa}
+\newcommand{\h}{h}
+\newcommand{\dirac}[1]{\delta_{#1}}

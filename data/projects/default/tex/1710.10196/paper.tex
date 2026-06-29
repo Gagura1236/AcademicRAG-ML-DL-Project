@@ -1,0 +1,388 @@
+\documentclass{article}
+\pdfoutput=1
+\usepackage{iclr2018_conference,times}
+\iclrfinalcopy
+\usepackage{color}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{color}
+\usepackage{float}
+\usepackage{url}
+\usepackage{xfrac}
+\usepackage{xspace}
+\usepackage[normalem]{ulem}  %
+\usepackage{enumitem}  		%
+\usepackage{tikz}			%
+\usepackage{calc}			%
+\usepackage{collcell}
+\usepackage{amsmath,amssymb}
+\usepackage{multirow}
+\usepackage{titlesec}
+
+\renewcommand{\textfraction}{0}%
+\renewcommand{\topfraction}{1}%
+\renewcommand{\bottomfraction}{1}%
+\renewcommand{\dbltopfraction}{1}%
+\renewcommand{\floatpagefraction}{1}%
+\setcounter{bottomnumber}{2}
+\addtolength{\abovecaptionskip}{-1.2ex}
+\titlespacing\section{0pt}{6pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+\newcommand{\disc}{\textsc{D}}
+\newcommand{\gen}{\textsc{G}}
+\newlength{\templen}
+\newcommand{\placeholderfig}[3]{\raisebox{\fboxsep+\fboxrule}{\fbox{\parbox[b][#2-2\fboxsep-2\fboxrule][t]{#1-2\fboxsep-2\fboxrule}{\center #3}}}}
+\def\clap#1{\hbox to 0pt{\hss #1\hss}}%
+\def\initials#1{\protect\clap{\smash{\raisebox{1.4ex}{\tiny{\textsf{\textit{#1}}}}}}}%
+\definecolor{internationalkleinblue}{rgb}{0.0, 0.18, 0.65}	%
+\definecolor{olive}{rgb}{0.5, 0.5, 0.0}
+\definecolor{maroon}{rgb}{0.69, 0.19, 0.38}
+\definecolor{celestialblue}{rgb}{0.29, 0.59, 0.82}
+\newcommand{\EDIT}[4][]{\strut{\color{#3}{\hspace{0pt}\initials{#2}{\color{red}\sout{#1}}{#4}}}}
+\newcommand{\TK}[2][]{\protect\EDIT[#1]{TK}{internationalkleinblue}{#2}}
+\newcommand{\SL}[2][]{\protect\EDIT[#1]{SL}{olive}{#2}}
+\newcommand{\TA}[2][]{\protect\EDIT[#1]{TA}{maroon}{#2}}
+\newcommand{\JL}[2][]{\protect\EDIT[#1]{JL}{red}{#2}}
+\newcommand{\FINAL}[2][]{#2} %
+
+\newcommand{\videolink}{\texttt{\small{https://youtu.be/G06dEcZ-QTg}}}
+\newcommand{\networklink}{\texttt{\small{https://drive.google.com/open?id=0B4qLcYyJmiz0NHFULTdYc05lX0U}}}
+\newcommand{\pdflink}{\texttt{\footnotesize{http://pdf.link.here}}}
+
+\newcommand{\arxivDisclaimer}{This image has been removed due to arXiv's 10MB limit. A version with all images: \pdflink}
+\newif\ifarxivversion
+\arxivversionfalse		%
+
+\input{figures}
+\input{generated/figures_LSUN_summary_jpg}
+\ifarxivversion
+	\input{generated/figures_LSUN_categories_arxiv}
+\else
+	\input{generated/figures_LSUN_categories_jpg}
+\fi
+
+\title{Progressive Growing of GANs for Improved Quality, Stability, and Variation}
+\author{%
+Tero Karras\\NVIDIA\\\makebox[0pt]{\footnotesize\texttt{\hspace*{8cm}{\{tkarras,taila,slaine,jlehtinen\}@nvidia.com}}}\\\And%
+Timo Aila\\NVIDIA\\\And%
+Samuli Laine\\NVIDIA\\\And%
+Jaakko Lehtinen\\NVIDIA and Aalto University
+}
+\begin{document}
+{\flushleft\maketitle}
+\ifx\headrulewidth\undefined\else\thispagestyle{fancy}\fi
+
+\begin{abstract} 
+
+We describe a new training methodology for generative adversarial networks. The key idea is to grow both the generator and discriminator progressively: starting from a low resolution, we add new layers that model increasingly fine details as training progresses. This both speeds the training up and greatly stabilizes it, allowing us to produce images of unprecedented quality, e.g., \textsc{CelebA} images at $1024^2$. We also propose a simple way to increase the variation in generated images, and achieve a record inception score of $8.80$ in unsupervised \textsc{CIFAR10}. Additionally, we describe several implementation details that are important for discouraging unhealthy competition between the generator and discriminator. Finally, we suggest a new metric for evaluating GAN results, both in terms of image quality and variation. As an additional contribution, we construct a higher-quality version of the \textsc{CelebA} dataset.
+
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Generative methods that produce novel samples from high-dimensional data distributions, such as images, are finding widespread use, for example in speech synthesis \citep{VanDenOord2016C}, image-to-image translation \citep{Zhu2017,Liu2017B,Wang2017}, and image inpainting \citep{Iizuka2017}. Currently the most prominent approaches are autoregressive models \citep{VanDenOord2016A,VanDenOord2016B}, variational autoencoders (VAE) \citep{Kingma2014}, and generative adversarial networks (GAN) \citep{Goodfellow2014}. Currently they all have significant strengths and weaknesses. Autoregressive models -- such as PixelCNN -- produce sharp images but are slow to evaluate and do not have a latent representation as they directly model the conditional distribution over pixels, potentially limiting their applicability. VAEs are easy to train but tend to produce blurry results due to restrictions in the model, although recent work is improving this \citep{Kingma2016}. GANs produce sharp images, albeit only in fairly small resolutions and with somewhat limited variation, and the training continues to be unstable despite recent progress \citep{Salimans2016B, Gulrajani2017, Berthelot2017,Kodali2017}. Hybrid methods combine various strengths of the three, but so far lag behind GANs in image quality \citep{Makhzani2017,Ulyanov2017,Dumoulin2016}.
+
+Typically, a GAN consists of two networks: generator and discriminator (aka critic). The generator produces a sample, e.g., an image, from a latent code, and the distribution of these images should ideally be indistinguishable from the training distribution. Since it is generally infeasible to engineer a function that tells whether that is the case, a discriminator network is trained to do the assessment, and since networks are differentiable, we also get a gradient we can use to steer both networks to the right direction. Typically, the generator is of main interest -- the discriminator is an adaptive loss function that gets discarded once the generator has been trained.
+
+There are multiple potential problems with this formulation. When we measure the distance between the training distribution and the generated distribution, the gradients can point to more or less random directions if the distributions do not have substantial overlap, i.e., are too easy to tell apart \citep{Arjovsky2017A}. Originally, Jensen-Shannon divergence was used as a distance metric \citep{Goodfellow2014}, and recently that formulation has been improved \citep{Hjelm2017} and a number of more stable alternatives have been proposed, including least squares \citep{Mao2016}, absolute deviation with margin \citep{Zhao2016}, and Wasserstein distance \citep{Arjovsky2017,Gulrajani2017}. Our contributions are largely orthogonal to this ongoing discussion, and we primarily use the improved Wasserstein loss, but also experiment with least-squares loss.
+
+The generation of high-resolution images is difficult because higher resolution makes it easier to tell the generated images apart from training images \citep{Odena2017}, thus drastically amplifying the gradient problem. %
+Large resolutions also necessitate using smaller minibatches due to memory constraints, further compromising training stability. %
+Our key insight is that we can grow both the generator and discriminator progressively, starting from easier low-resolution images, and add new layers that introduce higher-resolution details as the training progresses. This greatly speeds up training and improves stability in high resolutions, as we will discuss in Section~\ref{sec:progressive}.
+
+The GAN formulation does not explicitly require the entire training data distribution to be represented by the resulting generative model. The conventional wisdom has been that there is a tradeoff between image quality and variation, but that view has been recently challenged \citep{Odena2017}. The degree of preserved variation is currently receiving attention and various methods have been suggested for measuring it, including inception score \citep{Salimans2016B}, multi-scale structural similarity (MS-SSIM) \citep{Odena2017,Wang2003}, birthday paradox \citep{Arora2017b}, and explicit tests for the number of discrete modes discovered \citep{Metz2016}. We will describe our method for encouraging variation in Section~\ref{sec:variation}, and propose a new metric for evaluating the quality and variation in Section~\ref{sec:metric}.  
+
+Section~\ref{sec:effective_learning_rate} discusses a subtle modification to the initialization of networks, leading to a more balanced learning speed for different layers. Furthermore, we observe that mode collapses traditionally plaguing GANs tend to happen very quickly, over the course of a dozen minibatches. Commonly they start when the discriminator overshoots, leading to exaggerated gradients, and an unhealthy competition follows where the signal magnitudes escalate in both networks. We propose a mechanism to stop the generator from participating in such escalation, overcoming the issue (Section~\ref{sec:featurenorm}).
+
+We evaluate our contributions using the \textsc{CelebA}, \textsc{LSUN}, \textsc{CIFAR10} datasets. We improve the best published inception score for \textsc{CIFAR10}. %
+Since the datasets commonly used in benchmarking generative methods are limited to a fairly low resolution, we have also created a higher quality version of the \textsc{CelebA} dataset that allows experimentation with output resolutions up to $1024\times1024$ pixels. This dataset and our full implementation are available at {\small\verb|https://github.com/tkarras/progressive_growing_of_gans|}, trained networks can be found at \networklink~along with result images, and a supplementary video illustrating the datasets, additional results, and latent space interpolations is at \videolink.
+
+\section{Progressive growing of GANs}
+\label{sec:progressive}
+
+Our primary contribution is a training methodology for GANs where we start with low-resolution images, and then progressively increase the resolution by adding layers to the networks as visualized in Figure~\ref{fig:incremental}. This incremental nature allows the training to first discover large-scale structure of the image distribution and then shift attention to increasingly finer scale detail, instead of having to learn all scales simultaneously.
+
+We use generator and discriminator networks that are mirror images of each other and always grow in synchrony. All existing layers in both networks remain trainable throughout the training process. When new layers are added to the networks, we fade them in smoothly, as illustrated in Figure~\ref{fig:fadein}. This avoids sudden shocks to the already well-trained, smaller-resolution layers. Appendix~\ref{sec:network} describes structure of the generator and discriminator in detail, along with other training parameters. 
+
+We observe that the progressive training has several benefits. %
+Early on, the generation of smaller images is substantially more stable because there is less class information and fewer modes \citep{Odena2017}. By increasing the resolution little by little we are continuously asking a much simpler question compared to the end goal of discovering a mapping from latent vectors to e.g. $1024^2$ images. This approach has conceptual similarity to recent work by \cite{Chen2017}. In practice it stabilizes the training sufficiently for us to reliably synthesize megapixel-scale images using WGAN-GP loss \citep{Gulrajani2017} and even LSGAN loss \citep{Mao2016}.
+
+Another benefit is the reduced training time. With progressively growing GANs most of the iterations are done at lower resolutions, and comparable result quality is often obtained up to 2--6 times faster, depending on the final output resolution.
+
+\figincremental
+
+The idea of growing GANs progressively is related to the work of \cite{Wang2017}, who use multiple discriminators that operate on different spatial resolutions. 
+That work in turn is motivated by \cite{Durugkar2016} who use one generator and multiple discriminators concurrently, and \cite{Ghosh2017} who do the opposite with multiple generators and one discriminator.
+\FINAL{
+Hierarchical GANs \citep{Denton2015,Huang2016,Zhang2016} define a generator and discriminator for each level of an image pyramid. These methods build on the same observation as our work -- that the complex mapping from latents to high-resolution images is easier to learn in steps -- but the crucial difference is that we have only a single GAN instead of a hierarchy of them.}
+In contrast to early work on adaptively growing networks, e.g., growing neural gas \citep{Fritzke1994} and neuro evolution of augmenting topologies \citep{Stanley2002} that grow networks greedily, we simply defer the introduction of pre-configured layers. In that sense our approach resembles layer-wise training of autoencoders \citep{Bengio2006}.
+
+\figfadein
+
+\section{Increasing variation using minibatch standard deviation}
+\label{sec:variation}
+
+GANs have a tendency to capture only a subset of the variation found in training data, and \cite{Salimans2016B} suggest ``minibatch discrimination'' as a solution. They compute feature statistics not only from individual images but also across the minibatch, thus encouraging the minibatches of generated and training images to show similar statistics.
+This is implemented by adding a minibatch layer towards the end of the discriminator, where the layer learns a large tensor that projects the input activation to an array of statistics. A separate set of statistics is produced for each example in a minibatch and it is concatenated to the layer's output, so that the discriminator can use the statistics internally. We simplify this approach drastically while also improving the variation.
+
+Our simplified solution has neither learnable parameters nor new hyperparameters. We first compute the standard deviation for each feature in each spatial location over the minibatch. We then average these estimates over all features and spatial locations to arrive at a single value. We replicate the value and concatenate it to all spatial locations and over the minibatch, yielding one additional (constant) feature map. This layer could be inserted anywhere in the discriminator, but we have found it best to insert it towards the end (see Appendix~\ref{sec:network-full} for details).  We experimented with a richer set of statistics, but were not able to improve the variation further.
+\FINAL{In parallel work, \cite{Zinan2017} provide theoretical insights about the benefits of showing multiple images to the discriminator.}
+
+Alternative solutions to the variation problem include unrolling the discriminator \citep{Metz2016} to regularize its updates, and a ``repelling regularizer''
+\citep{Zhao2016} that adds a new loss term to the generator, trying to encourage it to orthogonalize the feature vectors in a minibatch. The multiple generators of \cite{Ghosh2017} also serve a similar goal. We acknowledge that these solutions may increase the variation even more than our solution -- or possibly be orthogonal to it -- but leave a detailed comparison to a later time. %
+
+\section{Normalization in generator and discriminator}
+\label{sec:normalization}
+
+GANs are prone to the escalation of signal magnitudes as a result of unhealthy competition between the two networks. Most if not all earlier solutions discourage this by using a variant of batch normalization \citep{Ioffe2015,Salimans2016A,Ba2016} in the generator, and often also in the discriminator. These normalization methods were originally introduced to eliminate covariate shift. However, we have not observed that to be an issue in GANs, and thus believe that the actual need in GANs is constraining signal magnitudes and competition. We use a different approach that consists of two ingredients, neither of which  include learnable parameters.
+
+\subsection{Equalized learning rate}
+\label{sec:effective_learning_rate}
+
+We deviate from the current trend of careful weight initialization, and instead use a trivial $\mathcal{N}(0,1)$ initialization and then explicitly scale the weights at runtime. To be precise, we set $\hat{w}_i = w_i / c$, where $w_i$ are the weights and $c$ is the per-layer normalization constant from He's initializer \citep{He2015}. The benefit of doing this dynamically instead of during initialization is somewhat subtle, and relates to the scale-invariance in commonly used adaptive stochastic gradient descent methods such as RMSProp \citep{rmsprop} and Adam \citep{adam}. These methods normalize a gradient update by its estimated standard deviation, thus making the update independent of the scale of the parameter. As a result, if some parameters have a larger dynamic range than others, they will take longer to adjust. This is a scenario modern initializers cause, and thus it is possible that a learning rate is both too large and too small at the same time. Our approach ensures that the dynamic range, and thus the learning speed, is the same for all weights. A similar reasoning was independently used by \cite{Laarhoven2017}.
+
+\subsection{Pixelwise feature vector normalization in generator}
+\label{sec:featurenorm}
+
+To disallow the scenario where the magnitudes in the generator and discriminator spiral out of control as a result of competition, we normalize the feature vector in each pixel to unit length in the generator after each convolutional layer. We do this using a variant of ``local response normalization'' \citep{Krizhevsky2012}, configured as
+$b_{x,y} = a_{x,y} / \sqrt{\frac{1}{N} \sum_{j=0}^{N-1} (a^j_{x,y})^2 + \epsilon}$,
+where $\epsilon=10^{-8}$, $N$ is the number of feature maps, and $a_{x,y}$ and $b_{x,y}$ are the original and normalized feature vector in pixel $(x,y)$, respectively. We find it surprising that this heavy-handed  constraint does not seem to harm the generator in any way, and indeed with most datasets it does not change the results much, but it prevents the escalation of signal magnitudes very effectively when needed.
+
+\section{Multi-scale statistical similarity for assessing GAN results}
+\label{sec:metric}
+
+In order to compare the results of one GAN to another, one needs to investigate a large number of images, which can be tedious, difficult, and subjective. Thus it is desirable to rely on automated methods that compute some indicative metric from large image collections. We noticed that existing methods such as MS-SSIM \citep{Odena2017} find large-scale mode collapses reliably but fail to react to smaller effects such as loss of variation in colors or textures, and they also do not directly assess image quality in terms of similarity to the training set.
+
+We build on the intuition that a successful generator will produce samples whose {local image structure is similar to the training set over all scales}. We propose to study this by considering the multi-scale statistical similarity between distributions of local image patches drawn from Laplacian pyramid \citep{Burt1987} representations of generated and target images, starting at a low-pass resolution of $16\times 16$ pixels. As per standard practice, the pyramid progressively doubles until the full resolution is reached, each successive level encoding the difference to an up-sampled version of the previous level.
+
+A single Laplacian pyramid level corresponds to a specific spatial frequency band. 
+We randomly sample 16384 images and extract 128 descriptors from each level in the Laplacian pyramid, giving us $2^{21}$ (2.1M) descriptors per level. Each descriptor is a $7\times7$ pixel neighborhood with 3 color channels, denoted by $\boldsymbol{x}\in \mathbb{R}^{7\times 7\times 3}=\mathbb{R}^{147}$. We denote the patches from level $l$ of the training set and generated set as $\{\boldsymbol{x}^l_i\}_{i=1}^{2^{21}}$ and $\{\boldsymbol{y}^l_i\}_{i=1}^{2^{21}}$, respectively. We first normalize $\{\boldsymbol{x}^l_i\}$ and $\{\boldsymbol{y}^l_i\}$ w.r.t. the mean and standard deviation of each color channel, 
+and then estimate the statistical similarity by computing their sliced Wasserstein distance $\mathrm{SWD}(\{\boldsymbol{x}^l_i\}, \{\boldsymbol{y}^l_i\})$, an efficiently computable randomized approximation to earthmover�s distance, using 512 projections \citep{Rabin2011}.
+
+Intuitively a small Wasserstein distance indicates that the distribution of the patches is similar, meaning that the training images and generator samples appear {similar in both appearance and variation} at this spatial resolution. In particular, the distance between the patch sets extracted from the lowest-resolution $16\times 16$ images indicate similarity in large-scale image structures, while the finest-level patches encode information about pixel-level attributes such as sharpness of edges and noise. 
+
+\section{Experiments}
+\label{sec:results}
+
+In this section we discuss a set of experiments that we conducted to evaluate the quality of our results.
+Please refer to Appendix~\ref{sec:network} for detailed description of our network structures and training configurations.
+We also invite the reader to consult the accompanying video (\videolink) for additional result images and latent space interpolations.
+In this section we will distinguish between the \emph{network structure} (e.g., convolutional layers, resizing), \emph{training configuration} (various normalization layers, minibatch-related operations), and \emph{training loss} (WGAN-GP, LSGAN).
+
+\subsection{Importance of individual contributions in terms of statistical similarity}
+\label{sec:exp-image-quality}
+
+We will first use the sliced Wasserstein distance (SWD) and multi-scale structural similarity (MS-SSIM) \citep{Odena2017} to evaluate the importance our individual contributions, and also perceptually validate the metrics themselves. We will do this by building on top of a previous state-of-the-art loss function (WGAN-GP) and training configuration \citep{Gulrajani2017} in an unsupervised setting using \textsc{CelebA} \citep{CelebA} and \textsc{LSUN bedroom} \citep{LSUN} datasets in $128^2$ resolution. \textsc{CelebA} is particularly well suited for such comparison because the training images contain noticeable artifacts (aliasing, compression, blur) that are difficult for the generator to reproduce faithfully. 
+In this test we amplify the differences between training configurations by choosing a relatively low-capacity network structure (Appendix~\ref{sec:network-reduced}) and terminating the training once the discriminator has been shown a total of 10M real images. As such the results are not fully converged. %
+
+\tabvariants
+\figvariants
+
+Table~\ref{tab:variants} lists the numerical values for SWD and MS-SSIM in several training configurations, where our individual contributions are cumulatively enabled one by one on top of the baseline \citep{Gulrajani2017}. The MS-SSIM numbers were averaged from 10000 pairs of generated images, and SWD was calculated as described in Section~\ref{sec:metric}. Generated \textsc{CelebA} images from these configurations are shown in Figure~\ref{fig:variants}.
+Due to space constraints, the figure shows only a small number of examples for each row of the table, but a significantly broader set is available in Appendix~\ref{app:variants}. 
+Intuitively, a good evaluation metric should reward plausible images that exhibit plenty of variation in colors, textures, and viewpoints. 
+However, this is not captured by MS-SSIM: we can immediately see that configuration (h) generates significantly better images than configuration (a), but MS-SSIM remains approximately unchanged because it measures only the variation between outputs, not similarity to the training set. SWD, on the other hand, does indicate a clear improvement.
+
+The first training configuration (a) corresponds to \cite{Gulrajani2017}, featuring batch normalization in the generator, layer normalization in the discriminator, and minibatch size of 64. (b) enables progressive growing of the networks, which results in sharper and more believable output images. SWD correctly finds the distribution of generated images to be more similar to the training set.%
+
+Our primary goal is to enable high output resolutions, and this requires reducing the size of minibatches in order to stay within the available memory budget. We illustrate the ensuing challenges in (c) where we decrease the minibatch size from~64 to~16. The generated images are unnatural, which is clearly visible in both metrics. %
+In (d), we stabilize the training process by adjusting the hyperparameters as well as by removing batch normalization and layer normalization (Appendix~\ref{sec:network-reduced}). 
+As an intermediate test (e$\ast$), we enable minibatch discrimination \citep{Salimans2016B}, which somewhat surprisingly fails to improve any of the metrics, including MS-SSIM that measures output variation.
+In contrast, our minibatch standard deviation (e) improves the average SWD scores and images.
+We then enable our remaining contributions in (f) and (g), leading to an overall improvement in SWD and subjective visual quality. %
+Finally, in (h) we use a non-crippled network and longer training -- we feel the quality of the generated images is at least comparable to the best published results so far.
+
+\subsection{Convergence and training speed}
+\label{sec:exp-training-speed}
+
+\figplots
+
+Figure~\ref{fig:plots} illustrates the effect of progressive growing in terms of the SWD metric and raw image throughput.
+The first two plots correspond to the training configuration of \cite{Gulrajani2017} without and with progressive growing.
+We observe that the progressive variant offers two main benefits: it converges to a considerably better optimum and also reduces the total training time by about a factor of two.
+The improved convergence is explained by an implicit form of curriculum learning that is imposed by the gradually increasing network capacity.
+Without progressive growing, all layers of the generator and discriminator are tasked with simultaneously finding succinct intermediate representations for both the large-scale variation and the small-scale detail.
+With progressive growing, however, the existing low-resolution layers are likely to have already converged early on, so the networks are only tasked with refining the representations by increasingly smaller-scale effects as new layers are introduced.
+Indeed, we see in Figure~\ref{fig:plots}(b) that the largest-scale statistical similarity curve (16) reaches its optimal value very quickly and remains consistent throughout the rest of the training.
+The smaller-scale curves (32, 64, 128) level off one by one as the resolution is increased, but the convergence of each curve is equally consistent.
+With non-progressive training in Figure~\ref{fig:plots}(a), each scale of the SWD metric converges roughly in unison, as could be expected.
+
+The speedup from progressive growing increases as the output resolution grows.
+Figure~\ref{fig:plots}(c) shows training progress, measured in number of real images shown to the discriminator, as a function of training time when the training progresses all the way to $1024^2$ resolution.
+We see that progressive growing gains a significant head start because the networks are shallow and quick to evaluate at the beginning.
+Once the full resolution is reached, the image throughput is equal between the two methods.
+The plot shows that the progressive variant reaches approximately 6.4 million images in 96 hours, whereas it can be extrapolated that the non-progressive variant would take about 520 hours to reach the same point.
+In this case, the progressive growing offers roughly a $5.4\times$ speedup.
+
+\subsection{High-resolution image generation using CelebA-HQ dataset}
+\label{sec:exp-celeb-hq}
+
+\figcelebHQResults
+
+To meaningfully demonstrate our results at high output resolutions, we need a sufficiently varied high-quality dataset.
+However, virtually all publicly available datasets previously used in GAN literature are limited to relatively low resolutions ranging from $32^2$ to $480^2$.
+To this end, we created a high-quality version of the \textsc{CelebA} dataset consisting of 30000 of the images at $1024\times1024$ resolution. We refer to Appendix~\ref{sec:celeb-hq} for further details about the generation of this dataset.
+
+Our contributions allow us to deal with high output resolutions in a robust and efficient fashion.
+Figure~\ref{fig:celebHQResults} shows selected $1024\times1024$ images produced by our network.
+While megapixel GAN results have been shown before in another dataset \citep{Marchesi2017}, our results are vastly more varied and of higher perceptual quality.
+Please refer to Appendix~\ref{app:CelebHQ} for a larger set of result images as well as the nearest neighbors found from the training data. The accompanying video shows latent space interpolations and visualizes the progressive training.
+The interpolation works so that we first randomize a latent code for each frame (512 components sampled individually from $\mathcal{N}(0,1)$), then blur the latents across time with a Gaussian ($\sigma=45\text{ frames @ 60Hz}$), and finally normalize each vector to lie on a hypersphere.
+
+We trained the network on 8~Tesla V100 GPUs for 4~days, after which we no longer observed qualitative differences between the results of consecutive training iterations.
+Our implementation used an adaptive minibatch size depending on the current output resolution so that the available memory budget was optimally utilized. %
+
+In order to demonstrate that our contributions are largely orthogonal to the choice of a loss function, we also trained the same network using LSGAN loss instead of WGAN-GP loss. Figure~\ref{fig:incremental} shows six examples of $1024^2$ images produced using our method using LSGAN. Further details of this setup are given in Appendix~\ref{sec:LSGAN}.
+
+\subsection{LSUN results}
+\figbedroomqualitycomparison
+\figLSUNsummary
+Figure~\ref{fig:bedroomqualitycomparison} shows a purely visual comparison between our solution and earlier results in \textsc{LSUN bedroom}. 
+Figure~\ref{fig:LSUNsummary} gives selected examples from seven very different \textsc{LSUN} categories at $256^2$. A larger, non-curated set of results from all 30 \textsc{LSUN} categories is available in Appendix~\ref{app:LSUN}, and the video demonstrates interpolations. We are not aware of earlier results in most of these categories, and while some categories work better than others, we feel that the overall quality is high.
+
+\subsection{CIFAR10 inception scores}
+\label{sec:cifar10}
+The best inception scores for \textsc{CIFAR10} (10 categories of $32\times32$ RGB images) we are aware of are 7.90 for unsupervised and 8.87 for label conditioned setups \citep{Grinblat2017}. The large difference between the two numbers is primarily caused by ``ghosts'' that necessarily appear between classes in the unsupervised setting, while label conditioning can remove many such transitions.
+
+When all of our contributions are enabled, we get $8.80$ in the \emph{unsupervised} setting. Appendix~\ref{sec:CIFAR10} shows a representative set of generated images along with a more comprehensive list of results from earlier methods. The network and training setup were the same as for \textsc{CelebA}, progression limited to $32\times32$ of course. The only customization was to the WGAN-GP's regularization term $\mathop{\mathbb{E}}_{\hat{\mathbf{x}}\sim\mathbb{P}_{\hat{\mathbf{x}}}} [(||\nabla_{\hat{\mathbf{x}}}D(\hat{\mathbf{x}})||_2 - \gamma)^2 / \gamma^2$]. \cite{Gulrajani2017} used $\gamma=1.0$, which corresponds to \mbox{1-Lipschitz}, but we noticed that it is in fact significantly better to prefer fast transitions ($\gamma=750$) to minimize the ghosts. We have not tried this trick with other datasets.
+
+\section{Discussion}
+\label{sec:discussion}
+
+While the quality of our results is generally high compared to earlier work on GANs, and the training is stable in large resolutions, there is a long way to true photorealism. Semantic sensibility and understanding dataset-dependent constraints, such as certain objects being straight rather than curved, leaves a lot to be desired. There is also room for improvement in the micro-structure of the images.
+That said, we feel that convincing realism may now be within reach, especially in \textsc{CelebA-HQ}.
+
+\section{Acknowledgements}
+We would like to thank Mikael Honkavaara, Tero Kuosmanen, and Timi Hietanen for the compute infrastructure. Dmitry Korobchenko and Richard Calderwood for efforts related to the \textsc{CelebA-HQ} dataset. Oskar Elek, Jacob Munkberg, and Jon Hasselgren for useful comments.
+
+\bibliographystyle{iclr2018_conference}
+\bibliography{paper}
+
+\newpage
+\appendix
+
+\section{Network structure and training configuration}
+\label{sec:network}
+
+\subsection{$1024\times1024$ networks used for CelebA-HQ}
+\label{sec:network-full}
+
+\tabnetwork
+
+Table~\ref{tab:network} shows network architectures of the full-resolution generator and discriminator that we use with the \textsc{CelebA-HQ} dataset.
+Both networks consist mainly of replicated 3-layer blocks that we introduce one by one during the course of the training.
+The last Conv~$1\times1$ layer of the generator corresponds to the \texttt{toRGB} block in Figure~\ref{fig:fadein}, and the first Conv~$1\times1$ layer of the discriminator similarly corresponds to \texttt{fromRGB}.
+We start with $4\times4$ resolution and train the networks until we have shown the discriminator 800k real images in total.
+We then alternate between two phases: fade in the first 3-layer block during the next 800k images, stabilize the networks for 800k images, fade in the next 3-layer block during 800k images, etc.
+
+Our latent vectors correspond to random points on a 512-dimensional hypersphere, and we represent training and generated images in [-1,1].
+We use leaky ReLU with leakiness 0.2 in all layers of both networks, except for the last layer that uses linear activation.
+We do not employ batch normalization, layer normalization, or weight normalization in either network, but we perform pixelwise normalization of the feature vectors after each Conv~$3\times3$ layer in the generator as described in Section~\ref{sec:featurenorm}.
+We initialize all bias parameters to zero and all weights according to the normal distribution with unit variance.
+However, we scale the weights with a layer-specific constant at runtime as described in Section~\ref{sec:effective_learning_rate}.
+We inject the across-minibatch standard deviation as an additional feature map at $4\times4$ resolution toward the end of the discriminator as described in Section~\ref{sec:variation}.
+The upsampling and downsampling operations in Table~\ref{tab:network} correspond to $2\times2$ element replication and average pooling, respectively.
+
+We train the networks using Adam \citep{adam} with $\alpha=0.001$, $\beta_1=0$, $\beta_2=0.99$, and $\epsilon=10^{-8}$.
+We do not use any learning rate decay or rampdown, but for visualizing generator output at any given point during the training, we use an exponential running average for the weights of the generator with decay 0.999.
+We use a minibatch size 16 for resolutions $4^2$--$128^2$ and then gradually decrease the size according to $256^2\rightarrow14$, $512^2\rightarrow6$, and $1024^2\rightarrow3$ to avoid exceeding the available memory budget.
+We use the WGAN-GP loss, but unlike \cite{Gulrajani2017}, we alternate between optimizing the generator and discriminator on a per-minibatch basis, i.e., we set $n_\mathrm{critic}=1$.
+Additionally, we introduce a fourth term into the discriminator loss with an extremely small weight to keep the discriminator output from drifting too far away from zero.
+To be precise, we set $L' = L + \epsilon_\mathrm{drift} \mathbb{E}_{x\in\mathbb{P}_r}[D(x)^2]$, where $\epsilon_\mathrm{drift}=0.001$.
+
+ \subsection{Other networks}
+\label{sec:network-reduced}
+
+Whenever we need to operate on a spatial resolution lower than $1024\times1024$, we do that by leaving out an appropriate number copies of the replicated 3-layer block in both networks. %
+
+Furthermore, Section~\ref{sec:exp-image-quality} uses a slightly lower-capacity version, where we halve the number of feature maps in Conv $3\times3$ layers at the $16\times16$ resolution, and divide by 4 in the subsequent resolutions. This leaves 32 feature maps to the last Conv $3\times3$ layers.
+In Table~\ref{tab:variants} and Figure~\ref{fig:plots} we train each resolution for a total 600k images instead of 800k, and also fade in new layers for the duration of 600k images.
+
+For the ``\cite{Gulrajani2017}'' case in Table~\ref{tab:variants}, we follow their training configuration as closely as possible.
+In particular, we set $\alpha=0.0001$, $\beta_2=0.9$, $n_\mathrm{critic}=5$, $\epsilon_\mathrm{drift}=0$, and minibatch size 64.
+We disable progressive resolution, minibatch stddev, as well as weight scaling at runtime, and initialize all weights using He's initializer \citep{He2015}.
+Furthermore, we modify the generator by replacing LReLU with ReLU, linear activation with tanh in the last layer, and pixelwise normalization with batch normalization.
+In the discriminator, we add layer normalization to all Conv~$3\times3$ and Conv~$4\times4$ layers.
+For the latent vectors, we use 128 components sampled independently from the normal distribution.
+
+\section{Least-squares GAN (LSGAN) at $1024\times1024$}
+\label{sec:LSGAN}
+
+We find that LSGAN is generally a less stable loss function than WGAN-GP, and it also has a tendency to lose some of the variation towards the end of long runs. Thus we prefer WGAN-GP, but have also produced high-resolution images by building on top of LSGAN. For example, the $1024^2$ images in Figure~\ref{fig:incremental} are LSGAN-based. 
+
+On top of the techniques described in Sections~\ref{sec:progressive}--\ref{sec:normalization}, we need one additional hack with LSGAN that prevents the training from spiraling out of control when the dataset is too easy for the discriminator, and the discriminator gradients are at risk of becoming meaningless as a result. 
+We adaptively increase the magnitude of multiplicative Gaussian noise in discriminator as a function of the discriminator's output. The noise is applied to the input of each Conv~$3\times3$ and Conv~$4\times4$ layer. There is a long history of adding noise to the discriminator, and it is generally detrimental for the image quality \citep{Arjovsky2017} and ideally one would never have to do that, which according to our tests is the case for WGAN-GP \citep{Gulrajani2017}. The magnitude of noise is determined as $0.2\cdot\mathrm{max}(0,\hat{d}_t - 0.5)^2$, where $\hat{d}_t = 0.1d + 0.9\hat{d}_{t-1}$ is an exponential moving average of the discriminator output $d$. The motivation behind this hack is that LSGAN is seriously unstable when $d$ approaches (or exceeds) $1.0$.
+
+\section{CelebA-HQ dataset}
+\label{sec:celeb-hq}
+
+In this section we describe the process we used to create the high-quality version of the \textsc{CelebA} dataset, consisting of 30000 images in $1024\times1024$ resolution.
+As a starting point, we took the collection of in-the-wild images included as a part of the original \textsc{CelebA} dataset.
+These images are extremely varied in terms of resolution and visual quality, ranging all the way from $43\times55$ to $6732\times8984$.
+Some of them show crowds of several people whereas others focus on the face of a single person -- often only a part of the face.
+Thus, we found it necessary to apply several image processing steps to ensure consistent quality and to center the images on the facial region.
+
+\figcelebprocess
+
+Our processing pipeline is illustrated in Figure~\ref{fig:celeb-process}. To improve the overall image quality, we pre-process each JPEG image using two pre-trained neural networks: a convolutional autoencoder trained to remove JPEG artifacts in natural images, similar in structure to the proposed by \cite{DEJPEG}, and an adversarially-trained 4x super-resolution network \citep{Korobchenko2017} similar to \cite{Ledig2016}. To handle cases where the facial region extends outside the image, we employ padding and filtering to extend the dimensions of the image as illustrated in Fig.\ref{fig:celeb-process}(c--d). We then select an oriented crop rectangle based on the facial landmark annotations included in the original \textsc{CelebA} dataset as follows:
+\newcommand{\norm}{\operatorname{Normalize}}
+\newcommand{\rotninety}{\operatorname{Rotate90}}
+\begin{eqnarray*}
+x' &=& e_1 - e_0 \\
+y' &=& \frac{1}{2}(e_0 + e_1) - \frac{1}{2}(m_0 + m_1) \\
+c &=& \frac{1}{2}(e_0 + e_1) - 0.1 \cdot y' \\
+s &=& \max \left( 4.0 \cdot |x'|, 3.6 \cdot |y'| \right) \\
+x &=& \norm \left( x' - \rotninety(y') \right) \\
+y &=& \rotninety(x)
+\end{eqnarray*}
+$e_0$, $e_1$, $m_0$, and $m_1$ represent the 2D pixel locations of the two eye landmarks and two mouth landmarks, respectively, $c$ and $s$ indicate the center and size of the desired crop rectangle, and $x$ and $y$ indicate its orientation. We constructed the above formulas empirically to ensure that the crop rectangle stays consistent in cases where the face is viewed from different angles. Once we have calculated the crop rectangle, we transform the rectangle to $4096\times4096$ pixels using bilinear filtering, and then scale it to $1024\times1024$ resolution using a box filter.
+
+We perform the above processing for all 202599 images in the dataset, analyze the resulting $1024\times1024$ images further to estimate the final image quality, sort the images accordingly, and discard all but the best 30000 images. We use a frequency-based quality metric that favors images whose power spectrum contains a broad range of frequencies and is approximately radially symmetric. This penalizes blurry images as well as images that have conspicuous directional features due to, e.g., visible halftoning patterns.
+We selected the cutoff point of 30000 images as a practical sweet spot between variation and image quality, because it appeared to yield the best results.
+
+\section{CIFAR10 results}
+\label{sec:CIFAR10}
+
+\figCIFARresults
+\tabCIFARresults
+
+Figure~\ref{fig:CIFARresults} shows non-curated images generated in the unsupervised setting, and Table~\ref{tab:CIFARresults} compares against prior art in terms of inception scores. 
+\FINAL{We report our scores in two different ways: 1) the highest score observed during training runs (here $\pm$ refers to the standard deviation returned by the inception score calculator) and 2) the mean and standard deviation computed from the highest scores seen during training, starting from ten random initializations. Arguably the latter methodology is much more meaningful as one can be lucky with individual runs (as we were).}
+We did not use any kind of augmentation with this dataset.
+
+\section{MNIST-1K discrete mode test with crippled discriminator}
+\tabMNIST
+\cite{Metz2016} describe a setup where a generator synthesizes MNIST digits simultaneously to 3 color channels, the digits are classified using a pre-trained classifier ($0.4\%$ error rate in our case), and concatenated to form a number in $[0,999]$. They generate a total of 25,600 images and count how many of the discrete modes are covered. They also compute KL divergence as KL(histogram $||$ uniform). Modern GAN implementations can trivially cover all modes at very low divergence (0.05 in our case), and thus Metz et al. specify a fairly low-capacity generator and two severely crippled discriminators (``K/2'' has $\sim2000$ params and ``K/4'' only about $\sim500$) to tease out differences between training methodologies. Both of these networks use batch normalization.
+
+As shown in Table~\ref{tab:MNIST}, using WGAN-GP loss with the networks specified by Metz et al.~covers much more modes than the original GAN loss, and even more than the unrolled original GAN with the smaller (K/4) discriminator. The KL divergence, which is arguably a more accurate metric than the raw count, acts even more favorably. 
+
+Replacing batch normalization with our normalization (equalized learning rate, pixelwise normalization) improves the result considerably, while also removing a few trainable parameters from the discriminators. The addition of a minibatch stddev layer further improves the scores, while restoring the discriminator capacity to within $0.5\%$ of the original. Progression does not help much with these tiny images, but it does not hurt either. 
+
+\newpage
+\section{Additional CelebA-HQ results}
+\label{app:CelebHQ}
+Figure~\ref{fig:celebHQNN} shows the nearest neighbors found for our generated images. %
+Figure~\ref{fig:celebHQAppendxi} gives additional generated examples from \textsc{CelebA-HQ}.
+We enabled mirror augmentation for all tests using \textsc{CelebA} and \textsc{CelebA-HQ}.
+In addition to the sliced Wasserstein distance (SWD), we also quote the recently introduced Fr\'echet Inception Distance (FID) \citep{Heusel2017} computed from 50K images.
+\figcelebHQNN
+\figcelebHQAppendix
+
+\section{LSUN results}
+\label{app:LSUN}
+Figures~\ref{fig:LSUNcatsX}--\ref{fig:LSUNcatsXXXXXX} show representative images generated for all 30 \textsc{LSUN} categories. A separate network was trained for each category using identical parameters. All categories were trained using 100k images, except for \textsc{bedroom} and \textsc{dog} that used all the available data. Since 100k images is a very limited amount of training data for most categories, we enabled mirror augmentation in these tests (but not for \textsc{bedroom} or \textsc{dog}).
+\figLSUNcatsX
+\figLSUNcatsXX
+\figLSUNcatsXXX
+\figLSUNcatsXXXX
+\figLSUNcatsXXXXX
+\figLSUNcatsXXXXXX
+
+\section{Additional images for Table~\ref{tab:variants}}
+\label{app:variants}
+Figure~\ref{fig:variants-appendix-celeb} shows larger collections of images corresponding to the non-converged setups in Table~\ref{tab:variants}. The training time was intentionally limited to make the differences between various methods more visible.
+\figvariantsAppendixCeleb
+
+\end{document}

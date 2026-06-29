@@ -1,0 +1,151 @@
+\section{Longformer}
+\label{sec:model}
+
+% Modeling long sequences using Transformers has recently garnered considerable interest.
+% Notable approaches include adopting recurrence to preserve past activations \cite{transformerxl,compressive}, learning optimal attention span \cite{adaptivespan}, and sparsifying the self-attention matrix \cite{sparseOpenai}.
+
+The original Transformer model has a self-attention component with $O(n^2)$ time and memory complexity where $n$ is the input sequence length. %and thus, is not efficient to scale to long inputs. 
+% To address this challenge, we decompose the full self-attention matrix into a few custom ``attention patterns'' specifying pairs of input locations attending to one another.
+To address this challenge, we sparsify the full self-attention matrix according to 
+an ``attention pattern'' specifying pairs of input locations attending to one another.
+Unlike the full self-attention, our proposed attention pattern scales linearly with the input sequence, making it efficient for longer sequences.
+%\st{Unlike Sparse Transformers, these attention patterns incorporate dilation for text, are more versatile, and not limited to block structures.}
+%\ib{Sparse Transformers uses dilation}
+%In the following, we discuss the design and implementation of this attention pattern.
+This section discusses the design and implementation of this attention pattern. 
+
+% This requires replacing the $n^2$ self-attention with one 
+% that can scale to long sequences. 
+% We define a particular ``attention pattern''
+% that specifies the pairs of locations that will attend to each others. 
+% We are interested in patterns that scale linearly 
+% with the sequence length $n$, and that works well for language modeling, 
+% pretraining, and task-specific finetuning. 
+% This section discusses the design and implementation of our attention pattern.
+
+\subsection{Attention Pattern}
+\label{sec:attn}
+%Fig.~\ref{fig:attn} summarizes the configurations of our proposed attention pattern.
+% Fig.~\ref{fig:attn} summarizes our proposed attention patterns.
+
+\paragraph{Sliding Window}
+Given the importance of local context \cite{Kovaleva2019RevealingTD}, our attention pattern employs a fixed-size window attention
+surrounding each token.
+% In BERT-style models, attention heads across layers often find local context to be critical \cite{Kovaleva2019RevealingTD}. Following this, the first attention pattern we consider is fixed window spans surrounding tokens that aims at building contextual representation using local context. 
+Using multiple stacked layers of such windowed attention results in a large receptive field, where top layers have access to all input locations and have the capacity to build representations that incorporate information across the entire input, similar to CNNs \cite{Wu2019PayLA}.
+%More formally, in this attention pattern, given a fixed window size $w$, each token attends to $\frac{1}{2}w$ tokens on each side (Fig.~\ref{fig:attnb}).
+Given a fixed window size $w$, each token attends to $\frac{1}{2}w$ tokens on each side (Fig.~\ref{fig:attnb}).
+The computation complexity of this pattern is $O(n \times w)$, which scales linearly with input sequence length $n$. %To make this attention pattern efficient, $w$ should be small compared with $n$.
+In a transformer with $\ell$ layers, the receptive field size at the top layer is $\ell \times w$ (assuming $w$ is fixed for all layers).
+%However, as mentioned above, a model with typical multiple stacked transformer will have a large receptive field.
+%This is analogous to CNNs where stacking layers of small kernels leads to high level features that are built from a large portion of the input (receptive field) \cite{Wu2019PayLA}.
+%In our case, with a transformer of $\ell$ layers, the receptive field size is $\ell \times w$ (assuming $w$ is fixed for all layers). 
+Depending on the application, it might be helpful to use different values of $w$ for each layer to balance between efficiency and model representation capacity (\S\ref{sec:charlm_attn}).
+
+\paragraph{Dilated Sliding Window}
+To further increase the receptive field without increasing computation, the sliding window can be ``dilated''. This is analogous to dilated CNNs~\cite{Oord2016WaveNetAG} where the window has gaps of size dilation $d$ (Fig.~\ref{fig:attnc}).
+Assuming a fixed $d$ and $w$ for all layers, the receptive field 
+is $\ell \times d \times w$, which can reach tens of thousands
+of tokens even for small values of $d$. 
+%This allows each token to capture longer-distance information, even without increasing the computation complexity of the overall attention operation.
+
+In multi-headed attention, each attention head computes a different attention score.  We found settings with different dilation configurations per head improves performance by allowing some heads without dilation to focus on local context, while others with dilation focus on longer context.
+
+%In Transformers, typically there are multiple self-attention heads, where each head computes a different attention scores useful for the task. We found it important to be able to have a different dilation configuration per head. It makes it possible for certain heads to focus on short context (no dilation) while other heads focus on longer context (with dilation).
+
+\paragraph{Global Attention} 
+% \st{Prior work on transformers for long documents
+% has primarily focused on language modeling, yet applicability of such models on other NLP tasks
+% remains unexplored.} \matt{don't think we need this sentence here, it's already in the intro and doesn't help the section. we also remind the reader of this in sec 5}
+% \st{While our proposed local window attention and dilated attention patterns allow the model's receptive field to span thousands of tokens, we found it important to allow direct access to specific locations of the input. 
+% This allows the model to more optimally use global information relevant for the task. For example, in text classification, BERT uses a special \texttt{[CLS]} token to aggregate information across the sequence for prediction. In our case, the windowed and dilated attention are not flexible enough to learn the task-specific representations without direct access to this aggregate token. Similarly, in QA the input sequence is the question followed by the document, and it would be more optimal for all the document tokens to have direct access to the question tokens. }
+
+In state-of-the-art BERT-style models for natural language tasks, the optimal input representation differs from language modeling and varies by task.
+For masked language modeling (MLM), the model uses local context to predict the masked word, while for classification, the model aggregates the representation of the whole sequence into a special token (\texttt{[CLS]} in case of BERT).
+%For QA the question and document are concatenated and through self-attention, the model compares the question with the document to answer the question. 
+For QA, the question and document are concatenated, allowing the model to compare the question with the document through self-attention.
+% The inductive bias that works for language modeling, while useful to build a token representation from the local context is not necessarily flexible enough for task-specific representations in our sparse self-attention pattern.
+%This applies to our dilated window attention pattern as well. 
+% \ac{one could argue that maybe a different input representation than taking the cls token or concatenating question or answer might work better for your attention pattern.}.
+% \st{As our goal is to provide a drop-in replacement for full self-attention in pretrained Transformers, we add a new attention configuration that provides the model with additional flexibility for task-specific models.} \matt{don't think this is necessary, and covered in the next paragraph}
+% ; while it allows the model's receptive field to span thousands of tokens, it is not flexible enough to learn the task-specific representations.
+% This is because of lack of direct access to global information. 
+% \ac{repetative statement}
+
+% \ib{
+% Many NLP tasks are .... 
+% } \ac{@IB slightly rephrased your paragraph into the above one.}
+% \ib{
+% Many NLP tasks are different from language modeling as they 
+% require the model to perform the task differently.
+% For language modeling, the model uses local context to predict
+% the next word, while for classification, the model 
+% aggregates the whole sequence into the \texttt{[CLS]} token, 
+% and for QA where the question and document are concatenated, 
+% the model compares the question with the document 
+% to answer the question. 
+% The inductive bias that works for language modeling, 
+% while useful to build a token representation 
+% from the local context, it doesn't necessarily 
+% have enough flexibility to build good task-specific representations.
+% This applies to our dilated window attention pattern as well;
+% While it allow the model's receptive field to span thousands of tokens, it is not flexible enough to learn the task-specific 
+% representations.
+% This is because of lack of direct access to global information. 
+% }
+
+% While the dilated sliding window 
+% attention learns good global representation for tokens, it is not flexible 
+% enough to learn the task-specific process that finds the relation 
+% between the question and the document, then predicts an answer. 
+
+In our case, the windowed and dilated attention are not flexible enough to learn task-specific representations.
+% \st{In particular, to facilitate global information transfer,}
+Accordingly, we add ``global attention'' on few pre-selected input locations.
+Importantly, we make this attention operation symmetric: that is, a token
+with a global attention attends to all tokens across the sequence, and all tokens in the sequence attend to it. 
+Fig.~\ref{fig:attnd} shows an example of a sliding window attention
+with global attention at a few tokens at custom locations. For example for classification, global attention is used for the \texttt{[CLS]} token while in QA global attention is provided on all question tokens.
+Since the number of such tokens is small relative to and independent of $n$
+%(the total number of tokens in the input sequence)
+the complexity of the combined local and global attention is still $O(n)$.
+While specifying global attention is task specific, it is a easy way to add inductive bias to the model's attention, and it is much simpler than existing task specific approaches that use complex architecture to combine information across smaller input chunks.
+
+%Note that, since the number of such tokens is usually a constant or very small compared to $n$, the computational complexity of the combined local and global attention is still $O(n)$ (where $n$ is the total number of tokens in the input sequence). 
+
+%While specifying global attention is task specific, it is much simpler than existing task specific approaches that chunk/shorten the input into smaller sequences and often use complex architecture to combine information across these chunks.
+%While specifying global attention is task specific, it is a easy way to add inductive bias to the model's attention, and it is much simpler than existing task specific approaches that use complex architecture to combine information across smaller input chunks.
+%Further, it increases the representational power of the model as it allows building contextual representations across the entire sequence.
+
+\paragraph{Linear Projections for Global Attention}
+Recall that given the linear projections $Q$, $K$, $V$, the Transformer
+model \cite{Vaswani2017AttentionIA} computes attention scores as follows:
+\begin{align}
+\label{eq:qkv}
+\text {Attention}(Q, K, V)=\operatorname{softmax}\left(\frac{Q K^{T}}{\sqrt{d_{k}}}\right) V
+\end{align}
+We use two sets of projections, $Q_s$, $K_s$, $V_s$ to compute attention scores of sliding window attention, and  $Q_g$, $K_g$, $V_g$ to  compute attention scores for the global attention.
+The additional projections provide flexibility to model the different types of attention, which we show is critical for best performance on downstream tasks. 
+$Q_g$, $K_g$, $V_g$ are all initialized with values that match
+ $Q_s$, $K_s$, $V_s$. 
+%The additional set of projections gives the model the flexibility to compute the attention scores differently for the different types of attention, which is critical for downstream tasks.  
+
+
+
+\subsection{Implementation}
+\label{sec:tvm}
+%\ib{review this section}
+In regular transformers, attention scores are computed as in Eqn.~\ref{eq:qkv}. 
+The expensive operation is the matrix multiplication $Q K^{T}$ because both
+$Q$ and $K$ have $n$ (sequence length) projections. 
+For \model, the dilated sliding window attention computes only a fixed number of the diagonals 
+of $Q K^{T}$. As shown in Fig.~\ref{fig:tvm}, this results in a linear increase 
+in memory usage compared to quadratic increase for full self-attention.
+However, implementing it requires a form of banded matrix multiplication that is not supported in 
+existing deep learning libraries like PyTorch/Tensorflow.
+Fig.~\ref{fig:tvm} compares the performance of three different ways of implementing it:
+\texttt{loop} is a memory efficient PyTorch implementation that supports dilation but is unusably slow and only used for testing;
+%\ib{we need to mention here that we keep it because it is the only pytorch implementation we have that supports dilation}
+\texttt{chunks} only supports the non-dilated case and is used for 
+the pretraining/finetuning setting;
+and \texttt{cuda} is our fully functioning highly optimized custom CUDA kernel implemented using TVM~\cite{tvm} and used for the language modeling experiments (see  Appendix~\ref{sec:tvm_details} for more details).

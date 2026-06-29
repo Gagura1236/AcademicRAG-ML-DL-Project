@@ -1,0 +1,142 @@
+\section{Genomics experiments details}
+\label{sec:apndx-expt-bio}
+
+In this section we provide details of the experimental setup for \bigb on genomics data.
+
+\subsection{Pretraining}
+\label{sec:apndx-expt-bio:mlm}
+We try to keep the experimental setup as close to a typical NLP pipeline.
+In this regard, we take human reference GRCh37\footnote{\url{https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.39}} and convert it into documents $\mathcal{D}$. Each document $d\in \mathcal{D}$ is a sequence of sentences, where each sentence is a sequence of fragments of DNA. We construct the documents as follows:
+\begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item Start with empty document set $D = \emptyset$.
+    \item For each chromosome $C$, repeat the following procedure 10 times.
+    \begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+         \item Pick uniformly at random a starting point $q$ between base pairs 0 and 5000 from the 5' end.
+    \item Repeat until $q > |C|$
+    \begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \vspace{1mm}
+        \item Pick uniformly at random $s$ a number between 50 and 100 to denote number of sentences per document.
+         \item Constructs a document $d$ containing $s$ sentences using consecutive base pairs (bps). The length of each sentence is chosen uniformly at random between 500-1000. Thus the resulting document has $25,000$ - $100,000$ bps. 
+        \item $D = D \bigcup d$
+        \item $q = q + |d|$
+    \end{enumerate}
+\end{enumerate}
+\end{enumerate}
+By this procedure we end-up with approximately $450K$ documents.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/Unsupervised_genomics_data.pdf}
+    \caption{Visual description of how the masked language modeling data was generated from raw DNA dataset. The raw DNA sequences of GRCh37, where split at random positions to create documents with 50-100 sentences where each sentence was 500-1000 base pairs (bps). Thus each document had a continuous strand of 25000-100,000 bps of DNA. This process was repeated 10 times to create 10 sets of document for each chromosome of GRCH37. The resulting set of documents was then passed through Sentencepiece that created tokens of average 8bp. For pretraining we used masked language model and masked $10\%$ of the tokens and trained on predicting the masked tokens.}
+    \label{fig:apndx_mlm_data}
+\end{figure}
+
+Next we run sentencepiece~\citep{kudo2018sentencepiece} tokenization on the resulting documents. In particular, using 5 characters as the building blocks (four for bases - A, T, C, G and one for missing symbol N), we construct a byte pair encoding table of size 32k, with each token representing 8.78 base pairs on average.
+
+Using the above constructed documents, we construct a dataset for two pretraining tasks following \citet{devlin2018bert}:
+\begin{itemize}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item \textbf{Masked Language Model (MLM):} 
+    In order to train a deep bidirectional representation, BERT training introduces the MLM task, where we simply mask out 15\% of the input tokens at random, and then predict those masked tokens.
+    We can simply replace such masked out of the tokens with a [MASK] placeholder, but it leads to a distribution mis-match for downstream tasks which will not have such placeholders. To mitigate with this issue, out of the 15\% of the tokens selected for masking:
+    \begin{itemize}
+        \item 80\% of the tokens are actually replaced with the token [MASK].
+        \item 10\% of the time tokens are replaced with a random token.
+        \item 10\% of the time tokens are left unchanged, but are still predicted at output.
+    \end{itemize}
+    We run this entire sequence through the \bigb transformer encoder and then predict corresponding to the masked positions, based on the context provided by the other non-masked tokens in the sequence.
+
+    \item \textbf{Next Sentence Prediction (NSP):} 
+    In order to understand relationship between two sequences, BERT training introduces the NSP task, where we predict if a given pair of sequences are contiguous or not.
+    During training the model gets as input pairs of sequences separated by [SEP] token along with a [CLS] token at the start. Overall the input pattern is: [CLS] sequence A [SEP] sequence B [SEP]. For 50\% of the time the second sequence comes from true sequence after the first one. Remaining 50\% of the time it is a a random sequence from the full dataset. The model is then required to predict this relationship using the output corresponding to the [CLS] token, which is fed into a simple binary classification layer.
+\end{itemize}
+
+\begin{wrapfigure}{r}{0.32\textwidth}
+    \vspace{-2mm}
+    \centering
+    \includegraphics[width=0.35\textwidth]{figures/dna_mlm.pdf}
+    \vspace{-5mm}
+    \caption{\bigb accuracy with context length.}
+    \label{fig:apndx_dna_mlm}
+    % \vspace{-9mm}
+\end{wrapfigure}
+The sequence of steps is visually elaborated in \Cref{fig:apndx_fep_data}.
+The model is trained with both MLM and NSP together. Training hyperparameter is provided in second columns of \Cref{tab:app_bio}. In all experiments we use a learning
+rate warmup over the first 10,000 steps, and linear
+decay of the learning rate.
+
+We additionally performed a simple ablation study to validate the hypothesis, that similar to NLP, having a larger context improves performance. 
+We use MLM task described above to test how \bigb performed with sequences of different length. 
+Accuracy on MLM task with increasing sequence length is shown in \Cref{fig:apndx_dna_mlm}. 
+Not only longer context improves final accuracy, it also leads to faster learning, as we have now more opportunities for masking.
+
+\begin{figure}
+\vspace{-5mm}
+    \centering
+    \includegraphics[width=\linewidth]{figures/FunctionalEffects.pdf}
+    \caption{Visual description of the DNA segment from which we predict the chromatin profile for a given non-coding region of the raw DNA sequences of GRCh37. We take 8000 bps of DNA before and after the given non-coding region as context. The complete fragment of DNA including the context on both side, is then tokenized to form our input sequence of tokens. The task is to predict  919  chromatin profile including $690$ transcription factors (TF) binding profiles for $160$ different TFs, $125$ DNase I sensitivity (DHS) profiles and $104$ histone-mark (HM) profiles}
+    \label{fig:apndx_fep_data}
+\end{figure}
+
+\subsection{Promoter Region Prediction}
+The promoter region plays an important role in transcription initiation and thus its recognition is an important area of interest in the field of bioinformatics.
+Following \citet{oubounyt2019deepromoter}, we use datasets from Eukaryotic Promoter Database (EPDnew) \citep{dreos2013epd}, which contains
+29,597 promoter region in the human genome.
+Around the transcription start site (TSS), we extract a sequence of 8000 bp (-5000~+3000 bp) from the human reference genome GRCh37.
+Since EPDnew uses newer GRCh38, we convert to GRCh37 coordinates using LiftOver~\citep{kent2002human}.
+
+Following \citet{oubounyt2019deepromoter} for each promoter region example, a negative example (non-promoter sequences) with the same size of the positive one is constructed as follow:
+The positive sequence is divided into 20 subsequences. Then, 12 subsequences are picked randomly and substituted randomly. The remaining 8 subsequences are conserved. This process is illustrated in Figure 1 of \citep{oubounyt2019deepromoter}. Applying this process to the positive set results in new non-promoter sequences with conserved parts from promoter sequences (the unchanged subsequences, 8 subsequences out of 20). These parameters enable generating a negative set that has 32 and 40\% of its sequences containing conserved portions of promoter sequences.
+
+We prefix and append each example with [CLS] and [SEP] token respectively.
+The output corresponding to the [CLS] token from \bigb transformer encoder is fed to a simple binary classification layer.
+We fine-tune the pretrained \bigb from~\Cref{sec:apndx-expt-bio:mlm} using hyper-parameters described in~\Cref{tab:app_bio}.
+We note that high performance is not surprising due to the overlap in the nature of negative example generation and MLM pretraining.
+
+
+\subsection{Chromatin-Profile Prediction}
+The first step of sequence-based algorithmic framework for predicting non-coding effects is to build a model to predict, large scale chromatic profile \citep{zhou2015predicting}. 
+\begin{table}[b]
+\small
+\centering
+\begin{tabular}{@{} l r r c r c r @{}}
+\toprule
+Parameter & & Pretraining & & Promoter Region & & Chromatin-Profile \\
+\midrule
+ Block length, $b$ & & $64$ & & $64$& & $64$\\
+Global token location & & \textsc{itc} & & \textsc{itc}& & \textsc{itc} \\
+ $\#$ of global token, $g$ & & $2\times b$ & & $2\times b$& & $2\times b$ \\
+ Window length, $w$  & & $3\times b$ & & $3\times b$& & $3\times b$ \\
+ $\#$ of random token, $r$ & & $3\times b$ & & $3\times b$& & $3\times b$ \\
+ Max. Sequence Length & & $4096$ & & $4096$& & $4096$\\
+ $\#$ of heads & & $12$ & & $12$& & $12$\\
+ $\#$ of hidden layers & & $12$ & & $12$& & $12$ \\
+ Hidden layer size & & $768$ & & $768$ & & $768$ \\
+ Batch Size & & $256$ & & $256$& & $256$ \\
+ Vocab Size & & $32000$ & & $32000$& & $32000$\\
+ \multirow{2}{*}{Loss} & & \multirow{2}{*}{MLM+NSP} & & \multirow{2}{*}{BCE} & & 919 x +ve upweighted \\
+  & &  & &  & & BCE \\
+ Dropout prob & & $0.1$ & & $0.1$ & & $0.1$ \\
+ Optimizer & & Adam & & Adam & & Adam\\
+ Learning rate & & $0.0001$  & & $0.0001$ & & $0.0001$\\
+ $\#$ of steps & & $1000000$ & & 711 && 500000 \\
+  Compute Resources & & $8 \times 8$ TPUv3 & & $8 \times 8$ TPUv3 & & $8 \times 8$ TPUv3\\
+\bottomrule
+\end{tabular}
+\vspace{2mm}
+\caption{Table of hyperparameters for Computational biology.}
+\label{tab:app_bio}
+\end{table}
+In this paper, we use the dataset provided in \citet{zhou2015predicting}\footnote{ \url{http://deepsea.princeton.edu/media/code/deepsea_train_bundle.v0.9.tar.gz}}, to train \bigb to predict the chromatic profile.
+
+
+
+
+Each training sample consists of a 8,000-bp sequence from the human GRCh37 reference genome centered on each 200-bp bin and is paired with a label vector for 919 chromatin features.
+As before, we prefix and append each example with [CLS] and [SEP] token respectively.
+The output corresponding to the [CLS] token from \bigb transformer encoder is fed to a linear layer with 919 heads. Thus we jointly predict the 919 independent binary classification problems.
+We fine-tune the pretrained \bigb from~\Cref{sec:apndx-expt-bio:mlm} using hyper-parameters described in~\Cref{tab:app_bio}.
+As the data is highly imbalanced data (way more negative examples than positive examples), we upweighted loss function for positive examples by factor of 8.
+
+We used training and testing split provided by \citet{zhou2015predicting} using chromosomes and strictly non-overlapping. Chromosome 8 and 9 were excluded from training to test chromatin feature prediction performances, and the rest of the autosomes were used for training and validation. 4,000 samples on chromosome 7 spanning the genomic coordinates 30,508,751–35,296,850 were used as the validation set. 
+
+As the predicted probability for each sequence in DeepSea~\citet{zhou2015predicting} was computed as the ensemble average of the probability predictions for the forward and complementary sequence pairs, we also predict using an ensemble of two \bigb model trained independently.

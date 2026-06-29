@@ -1,0 +1,49 @@
+\begin{thebibliography}{1}
+
+\bibitem{Adagrad11}
+J.~Duchi, E.~Hazan, and Y.~Singer.
+\newblock Adaptive subgradient methods for online learning and stochastic
+  optimization.
+\newblock {\em Journal of Machine Learning Research}, 12:2121--2159, July 2011.
+
+\bibitem{DeepResidualLearning}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun.
+\newblock Deep residual learning for image recognition.
+\newblock {\em Proc. IEEE Conference on Computer Vision and Pattern
+  Recognition}, 2016.
+
+\bibitem{FTRL11}
+H.~B. McMahan.
+\newblock Follow-the-regularized-leader and mirror descent: Equivalence
+  theorems and l1 regularization.
+\newblock In {\em Proc. AISTATS}, 2011.
+
+\bibitem{MaxentRNN11}
+T.~Mikolov, A.~Deoras, D.~Povey, L.~Burget, and J.~H. Cernocky.
+\newblock Strategies for training large scale neural network language models.
+\newblock In {\em IEEE Automatic Speech Recognition \& Understanding Workshop},
+  2011.
+
+\bibitem{LibFMTIST12}
+S.~Rendle.
+\newblock Factorization machines with {libFM}.
+\newblock {\em ACM Trans. Intell. Syst. Technol.}, 3(3):57:1--57:22, May 2012.
+
+\bibitem{JointCNNMRF14}
+J.~J. Tompson, A.~Jain, Y.~LeCun, and C.~Bregler.
+\newblock Joint training of a convolutional network and a graphical model for
+  human pose estimation.
+\newblock In Z.~Ghahramani, M.~Welling, C.~Cortes, N.~D. Lawrence, and K.~Q.
+  Weinberger, editors, {\em NIPS}, pages 1799--1807. 2014.
+
+\bibitem{CollaborativeDLRecsKDD15}
+H.~Wang, N.~Wang, and D.-Y. Yeung.
+\newblock Collaborative deep learning for recommender systems.
+\newblock In {\em Proc. KDD}, pages 1235--1244, 2015.
+
+\bibitem{AppJoyMobiSys11}
+B.~Yan and G.~Chen.
+\newblock {AppJoy}: Personalized mobile application discovery.
+\newblock In {\em MobiSys}, pages 113--126, 2011.
+
+\end{thebibliography}

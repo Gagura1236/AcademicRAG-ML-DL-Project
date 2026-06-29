@@ -1,0 +1,80 @@
+\section{Analysis of Empirical, Finite-Width Dynamics}\label{section:finite_sample_analysis}
+
+The first step is to set up a coupling between the finite-width empirical dynamics and the infinite-width population dynamics --- we will eventually show that these two dynamics do not diverge very far, even up to time $\Tstar$ (defined in \Cref{thm:pop_main_thm}).
+
+\paragraph{Coupling Between Empirical and Population Dynamics.} To analyze the difference between the empirical dynamics (resulting in $\rhohat_t$) and the population dynamics (resulting in $\rho_t$) we define an intermediate process $\rhobar_t$, which has finite support. Specifically, $\rhobar_0 = \rhohat_0$, and $\rhobar_t$ will always have support size $m$, but the particles in $\rhobar$ are then updated according to the infinite-width population dynamics. We formally define $\rhobar_t$ as follows:
+\begin{align}
+\rhobar_{0} & = \rhohat_0 = \textup{unif}(\{\chi_1,\dots, \chi_m\}) \comma \nonumber\\
+\text{ and } \rhobar_t & = \textup{distribution of $\u_t(\chi)$ (where $\chi \sim \rhobar_0$)}  \period \label{eqn:13}
+\end{align}
+In other words, $\rhobar_t$ consists of the particles in $\rho_t$ whose initialization is in $\{\chi_1, \ldots, \chi_m\}$.
+
+Now, we define a coupling between $\rhobar_t$ and $\rhohat_t$. For $\chi \sim \textup{unif}(\{\chi_1,\dots, \chi_m\})$, let $\ubar_t(\chi) = \u_t(\chi)$. Let $\coup_t$ be the joint distribution of $(\ubar_t(\chi), \uhat_t(\chi))$. Then, $\coup_t$ forms a natural coupling between $\rhobar_t$ and $\rhohat_t$. We will use $\ubar_t$ and $\uhat_t$ as shorthands for the random variables  $\ubar_t(\chi), \uhat_t(\chi)$ respectively in the rest of this section. Additionally, we define the average distance $\deltaBar_t^2 := \E_{(\uhat_t, \ubar_t)\sim \coup_t} [\|\uhat_t - \ubar_t\|_2^2]$. Intuitively, $f_{\rho_t}(x)$ and $f_{\rhohat_t}(x)$ are close when $\uhat_t$ and $\ubar_t$ are close, which is formalized by the following lemma:
+
+\begin{lemma}\label{lemma:finite_sample_width_main_lemma}
+In the setting of \Cref{thm:empirical-main}, suppose the network width $m$ satisfies $m \leq d^{O(\log d)}$, and let $T \leq \frac{d^C}{\sigmaCoeffTwo^2 + \sigmaCoeffFour^2}$ for some universal constant $C > 0$. Then, with probability at least $1 - \exp(-d^2)$ over the randomness of $\{\chi_1, \ldots, \chi_m\}$, we have for all $t \leq T$ that
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rho_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^2 (\log d)^{O(1)}}{m} \period
+\end{align}
+Additionally, for all $t \geq 0$, we have
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_{\rhohat_t}(x) - f_{\rhobar_t}(x))^2]
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^2 \period
+\end{align}
+\end{lemma}
+
+The proof of \Cref{lemma:finite_sample_width_main_lemma} is deferred to \Cref{section:proof_finite_sample}. As a simple corollary of \Cref{lemma:finite_sample_width_main_lemma}, we can upper bound $\Exp_{x\sim\Sp}[(f_{\rho_t}(x)-f_{\rhohat_t}(x))^2]$ by the triangle inequality. Thus, so long as $\deltaBar_{\Tstar}$ is small, we can show that the empirical and population dynamics achieve similar test error at time $\Tstar$.
+
+\paragraph{Upper Bound for $\deltaBar_{\Tstar}$.} The following lemma gives our upper bound on $\deltaBar_{\Tstar}$:
+
+\begin{lemma}[Final Bound on $\deltaBar_{\Tstar}$] 
+	\label{lemma:final_bound_Delta_avg}
+     In the setting of Theorem~\ref{thm:empirical-main}, we have
+	\begin{align}
+		\deltaBar_{\Tstar}\le d^{-\frac{\samplebound-1}{4}} \period
+	\end{align}	
+\end{lemma}
+
+
+
+We prove \Cref{lemma:final_bound_Delta_avg} by induction over the time $t \le \Tstar$.
+Let us define the maximal distance
+$\deltaMaxt{t} := \max_{(\uhat_t, \ubar_t) \in \supp(\coup_t)}\|\uhat_t - \ubar_t\|_2$ where the max is over the \textit{finite} support of the coupling $\coup_t$. 
+We will control $\deltaBar_t$ and $\deltaMaxt{t}$ simultaneously using induction. The inductive hypothesis is: 
+\begin{assumption}[Inductive Hypothesis] \label{assumption:inductive_hypothesis}
+	For some universal constant $1 > \avgbound > 1/2$ and $\maxbound \in (0, \avgbound-\frac{1}{2})$, we say that the inductive hypothesis holds at time $T$ if, for all $0\le t\leq T$, we have 
+	\begin{align}
+	\deltaBar_t \leq d^{-\avgbound}~~ \textup{ and } ~~\deltaMaxt{t} \leq d^{-\maxbound} \period
+	\end{align}
+\end{assumption}
+Showing that the inductive hypothesis holds for all $t$ requires studying the growth of the error $\norm{\uhat_t - \ubar_t}$. We analyze it using the following decomposition:~\footnotemark \footnotetext{Note that $\uhat_t-\ubar_t$ and $A_t, B_t$ and $C_t$ implicitly depend on the initialization $\chi$, and could be written as $A_t(\chi), B_t(\chi), C_t(\chi)$, and $\delta_t(\chi)$, but we omit this dependence for ease of presentation.}
+\begin{align}
+	\frac{d}{dt} \|\uhat_t-\ubar_t\|_2^2 =& A_t + B_t + C_t \comma
+\end{align}
+where $A_t := - 2 \langle \pgrad_{\uhat} L(\rho_t) - \pgrad_{\ubar} L(\rho_t), \uhat_t - \ubar_t \rangle$,
+$B_t := -2 \langle \pgrad_{\uhat} L(\rhohat_t) - \pgrad_{\uhat} L(\rho_t), \uhat_t - \ubar_t \rangle$, and $C_t = -2 \langle \pgrad_{\uhat} \Lhat(\rhohat_t) - \pgrad_{\uhat} L(\rhohat_t), \uhat_t - \ubar_t \rangle.$ Intuitively, $A_t$ captures the growth of the coupling error due to the population dynamics, $B_t$ captures the growth of the coupling error due to the discrepancy between the gradients from the finite-width and infinite-width networks, and $C_t$ captures the growth of the coupling error due to the discrepancy between finite samples and infinite samples. 
+
+We will use the following lemma to give an upper bound on each of these three terms.
+
+\begin{lemma}[Bounds on $A_t, B_t, C_t$] \label{lemma:final_bounds_ABC}
+In the setting of \Cref{thm:empirical-main}, suppose the inductive hypothesis (\Cref{assumption:inductive_hypothesis}) holds up to time $t$, for some $t \leq \Tstar$. Let $\vv_t := \uhat_t - \ubar_t$. Let $T_1$ be the runtime of Phase 1 (where Phase 1 is defined in \Cref{def:phase_1}). Then, we have
+\begin{align}
+    A_t &\le \begin{cases} 4\sigmaCoeffTwo^2|D_{2,t}|\norm{\vv_t}^2 + O\big( \frac{\sigmaCoeffTwo^2}{\log d}|D_{2,t}| \norm{\vv_t}^2 \big) & \text{if } 0\le t \le T_1 \\
+    O(1)\cdot (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\gamma_2 \norm{\vv_t}^2 & \text{if } T_1\le t \le \Tstar 
+\end{cases} \period\label{eqn:at_bound}
+\end{align}
+Additionally, assuming that the width $m$ is at most $d^{O(\log d)}$, we have with probability at least $1 - e^{-d^2}$ over the randomness of the initialization $\rhohat_0$ that $B_t \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \cdot \Big(\frac{d (\log d)^{O(1)}}{\sqrt{m}} + \deltaBar_t \Big) \|\delta_t\|_2$ and $\E[B_t] \lesssim \frac{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d (\log d)^{O(1)}}{\sqrt{m}} \deltaBar_t + (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \deltaBar_t^3$. 
+
+Finally, assume that the number of samples $n \leq d^C$ and the width $m$ is at most $d^C$ for any universal constant $C > 0$. Assume that $\deltaBar_t \leq \frac{1}{\sqrt{d}}$ (i.e. $\avgbound > \frac{1}{2}$) and that $\maxbound < \frac{1}{2}$. Then, with probability $1 - \frac{1}{d^{\Omega(\log d)}}$ over the randomness of the dataset, we have $C_t \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) (\log d)^{O(1)} \cdot \Big(\sqrt{\frac{d}{n}} \|\delta_t\|_2 + \frac{d^{2 - 2\maxbound}}{n} \deltaBar \|\delta_t\|_2^2 + \frac{d^{2.5 - 2\maxbound}}{n} \deltaBar^2 \|\delta_t\|_2  + \frac{d^{4 - 4\maxbound}}{n} \deltaBar^2 \|\delta_t\|_2^2 \Big)$.
+\end{lemma}
+
+The proof can be found in \Cref{section:proof_finite_sample}. We give an explanation for each of these bounds below.
+
+For $A_t$, we establish two separate bounds, one which holds during Phase 1, and one which holds during Phases 2 and 3. Intuitively, the signal part in a neuron (i.e. $\w^2$) grows at a rate $4 \sigmaCoeffTwo^2 |D_{2, t}|$ during Phase 1 (which follows from \Cref{lem:1-d-traj}) and in \Cref{eqn:at_bound} we show that the growth rate of the coupling error due to the growth in the signal is also at most $4 \sigmaCoeffTwo^2 |D_{2, t}|$. Intuitively, the growth rates match because the signal parts of the neurons follow similar dynamics to a power method during Phase 1. For example, in the worst case when $\delta_t$ is mostly in the direction of $\e$, the factor by which $\delta_t$ grows is the same as that of $\w$. More mathematically, this is due to the fact that the first-order term in \Cref{lem:1-d-traj} is the dominant term in $v(\w) - v(\what)$ for any two particles $\w, \what$ (where $v(\w)$ is the one-dimensional velocity defined in the previous section). To get a sample complexity better than NTK, the precise constant factor $4$ in the growth rate $4 \sigmaCoeffTwo^2 |D_{2, t}| \w$ is important --- a larger constant would lead to $\delta_{T_1}$ being larger by a $\poly(d)$ factor, thus increasing the sample complexity by $\poly(d)$.
+
+The same bound for $A_t$ no longer applies during Phases 2 and 3. This is because the dynamics of $\w$ are no longer similar to a power method, and the higher-order terms may make a larger contribution to $v(\w) - v(\what)$ than to the growth of $\w$, or vice versa. Thus we use a looser bound $O(1)\cdot (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2)\gamma_2 \norm{\vv_t}^2$ in Eq.~\eqref{eqn:at_bound}. However, since the remaining running time after Phase 1, $\Tstar-T_1$, is very short (only $\poly(\log\log d)$ --- this corresponds to the second term of the running time in \Cref{thm:pop_main_thm}), the total growth of the coupling error is at most $\exp(\poly(\log\log d))$, which is sub-polynomial and does not contribute to the sample complexity. Note that if the running time during Phases 2 and 3 is longer (e.g. $O(\log d)$) then the coupling error would grow by an additional $d^{O(1)}$ factor during Phases 2 and 3, which would make our sample complexity worse than NTK.
+
+Our upper bounds on $B_t$ and $C_t$ capture the growth of coupling error due to the finite width and samples. We establish a stronger bound for $\E[B_t]$ than for $B_t$. In our proof, we use the bounds for $B_t$ and $\Exp[B_t]$ to prove the inductive hypothesis for $\deltaBar_t$ and $\deltaMaxt{t}$ respectively. We prove the bound for $C_t$ by expanding the error due to finite samples into second-order and fourth-order polynomials and applying concentration inequalities for higher moments (\Cref{lemma:main_concentration_lemma}).
+
+All of these bounds together control the growth of $\norm{\uhat_t - \ubar_t}$ at time $t$. Using Lemma~\ref{lemma:final_bounds_ABC} we can show that for some properly chosen $\avgbound$ and $\maxbound$, the inductive hypothesis in \Cref{assumption:inductive_hypothesis} holds until $\Tstar$ (see Lemma~\ref{lemma:IH_is_maintained} for the statement), which naturally leads to the bound in Lemma~\ref{lemma:final_bound_Delta_avg}. The full proof can be found in Appendix~\ref{section:proof_finite_sample}. 

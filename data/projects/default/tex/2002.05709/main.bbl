@@ -1,0 +1,407 @@
+\begin{thebibliography}{61}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Asano et~al.(2019)Asano, Rupprecht, and Vedaldi]{asano2019critical}
+Asano, Y.~M., Rupprecht, C., and Vedaldi, A.
+\newblock A critical analysis of self-supervision, or what we can learn from a
+  single image.
+\newblock \emph{arXiv preprint arXiv:1904.13132}, 2019.
+
+\bibitem[Bachman et~al.(2019)Bachman, Hjelm, and
+  Buchwalter]{bachman2019learning}
+Bachman, P., Hjelm, R.~D., and Buchwalter, W.
+\newblock Learning representations by maximizing mutual information across
+  views.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  15509--15519, 2019.
+
+\bibitem[Becker \& Hinton(1992)Becker and Hinton]{becker1992self}
+Becker, S. and Hinton, G.~E.
+\newblock Self-organizing neural network that discovers surfaces in random-dot
+  stereograms.
+\newblock \emph{Nature}, 355\penalty0 (6356):\penalty0 161--163, 1992.
+
+\bibitem[Berg et~al.(2014)Berg, Liu, Lee, Alexander, Jacobs, and
+  Belhumeur]{berg2014birdsnap}
+Berg, T., Liu, J., Lee, S.~W., Alexander, M.~L., Jacobs, D.~W., and Belhumeur,
+  P.~N.
+\newblock Birdsnap: Large-scale fine-grained visual categorization of birds.
+\newblock In \emph{IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pp.\  2019--2026. IEEE, 2014.
+
+\bibitem[Berthelot et~al.(2019)Berthelot, Carlini, Goodfellow, Papernot,
+  Oliver, and Raffel]{berthelot2019mixmatch}
+Berthelot, D., Carlini, N., Goodfellow, I., Papernot, N., Oliver, A., and
+  Raffel, C.~A.
+\newblock Mixmatch: A holistic approach to semi-supervised learning.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  5050--5060, 2019.
+
+\bibitem[Bossard et~al.(2014)Bossard, Guillaumin, and
+  Van~Gool]{bossard2014food}
+Bossard, L., Guillaumin, M., and Van~Gool, L.
+\newblock Food-101--mining discriminative components with random forests.
+\newblock In \emph{European conference on computer vision}, pp.\  446--461.
+  Springer, 2014.
+
+\bibitem[Chen et~al.(2017)Chen, Sun, Shi, and Hong]{chen2017sampling}
+Chen, T., Sun, Y., Shi, Y., and Hong, L.
+\newblock On sampling strategies for neural network-based collaborative
+  filtering.
+\newblock In \emph{Proceedings of the 23rd ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pp.\  767--776, 2017.
+
+\bibitem[Chen et~al.(2019)Chen, Zhai, Ritter, Lucic, and Houlsby]{chen2019self}
+Chen, T., Zhai, X., Ritter, M., Lucic, M., and Houlsby, N.
+\newblock Self-supervised gans via auxiliary rotation loss.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pp.\  12154--12163, 2019.
+
+\bibitem[Cimpoi et~al.(2014)Cimpoi, Maji, Kokkinos, Mohamed, and
+  Vedaldi]{cimpoi2014describing}
+Cimpoi, M., Maji, S., Kokkinos, I., Mohamed, S., and Vedaldi, A.
+\newblock Describing textures in the wild.
+\newblock In \emph{IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pp.\  3606--3613. IEEE, 2014.
+
+\bibitem[Cubuk et~al.(2019)Cubuk, Zoph, Mane, Vasudevan, and
+  Le]{cubuk2019autoaugment}
+Cubuk, E.~D., Zoph, B., Mane, D., Vasudevan, V., and Le, Q.~V.
+\newblock Autoaugment: Learning augmentation strategies from data.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  113--123, 2019.
+
+\bibitem[DeVries \& Taylor(2017)DeVries and Taylor]{devries2017improved}
+DeVries, T. and Taylor, G.~W.
+\newblock Improved regularization of convolutional neural networks with cutout.
+\newblock \emph{arXiv preprint arXiv:1708.04552}, 2017.
+
+\bibitem[Doersch \& Zisserman(2017)Doersch and Zisserman]{doersch2017multi}
+Doersch, C. and Zisserman, A.
+\newblock Multi-task self-supervised visual learning.
+\newblock In \emph{Proceedings of the IEEE International Conference on Computer
+  Vision}, pp.\  2051--2060, 2017.
+
+\bibitem[Doersch et~al.(2015)Doersch, Gupta, and
+  Efros]{doersch2015unsupervised}
+Doersch, C., Gupta, A., and Efros, A.~A.
+\newblock Unsupervised visual representation learning by context prediction.
+\newblock In \emph{Proceedings of the IEEE International Conference on Computer
+  Vision}, pp.\  1422--1430, 2015.
+
+\bibitem[Donahue \& Simonyan(2019)Donahue and Simonyan]{donahue2019large}
+Donahue, J. and Simonyan, K.
+\newblock Large scale adversarial representation learning.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  10541--10551, 2019.
+
+\bibitem[Donahue et~al.(2014)Donahue, Jia, Vinyals, Hoffman, Zhang, Tzeng, and
+  Darrell]{donahue2014decaf}
+Donahue, J., Jia, Y., Vinyals, O., Hoffman, J., Zhang, N., Tzeng, E., and
+  Darrell, T.
+\newblock Decaf: A deep convolutional activation feature for generic visual
+  recognition.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  647--655, 2014.
+
+\bibitem[Dosovitskiy et~al.(2014)Dosovitskiy, Springenberg, Riedmiller, and
+  Brox]{dosovitskiy2014discriminative}
+Dosovitskiy, A., Springenberg, J.~T., Riedmiller, M., and Brox, T.
+\newblock Discriminative unsupervised feature learning with convolutional
+  neural networks.
+\newblock In \emph{Advances in neural information processing systems}, pp.\
+  766--774, 2014.
+
+\bibitem[Everingham et~al.(2010)Everingham, Van~Gool, Williams, Winn, and
+  Zisserman]{everingham2010pascal}
+Everingham, M., Van~Gool, L., Williams, C.~K., Winn, J., and Zisserman, A.
+\newblock The pascal visual object classes (voc) challenge.
+\newblock \emph{International Journal of Computer Vision}, 88\penalty0
+  (2):\penalty0 303--338, 2010.
+
+\bibitem[Fei-Fei et~al.(2004)Fei-Fei, Fergus, and Perona]{fei2004learning}
+Fei-Fei, L., Fergus, R., and Perona, P.
+\newblock Learning generative visual models from few training examples: An
+  incremental bayesian approach tested on 101 object categories.
+\newblock In \emph{IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR) Workshop on Generative-Model Based Vision}, 2004.
+
+\bibitem[Gidaris et~al.(2018)Gidaris, Singh, and
+  Komodakis]{gidaris2018unsupervised}
+Gidaris, S., Singh, P., and Komodakis, N.
+\newblock Unsupervised representation learning by predicting image rotations.
+\newblock \emph{arXiv preprint arXiv:1803.07728}, 2018.
+
+\bibitem[Goodfellow et~al.(2014)Goodfellow, Pouget-Abadie, Mirza, Xu,
+  Warde-Farley, Ozair, Courville, and Bengio]{goodfellow2014generative}
+Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair,
+  S., Courville, A., and Bengio, Y.
+\newblock Generative adversarial nets.
+\newblock In \emph{Advances in neural information processing systems}, pp.\
+  2672--2680, 2014.
+
+\bibitem[Goyal et~al.(2017)Goyal, Doll{\'a}r, Girshick, Noordhuis, Wesolowski,
+  Kyrola, Tulloch, Jia, and He]{goyal2017accurate}
+Goyal, P., Doll{\'a}r, P., Girshick, R., Noordhuis, P., Wesolowski, L., Kyrola,
+  A., Tulloch, A., Jia, Y., and He, K.
+\newblock Accurate, large minibatch sgd: Training imagenet in 1 hour.
+\newblock \emph{arXiv preprint arXiv:1706.02677}, 2017.
+
+\bibitem[Hadsell et~al.(2006)Hadsell, Chopra, and
+  LeCun]{hadsell2006dimensionality}
+Hadsell, R., Chopra, S., and LeCun, Y.
+\newblock Dimensionality reduction by learning an invariant mapping.
+\newblock In \emph{2006 IEEE Computer Society Conference on Computer Vision and
+  Pattern Recognition (CVPR'06)}, volume~2, pp.\  1735--1742. IEEE, 2006.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+He, K., Zhang, X., Ren, S., and Sun, J.
+\newblock Deep residual learning for image recognition.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  770--778, 2016.
+
+\bibitem[He et~al.(2019)He, Fan, Wu, Xie, and Girshick]{he2019momentum}
+He, K., Fan, H., Wu, Y., Xie, S., and Girshick, R.
+\newblock Momentum contrast for unsupervised visual representation learning.
+\newblock \emph{arXiv preprint arXiv:1911.05722}, 2019.
+
+\bibitem[H{\'e}naff et~al.(2019)H{\'e}naff, Razavi, Doersch, Eslami, and
+  Oord]{henaff2019data}
+H{\'e}naff, O.~J., Razavi, A., Doersch, C., Eslami, S., and Oord, A. v.~d.
+\newblock Data-efficient image recognition with contrastive predictive coding.
+\newblock \emph{arXiv preprint arXiv:1905.09272}, 2019.
+
+\bibitem[Hinton et~al.(2006)Hinton, Osindero, and Teh]{hinton2006fast}
+Hinton, G.~E., Osindero, S., and Teh, Y.-W.
+\newblock A fast learning algorithm for deep belief nets.
+\newblock \emph{Neural computation}, 18\penalty0 (7):\penalty0 1527--1554,
+  2006.
+
+\bibitem[Hjelm et~al.(2018)Hjelm, Fedorov, Lavoie-Marchildon, Grewal, Bachman,
+  Trischler, and Bengio]{hjelm2018learning}
+Hjelm, R.~D., Fedorov, A., Lavoie-Marchildon, S., Grewal, K., Bachman, P.,
+  Trischler, A., and Bengio, Y.
+\newblock Learning deep representations by mutual information estimation and
+  maximization.
+\newblock \emph{arXiv preprint arXiv:1808.06670}, 2018.
+
+\bibitem[Howard(2013)]{howard2013some}
+Howard, A.~G.
+\newblock Some improvements on deep convolutional neural network based image
+  classification.
+\newblock \emph{arXiv preprint arXiv:1312.5402}, 2013.
+
+\bibitem[Ioffe \& Szegedy(2015)Ioffe and Szegedy]{ioffe2015batch}
+Ioffe, S. and Szegedy, C.
+\newblock Batch normalization: Accelerating deep network training by reducing
+  internal covariate shift.
+\newblock \emph{arXiv preprint arXiv:1502.03167}, 2015.
+
+\bibitem[Ji et~al.(2019)Ji, Henriques, and Vedaldi]{ji2019invariant}
+Ji, X., Henriques, J.~F., and Vedaldi, A.
+\newblock Invariant information clustering for unsupervised image
+  classification and segmentation.
+\newblock In \emph{Proceedings of the IEEE International Conference on Computer
+  Vision}, pp.\  9865--9874, 2019.
+
+\bibitem[Kingma \& Welling(2013)Kingma and Welling]{kingma2013auto}
+Kingma, D.~P. and Welling, M.
+\newblock Auto-encoding variational bayes.
+\newblock \emph{arXiv preprint arXiv:1312.6114}, 2013.
+
+\bibitem[Kolesnikov et~al.(2019)Kolesnikov, Zhai, and
+  Beyer]{kolesnikov2019revisiting}
+Kolesnikov, A., Zhai, X., and Beyer, L.
+\newblock Revisiting self-supervised visual representation learning.
+\newblock In \emph{Proceedings of the IEEE conference on Computer Vision and
+  Pattern Recognition}, pp.\  1920--1929, 2019.
+
+\bibitem[Kornblith et~al.(2019)Kornblith, Shlens, and Le]{kornblith2019better}
+Kornblith, S., Shlens, J., and Le, Q.~V.
+\newblock Do better {ImageNet} models transfer better?
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  2661--2671, 2019.
+
+\bibitem[Krause et~al.(2013)Krause, Deng, Stark, and
+  Fei-Fei]{krause2013collecting}
+Krause, J., Deng, J., Stark, M., and Fei-Fei, L.
+\newblock Collecting a large-scale dataset of fine-grained cars.
+\newblock In \emph{Second Workshop on Fine-Grained Visual Categorization},
+  2013.
+
+\bibitem[Krizhevsky \& Hinton(2009)Krizhevsky and
+  Hinton]{krizhevsky2009learning}
+Krizhevsky, A. and Hinton, G.
+\newblock Learning multiple layers of features from tiny images.
+\newblock Technical report, University of Toronto, 2009.
+\newblock URL
+  \url{https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf}.
+
+\bibitem[Krizhevsky et~al.(2012)Krizhevsky, Sutskever, and
+  Hinton]{krizhevsky2012imagenet}
+Krizhevsky, A., Sutskever, I., and Hinton, G.~E.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock In \emph{Advances in neural information processing systems}, pp.\
+  1097--1105, 2012.
+
+\bibitem[Loshchilov \& Hutter(2016)Loshchilov and Hutter]{loshchilov2016sgdr}
+Loshchilov, I. and Hutter, F.
+\newblock Sgdr: Stochastic gradient descent with warm restarts.
+\newblock \emph{arXiv preprint arXiv:1608.03983}, 2016.
+
+\bibitem[Maaten \& Hinton(2008)Maaten and Hinton]{maaten2008visualizing}
+Maaten, L. v.~d. and Hinton, G.
+\newblock Visualizing data using t-sne.
+\newblock \emph{Journal of machine learning research}, 9\penalty0
+  (Nov):\penalty0 2579--2605, 2008.
+
+\bibitem[Maji et~al.(2013)Maji, Kannala, Rahtu, Blaschko, and
+  Vedaldi]{maji13fine-grained}
+Maji, S., Kannala, J., Rahtu, E., Blaschko, M., and Vedaldi, A.
+\newblock Fine-grained visual classification of aircraft.
+\newblock Technical report, 2013.
+
+\bibitem[Mikolov et~al.(2013)Mikolov, Chen, Corrado, and
+  Dean]{mikolov2013efficient}
+Mikolov, T., Chen, K., Corrado, G., and Dean, J.
+\newblock Efficient estimation of word representations in vector space.
+\newblock \emph{arXiv preprint arXiv:1301.3781}, 2013.
+
+\bibitem[Misra \& van~der Maaten(2019)Misra and van~der Maaten]{misra2019self}
+Misra, I. and van~der Maaten, L.
+\newblock Self-supervised learning of pretext-invariant representations.
+\newblock \emph{arXiv preprint arXiv:1912.01991}, 2019.
+
+\bibitem[Nilsback \& Zisserman(2008)Nilsback and
+  Zisserman]{nilsback2008automated}
+Nilsback, M.-E. and Zisserman, A.
+\newblock Automated flower classification over a large number of classes.
+\newblock In \emph{Computer Vision, Graphics \& Image Processing, 2008.
+  ICVGIP'08. Sixth Indian Conference on}, pp.\  722--729. IEEE, 2008.
+
+\bibitem[Noroozi \& Favaro(2016)Noroozi and Favaro]{noroozi2016unsupervised}
+Noroozi, M. and Favaro, P.
+\newblock Unsupervised learning of visual representations by solving jigsaw
+  puzzles.
+\newblock In \emph{European Conference on Computer Vision}, pp.\  69--84.
+  Springer, 2016.
+
+\bibitem[Oord et~al.(2018)Oord, Li, and Vinyals]{oord2018representation}
+Oord, A. v.~d., Li, Y., and Vinyals, O.
+\newblock Representation learning with contrastive predictive coding.
+\newblock \emph{arXiv preprint arXiv:1807.03748}, 2018.
+
+\bibitem[Parkhi et~al.(2012)Parkhi, Vedaldi, Zisserman, and
+  Jawahar]{parkhi2012cats}
+Parkhi, O.~M., Vedaldi, A., Zisserman, A., and Jawahar, C.
+\newblock Cats and dogs.
+\newblock In \emph{IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pp.\  3498--3505. IEEE, 2012.
+
+\bibitem[Russakovsky et~al.(2015)Russakovsky, Deng, Su, Krause, Satheesh, Ma,
+  Huang, Karpathy, Khosla, Bernstein, et~al.]{russakovsky2015imagenet}
+Russakovsky, O., Deng, J., Su, H., Krause, J., Satheesh, S., Ma, S., Huang, Z.,
+  Karpathy, A., Khosla, A., Bernstein, M., et~al.
+\newblock Imagenet large scale visual recognition challenge.
+\newblock \emph{International journal of computer vision}, 115\penalty0
+  (3):\penalty0 211--252, 2015.
+
+\bibitem[Schroff et~al.(2015)Schroff, Kalenichenko, and
+  Philbin]{schroff2015facenet}
+Schroff, F., Kalenichenko, D., and Philbin, J.
+\newblock Facenet: A unified embedding for face recognition and clustering.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  815--823, 2015.
+
+\bibitem[Simonyan \& Zisserman(2014)Simonyan and Zisserman]{simonyan2014very}
+Simonyan, K. and Zisserman, A.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock \emph{arXiv preprint arXiv:1409.1556}, 2014.
+
+\bibitem[Sohn(2016)]{sohn2016improved}
+Sohn, K.
+\newblock Improved deep metric learning with multi-class n-pair loss objective.
+\newblock In \emph{Advances in neural information processing systems}, pp.\
+  1857--1865, 2016.
+
+\bibitem[Sohn et~al.(2020)Sohn, Berthelot, Li, Zhang, Carlini, Cubuk, Kurakin,
+  Zhang, and Raffel]{sohn2020fixmatch}
+Sohn, K., Berthelot, D., Li, C.-L., Zhang, Z., Carlini, N., Cubuk, E.~D.,
+  Kurakin, A., Zhang, H., and Raffel, C.
+\newblock Fixmatch: Simplifying semi-supervised learning with consistency and
+  confidence.
+\newblock \emph{arXiv preprint arXiv:2001.07685}, 2020.
+
+\bibitem[Szegedy et~al.(2015)Szegedy, Liu, Jia, Sermanet, Reed, Anguelov,
+  Erhan, Vanhoucke, and Rabinovich]{szegedy2015going}
+Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Erhan, D.,
+  Vanhoucke, V., and Rabinovich, A.
+\newblock Going deeper with convolutions.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  1--9, 2015.
+
+\bibitem[Tian et~al.(2019)Tian, Krishnan, and Isola]{tian2019contrastive}
+Tian, Y., Krishnan, D., and Isola, P.
+\newblock Contrastive multiview coding.
+\newblock \emph{arXiv preprint arXiv:1906.05849}, 2019.
+
+\bibitem[Tschannen et~al.(2019)Tschannen, Djolonga, Rubenstein, Gelly, and
+  Lucic]{tschannen2019mutual}
+Tschannen, M., Djolonga, J., Rubenstein, P.~K., Gelly, S., and Lucic, M.
+\newblock On mutual information maximization for representation learning.
+\newblock \emph{arXiv preprint arXiv:1907.13625}, 2019.
+
+\bibitem[Wu et~al.(2018)Wu, Xiong, Yu, and Lin]{wu2018unsupervised}
+Wu, Z., Xiong, Y., Yu, S.~X., and Lin, D.
+\newblock Unsupervised feature learning via non-parametric instance
+  discrimination.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pp.\  3733--3742, 2018.
+
+\bibitem[Xiao et~al.(2010)Xiao, Hays, Ehinger, Oliva, and
+  Torralba]{xiao2010sun}
+Xiao, J., Hays, J., Ehinger, K.~A., Oliva, A., and Torralba, A.
+\newblock Sun database: Large-scale scene recognition from abbey to zoo.
+\newblock In \emph{IEEE Conference on Computer Vision and Pattern Recognition
+  (CVPR)}, pp.\  3485--3492. IEEE, 2010.
+
+\bibitem[Xie et~al.(2019)Xie, Dai, Hovy, Luong, and Le]{xie2019unsupervised}
+Xie, Q., Dai, Z., Hovy, E., Luong, M.-T., and Le, Q.~V.
+\newblock Unsupervised data augmentation.
+\newblock \emph{arXiv preprint arXiv:1904.12848}, 2019.
+
+\bibitem[Ye et~al.(2019)Ye, Zhang, Yuen, and Chang]{ye2019unsupervised}
+Ye, M., Zhang, X., Yuen, P.~C., and Chang, S.-F.
+\newblock Unsupervised embedding learning via invariant and spreading instance
+  feature.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pp.\  6210--6219, 2019.
+
+\bibitem[You et~al.(2017)You, Gitman, and Ginsburg]{you2017large}
+You, Y., Gitman, I., and Ginsburg, B.
+\newblock Large batch training of convolutional networks.
+\newblock \emph{arXiv preprint arXiv:1708.03888}, 2017.
+
+\bibitem[Zhai et~al.(2019)Zhai, Oliver, Kolesnikov, and Beyer]{zhai2019s4l}
+Zhai, X., Oliver, A., Kolesnikov, A., and Beyer, L.
+\newblock S4l: Self-supervised semi-supervised learning.
+\newblock In \emph{The IEEE International Conference on Computer Vision
+  (ICCV)}, October 2019.
+
+\bibitem[Zhang et~al.(2016)Zhang, Isola, and Efros]{zhang2016colorful}
+Zhang, R., Isola, P., and Efros, A.~A.
+\newblock Colorful image colorization.
+\newblock In \emph{European conference on computer vision}, pp.\  649--666.
+  Springer, 2016.
+
+\bibitem[Zhuang et~al.(2019)Zhuang, Zhai, and Yamins]{zhuang2019local}
+Zhuang, C., Zhai, A.~L., and Yamins, D.
+\newblock Local aggregation for unsupervised learning of visual embeddings.
+\newblock In \emph{Proceedings of the IEEE International Conference on Computer
+  Vision}, pp.\  6002--6012, 2019.
+
+\end{thebibliography}

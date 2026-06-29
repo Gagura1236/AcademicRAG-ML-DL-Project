@@ -1,0 +1,50 @@
+\begin{thebibliography}{1}
+
+\bibitem{gdescentOverPara1}
+Simon~S Du, Xiyu Zhai, Barnabas Poczos, and Aarti Singh.
+\newblock Gradient descent provably optimizes over-parameterized neural
+  networks.
+\newblock {\em arXiv preprint arXiv:1810.02054}, 2018.
+
+\bibitem{gdescentOverPara2}
+Zhao Song and Xin Yang.
+\newblock Quadratic suffices for over-parametrization via matrix chernoff
+  bound.
+\newblock {\em arXiv preprint arXiv:1906.03593}, 2019.
+
+\bibitem{proofNeural}
+Moshe Leshno, Vladimir~Ya Lin, Allan Pinkus, and Shimon Schocken.
+\newblock Multilayer feedforward networks with a nonpolynomial activation
+  function can approximate any function.
+\newblock {\em Neural networks}, 6(6):861--867, 1993.
+
+\bibitem{DLM}
+Daniel Soudry and Yair Carmon.
+\newblock No bad local minima: Data independent training error guarantees for
+  multilayer neural networks.
+\newblock {\em arXiv preprint arXiv:1605.08361}, 2016.
+
+\bibitem{kawaGradientDescent}
+Kenji Kawaguchi and Jiaoyang Huang.
+\newblock Gradient descent finds global minima for generalizable deep neural
+  networks of practical sizes.
+\newblock {\em arXiv preprint arXiv:1908.02419}, 2019.
+
+\bibitem{NguyenComplexPowers}
+VD~Nguyen.
+\newblock Complex powers of analytic functions and meromorphic renormalization
+  in qft, 2015.
+\newblock {\em arXiv preprint arXiv:1503.00995}.
+
+\bibitem{lazy_training}
+Lenaic Chizat and Francis Bach.
+\newblock A note on lazy training in supervised differentiable programming.
+\newblock {\em arXiv preprint arXiv:1812.07956}, 2018.
+
+\bibitem{khatrirao}
+Elizabeth~S Allman, Catherine Matias, John~A Rhodes, et~al.
+\newblock Identifiability of parameters in latent structure models with many
+  observed variables.
+\newblock {\em The Annals of Statistics}, 37(6A):3099--3132, 2009.
+
+\end{thebibliography}

@@ -1,0 +1,58 @@
+\section{Why Large Catapult? Because Momentum Prolongs Self-Stabilization}
+\label{sec:prolong}
+In this section, we propose a hypothesis for the mechanism that momentum causes the large catapults.
+To do that, we first review the \emph{self-stabilization}~\citep{damian2023stabilization} mechanism of GD. 
+We use $\vw_{\max}(\bm\theta_\star)$ to denote the eigenvector corresponding to the sharpness $S$ (leading eigenvalue of the training loss Hessian) at some minimum $\bm\theta_\star$.
+% First, recall that at each minimum $(u, 0)$, $\vw_{\max}$ is $(0, 1)$ with eigenvalue $S(u, 0) = u^2$. 
+% First, we introduce the relevant notation. We define $\lambda_i$ as the $i^{th}$ largest eigenvalue of the training loss Hessian and $w_i$ as its corresponding eigenvector. Thus $\lambda_1$ is the sharpness, and $w_1$ is the eigenvector corresponding to the sharpness.
+Self-stabilization consists of four stages: 
+
+\textbf{Stage 1 (Progressive Sharpening (PS)\footnote{Although \citet{damian2023stabilization} assume that PS always occurs, it has been reported that it does not occur for simple settings~\citep{cohen2021stability,zhu2023catapult}.}).} The sharpness of the iterates increases to reach the MSS.
+% In our toy model, we start from an already unstable initialization, so there is no Stage~1.
+
+\textbf{Stage 2 (Blowup).} Once the sharpness becomes larger than the MSS, the iterates oscillate and diverge along $\vw_{\max}$.
+In this stage, the loss starts to increase sharply, depending on the amount of divergence.
+% In our toy model, the dynamics start from Stage~2 and the divergence along $\vw_{\max}$ corresponds to the oscillations along the $v$-direction.
+
+\textbf{Stage 3 (Self-Stabilization).} {\it Simultaneously}, the divergence along $\vw_{\max}$ induces a drift along the direction of $-\nabla S$ which decreases the sharpness. This is due to the cubic term of the Taylor expansion of
+$\nabla \gL: \nabla^3 \gL(\vw_{\max}(\bm\theta), 
+\vw_{\max}(\bm\theta)) = \nabla S(\bm\theta)$ for any\footnote{Here, one needs to assume that the leading eigenvector of $\nabla^2 \gL(\bm\theta)$ is unique.} $\bm\theta$~\citep[Lemma 2]{damian2023stabilization}; GD iterates oscillating along $\vw_{\max}$ introduce components in the direction of $-\nabla S$ to GD updates.
+% $\nabla \gL(\cdot): \nabla^3 \gL(w_{\max}(\theta), w_{\max}(\theta)) \langle w_{\max}(\theta_\star), \theta_t - \theta_\star \rangle^2 \approx \nabla S(\theta_\star) \langle w_{\max}(\theta_\star), \theta_t - \theta_\star \rangle^2$~\citep[Lemma 2]{damian2023stabilization}\footnote{Here, one needs to assume that the leading eigenvector of $\nabla^2 \gL(\bm\theta)$ is unique}.
+ % elaborate using third-order~\citep[Lemma 1]{damian2023stabilization} $\nabla^3 \gL = \nabla S$
+
+% In the toy model, the oscillations along the $v$-direction induce a movement in the negative $u$-direction.
+
+\textbf{Stage 4 (Return to Stability).} When the sharpness drops below the MSS, the oscillation in the $\vw_{\max}$ direction dampens, and dynamics become stable again.
+% This corresponds to the late-stage dynamics of our toy model where oscillations in the $v$-direction start to decay until convergence, during which the iterates continue to be pushed in the negative $u$-direction.
+
+
+Although this self-stabilization was developed to explain the mechanism of the edge-of-stability (EoS) for gradient descent, it has been already pointed out that EoS can be regarded as ``a never-ending series of micro-catapults''~\citep[Section 3.2]{cohen2021stability}.
+Thus, it is natural to see that 
+\begin{center}
+    {\it a catapult can be explained as a single round of self-stabilization (Stages~2--4).}
+\end{center}
+
+We remark that such an explicit connection between catapults and self-stabilization was absent from prior literature on catapults~\citep{zhu2023catapult,zhu2023catapultquadratic,lewkowycz2020catapult}, where the focus was on either analytically proving or empirically showing the existence of a loss spike and sharpness\footnote{In prior works, the notion of sharpness was replaced with maximum eigenvalue of the NTK matrix.} drop.
+A recent paper by \cite{zhu2023catapult} shows that for SGD, the loss spikes in training with SGD are ``caused'' by the catapults in the top eigenspace of the NTK, but they did not provide any explanation on the root cause of {\it why/how} catapults occur.
+
+
+
+
+
+
+
+
+% \subsection{Main Hypothesis: Momentum Prolongs Self-Stabilization}
+% \label{subsec:hypotheses}
+Given this correspondence between catapults and self-stabilization, it is natural to consider the role of momentum in this process.
+Drawing from known intuitions for momentum dynamics~\citep{goh2017momentum,pedregosa2023momentum,muhlebach2021momentum}, we propose the following hypothesis:
+\begin{hypothesis}
+\label{hypothesis}
+    Polyak's momentum prolongs self-stabilization in the following sense:
+    \begin{enumerate}
+        \item \label{hyp:stage2-3}As the iterates oscillate and diverge along $\vw_{\max}$, the momentum in the direction of $-\nabla S$ ``builds up'' (Stages 2--3).
+        % momentum prolongs (and possibly amplifies) the divergence along $\vw_{\max}$, contributing more to the movement in the $-\nabla S$ direction (Stage 2--3).
+        \item \label{hyp:stage4}Even after the sharpness drops below the MSS, momentum prolongs oscillation along $\vw_{\max}$, which in turn prolongs the movement in the $-\nabla S$ direction (Stage 4).
+    \end{enumerate}
+\end{hypothesis}
+

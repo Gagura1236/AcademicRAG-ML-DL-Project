@@ -1,0 +1,172 @@
+\begin{thebibliography}{10}
+
+\bibitem{auli13}
+M.~Auli, M.~Galley, C.~Quirk, and G.~Zweig.
+\newblock Joint language and translation modeling with recurrent neural
+  networks.
+\newblock In {\em EMNLP}, 2013.
+
+\bibitem{bog14}
+D.~Bahdanau, K.~Cho, and Y.~Bengio.
+\newblock Neural machine translation by jointly learning to align and
+  translate.
+\newblock {\em arXiv preprint arXiv:1409.0473}, 2014.
+
+\bibitem{bengio}
+Y.~Bengio, R.~Ducharme, P.~Vincent, and C.~Jauvin.
+\newblock A neural probabilistic language model.
+\newblock In {\em Journal of Machine Learning Research}, pages 1137--1155,
+  2003.
+
+\bibitem{bengio_long_term}
+Y.~Bengio, P.~Simard, and P.~Frasconi.
+\newblock Learning long-term dependencies with gradient descent is difficult.
+\newblock {\em IEEE Transactions on Neural Networks}, 5(2):157--166, 1994.
+
+\bibitem{cho14}
+K.~Cho, B.~Merrienboer, C.~Gulcehre, F.~Bougares, H.~Schwenk, and Y.~Bengio.
+\newblock Learning phrase representations using {RNN} encoder-decoder for
+  statistical machine translation.
+\newblock In {\em Arxiv preprint arXiv:1406.1078}, 2014.
+
+\bibitem{ciresan12}
+D.~Ciresan, U.~Meier, and J.~Schmidhuber.
+\newblock Multi-column deep neural networks for image classification.
+\newblock In {\em CVPR}, 2012.
+
+\bibitem{dahl12b}
+G.~E. Dahl, D.~Yu, L.~Deng, and A.~Acero.
+\newblock Context-dependent pre-trained deep neural networks for large
+  vocabulary speech recognition.
+\newblock {\em IEEE Transactions on Audio, Speech, and Language Processing -
+  Special Issue on Deep Learning for Speech and Language Processing}, 2012.
+
+\bibitem{devlin14}
+J.~Devlin, R.~Zbib, Z.~Huang, T.~Lamar, R.~Schwartz, and J.~Makhoul.
+\newblock Fast and robust neural network joint models for statistical machine
+  translation.
+\newblock In {\em ACL}, 2014.
+
+\bibitem{durrani-EtAl:2014:W14-33}
+Nadir Durrani, Barry Haddow, Philipp Koehn, and Kenneth Heafield.
+\newblock Edinburgh's phrase-based machine translation systems for wmt-14.
+\newblock In {\em WMT}, 2014.
+
+\bibitem{graves13c}
+A.~Graves.
+\newblock Generating sequences with recurrent neural networks.
+\newblock In {\em Arxiv preprint arXiv:1308.0850}, 2013.
+
+\bibitem{graves1}
+A.~Graves, S.~Fern{\'a}ndez, F.~Gomez, and J.~Schmidhuber.
+\newblock Connectionist temporal classification: labelling unsegmented sequence
+  data with recurrent neural networks.
+\newblock In {\em ICML}, 2006.
+
+\bibitem{hermann14}
+K.~M. Hermann and P.~Blunsom.
+\newblock Multilingual distributed representations without word alignment.
+\newblock In {\em ICLR}, 2014.
+
+\bibitem{hinton12}
+G.~Hinton, L.~Deng, D.~Yu, G.~Dahl, A.~Mohamed, N.~Jaitly, A.~Senior,
+  V.~Vanhoucke, P.~Nguyen, T.~Sainath, and B.~Kingsbury.
+\newblock Deep neural networks for acoustic modeling in speech recognition.
+\newblock {\em IEEE Signal Processing Magazine}, 2012.
+
+\bibitem{hochreiter_long_term}
+S.~Hochreiter.
+\newblock Untersuchungen zu dynamischen neuronalen netzen.
+\newblock {\em Master's thesis, Institut fur Informatik, Technische
+  Universitat, Munchen}, 1991.
+
+\bibitem{Hochreiter01gradientflow}
+S.~Hochreiter, Y.~Bengio, P.~Frasconi, and J.~Schmidhuber.
+\newblock Gradient flow in recurrent nets: the difficulty of learning long-term
+  dependencies, 2001.
+
+\bibitem{hochreiter97}
+S.~Hochreiter and J.~Schmidhuber.
+\newblock Long short-term memory.
+\newblock {\em Neural Computation}, 1997.
+
+\bibitem{minimal_time_lag}
+S.~Hochreiter and J.~Schmidhuber.
+\newblock {LSTM} can solve hard long time lag problems.
+\newblock 1997.
+
+\bibitem{kal13}
+N.~Kalchbrenner and P.~Blunsom.
+\newblock Recurrent continuous translation models.
+\newblock In {\em EMNLP}, 2013.
+
+\bibitem{kriz12}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton.
+\newblock {ImageNet} classification with deep convolutional neural networks.
+\newblock In {\em NIPS}, 2012.
+
+\bibitem{le12}
+Q.V. Le, M.A. Ranzato, R.~Monga, M.~Devin, K.~Chen, G.S. Corrado, J.~Dean, and
+  A.Y. Ng.
+\newblock Building high-level features using large scale unsupervised learning.
+\newblock In {\em ICML}, 2012.
+
+\bibitem{lecun98}
+Y.~Le{C}un, L.~Bottou, Y.~Bengio, and P.~Haffner.
+\newblock Gradient-based learning applied to document recognition.
+\newblock {\em Proceedings of the IEEE}, 1998.
+
+\bibitem{mikolov2012}
+T.~Mikolov.
+\newblock {\em Statistical Language Models based on Neural Networks}.
+\newblock PhD thesis, Brno University of Technology, 2012.
+
+\bibitem{mikolov2010recurrent}
+T.~Mikolov, M.~Karafi{\'a}t, L.~Burget, J.~Cernock{\`y}, and S.~Khudanpur.
+\newblock Recurrent neural network based language model.
+\newblock In {\em INTERSPEECH}, pages 1045--1048, 2010.
+
+\bibitem{bleu}
+K.~Papineni, S.~Roukos, T.~Ward, and W.~J. Zhu.
+\newblock {BLEU}: a method for automatic evaluation of machine translation.
+\newblock In {\em ACL}, 2002.
+
+\bibitem{razvan}
+R.~Pascanu, T.~Mikolov, and Y.~Bengio.
+\newblock On the difficulty of training recurrent neural networks.
+\newblock {\em arXiv preprint arXiv:1211.5063}, 2012.
+
+\bibitem{curse}
+J.~Pouget-Abadie, D.~Bahdanau, B.~van Merrienboer, K.~Cho, and Y.~Bengio.
+\newblock Overcoming the curse of sentence length for neural machine
+  translation using automatic segmentation.
+\newblock {\em arXiv preprint arXiv:1409.1257}, 2014.
+
+\bibitem{razborov}
+A.~Razborov.
+\newblock On small depth threshold circuits.
+\newblock In {\em Proc. 3rd Scandinavian Workshop on Algorithm Theory}, 1992.
+
+\bibitem{rumelhart1986learning}
+D.~Rumelhart, G.~E. Hinton, and R.~J. Williams.
+\newblock Learning representations by back-propagating errors.
+\newblock {\em Nature}, 323(6088):533--536, 1986.
+
+\bibitem{wmt14_en_fr}
+H.~Schwenk.
+\newblock University le mans.
+\newblock \url{http://www-lium.univ-lemans.fr/~schwenk/cslm_joint_paper/},
+  2014.
+\newblock [Online; accessed 03-September-2014].
+
+\bibitem{sundermeyer12}
+M.~Sundermeyer, R.~Schluter, and H.~Ney.
+\newblock {LSTM} neural networks for language modeling.
+\newblock In {\em INTERSPEECH}, 2010.
+
+\bibitem{werbos}
+P.~Werbos.
+\newblock Backpropagation through time: what it does and how to do it.
+\newblock {\em Proceedings of IEEE}, 1990.
+
+\end{thebibliography}

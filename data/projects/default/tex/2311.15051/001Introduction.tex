@@ -1,0 +1,39 @@
+\section{Introduction}
+Although momentum is one of the most widely used and crucial component for training modern neural networks~\citep{sutskever2013momentum}, our understanding of the effects of momentum on neural network training dynamics is still lacking.
+Throughout the paper, for a loss function $\mathcal{L}(\vw)$, we consider Polyak's heavy-ball momentum (PHB; \citet{polyak1964momentum}) method given as follows:
+\begin{equation}
+\label{eqn:momentum}
+    \vw_{t+1} = \vw_t - \eta_t \nabla \mathcal{L}(\vw_t) + \beta (\vw_t - \vw_{t-1}),
+\end{equation}
+where $\eta_t$ denotes the learning rate that may change over time and $\beta \in [0,1)$ is the momentum parameter where $\beta=0$ for gradient descent (GD). From here on, we will refer to Polyak's momentum simply as ``momentum'' or ``PHB''.
+For momentum, we are not even sure yet why and when it accelerates (stochastic) gradient descent~\citep{fu2023momentum,ganesh2023momentum,kidambi2018momentum}, and perhaps more importantly, how it changes the implicit bias and thus the resulting model's generalization capability~\citep{wang2023momentum,wang2022implicit,ghosh2023implicit,jelassi2022momentum}.
+
+An increasing number of works also consider training dynamics under the large learning rate regime. One such work closely related to ours is the \emph{catapult mechanism} introduced by \citet{lewkowycz2020catapult}. Classical optimization theory suggests that if the \emph{sharpness} $S := \lambda_{max}(\nabla^2 \mathcal{L})$, defined as the maximum eigenvalue of the Hessian of the training loss, is larger than a certain threshold, then training should be unstable and divergent. We refer to this threshold as the \emph{maximum stable sharpness (MSS)}, and it is equal to $2/\eta$ for GD and $2(1+\beta)/\eta$ for momentum~\citep{goh2017momentum}. Thus, conventional wisdom indicates that the learning rate $\eta$ should be selected so that $S < 2/\eta$. However, \citet{lewkowycz2020catapult} show that rather than diverging, GD initialized with a large learning rate $\eta$ satisfying $2/S < \eta  < 4/S$ displays a loss spike and a simultaneous sharpness drop, which drives the iterates towards a flat region with stable sharpness $S < 2/\eta$.
+Following this observation, throughout this paper, we define a {\bf catapult} as \emph{a drastic sharpness reduction coupled with a single spike in the training loss}.
+Although \citet{lewkowycz2020catapult} study the catapult phenomenon in the early training dynamics with a large constant learning rate, some recent studies~\cite{zhu2023catapult} consider experimental settings where the learning rate is initialized to be small ($\eta < 2/S$) and increases over training to \emph{induce} catapults. These works suggest that strange and interesting phenomena manifest in the large learning rate regime.
+
+A phenomenon related to the catapult phenomenon that has garnered much attention in recent years is the \emph{edge of stability} or \emph{EoS} phenomenon. \citet{cohen2021stability} report two surprising phenomena that consistently occur during neural network training. First, when the sharpness is below the MSS, the sharpness tends to increase due to a phenomenon known as \emph{progressive sharpening (PS)}. Generally, progressive sharpening will increase the sharpness until it is above the MSS. However, instead of diverging as classical optimization theory suggests, the sharpness oscillates around the MSS while the training loss decreases non-monotonically. In a sense, the EoS phenomenon can be viewed as a cycle of a catapult and PS: once PS drives the sharpness above the MSS, a catapult occurs and decreases the sharpness below the MSS while the training loss spikes. Once the sharpness is lower than the MSS, PS increases it again, and the cycle continues. This cycle can be viewed together as sharpness oscillation and a non-monotonic decrease in training loss as reported by \citet{cohen2021stability}.
+Subsequent works have formalized this intuition~\citep{damian2023stabilization,agarwala2023eos}. For more discussion on related works, please refer to Appendix~\ref{app:related-works}.
+% Thus, it appears that selecting the learning rate based on the sharpness generally does not stabilize training dynamics because the sharpness will increase and remain on the edge of stability.
+
+\paragraph{Contributions.}
+In this work, we explore a phenomenon that arises by introducing momentum to the large learning rate regime. We provide experimental evidence suggesting that PHB in the large learning rate regime exhibits a phase of much steeper {\it sharpness drop} than GD with the same warmup, which we call {\bf large catapults}. These provide an implicit bias effect of driving the iterates towards much flatter minima compared to GD. Our contributions are as follows:
+\begin{itemize}[leftmargin=10pt]
+    \item As a motivating example, we train linear diagonal networks~\citep{woodworth2020kernel,nacson2022stepsize} with different learning rate schedules and initialization scales $\alpha$'s and demonstrate that PHB exhibits an implicit bias drastically different from GD, obtaining low test loss even at moderate $\alpha$. We identify the underlying cause for this difference and discover that \emph{large catapults} occur when using momentum with learning rate warmup. We also show empirically that this phenomenon can be observed for general nonlinear neural networks (Section~\ref{sec:catapults}).
+    
+    \item Drawing inspiration from the self-stabilization mechanism~\citep{damian2023stabilization} originally proposed in the EoS literature, we hypothesize that the large catapults occur because \emph{momentum prolongs the reduction of sharpness and movement along the ``unstable direction''} (Section~\ref{sec:prolong}).
+    For simple networks (a ReLU scalar network and linear diagonal networks), we provide theoretical and empirical evidence supporting our hypothesis (Section~\ref{sec:toy}).
+    % an explanation for the large catapults using {\color{red}a Lyapunov stability analysis} of PHB, which may be of independent interest (Section~\ref{sec:prolong}).
+    % \item Finally, we confirm that the phenomenon of large catapults persists in more practical scenarios by experimenting with fully-connected networks and ResNets on 
+    % subsets of the CIFAR10 dataset (Section~\ref{sec:modern-arch}).%a synthetic dataset as well as a subset of the CIFAR10 dataset (Section~\ref{sec:modern-arch}).
+\end{itemize}
+
+% We then discuss why and how such phenomena occur through carefully crafted experimental verifications as well as some theoretical intuitions, inspired by the \emph{self-stabilization} of GD~\citep{damian2023stabilization} and {\it catapult mechanism} of (S)GD~\citep{zhu2023catapult,lewkowycz2020catapult,meltzer2023catapult}.
+
+
+% {\color{red}\paragraph{Paper Organization.}
+% Section 2 presents ....,
+% ...
+% For fair comparison, we always match the MSS of GD and PHB by properly rescaling the momentum learning rates $\eta_{PHB} = (1+\beta) \eta_{GD}$ so that the MSS match. 
+
+% }

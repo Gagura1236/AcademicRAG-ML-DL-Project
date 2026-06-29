@@ -1,0 +1,147 @@
+\section{Main Results} \label{sec:main_results}
+
+
+
+
+
+
+\newcommand{\period}{\,.}
+\newcommand{\comma}{\,,}
+
+
+We will formally define the data distribution, neural networks, projected gradient flow, and assumptions on the problem-dependent quantities and then state our main theorems. 
+
+\textit{Target function.} The ground-truth function $y(x) : \R^d \rightarrow \R$ that we aim to learn has the form $
+y(x) = h(\truevector^\top x)$, where $h: \R \rightarrow \R$ is an \textit{unknown} one-dimensional \textit{even} quartic polynomial (which is called a link function), and $\truevector$ is an \textit{unknown} unit vector in $\R^d$.  Note that $h(s)$ has the Legendre expansion  $h(s) = \legendreCoeff{\target}{0}+ \legendreCoeff{\target}{2} \legn{2}(s) + \legendreCoeff{\target}{4} \legn{4}(s)$. %
+
+\textit{Two-layer neural networks.} We consider a two-layer neural network where the first-layer weights are all unit vectors and the second-layer weights are fixed and all the same. Let $\sigma(\cdot)$ be the activation function, which can be different from $h(\cdot)$. Using the mean-field formulation, we describe the neural network using the distribution of first-layer weight vectors, denoted by $\rho$:
+\begin{align}
+\textstyle{f_\rho(x) \triangleq \Exp_{u\sim \rho}[\sigma(u^\top x)]\period} \label{eqn:12}
+\end{align}
+For example, when $\rho = \textup{unif}(\{\u_1, \ldots, \u_m\})$, is a discrete, uniform distribution supported on $m$ vectors $\{\u_1, \ldots, \u_m\}$, then $f_\rho(x) = \frac 1 m \sum_{i=1}^{m} \sigma(u_i^\top x)$, i.e. $f_\rho$ corresponds to a finite-width neural network whose first-layer weights are $\u_1, \ldots, \u_m$. For a continuous distribution $\rho$, the function $f_\rho(\cdot)$ can be viewed as an infinite-width neural network where the weight vectors are distributed according to $\rho$ (and can be viewed as taking the limit as $m \to \infty$ of the finite-width neural network). We assume that the weight vectors have unit norms, i.e. the support of $\rho$ is contained in $\bbS^{d - 1}$. The activation $\sigma: \R \to \R$ is assumed to be a fourth-degree polynomial with Legendre expansion $\sigma(s) = \sum_{k=0}^4 \legendreCoeff{\sigma}{k} \legn{k}(s)$.  
+
+The simplified neural network defined in~\Cref{eqn:12}, even with infinite width (corresponding to a continuous distribution $\rho$), has a limited expressivity due to the lack of biases and trainable second-layer weights. We characterize the expressivity by the following lemma:
+
+\begin{lemma}[Expressivity]\label{lem:expressivity}
+Let $\gamma_2 = \hat{\target}_{2,d}/\sigmatwo$ and $\gamma_4 = \hat{\target}_{4,d}/\sigmaCoeffFour$. Suppose for some $d$ and $\truevector$, there exists a network $\rho$ such that $f_\rho(x) = h(\truevector^\top x)$ on $\bbsd$. Then we have $\hat{\sigma}_{0,d} = \hat{\target}_{0,d}$, and $
+0 \le \gamma_2^2 \le \gamma_4 \le \gamma_2 \le 1.
+$ Moreover, if this condition holds with strict inequalities, then for sufficiently large $d$, there exists a network $\rho$ such that $f_\rho(x) = h(\truevector^\top x)$ on $\bbS^{d - 1}$. (A more explicit version is stated in \Cref{app:conditions}.)\end{lemma}
+Informally, an almost sufficient and necessary condition to have $f_\rho(x) = h(q_*^\top x)$ for some $\rho$ is that there exists a random variable $w$ supported on $[0,1]$ such that $\E[w^2]\approx \gamma_2$ and $\E[w^4]\approx \gamma_4$, which is equivalent to $0 \le \gamma_2^2 \le \gamma_4 \le \gamma_2 \le 1.$ 
+In particular, assuming the existence of such a random variable $w$, the perfectly-fit network $\rho$ that fits the target function has the form 
+\begin{align}
+\truevector^\top u \overset{d}{=} w, \textup{ and $u - \truevector \truevector^\top u \mid \truevector^\top u$ is uniformly distributed in the subspace orthogonal to $\truevector$} \period
+\end{align}
+Motivated by this lemma, we will assume that $\gamma_2, \gamma_4$ are universal constants that satisfy $0 \le \gamma_2^2 \le \gamma_4 \le \gamma_2 \le 1$, and $d$ is chosen to be sufficiently large (depending on the choice of $\gamma_2$ and $\gamma_4$). In addition, we also assume that $\gamma_4 \leq O(\gamma_2^2)$, that is, the equality $\gamma_2^2 \le \gamma_4$ is somewhat tight --- this ensures that the distribution of $w = \truevector^\top u$ under the perfectly-fitted neural network is not too spread-out.  We also assume that $\gamma_2$ is smaller than a sufficiently small universal constant. This ensures that the distribution of $\truevector^\top u$ under the perfectly-fitted network does not concentrate on  1, i.e. the distribution of $u$ is not merely a point mass around $\truevector$. In other words, this assumption restricts our setting to the most interesting case where the landscape has bad saddle points (and thus is fundamentally more challenging to analyze). We also assume for simplicity that $\hat{\sigma}_{0,d} = \hat{\target}_{0,d}$ (because otherwise, the activation introduces a constant bias that prohibits perfect fitting), even though adding a trainable scalar to the neural network formulation can remove the assumption. If $\hat{\sigma}_{0, d} = \hat{\target}_{0, d}$, then we can assume without loss of generality that $\hat{\sigma}_{0, d} = \hat{\target}_{0, d} = 0$, since $\hat{\sigma}_{0, d}$ and $\hat{\target}_{0, d}$ will cancel with each other in the population and empirical mean-squared losses (defined below).
+In summary, we make the following formal assumptions on the Legendre coefficients of the link function and the activation function.
+
+\begin{assumption} \label{assumption:target}
+Let $\gamma_2 = \hat{\target}_{2,d}/\sigmatwo$ and $\gamma_4 = \hat{\target}_{4,d}/\sigmaCoeffFour$.  We first assume $\gamma_4 \ge 1.1\cdot\gamma_2^2$. For any universal constant $c_1 > 1$, we assume that $\sigmaCoeffTwo^2/c_1 \le \sigmaCoeffFour^2 \le c_1\cdot \sigmaCoeffTwo^2$, and $\gamma_4 \le c_1 \gamma_2^2$. For a sufficiently small universal constant $c_2 > 0$ (which is chosen after $c_1$ is determined), we assume $0 \le \gamma_2 \le c_2$. We also assume that $d$ is larger than a sufficiently large constant $c_3$ (which is chosen after $c_1$ and $c_2$.)
+We also assume $\hat{\target}_{0,d} = \hat{\sigma}_{0,d} = 0$, and $\hat{\target}_{1,d} = \hat{\target}_{3,d} = 0$. 
+\end{assumption}
+
+Our intention is to replicate the ReLU activation as well as possible with quartic polynomials; our assumption that $\sigmaCoeffTwo^2\asymp \sigmaCoeffFour^2$ is indeed satisfied by the quartic expansion of ReLU because $\widehat{\textup{relu}}_{2,d} \asymp d^{-1/2}$ and $\widehat{\textup{relu}}_{2,d} \asymp d^{-1/2}$ (see \Cref{prop:relu-coefficient}). Following the convention defined in \Cref{sec:preliminaries}, we will simply write $\sigmaCoeffFour^2 \asymp \sigmaCoeffTwo^2$, $\gamma_4 \ge 1.1\cdot\gamma_2^2$, and $\gamma_4 \lesssim \gamma_2^2$.
+
+Our assumptions rule out the case that $\gamma_4 = \gamma_2^2$, for the sake of simplicity. We believe that our analysis could be extended to this case with some modifications. Our analysis also rules out the case where $\gamma_2 = 0$ and $\gamma_4 \neq 0$, due to the restriction that $\gamma_4 \leq c_1 \gamma_2^2$. The case $\gamma_2 = 0$ and $\gamma_4 \neq 0$ would have a significantly different analysis, and potentially a different sample complexity, since our analysis in \Cref{sec:population_loss} and \Cref{section:finite_sample_analysis} makes use of the fact that the initial phase of the population and empirical dynamics behaves similarly to a power method, which follows from $\gamma_2$ being nonzero.
+ 
+
+\textit{Data distribution, losses, and projected gradient flow.} The population data distribution is assumed to be $\bbsd$. We draw $n$ training examples $x_1,\dots, x_n\iidsim \bbsd$. Thus, the population and empirical mean-squared losses are: 
+\begin{align}
+L(\rho) &= \frac{1}{2}\cdot \Exp_{x \sim \bbS^{d - 1}} \Big(f_\rho(x) - y(x)\Big)^2\,, & \textup{ and ~~} 
+\Lhat(\rho) = \frac{1}{2n}\sum_{i=1}^n \left(f_\rho(x_i) - y(x_i)\right)^2 \period
+\end{align}
+
+To ensure that the weight vectors remain on $\bbS^{d - 1}$, we perform projected gradient flow on the empirical loss.  We start by defining the gradient of the population loss $L$ with respect to a particle $u$ at $\rho$ and the corresponding Riemannian gradient (which is simply the projection of the gradient to the tangent space of $\bbS^{d - 1}$):
+\begin{align} \label{eq:projected_gradient_flow_population}
+    \nabla_{\u} L(\rho) & = \Exp_{x\sim \bbS^{d-1}}\left[(f_\rho(x)-y(x))\sigma'(u^\top x) x\right]\,,&\textup{and ~~} \pgrad_{\u} L(\rho) = (I-\u\u^\top) \nabla_{\u} L(\rho) \period
+\end{align}
+Here we interpret $L(\rho)$ as a function of a collection of particles (denoted by $\rho$) and $\nabla_u L(\rho)$ as the partial derivative with respect to a single particle $u$ evaluated at $\rho$. Similarly, the (Riemannian) gradient of the empirical loss $\Lhat$ with respect to the particle $u$ is defined as
+\begin{align}
+\label{eq:projected_gradient_flow_empirical}
+    \nabla_{\u} \Lhat(\rho) & = \frac{1}{n}\sum_{i=1}^n (f_\rho(x_i)-y(x_i))\sigma'(\u^\top x_i) x_i\,, & \textup{ and ~~} \pgrad_{\u} \Lhat(\rho) = (I-\u\u^\top) \nabla_{\u} \Lhat(\rho) \period 
+\end{align}
+\noindent \textbf{Population, Infinite-Width Dynamics.}
+Let the initial distribution $\rho_0$ of the infinite-width neural network be the uniform distribution over $\bbsd$. We use $\chi$ to denote a particle sampled uniformly at random from the initial distribution $\rho_0$. A particle initialized at $\chi$ follows a deterministic trajectory afterwards --- we use $\u_t(\chi)$ to denote the location, at time $t$, of the particle that was initialized at $\chi$. Because $u_t(\cdot)$ is a deterministic function, we can use $\chi$ to index the particles at any time based on their initialization. The projected gradient flow on an infinite-width neural network and using population loss $L$ can be described as 
+\begin{align}
+\forall \chi \in \bbS^{d - 1}, u_0(\chi) & = \chi \label{eq:population_init} \comma \\
+\frac{d\u_t(\chi)}{dt} & = - \pgrad_{\u_t} L(\rho_t) \label{eq:population_derivative} \comma \\
+\text{ and }\rho_t & = \textup{distribution of $u_t(\chi)$ (where $\chi \sim \rho_0$)} \period \label{eq:rho_t} 
+\end{align}
+
+
+
+\noindent \textbf{Empirical, Finite-Width Dynamics.}
+The training dynamics of a neural network with width $m$ can be described in this language by setting the initial distribution to be a discrete distribution uniformly supported on $m$ initial weight vectors. The update rule will maintain that at any time, the distribution of neurons is uniformly supported over $m$ items and thus still corresponds to a width-$m$ neural network. Let $\chi_1,\dots, \chi_m \iidsim \bbsd$ be the initial weight vectors of the width-$m$ neural network, and let $\rhohat_{0}  = \textup{unif}(\{\chi_1,\dots, \chi_m\}) $ be the uniform distribution over these initial neurons. We use $\chi \in\{\chi_1,\dots, \chi_m\}$ to index neurons and denote a single initial neuron as $\uhat_0(\chi)  = \chi$. Then, we can describe the projected gradient flow on the empirical loss $\Lhat$ with initialization $\{\chi_1,\dots, \chi_m\}$ by: 
+\begin{align}
+\frac{d\uhat_t(\chi)}{dt} & = - \pgrad_{\uhat_t(\chi)} \Lhat(\rhohat_t) \comma \\
+    \text{ and } \rhohat_t & = \textup{distribution of $\uhat_t(\chi)$ (where $\chi \sim \rhohat_0$)}  \period\label{eqn:rhohat_t}
+\end{align}
+We first state our result on the population, infinite-width dynamics. 
+\begin{theorem}[Population, infinite-width dynamics] \label{thm:pop_main_thm}
+Suppose \Cref{assumption:target} holds, and let $\epsilon \in (0, 1)$ be the target error. Let $\rho_t$ be the result of projected gradient flow on the population loss, initialized with the uniform distribution on $\bbS^{d - 1}$, as defined in \Cref{eq:population_derivative}. Let $\Tstar = \inf \{t > 0 \mid L(\rho_t) \leq \frac{1}{2}(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2\}$ be the earliest time $t$ such that a loss of at most $\frac{1}{2} (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2$ is reached. Then, we have 
+\begin{align}
+    \Tstar \lesssim \frac{1}{\sigmaCoeffTwo^2 \gamma_2} \log d + \frac{(\log \log d)^{20}}{\sigmaCoeffTwo^2 \epsilon \gamma_2^8} \log\Big(\frac{\gamma_2}{\epsilon}\Big) \period \label{eqn:19}
+\end{align}
+\end{theorem}
+The first term on the right-hand side of~\Cref{eqn:19} corresponds to the burn-in time for the network to reach a region around where the Polyak-Lojasiewicz condition holds. We divide our analysis of this burn-in phase into two phases, Phase 1 and Phase 2, and we obtain tight control on the factor by which the signal component, $\truevector^\top \u$, grows during Phase 1, while Phase 2 takes place for a comparatively short period of time. (This tight control is critical for our sample complexity bounds where we must show that the coupling error does not blow up too much --- see more discussion below Lemma~\ref{lemma:final_bounds_ABC}.) 
+Phases 1 and 2 are mostly governed by the quadratic components in the activation and target functions, and the dynamics behave similarly to a power method update. 
+After the burn-in phase, the dynamics operate for a short period of time (Phase 3) in a regime where the Polyak-Lojasiewicz condition holds. We explicitly prove the dynamics stay away from saddle points during this phase, as further discussed in \Cref{sec:population_loss}.
+
+We note that Theorem~\ref{thm:pop_main_thm} provides a concrete polynomial runtime bound for projected gradient flow which is not achievable by prior mean-field analyses~\citep{chizat2018global, mei2018mean, abbe2022merged} using Wasserstein gradient flow techniques. For instance, while the population dynamics of \citet{abbe2022merged} only trains the hidden layer for $O(1)$ time, our projected gradient flow updates the hidden layer for $O(\log d)$ time. The main challenge in the proof is to deal with the saddle points that are not strict-saddle~\citep{ge2015escaping} in the loss landscape which cannot be escaped simply by adding noise in the parameter space~\citep{jin2021nonconvex, lee2016gradient, daneshmand2018escaping}.\footnote{There are a long list of prior works on the loss landscape of neural networks \citep{mei2018landscape, soltanolkotabi2017learning, vardi2021learning, kakade2011efficient,bietti2022learning, ben2020algorithmic, arous2021online,soudry2016no, tian2017analytical,ge2017learning,zhang2019learning,brutzkus2017globally}.}
+Our analysis develops a fine-grained analysis of the dynamics that shows the iterates stay away from saddle points, which allows us to obtain the running time bound in \Cref{thm:pop_main_thm} which can be translated to a polynomial-width guarantee in \Cref{thm:empirical-main}. In contrast, ~\citet{wei2019regularization} escape the saddles by randomly replacing an exponentially small fraction of neurons, which makes the network require exponential width.
+
+Next, we state the main theorem on projected gradient flow on empirical, finite-width dynamics. 
+\begin{theorem}[Empirical, finite-width dynamics]\label{thm:empirical-main}
+Suppose \Cref{assumption:target} holds. Suppose $\epsilon = \frac{1}{\log \log d}$ is the target error and $\Tstar$ is the running time defined in \Cref{thm:pop_main_thm}. Suppose $n \geq d^{\samplebound} (\log d)^{\Omega(1)}$ for any constant $\samplebound > 3$, and the network width $m$ satisfies $m \gtrsim d^{2.5 + \mu/2} (\log d)^{\Omega(1)}$, and $m \leq d^C$ for some sufficiently large universal constant $C$. Let $\rhohat_t$ be the projected gradient flow on the empirical loss, initialized with $m$ uniformly sampled weights, defined in \Cref{eqn:rhohat_t}. Then, with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$ over the randomness of the data and the initialization of the finite-width network, we have that
+\begin{align}
+L(\rhohat_{\Tstar})
+& \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2 \period \label{eqn:thm_finite_sample}
+\end{align}
+\end{theorem}
+
+Plugging in $\mu=3.1$, \Cref{eqn:thm_finite_sample} suggests that, when the network width is at least $d^{4.05}$ (up to logarithmic factors), the empirical dynamics of gradient descent could achieve $\sigmaCoeffMax^2 (1/\log\log d)^2$ population loss with $d^{3.1}$ samples (up to logarithmic factors).
+
+In our analysis, we will establish a coupling between neurons in the empirical dynamics and neurons in the population dynamics. The main challenge is to bound the coupling error during Phase 1 where the population dynamics are similar to the power method.
+During this phase, we show that the coupling error (i.e., the distance between coupled neurons) remains small by showing that it can be upper bounded in terms of the growth of the signal $q_{\star}^Tu$ in the population dynamics. Such a delicate relationship between the growth of the error and that of the signal is the main challenge to proving a sample complexity bound better than NTK. Even an additional constant factor in the growth rate of the coupling error would lead to an additional $\poly(d)$ factor in the sample complexity. Prior work (e.g. \citet{mei2019mean, abbe2022merged}) also establishes a coupling between the population and empirical dynamics. However, these works obtain bounds on the coupling error which are exponential in the running time --- specifically, their bounds have a factor of $e^{KT}$ where $K$ is a universal constant and $T$ is the time. In many settings, including ours, $\Omega(\log d)$ time is necessary to achieve a non-trivial error, (as we further discuss in \Cref{sec:population_loss}) and thus %
+this would lead to a $d^{O(1)}$ bound on the sample complexity, where $O(1)$ is a unspecified and likely loose constant, which cannot outperform NTK. 
+Our work addresses this challenge by comparing the growth of the coupling error with the growth of the signal, which enables us to control the constant factor in the growth rate of the coupling error.
+
+
+\paragraph{Projected Gradient Descent with $1/\poly(d)$ Step Size.} 
+As a corollary of \Cref{thm:empirical-main}, we show that projected gradient descent with a small learning rate can also achieve low population loss in $\poly(d)$ iterations. We first define the dynamics of projected gradient descent as follows. As before, we let $\chi_1, \ldots, \chi_m \iidsim \bbS^{d - 1}$ be the initial weight vectors, and we let $\rhoGD = \textup{unif}(\{\chi_1, \ldots, \chi_m\})$ denote the uniform distribution over these vectors. Thus, we can write a single neuron at initialization as $\uGD_0(\chi) = \chi$ for $\chi \in \{\chi_1, \ldots, \chi_m\}$. The dynamics of projected gradient descent, on a finite-width neural network and using the empirical loss $\Lhat$, can be then described as
+\begin{align}
+\uGD_{t + 1}(\chi) & = \frac{\uGD_t(\chi) - \eta \cdot \pgrad_{\uGD_t(\chi)} \Lhat(\rhoGD_t)}{\|\uGD_t(\chi) - \eta \cdot \pgrad_{\uGD_t(\chi)} \Lhat(\rhoGD_t)\|_2} \comma \\
+\text{ and } \rhoGD_t & = \textup{distribution of $\uGD_t(\chi)$ (where $\chi \sim \rhoGD_0$)}  \period\label{eqn:GD_t}
+\end{align}
+where $\eta > 0$ is the learning rate.\footnotemark \footnotetext{See Chapter 3, page 20 of \citet{boumal2023intromanifolds}, accessed on August 21, 2023.} We show that projected gradient descent with a $1/\poly(d)$ learning rate can achieve a low population loss in $\poly(d)$ iterations:
+
+\begin{theorem}[Projected Gradient Descent] 
+\label{thm:projectedGD_main}
+Suppose we are in the setting of \Cref{thm:empirical-main}. Let $\rhoGD_t$ be the discrete-time projected gradient descent on the empirical loss, initialized with $m$ weight vectors sampled uniformly from $\bbS^{d - 1}$, defined in \Cref{eqn:GD_t}. Finally, assume that $\eta \leq \frac{1}{(\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) d^B}$ for a sufficiently large universal constant $B$. Then,
+\begin{align}
+L(\rhoGD_{\Tstar/\eta}) \lesssim (\sigmaCoeffTwo^2 + \sigmaCoeffFour^2) \epsilon^2 \period
+\end{align}
+\end{theorem}
+
+\Cref{thm:projectedGD_main} follows from \Cref{thm:empirical-main} together with a standard inductive argument to bound the discretization error. The full proof is in \Cref{sec:projectedGD_smallLR}.
+
+The following theorem states that in the setting of \Cref{thm:empirical-main}, kernel methods with any inner product kernel require $\Omega(d^4(\ln d)^{-6})$ samples to achieve a non-trivial population loss. (Note that the zero function has loss $\E_{x\sim \Sp}[y(x)^2]\ge (\legendreCoeff{h}{4})^2$.)
+\begin{theorem}[Sample complexity lower bound for kernel methods]\label{thm:lb-main}
+Let  $K$ be an inner product kernel. Suppose $d$ is larger than a universal constant and $n\lesssim d^4(\ln d)^{-6}$. 
+Then, with probability at least $1/2$ over the randomness of $n$ i.i.d data points $\{x_i\}_{i=1}^n$ drawn from $\bbsd$, any estimator of $y$ of the form $f(x)=\sum_{i=1}^{n}\beta_i \Kernel(x_i,x)$ of $\{x_i\}_{i=1}^{n}$ must have a large error: 
+\begin{align}
+\textstyle{\E_{x\sim \Sp}(y(x)-f(x))^2\ge \frac{3}{4}(\legendreCoeff{h}{4})^2.}
+\end{align}
+\end{theorem}
+
+\Cref{thm:empirical-main} and \Cref{thm:lb-main} together prove a clear sample complexity separation between gradient flow and NTK.
+When $\legendreCoeff{h}{4}\asymp \sigmaCoeffMax$ (i.e., $\gamma_2,\gamma_4\asymp 1$),
+gradient flow with finite-width neural networks can achieve $(\legendreCoeff{h}{4})^2(\log\log d)^{-2}$ population error with $d^{3.1}$ samples, while kernel methods with any inner product kernel (including NTK) must have an error at least $(\legendreCoeff{h}{4})^2/2$ with $d^{3.9}$ samples.
+
+On a high level, \citet{abbe2022merged,abbe2023sgd} prove similar lower bounds in a different setting where the target function is drawn randomly and the data points can be arbitrary (also see \citet{kamath2020approximate,hsu2021approximation,hsu2021dimension}). In comparison, our lower bound works for a fixed target function by exploiting the randomness of the data points. In fact, we can strengthen \Cref{thm:lb-main} by proving a $\Omega(\legendreCoeff{h}{k}^{2})$ loss lower bound for any universal constant $k\ge 0$ (\Cref{thm:lb}). We defer the proof of \Cref{thm:lb-main} to \Cref{app:lb-sketch}.
+
+
+
+
+
+
+

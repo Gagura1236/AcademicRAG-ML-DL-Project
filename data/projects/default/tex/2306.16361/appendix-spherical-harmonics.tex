@@ -1,0 +1,212 @@
+\section{Background on Spherical Harmonics}\label{app:SH}
+In the following, we summarize the background needed for this paper based on \citet[Section 2]{atkinson2012spherical}.
+
+\paragraph{Spherical Harmonics.} 
+Spherical harmonics are the eigenfunctions of any inner product kernels on the unit sphere $\Sp$. The eigenfunctions corresponding to the $k$-th eigenvalue are degree-$k$ polynomials, and form a Hilbert space $\Y_{k}^{d}$ with  inner product $\langle f, g \rangle = \E_{x \sim \bbS^{d - 1}} [f(x) g(x)]$. The dimension of $\Y_{k}^{d}$ is $\Nkd=\binom{d+k-1}{d-1} - \binom{d+k-3}{d-1}$. For any universal constant $k$, $\Nkd \asymp d^k$. Spherical harmonics with different degrees are orthogonal to each other, and their linear combinations can represent all square-integrable functions over $\Sp$.
+
+The following theorem states that $\Y_{k}^{d}$ is the eigenspace corresponding to the $k$-th eigenvalue for any inner product kernel on the sphere.
+\begin{theorem}[Funk-Hecke formula \citep{atkinson2012spherical}]\label{thm:funk-hecke}
+	Let $\h:[-1,1]\to\R$ be any one-dimensional function with $\int_{-1}^{1}|\h(t)|\mu_d(t)\dd t<\infty$, and $\lambda_k=N_{k,d}^{-1/2}\E_{t\sim \mu_d}[\h(t)\overline{P}_{k,d}(t)]$. Then for any function $Y_k\in \mathbb{Y}_{k,d}$,
+	\begin{align}
+		\forall x\in\Sp, \quad \E_{z\sim \Sp}[\h(\dotp{x}{z})Y_k(z)]=\lambda_k Y_k(x).
+	\end{align}
+\end{theorem}
+
+\paragraph{Legendre Polynomials.}
+The un-normalized Legendre polynomial is defined recursively by
+\begin{align}
+    &P_{0,d}(t)=1,\quad P_{1,d}(t)=t, \label{eq:legn_inductive1} \\
+    &P_{k,d}(t)=\frac{2k+d-4}{k+d-3}tP_{k-1,d}(t)-\frac{k-1}{k+d-3}P_{k-2,d}(t),\quad \forall k\ge 2. \label{eq:legn_inductive2}
+\end{align}
+In particular, we have
+\begin{align} \label{eq:legendre_polynomial_2_4}
+    P_{2, d}(t) = \frac{d}{d - 1}t^2 - \frac{1}{d - 1},\quad 
+    P_{4, d}(t) = \frac{(d + 2)(d + 4)}{d^2 - 1}t^4 - \frac{6d + 12}{d^2 - 1}t^2 + \frac{3}{d^2 - 1}.
+\end{align}
+For any $\u \in \bbS^{d - 1}$, $\Pkd(\dotp{u}{x})$ is a spherical harmonic of degree $k$ and, for every $k,k'\ge 0$ and $\u_1, \u_2 \in \bbS^{d - 1}$, $\E_{x \sim \bbS^{d - 1}} [\Pkdbar(\dotp{\u_1}{x}) \overline{P}_{k',d}(\dotp{\u_2}{x})] = \ind{k=k'}\Pkd(\dotp{\u_1}{\u_2})$ (\Cref{lem:legendre-poly-inner-product}).
+
+\paragraph{Projection Operator.}
+Let $\Proj_k$ be the projection operator to $\Y_{k}^{d}$. For any function $f:\Sp\to \R$, the projection operator $\Proj_k$ is given by 
+\begin{align}
+    (\Proj_k f)(x)=\sqrt{N_{k,d}}\E_{\xi\sim \Sp}[\overline{P}_{k,d}(\dotp{x}{\xi})f(\xi)].
+\end{align}
+In addition, if $f$ is a function of the form $f(x)=h(\dotp{\u}{x})$ for some fixed vector $u\in\Sp$ and one-dimensional function $h:[-1,1]\to \R$, the Funk-Hecke formula (\Cref{thm:funk-hecke}) implies
+\begin{align}
+    (\Proj_k f)(x)=\legendreCoeff{h}{k} \overline{P}_{k,d}(\dotp{u}{x}),\quad\forall x\in\Sp,
+\end{align}
+where $\legendreCoeff{h}{k}=\E_{t\sim \mu_d}[h(t)\Pkdbar(t)]$ is the $k$-th coefficient in the Legendre decomposition of $h$.
+
+
+
+Note that by the orthogonality of Legendre polynomials, we have
+\begin{align}
+    \forall x\in\Sp,\quad \E_{u\sim \Sp}[\overline{P}_{k,d}(\dotp{u}{x})]=\E_{t\sim \mu_d}[\overline{P}_{k,d}(t)]=\E_{t\sim \mu_d}[\overline{P}_{k,d}(t)\overline{P}_{0,d}(t)]=\ind{k=0}.
+\end{align}
+The following lemma computes the expectation of $\overline{P}_{k,d}(\dotp{\u}{x})$ with respect to a distribution on $\u$ which is rotationally invariant on the last $(d - 1)$ coordinates.
+
+\begin{lemma} \label{lemma:1d_rotational_invariance}
+Let $\rho$ be a distribution on $\bbS^{d - 1}$ that is rotationally invariant as in \Cref{def:rot_inv_symmetry}. Then, for any $x\in\Sp$ we have $\E_{u \sim \rho}[P_{k, d}(\dotp{\u}{x})] = \E_{u \sim \rho} [P_{k, d}(\dotp{\e}{\u})] P_{k, d}(\dotp{\e}{x})$.
+\end{lemma}
+\begin{proof}
+    We prove this lemma by invoking Eq. (2.167) of \citet{atkinson2012spherical}, which states that for every $s,t\in[-1,1]$ and $k\ge 0,d\ge 3$,
+    \begin{align}
+        \int_{-1}^{1}P_{k,d}(st+(1-s^2)^{1/2}(1-t^2)^{1/2}\xi)\mu_{d-1}(\xi)\dd \xi=P_{k,d}(s)P_{k,d}(t).
+    \end{align} 
+    In the following, for $x \in \bbS^{d - 1}$, we write $x = (\dotp{\e}{x}, \zeta)$, and for $\u \sim \rho$ we write $\u = (\w, \z)$. Note that when $\rho$ is symmetric and $u\sim \rho$, conditioned on $u_1$ we have $\dotp{\z}{\zeta}\sim (1-u_1^2)^{1/2}(1-x_1^2)^{1/2}\mu_{d-1}$ for any fixed $x$. As a result,
+    plugging in $t=\w,s=\dotp{\e}{x}$ and $\xi=(1-u_1^2)^{-1/2}(1-x_1^2)^{-1/2}\dotp{\z}{\zeta}$ we get
+    \begin{align}
+        \E_{u\sim \rho}[P_{k, d}(\dotp{\u}{x})\mid u_1]=P_{k, d}(\w) P_{k, d}(\dotp{\e}{x}).
+    \end{align}
+    Finally, taking expectation over $\w$ we prove the desired result.
+\end{proof}
+
+\paragraph{Additional Useful Lemmas.} In the following, we present some useful lemmas about spherical harmonics and Legendre polynomials.
+
+The following proposition computes the coefficient in the Legendre polynomial decomposition of ReLU activation.
+\begin{proposition}[Lemma C.2 of \citet{dong2023toward}]\label{prop:relu-coefficient}
+    Let $\sigma(t)=\max\{t,0\}$ be the ReLU activation. For every $d\ge 3$ and even $k$, we have
+    \begin{align}
+        \Big|\E_{t\sim \mu_d}[\sigma(t)\Pkdbar(t)]\Big|\asymp d^{1/4}k^{-5/4}(d+k)^{-3/4}.
+    \end{align}
+    As a corollary, when $k$ is an absolute constant we have 
+    \begin{align}
+        \Big|\E_{t\sim \mu_d}[\sigma(t)\Pkdbar(t)]\Big|\asymp d^{-1/2}.
+    \end{align}
+\end{proposition}
+
+\begin{theorem}[Addition Theorem \citep{atkinson2012spherical}]\label{thm:SH-addition} Let $\{Y_{k,j}:1\le j\le N_{k,d}\}$ be an orthonormal basis of $\mathbb{Y}_{k,d}$, that is,
+	\begin{align}
+		\E_{x\sim \Sp}[Y_{k,j}(x)Y_{k,j'}(x)]=\ind{j=j'}.
+	\end{align}
+	Then for all $x,z\in\Sp$
+	\begin{align}
+		\sum_{j=1}^{N_{k,d}}Y_{k,j}(x)Y_{k,j}(z)=N_{k,d}P_{k,d}(\dotp{x}{z}).
+	\end{align}
+\end{theorem}
+
+\begin{lemma}\label{lem:legendre-poly-inner-product}
+	For every $k,k'\ge 0,d\ge 3$ and $u,v\in\Sp$, we have
+	\begin{align}
+		\E_{\xi\sim \Sp}[\overline{P}_{k,d}(\dotp{u}{\xi})\overline{P}_{k',d}(\dotp{v}{\xi})]=\ind{k=k'}P_{k,d}(\dotp{u}{v}).
+	\end{align}
+\end{lemma}
+\begin{proof}
+	Let $\{Y_{k,j}:1\le j\le N_{k,d}\}$ be an orthonormal basis of $\mathbb{Y}_{k,d}$ with 
+	\begin{align}
+		\E_{\xi\sim \Sp}[Y_{k,j}(\xi)Y_{k,j'}(\xi)]=\ind{j=j'}.
+	\end{align} Similarly define $\{Y_{k',j}:1\le j\le N_{k',d}\}$ for $\mathbb{Y}_{k',d}.$
+	The addition theorem (\Cref{thm:SH-addition}) implies that
+	\begin{align}
+		P_{k,d}(\dotp{u}{\xi})&=\frac{1}{N_{k,d}}\sum_{j=1}^{N_{k,d}}Y_{k,j}(u)Y_{k,j}(\xi).\\
+		P_{k',d}(\dotp{u}{\xi})&=\frac{1}{N_{k',d}}\sum_{j=1}^{N_{k',d}}Y_{k',j}(u)Y_{k',j}(\xi).
+	\end{align}
+        Recall that for $k\neq k'$, $\mathbb{Y}_{k,d}$ and $\mathbb{Y}_{k',d}$ are orthononal subspaces. Consequently,
+	\begin{align}
+		\E_{\xi\sim \Sp}[\overline{P}_{k,d}(\dotp{u}{\xi})\overline{P}_{k',d}(\dotp{v}{\xi})]%
+		=&\;\frac{1}{\sqrt{N_{k,d}N_{k',d}}}\sum_{i=1}^{N_{k,d}}\sum_{j=1}^{N_{k',d}}\E_{\xi\sim \Sp}[Y_{k,i}(u)Y_{k,i}(\xi)Y_{k',j}(v)Y_{k',j}(\xi)]\\
+		=&\;\frac{\ind{k=k'}}{N_{k,d}}\sum_{j=1}^{N_{k,d}}\E_{\xi\sim \Sp}[Y_{k,j}(u)Y_{k,j}(v)]\\
+		=&\;\ind{k=k'}P_{k,d}(\dotp{u}{v}).
+	\end{align}
+\end{proof}
+
+\begin{lemma}\label{lem:legendre-kernel-feature}
+    For any $k\ge 0,d\ge 3$, there exists a feature mapping $\phi:\Sp\to \R^{N_{k,d}}$ such that for every $u,v\in\Sp$,
+    \begin{align}
+        \dotp{\phi(u)}{\phi(v)} & =N_{k,d}P_{k,d}(\dotp{u}{v}),\label{equ:lem-lkf-1}\\
+        \|\phi(u)\|_2^2 & = N_{k,d},\label{equ:lem-lkf-2}\\
+        \E_{u\sim \Sp}[\phi(u)\phi(u)^\top] & =I.\label{equ:lem-lkf-3}
+    \end{align}
+\end{lemma}
+\begin{proof}
+    Let $Y_{1},\cdots,Y_{N_{k,d}}:\Sp\to \R$ be an orthonormal basis for the degree-$k$ spherical harmonics $\mathbb{Y}_{k,d}.$ We let $\phi(x)=(Y_l(x))_{l\in [N_{k,d}]}$ be the feature mapping, and in the following we verify Eqs.~\eqref{equ:lem-lkf-1}-\eqref{equ:lem-lkf-3}. By the addition theorem (\Cref{thm:SH-addition}), for every $u,v\in \Sp$ we have
+    \begin{align}
+        \dotp{\phi(u)}{\phi(v)}=\sum_{j=1}^{N_{k,d}}Y_j(u)Y_j(v)=N_{k,d}P_{k,d}(\dotp{u}{v}),
+    \end{align}
+    which proves Eq.~\eqref{equ:lem-lkf-1}. Note that for every $u\in\Sp$, $P_{k,d}(\dotp{u}{u})=P_{k,d}(1)=1$. Hence Eq.~\eqref{equ:lem-lkf-2} follows directly. To prove Eq.~\eqref{equ:lem-lkf-3}, note that $Y_{1},\cdots,Y_{N_{k,d}}$ are orthonormal. Therefore for every $i,j\in [N_{k,d}]$
+    \begin{align}
+        \E_{u\sim \Sp}[Y_i(u)Y_j(u)]=\ind{i=j}.
+    \end{align}
+    Hence, Eq.~\eqref{equ:lem-lkf-3} follows directly.
+\end{proof}
+
+\begin{lemma}\label{lem:max-legendre-poly}
+	Let $\mu_d$ be the distribution of $\dotp{u}{v}$ when $v$ is drawn uniformly at random from the unit sphere $\Sp$ and $u\in\Sp$ is a fixed vector. For fixed $n\ge 1$, let $x_1,\cdots,x_n\in \Sp$ be (not necessarily independent) random variables drawn from the distribution $\mu_d.$ Then there exists a universal constant $c>0$ such that for any integer $k\ge 1$, 
+	\begin{align}
+		\forall t\ge 4^{1+k}(k\ln d)^{k},\quad \Pr\(\max_{i\le n} d^{k}P_{k,d}(x_i)^2\ge t\)\le 2n\exp\(-\frac{t^{1/k}}{32}\).
+	\end{align}
+	In addition, we also have
+	\begin{align}\label{equ:lem-mlp-1}
+		\E\[\max_{i\le n} d^kP_{k,d}(x_i)^2\]\lesssim (32k\ln (dn))^{k}.
+	\end{align}
+\end{lemma}
+\begin{proof}
+	To prove the first part of this lemma, we first invoke \Cref{prop:legendre-polynomial-ub}, which states that 
+	\begin{align}
+		\forall x\in \[\sqrt{\frac{k\ln d}{d}}, 1\],\quad |P_{k,d}(x)|\le 2^{1+k}x^k.
+	\end{align}
+	When $x\sim \mu_d$, \Cref{prop:sphere-tail-bound} states that
+	\begin{align}
+		\forall t>0,\quad \Pr(|x|\ge t)\le 2\exp\(-\frac{t^2d}{2}\).
+	\end{align}
+	Therefore for every $t\ge 4^{1+k}(k\ln d)^{k}$ we have
+	\begin{align}
+		\Pr\(P_{k,d}(x)^2 d^k\ge t\)\le \Pr\(|x|\ge t^{1/2k}d^{-1/2}2^{-1-1/k}\)
+		\le\; 2\exp\(-\frac{1}{2}t^{1/k}4^{-1-1/k}\)\le 2\exp(-t^{1/k}/32).
+	\end{align}
+	By union bound we get
+	\begin{align}
+		\forall t\ge 4^{1+k}(k\ln d)^{k},\quad \Pr\(\max_{i\le n} d^{k}P_{k,d}(x_i)^2\ge t\)\le  2n\exp\(-\frac{t^{1/k}}{32}\).
+	\end{align}
+	which proves the first part of this lemma.
+	
+	As a corollary, for any fixed $\epsilon>4^{1+k}(k\ln d)^{k}$ we have
+	\begin{align}
+		\E\[\max_{i\le n} d^k P_{k,d}(x_i)^2\]
+		\le\;& \epsilon+\int_{\epsilon}^{\infty} \Pr\(\max_{i\le n} d^k P_{k,d}(x_i)^2\ge t\)\dd t\\
+		\le\;& \epsilon+n\int_{\epsilon}^{\infty} \Pr\(d^k P_{k,d}(t)^2\ge t\)\dd t\\
+		\le\;& \epsilon+2n\int_{\epsilon}^{\infty} \exp\(-\frac{t^{1/k}}{32}\)\dd t.
+	\end{align}
+	Now we upper bound the integral by changing variables. Letting $u=t^{1/k}/32$, we get
+	\begin{align}
+		\int_{\epsilon}^{\infty} \exp\(-\frac{t^{1/k}}{32}\)\dd t
+		\le\;& \int_{\frac{\epsilon^{1/k}}{32}}^{\infty} 32^k k u^{k-1}\exp\(-u\)\dd u\\
+		\le\;& k^2\exp\(-\frac{\epsilon^{1/k}}{32}\)32^k \(\frac{\epsilon^{1/k}}{32}\)^{k-1}\\
+		\le\;& 32k^2\exp\(-\frac{\epsilon^{1/k}}{32}\) \epsilon\\
+	\end{align}
+	where the last inequality comes from an upper bound for the incomplete gamma functions \citep[Theorem 4.4.3]{gabcke1979neue}. Therefore we get
+	\begin{align}
+		\E\[\max_{i\le n} d^k P_{k,d}(x_i)^2\]\le \epsilon+64n\epsilon k^2\exp\(-\frac{\epsilon^{1/k}}{32}\).
+	\end{align}
+	Finally taking $\epsilon=(32k\ln (dn))^{k}$, we prove the desired result.
+\end{proof}
+
+\begin{proposition}\label{prop:legendre-polynomial-ub}
+	For any $k\ge 0,d\ge 2$, we have
+	\begin{align}
+		\forall t\in \[\sqrt{\frac{k\ln d}{d}}, 1\],\quad |P_{k,d}(t)|\le 2^{1+k}t^k.
+	\end{align}
+\end{proposition}
+\begin{proof}
+	Let $\mu_d(t)\defeq (1-t^2)^{\frac{d-3}{2}}\frac{\Gamma(d/2)}{\Gamma((d-1)/2)}\frac{1}{\sqrt{\pi}}$ be the density of $u_1$ when $u=(u_1,\cdots,u_d)$ is drawn uniformly from $\Sp$. By \citet[Theorem 2.24]{atkinson2012spherical} we have
+	\begin{align}
+		P_{k,d}(t)=\E_{s\sim \mu_{d-1}}\[(t+i(1-t^2)^{1/2}s)^{k}\].
+	\end{align}
+	As a result,
+	\begin{align}
+		|P_{k,d}(t)|\le \E_{s\sim \mu_{d-1}}\[|t+i(1-t^2)^{1/2}s|^{k}\]\le \E_{s\sim \mu_{d-1}}\[(t^2+(1-t^2)s^2)^{k/2}\].
+	\end{align}
+	By \Cref{prop:sphere-tail-bound} we have, 
+	\begin{align}
+		\Pr(\sqrt{d-1}|s|\le 2\sqrt{k\ln d})\le 2\exp(-2k\ln d)\le d^{-k}.
+	\end{align}
+	Consequently,
+	\begin{align}
+		\E_{s\sim \mu_{d-1}}\[(t^2+(1-t^2)s^2)^{k/2}\]
+		\le\;&d^{-k} +\E_{s\sim \mu_{d-1}}\[\ind{s\le 2\sqrt{k\ln d}/\sqrt{d-1}} (t^2+s^2)^{k/2}\]\\
+		\le\;&d^{-k} +\(t^2+\frac{2k\ln d}{d-1}\)^{k/2}.
+	\end{align}
+	Hence, when $t\ge \sqrt{\frac{k\ln d}{d}}$ we get
+	\begin{align}
+		|P_{k,d}(t)|\le d^{-k} +\(t^2+\frac{2k\ln d}{d-1}\)^{k/2}\le 2^{1+k}t^k.
+	\end{align}
+\end{proof}

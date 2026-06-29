@@ -1,0 +1,464 @@
+\section{Experiments}
+\label{sec:experiments}
+ 
+We applied our method to the WMT'14 English to French MT task in two
+ways.  We used it to directly translate the input sentence without
+using a reference SMT system and we it to rescore the n-best lists of
+an SMT baseline.  We report the accuracy of these translation methods,
+present sample translations, and visualize the resulting sentence
+representation.
+
+\subsection{Dataset details}
+
+We used the WMT'14 English to French dataset.  We trained our models
+on a subset of 12M sentences consisting of 348M French words and 304M
+English words, which is a clean ``selected'' subset from
+\cite{wmt14_en_fr}. We chose this translation task and this specific
+training set subset because of the public availability of a tokenized training and
+test set together with 1000-best lists from the baseline SMT 
+\cite{wmt14_en_fr}.
+
+As typical neural language models rely on a vector representation for
+each word, we used a fixed vocabulary for both languages.  We used
+160,000 of the most frequent words for the source language and 80,000
+of the most frequent words for the target language.  Every
+out-of-vocabulary word was replaced with a special ``UNK'' token.  
+ 
+%% \subsection{Sentence-level Autoencoder}
+
+%% To solve our translation task, the LSTM must store the entire input
+%% sentence in its memory, and it is not clear that an LSTM can learn to
+%% store the necessary amount of information in its hidden state.  Thus,
+%% we start with the easier problem of memorizing an input sentence by
+%% reading it into the hidden state and then outputting the same
+%% sentence.  If this autoencoding task proves to be too difficult for
+%% the LSTM, it would mean that our approach is relatively hopeless.
+
+%% Luckily, we found that the LSTM could easily solve the memorization
+%% problem, as it has achieved a perplexity of $1.03$ on the test set.
+%% This very low perplexity suggests that at minimum, the LSTM is capable
+%% of learning to store a sequence of words of an unknown length in a
+%% vector of a fixed dimensionality.
+
+
+\subsection{Decoding and Rescoring}
+
+The core of our experiments involved training a large deep LSTM on
+many sentence pairs. We trained it by maximizing the log
+probability of a correct translation $T$ given the source sentence
+$S$, so the training objective is
+$$1/|\mathcal S|\sum_{(T,S)\in\mathcal S}\log p(T|S)$$ where $\mathcal
+S$ is the training set.  Once training is complete, we produce
+translations by finding the most likely translation according to
+the LSTM:
+\begin{equation}
+\label{eqn:decode}
+\hat{T} = \arg\max_T p(T|S)
+\end{equation}
+We search for the most likely translation using a simple left-to-right
+beam search decoder which maintains a small number $B$ of partial
+hypotheses, where a partial hypothesis is a prefix of some
+translation.  At each timestep we extend each partial hypothesis in
+the beam with every possible word in the vocabulary. This greatly
+increases the number of the hypotheses so we discard all but the $B$
+most likely hypotheses according to the model's log probability.  As soon
+as the ``$<$EOS$>$'' symbol is appended to a hypothesis, it is removed from
+the beam and is added to the set of complete hypotheses.  While this
+decoder is approximate, it is simple to implement.  Interestingly, our
+system performs well even with a beam size of 1, and a beam of
+size 2 provides most of the benefits of beam search (Table
+\ref{tab:blue_fr}).   
+
+% todo:  insert note on removing very short solutions and solutions
+% that consist entirely of the /UNK/ token. 
+
+We also used the LSTM to rescore the 1000-best lists produced by the
+baseline system \cite{wmt14_en_fr}.  To rescore an n-best list, we
+computed the log probability of every hypothesis with our LSTM and
+took an even average with their score and the LSTM's score.
+
+\subsection{Reversing the Source Sentences}
+\label{sec:rev_rev}
+
+While the LSTM is capable of solving problems with long term
+dependencies, we discovered that the LSTM learns much better when the
+source sentences are reversed (the target sentences are not reversed).  By
+doing so, the LSTM's test perplexity dropped from 5.8 to 4.7, and the 
+test BLEU scores of its decoded translations increased from 25.9 to 30.6.
+
+
+
+While we do not have a complete explanation to this phenomenon, we
+believe that it is caused by the introduction of many short term
+dependencies to the dataset.  Normally, when we concatenate a source
+sentence with a target sentence, each word in the source sentence is
+far from its corresponding word in the target sentence. As a result,
+the problem has a large ``minimal time lag'' \cite{minimal_time_lag}.  By reversing the
+words in the source sentence, the average distance between
+corresponding words in the source and target language is unchanged.
+However, the first few words in the source language are now very close to
+the first few words in the target language, so the problem's minimal
+time lag is greatly reduced. Thus, backpropagation has an easier time
+``establishing communication'' between the source sentence and the
+target sentence, which in turn results in substantially improved overall
+ performance.
+
+Initially, we believed that reversing the input sentences would 
+only lead to more confident predictions in the early parts of the target
+sentence and to less confident predictions in the later parts.
+However, LSTMs trained on reversed source sentences did much better on
+long sentences than LSTMs trained on the raw source sentences (see
+sec.~\ref{sec:long_sentences}), which suggests that reversing the
+input sentences results in LSTMs with better memory utilization. 
+
+
+
+%% This result also suggests that hidden optimization issues are still
+%% prevalent even in modern-day neural networks.  Prior to training LSTMs
+%% on the reversed dataset, we believed that our models were
+%% well-optimized, and that little could be gained with better
+%% optimization methods.  However, the same architecture is clearly
+%% capable of achieving much better results on essentially the same data, which
+%% suggests that the worse performance of the ``forward'' LSTMs were entirely
+%% due an optimization failure. 
+
+%% \subsection{The Importance of Depth}
+
+%% Deep LSTMs turned out to be important for MT tasks.  In earlier
+%% experiments, we found that each additional layer reduced perplexity by
+%% 10\%.  As we do not observe such perplexity reductions with deep LSTMs
+%% on language modelling, it follows that most of the benefit of deep
+%% LSTMs comes from their larger hidden state, which is important for our
+%% formulation of MT where the hidden state needs to store the entire
+%% input sentence.
+
+\subsection{Training details}
+
+We found that the LSTM models are fairly easy to train.  We used deep
+LSTMs with 4 layers, with 1000 cells at each layer and 1000
+dimensional word embeddings, with an input vocabulary of 160,000
+and an output vocabulary of 80,000.  Thus the deep LSTM uses 8000 real 
+numbers to represent a sentence. We found deep LSTMs to
+significantly outperform shallow LSTMs, where each additional layer
+reduced perplexity by nearly 10\%, possibly due to their much larger
+hidden state.  We used a naive softmax over 80,000 words at each
+output.  The resulting LSTM has 384M parameters of which 64M are pure
+recurrent connections (32M for the ``encoder'' LSTM and 32M for the
+``decoder'' LSTM). The complete training details are given below:
+\begin{itemize}
+\item We initialized all of the LSTM's parameters with the uniform distribution between
+  -0.08 and 0.08
+\item We used stochastic gradient descent without momentum,
+  with a fixed learning rate of 0.7.  After 5 epochs, we begun
+  halving the learning rate every half epoch.  We trained our models for a
+  total of 7.5 epochs.
+\item We used batches of 128 sequences for the gradient and divided it
+  the size of the batch (namely, 128).
+\item Although LSTMs tend to not suffer from the vanishing gradient
+  problem, they can have exploding gradients.  Thus we enforced a hard
+  constraint on the norm of the gradient
+  \cite{graves13c,razvan} by scaling it when its norm exceeded
+  a threshold. For each training batch, we compute $s =
+  \left\|g\right\|_2$, where $g$ is the gradient divided by 128. If $s > 5$, we set
+  $g = \frac{5g}{s}$.
+\item Different sentences have different lengths.  Most sentences are
+  short (e.g., length 20-30) but some sentences are long (e.g., length
+  $>$ 100), so a minibatch of 128 randomly chosen training sentences
+  will have many short sentences and few long sentences, and as a
+  result, much of the computation in the minibatch is wasted.  To
+  address this problem, we made sure that all sentences in a
+  minibatch are roughly of the same length, yielding a 2x speedup.
+\end{itemize}
+
+
+\subsection{Parallelization}
+
+A C++ implementation of deep LSTM with the configuration from the
+previous section on a single GPU processes a speed of approximately
+1,700 words per second.  This was too slow for our purposes, so we 
+parallelized our model using an 8-GPU machine.  Each layer of the LSTM
+was executed on a different GPU and communicated its activations
+to the next GPU / layer as soon as they were computed.  Our models
+have 4 layers of LSTMs, each of which resides on a separate GPU.  The remaining
+4 GPUs were used to parallelize the softmax, so each GPU was
+responsible for multiplying by a $1000\times 20000$ matrix.  The
+resulting implementation achieved a speed of 6,300 (both English and
+French) words per second with a minibatch size of 128. 
+Training took about a ten days with this implementation.
+
+
+\subsection{Experimental Results}
+
+We used the cased BLEU score \cite{bleu} to evaluate the quality of our
+translations. We computed our BLEU scores using \texttt{multi-bleu.pl}\footnote{
+There several variants of the BLEU score, and each variant is defined  with a perl script. } 
+on the \emph{tokenized} predictions and ground truth.
+This way of evaluating the BELU score is consistent with \cite{cho14} and \cite{bog14}, and reproduces
+the 33.3 score of \cite{wmt14_en_fr}.
+However, if we evaluate the best WMT'14 system \cite{durrani-EtAl:2014:W14-33}
+(whose predictions can be downloaded from \url{statmt.org\matrix}) in this manner, we get   
+37.0, which is greater than the 35.8 reported by \url{statmt.org\matrix}.  
+
+%% According to , 
+%% the performance of the best English to French system on the WMT'14 \cite{durrani-EtAl:2014:W14-33}
+%% is 35.8.  This score is obtained if we use the \texttt{mteval.pl} script on the \emph{untokenized}
+%% test set.  We obtain 37.0 if we download the predictions of the best system from 
+%% \url{statmt.org\matrix} and use \texttt{multi-bleu.pl} on the \emph{tokenized}
+%% predictions.  This is done to be consistent with \cite{cho14} and \cite{bog14}.
+%% All our scores 
+
+
+
+%% We verified the correctness of our BLEU score
+%% computation by reproducing the BLEU score of LIUM's baseline system using
+%% its n-best list. Of particular importance were issues relating to
+%% tokenization and normalization of the test sentences.  We made sure to ``unnormalize'' our
+%% translations (for example, to replace ``they 're'' with ``they're''),
+%% in order to reproducing the baseline's BLEU score with our
+%% evaluation tools.
+
+The results are presented in tables \ref{tab:blue_fr} and
+\ref{tab:blue_fr_rescore}.  Our best results are obtained with an
+ensemble of LSTMs that differ in their random initializations and
+in the random order of minibatches.  While the decoded translations of the
+LSTM ensemble do not outperform the best WMT'14 system, it is the first time
+that a pure neural translation system outperforms a 
+phrase-based SMT baseline on a large scale MT task by a sizeable margin,
+despite its inability to handle out-of-vocabulary words.  The LSTM
+is within 0.5 BLEU points of the best WMT'14 result if it is used to rescore the 1000-best
+list of the baseline system.
+
+\begin{table}[t]
+\centering
+\begin{small}
+\begin{tabular}{|c|c|}
+\hline
+{\bf Method}  & {\bf test BLEU score (ntst14) } \\ \hline
+Bahdanau et al. \cite{bog14}  &  28.45 \\ \hline
+Baseline System  \cite{wmt14_en_fr} & 33.30 \\ \hline
+\hline
+Single forward LSTM, beam size 12 & 26.17 \\ \hline                 
+Single reversed LSTM, beam size 12 & 30.59 \\ \hline
+Ensemble of 5 reversed LSTMs, beam size 1  &  33.00 \\ \hline
+Ensemble of 2 reversed LSTMs, beam size 12  &  33.27 \\ \hline
+Ensemble of 5 reversed LSTMs, beam size 2  &  34.50 \\ \hline
+Ensemble of 5 reversed LSTMs, beam size 12  &  {\bf 34.81} \\ \hline
+\end{tabular}
+\end{small}
+\caption{The performance of the LSTM on WMT'14 English to French test
+  set (ntst14).  Note that an ensemble of 5 LSTMs with a beam of size
+  2 is cheaper than of a single LSTM with a beam of size 12.  }
+\label{tab:blue_fr}
+\end{table}
+
+\begin{table}[]
+\centering
+\begin{small}
+\begin{tabular}{|c|c|}
+\hline
+{\bf Method}  & {\bf test BLEU score (ntst14) } \\ \hline
+Baseline System  \cite{wmt14_en_fr} & 33.30 \\ \hline
+Cho et al. \cite{cho14}  & 34.54 \\ \hline 
+Best WMT'14 result \cite{durrani-EtAl:2014:W14-33} &  {\bf 37.0} \\ \hline
+\hline
+Rescoring the baseline 1000-best with a single forward LSTM & 35.61 \\ \hline 
+Rescoring the baseline 1000-best with a single reversed  LSTM & 35.85 \\ \hline  %wmt_FREN_good_rescore_80k_one_rev_1.merge
+%Rescoring the LIUM 1000-best with 5 forward LSTMs  &  36.3 \\ \hline    
+Rescoring the baseline 1000-best with an ensemble of 5 reversed LSTMs  &  {\bf 36.5} \\ \hline    %wmt_FREN_good_rescore_80k_all_rev_1.merge 
+\hline
+Oracle Rescoring of the Baseline 1000-best lists    & $\sim$45 \\ \hline 
+\end{tabular}
+\end{small}
+\caption{Methods that use neural networks together with an SMT system
+  on the WMT'14 English to French test set (ntst14).}
+\label{tab:blue_fr_rescore}
+\end{table}
+
+
+
+\subsection{Performance on long sentences}
+\label{sec:long_sentences}
+
+We were surprised to discover that the LSTM did well on long
+sentences, which is shown quantitatively in figure \ref{fig:oriol}.
+Table \ref{tab:examples} presents several examples of long sentences and
+their translations. 
+
+\begin{table}[ht!]
+\centering
+\begin{footnotesize}
+\begin{tabular}{|l|l|}
+\hline
+{\bf  Type} & {\bf Sentence} \\ 
+\hline
+\hline
+{\bf Our model} & Ulrich UNK , membre du conseil d' administration du constructeur automobile Audi , \\
+& affirme qu' il s' agit d' une pratique courante depuis des ann\'{e}es pour que les t\'{e}l\'{e}phones \\
+& portables  puissent  \^{e}tre collect\'{e}s avant les r\'{e}unions du conseil d' administration afin qu' ils\\
+&  ne soient pas  utilis\'{e}s comme appareils d' \'{e}coute \`{a} distance .\\
+%%Ulrich UNK , membre du conseil d'administration du constructeur automobile Audi  \\
+%%&  , affirme qu'il les r\'{e}unions du s'agit d'une pratique  courante depuis des ann\'{e}es pour      \\
+%%& que les t\'{e}l\'{e}phones portables puissent \^{e}tre collect\'{e}s avant conseil d'administration afin     \\
+%%& qu'ils ne soient pas utilis\'{e}s comme appareils d'\'{e}coute \`{a} distance . \\
+%\hline
+%{\bf EN} & UNK Ulrich, a member of the board of automaker Audi says that this is a common  \\
+%{\bf LSTM}& practice for years that mobile phones can be collected before the meetings of the board so that  \\
+%& they do are not used as remote listening devices. \\
+\hline
+{\bf  Truth} &  Ulrich Hackenberg , membre du conseil d' administration du constructeur automobile Audi ,   \\
+& d\'{e}clare que la collecte des t\'{e}l\'{e}phones portables avant les r\'{e}unions du conseil , afin qu' ils  \\
+& ne puissent pas \^{e}tre utilis\'{e}s comme appareils d' \'{e}coute \`{a} distance , est une pratique courante \\ 
+& depuis des ann\'{e}es .\\
+\hline\hline
+%{\bf EN} &  Ulrich Hackenberg, member of the board of automaker Audi said that the  \\
+%{\bf Truth} & collection of mobile phones before board meetings, so they can not be used as listening devices  \\
+%& remotely, is a common practice for years.\\
+{\bf Our model} & 
+`` Les t\'{e}l\'{e}phones cellulaires , qui sont vraiment une question , non seulement parce qu' ils \\
+& pourraient potentiellement causer des interf\'{e}rences avec les appareils de navigation , mais \\
+& nous savons , selon la FCC , qu' ils pourraient interf\'{e}rer avec les tours de t\'{e}l\'{e}phone cellulaire \\
+& lorsqu' ils sont dans l' air '' , dit UNK .\\
+%%``Les t\'{e}l\'{e}phones cellulaires , qui sont vraiment une question , non seulement parce \\
+%%& qu'ils pourraient potentiellement causer des interf\'{e}rences avec les appareils de navigation , \\
+%%& mais nous savons , selon la FCC , qu'ils pourraient interf\'{e}rer avec les tours de t\'{e}l\'{e}phone cellulaire \\
+%%&  lorsqu'ils sont dans l'air `` , dit UNK .  \\
+\hline
+{\bf Truth} & 
+`` Les t\'{e}l\'{e}phones portables sont v\'{e}ritablement un probl\`{e}me , non seulement parce qu' ils \\
+& pourraient \'{e}ventuellement cr\'{e}er des interf\'{e}rences avec les instruments de navigation , mais \\
+& parce que nous savons , d' apr\`{e}s la FCC , qu' ils pourraient perturber les antennes-relais de \\
+& t\'{e}l\'{e}phonie mobile s' ils sont utilis\'{e}s \`{a} bord '' , a d\'{e}clar\'{e} Rosenker .\\
+%%`` Les t\'{e}l\'{e}phones portables sont v\'{e}ritablement un probl\'{e}me , non seulement parce qu'ils \\
+%%& pourraient \'{e}ventuellement cr\'{e}er des interf\'{e}rences avec les instruments de navigation , mais parce \\
+%%& que nous savons , d'apr\`{e}s la FCC , qu'ils pourraient perturber les antennes-relais de \\
+%%& t\'{e}l\'{e}phonie mobile s'ils sont utilis\'{e}s \`{a} bord '' , a d\'{e}clar\'{e} Rosenker . \\
+\hline\hline
+{\bf Our model} & 
+Avec la cr\'{e}mation , il y a un `` sentiment de violence contre le corps d' un \^{e}tre cher '' , \\
+& qui sera `` r\'{e}duit \`{a} une pile de cendres '' en tr\`{e}s peu de temps au lieu d' un processus de \\
+& d\'{e}composition ``  qui accompagnera les \'{e}tapes du deuil '' .\\
+%%Avec la cr\'{e}mation , il y a un `` sentiment de violence contre le corps d'un \^{e}tre cher `` , \\ 
+%%& qui sera `` r\'{e}duit \`{a} une pile de cendres `` en tr\`{e}s peu de temps au lieu d'un processus de d\'{e}composition \\
+%%&  `` qui accompagnera les \'{e}tapes du deuil `` . \\  
+\hline
+{\bf Truth} & 
+Il y a , avec la cr\'{e}mation , `` une violence faite au corps aim\'{e} '' , \\
+& qui va \^{e}tre `` r\'{e}duit \`{a} un tas de cendres '' en tr\`{e}s peu de temps , et non apr\`{e}s un processus de \\
+&d\'{e}composition , qui `` accompagnerait les phases du deuil '' .\\
+%%Il y a , avec la cr\'{e}mation , `` une violence faite au corps aim\'{e} `` , qui va \^{e}tre `` r\'{e}duit \\
+%%&  \`{a} un tas de cendres `` en tr\`{e}s peu de temps , et non apr\`{e}s un processus de d\'{e}composition , qui `` \\
+%%&accompagnerait les phases du deuil `` .\\
+\hline
+\end{tabular}
+\end{footnotesize}
+\caption{A few examples of long translations produced by the LSTM
+  alongside the ground truth translations.  The reader can verify that
+  the translations are sensible using Google translate.  }
+\label{tab:examples}
+\end{table}
+
+
+
+%% \begin{table}[ht!]
+%% \centering
+%% \begin{footnotesize}
+%% \begin{tabular}{|l|l|}
+%% \hline
+%% {\bf  Type} & {\bf Sentence} \\ 
+%% \hline
+%% {\bf LSTM} & Ulrich UNK , membre du conseil d'administration du constructeur automobile Audi  \\
+%% &  , affirme qu'il les réunions du s'agit d'une pratique  courante depuis des années pour      \\
+%% & que les téléphones portables puissent être collectés avant conseil d'administration afin   	  \\
+%% & qu'ils ne soient pas utilisés comme appareils d'écoute à distance . \\
+%% %\hline
+%% %{\bf EN} & UNK Ulrich, a member of the board of automaker Audi says that this is a common  \\
+%% %{\bf LSTM}& practice for years that mobile phones can be collected before the meetings of the board so that  \\
+%% %& they do are not used as remote listening devices. \\
+%% \hline
+%% {\bf  Truth} &  Ulrich Hackenberg , membre du conseil d'administration du constructeur    \\
+%% & automobile Audi , déclare que la des téléphones portables avant les réunions du conseil , afin qu'ils  \\
+%% & ne puissent pas être utilisés comme appareils collecte d'écoute à distance ,  \\
+%% &  est une pratique courante depuis des années . \\
+%% \hline\hline
+%% %{\bf EN} &  Ulrich Hackenberg, member of the board of automaker Audi said that the  \\
+%% %{\bf Truth} & collection of mobile phones before board meetings, so they can not be used as listening devices  \\
+%% %& remotely, is a common practice for years.\\
+%% {\bf LSTM} & ``Les téléphones cellulaires , qui sont vraiment une question , non seulement parce \\
+%% & qu'ils pourraient potentiellement causer des interférences avec les appareils de navigation , \\
+%% & mais nous savons , selon la FCC , qu'ils pourraient interférer avec les tours de téléphone cellulaire \\
+%% &  lorsqu'ils sont dans l'air `` , dit UNK .  \\
+%% \hline
+%% {\bf Truth} & `` Les téléphones portables sont véritablement un problème , non seulement parce qu'ils \\
+%% & pourraient éventuellement créer des interférences avec les instruments de navigation , mais parce \\
+%% & que nous savons , d'après la FCC , qu'ils pourraient perturber les antennes-relais de \\
+%% & téléphonie mobile s'ils sont utilisés à bord '' , a déclaré Rosenker . \\
+%% \hline\hline
+%% {\bf LSTM} & Avec la crémation , il y a un `` sentiment de violence contre le corps d'un être cher `` , \\ 
+%% & qui sera `` réduit à une pile de cendres `` en très peu de temps au lieu d'un processus de décomposition \\
+%% &  `` qui accompagnera les étapes du deuil `` . \\  
+%% \hline
+%% {\bf Truth} & Il y a , avec la crémation , `` une violence faite au corps aimé `` , qui va être `` réduit \\
+%% &  à un tas de cendres `` en très peu de temps , et non après un processus de décomposition , qui `` \\
+%% &accompagnerait les phases du deuil `` .\\
+%% \hline
+%% \end{tabular}
+%% \end{footnotesize}
+%% \caption{The table shows a few examples of long translations produced
+%%   by the LSTM together with the ground truth translations.  The reader
+%%   can verify using Google translate that the LSTM's translations are  
+%%   basically correct.
+%%  }
+%% \label{tab:examples}
+%% \end{table}
+
+
+\subsection{Model Analysis}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.46\textwidth]{figure2} ~~
+\includegraphics[width=0.46\textwidth]{figure3} 
+\caption{\small The figure shows a 2-dimensional PCA projection of the
+  LSTM hidden states that are obtained after processing the phrases in
+  the figures.  The phrases are clustered by meaning, which in these
+  examples is primarily a function of word order, which would be
+  difficult to capture with a bag-of-words model. Notice that both
+  clusters have similar internal structure.}
+\label{fig:embedding}
+\end{figure}
+
+%good1} }
+\begin{figure}[h!]
+\centerline{
+\includegraphics[width=1.\textwidth]{good2.eps} }  
+\caption{\small The left plot shows the performance of our system as a
+  function of sentence length, where the x-axis corresponds to the
+  test sentences sorted by their length and is marked by the actual
+  sequence lengths.  There is no degradation on sentences with less
+  than 35 words, there is only a minor degradation on the longest
+  sentences.  The right plot shows the LSTM's performance on sentences
+  with progressively more rare words, where the x-axis corresponds to
+  the test sentences sorted by their ``average word frequency rank''.
+}
+\label{fig:oriol}
+\end{figure}
+
+%% In our experiments, we trained LSTMs with only 4 layers, but deeper
+%% LSTMs would achieve even better translation performance, every
+%% additional LSTM layer reduced the perplexity by almost 10\%.  It is
+%% easy to see why it should be so: the deeper LSTMs have much more
+%% hidden state, so they have an easier time storing the input sequence.
+
+One of the attractive features of our model is its ability to turn a
+sequence of words into a vector of fixed dimensionality.
+Figure~\ref{fig:embedding} visualizes some of the learned
+representations.  The figure clearly shows that the representations
+are sensitive to the order of words, while being fairly insensitive to
+the replacement of an active voice with a passive voice.  The
+two-dimensional projections are obtained using PCA.
+
+
+
+
+
+

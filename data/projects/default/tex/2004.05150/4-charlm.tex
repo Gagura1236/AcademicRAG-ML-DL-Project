@@ -1,0 +1,215 @@
+\section{Autoregressive Language Modeling}
+Autoregressive or left-to-right language modeling is loosely defined as estimating the probability distribution of an existing token/character given its previous tokens/characters in an input sequence. 
+This task is considered one of the fundamental tasks in natural language and recent prior work on modeling long sequences using transformers 
+has relied on this task as their primary evaluation~\cite{transformerxl,compressive,adaptivespan}.
+Similarly, we develop and evaluate our model on autoregressive language modeling. 
+
+\subsection{Attention Pattern}
+\label{sec:charlm_attn}
+For autoregressive language modeling we use our dilated 
+sliding window attention. 
+% We did not use global attention for this task as we found it to be more important for the down-stream finetuning tasks.
+Following~\citet{adaptivespan} we use differing window sizes across the layers. In particular, we use small window sizes for the lower layers and increase window sizes 
+as we move to higher layers. This allows the top layers to learn higher-level representation of the entire sequence while having the lower layers capture local information. In addition, it provides balance between efficiency (smaller window sizes are less computationally expensive due to fewer nonzero values)
+and performance (larger window sizes have richer representation power and often result in performance improvements). 
+
+We do not use dilated sliding windows for lower layers to maximize their capacity to learn and utilize the immediate local context.
+For the higher layers, we use a small amount of increasing dilation only on 2 heads.
+% \footnote{We found that having dilation on all heads hurts the performance.}
+This gives the model the ability to directly attend to distant tokens without sacrificing local context.
+
+
+% failed attempt at rotating the dataset names :)) 
+% \begin{table}[t]
+%     \centering
+%     \small
+%     \begin{tabular}{@{}llrrr@{}}
+%     \toprule
+    
+%     \multicolumn{2}{l}{Model} & \#Param & Dev &  Test \\
+%     \midrule
+%     \parbox[t]{4mm}{\multirow{4}{*}{\rotatebox[origin=c]{90}{\texttt{text8}}}} & & &  & \\
+%      & T12~\cite{AlRfou2018CharacterLevelLM} & 44M &  -    & 1.18 \\
+%      & Adaptive \cite{adaptivespan}          & 38M & 1.05  & 1.11 \\
+%      & BP-Transformer \cite{BPTransformer}   & 39M &    -  & 1.11 \\
+%      & Our \model                            & 41M & 1.04  & \textbf{1.10} \\
+%     \parbox[t]{5mm}{\multirow{6}{*}{\rotatebox[origin=c]{90}{\texttt{enwik8}}}} & &  & & \\
+%     & T12~\cite{AlRfou2018CharacterLevelLM} & 44M &  -    & 1.11 \\
+%     & Transformer-XL \cite{transformerxl}   & 41M &  -    & 1.06 \\
+%     & Reformer \cite{reformer}              &  -  &  -    & 1.05 \\
+%     & Adaptive \cite{adaptivespan}          & 39M & 1.04  & 1.02 \\
+%     & BP-Transformer \cite{BPTransformer}   & 38M &    -  & 1.02 \\
+%     & Our \model                            & 41M & 1.02	& \textbf{1.00} \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{\emph{Small} model performance (bpc) for \texttt{text8} and \texttt{enwik8}}
+%     %Comparing performance (bpc) of \emph{small} models on \texttt{text8} and \texttt{enwik8}
+%     \label{tab:charlm-small}
+% \end{table}
+
+
+\subsection{Experiment Setup}
+
+%\paragraph{Task}
+To compare to prior work we focus on character-level LM \cite[\texttt{text8} and \texttt{enwik8};][]{text8}.
+%\texttt{text8} and \texttt{enwik8} \cite{text8}.
+%We focus on character-level LM with \texttt{text8} and \texttt{enwik8} \cite{text8} as the sequences are longer than those of word-level LM, making them suitable for evaluating our model.
+%We evaluated with \texttt{text8} and \texttt{enwik8}~\cite{text8}, two standard and widely used datasets.
+
+\paragraph{Training}
+Ideally, we would like to train our model on the largest window size and sequence length we can fit in a modern GPU memory. However, we found that 
+the model needs a large number of gradient updates to learn the local context
+first, before learning to utilize longer context. 
+To accommodate this, we adopt a staged training procedure where we increase the attention window size and sequence length across multiple training phases. In particular, in the first phase we start with a short sequence length and window size, then on each subsequent phase, we double the window size and the sequence length, and halve the learning rate. 
+This makes training fast, while keeping the slow part 
+(longest sequences and window sizes) to the end. 
+We train the model over 5 total phases with starting sequence length of 2,048 and ending sequence length of 23,040 
+on the last phase (see Appendix~\ref{sec:charlmapp} for detailed configurations of each phase, and for all other hyperparameters).
+
+\paragraph{Evaluation}
+We evaluate with sequences of length 32,256.  Following \citet{transformerxl}, we split the dataset into overlapping sequences 
+of size 32,256 with a step of size 512, and report the performance on the last 512 tokens on the sequence. 
+
+
+\subsubsection{Results}
+Tab.~\ref{tab:charlm-small} and~\ref{tab:charlm-large} summarize evaluation results on \texttt{text8} and \texttt{enwik8} datasets. 
+We achieve a new state-of-the-art on both \texttt{text8} and \texttt{enwik8} using the small models with BPC of \textbf{1.10} and \textbf{1.00} on \texttt{text8} and \texttt{enwik8} respectively, demonstrating the effectiveness of our model.
+% For the small models, table~\ref{tab:charlm-small} clearly 
+% shows that our model is outperforming previous results on 
+% \texttt{text8} and \texttt{enwik8}, 
+% and it achieving a new state of the art result 
+% with \textbf{1.10 bpc} on \texttt{text8} and \textbf{1.00 bpc} on \texttt{enwik8}.
+
+For large models, given how expensive these experiments are, 
+and following recent work~\cite{reformer,compressive}, 
+we are only evaluating on \texttt{enwik8}. 
+Tab.~\ref{tab:charlm-large} shows that \model
+outperforms the comparable Transformer-XL model, 
+matches the performance of the comparable Sparse Transformer~\cite{sparseOpenai},
+and matches or slightly underperforms recent models 
+that have more than twice the number of parameters.
+It is worth noting that Adaptive Span~\cite{adaptivespan}
+and Compressive Transformer~\cite{compressive}
+are not good fit for the pretraining-finetuning paradigm as discussed in 
+\S\ref{sec:related}.
+
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Model & \#Param & Dev &  Test \\
+    \midrule
+    \textbf{Dataset} \texttt{text8}& &  & \\
+    T12~\cite{AlRfou2018CharacterLevelLM} & 44M &  -    & 1.18 \\
+    Adaptive \cite{adaptivespan}                        & 38M & 1.05  & 1.11 \\
+    BP-Transformer \cite{BPTransformer}                        & 39M &    -  & 1.11 \\
+    Our \model                            & 41M & 1.04	& \textbf{1.10} \\
+    [0.6ex]
+\hdashline[0.2pt/0.2pt]\noalign{\vskip 0.6ex}
+    \textbf{Dataset} \texttt{enwik8}&  & \\
+    T12~\cite{AlRfou2018CharacterLevelLM} & 44M &  -    & 1.11 \\
+    Transformer-XL \cite{transformerxl}                       & 41M &  -    & 1.06 \\
+    Reformer \cite{reformer}                              &  -  &  -    & 1.05 \\
+    Adaptive \cite{adaptivespan}                         & 39M & 1.04  & 1.02 \\
+    BP-Transformer \cite{BPTransformer}                        & 38M &    -  & 1.02 \\
+    Our \model                            & 41M & 1.02	& \textbf{1.00} \\
+    \bottomrule
+    \end{tabular}
+    \caption{\emph{Small} model BPC on \texttt{text8} \& \texttt{enwik8}}
+    %Comparing performance (bpc) of \emph{small} models on \texttt{text8} and \texttt{enwik8}
+    \label{tab:charlm-small}
+\end{table}
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Model & \#Param & Test BPC \\
+    \midrule
+    Transformer-XL (18 layers)           & 88M  &  1.03 \\
+    Sparse~\cite{sparseOpenai}                  &$\approx$100M &  0.99 \\
+    Transformer-XL (24 layers)           & 277M &  0.99 \\
+    Adaptive~\cite{adaptivespan}                        & 209M &  0.98 \\
+    Compressive~\cite{compressive}              & 277M &  0.97 \\
+    Routing~\cite{roy2020efficient} & $\approx$223M & 0.99 \\
+    Our \model                           & 102M &  0.99 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Performance of \emph{large} models on \texttt{enwik8}}
+    \label{tab:charlm-large}
+\end{table}
+
+\subsubsection{Ablation Study}
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lr@{}}
+    \toprule
+    Model & Dev BPC \\
+    \midrule
+    Decreasing $w$ (from 512 to 32) & 1.24 \\
+    Fixed $w$ (= 230) &  1.23 \\
+    Increasing $w$ (from 32 to 512) &\textbf{ 1.21} \\
+    \midrule
+    No Dilation &  1.21 \\
+    Dilation on 2 heads &  \textbf{1.20} \\
+    \bottomrule
+    \end{tabular}
+    \caption{Top: changing window size
+    across layers. Bottom: with/without dilation (@ 150K steps on phase1)}
+    \label{tab:ablation_charlm}
+\end{table}
+
+
+
+% \begin{table}[t]
+%     \centering
+%     \small
+%     \begin{tabular}{@{}lr@{}}
+%     \toprule
+%     Model & Dev bpc \\
+%     \midrule
+
+%     \bottomrule
+%     \end{tabular}
+%     \caption{bpc with and without dilation (@ 150K steps on phase1)}
+%     \label{tab:ablation_dilation}
+% \end{table}
+
+
+To show the importance of the design choices of our attention patterns, we tried different variants and report their controlled experiment results. 
+To make the ablation study more manageable, we train each configuration for 150K steps\footnote{
+One caveat is that the ordering of end performance will not agree with that at step 150K.
+%An obvious caveat is that there is a chance the end performance will not agree with the performance at step 150K.
+However, this approximation saves the huge cost of running every experiment to completion.}
+with phase 1 configuration on a small model on \texttt{text8}, then report the BPC performance on the dev set. 
+
+The top of Tab.~\ref{tab:ablation_charlm} demonstrates the impact of different ways of configuring the window sizes per layer. We observe that increasing the window size from the bottom 
+to the top layer leads to the best performance, arranging them in the reverse way leads to worse performance,
+and using a fixed window size (the average of window sizes of the other configuration) leads to a performance that it is in between.
+The bottom of Tab.~\ref{tab:ablation_charlm} shows the impact of adding dilation.
+Adding some dilation to two heads leads to some improvement compared with 
+no dilation at all. 
+
+% \ib{remove the following ablation table, it is wasting space and it is not very important}
+% Finally, Table~\ref{tab:ablation_layernorm} compares pre-layernorm and post-layernorm, and we found pre-layernorm to lead to significantly better results. This is in line with recent findings by~\citet{layernorm}.
+% \begin{table}[t]
+%     \centering
+%     \small
+%     \begin{tabular}{@{}lr@{}}
+%     \toprule
+%     Model & Dev bpc \\
+%     \midrule
+%     Post-layernorm  & 1.24 \\
+%     Pre-layernorm  &  \textbf{1.21} \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{bpc with post and pre layer norms (@ 150K steps on phase1)}
+%     \label{tab:ablation_layernorm}
+% \end{table}
+
+% \ac{how many gpu-days it take to train}

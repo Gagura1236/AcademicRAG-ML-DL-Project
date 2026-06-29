@@ -1,0 +1,15 @@
+\section{Preliminaries and Notations} \label{sec:preliminaries}
+
+We use $O(\cdot), \lesssim, \gtrsim$ to hide only absolute constants. Formally, every occurrence of $O(x)$ in this paper can be simultaneously replaced by a function $f(x)$ where $|f(x)|\le C|x|,\forall x\in\R$ for some universal constant $C>0$ (each occurrence can have a different universal constant $C$ and $f$). We use $a \lesssim b$ as a shorthand for $a\le O(b)$. Similarly, $\Omega(x)$ is a placeholder for some $g(x)$ where $|g(x)|\ge |x|/C,\forall x\in\R$ for some universal constant $C>0$. We use $a \gtrsim b$ as a shorthand for $a \ge \Omega(b)$ and $a \asymp b$ as a shorthand to indicate that $a \gtrsim b$ and $a \lesssim b$ simultaneously hold.
+
+
+
+\noindent{\bf Legendre Polynomials.} We summarize the necessary facts about Legendre polynomials below, and present related background more comprehensively in Appendix~\ref{app:SH}. Let $\Pkd:[-1,1]\to\R$ be the degree-$k$ \textit{un-normalized} Legendre polynomial~\citep{atkinson2012spherical}, and $\Pkdbar(t) = \sqrt{\Nkd} \Pkd(t)$  be the \textit{normalized} Legendre polynomial, where $\Nkd\defeq \binom{d+k-1}{d-1} - \binom{d+k-3}{d-1}$ is the normalizing factor. The polynomials $\Pkdbar(t)$ form an orthonormal basis for the set of square-integrable functions over $[-1,1]$ with respect to the measure $\mu_d(t)\defeq (1-t^2)^{\frac{d-3}{2}}\frac{\Gamma(d/2)}{\Gamma((d-1)/2)}\frac{1}{\sqrt{\pi}}$, i.e., the density of $u_1$ when $u=(u_1,\cdots,u_d)$ is uniformly drawn from sphere $\Sp$. Hence, for every function $h:[-1,1]\to \R$ such that $\E_{t\sim \mu_d}[h(t)^2]<\infty$, we can define $\legendreCoeff{h}{k}\defeq \E_{t\sim\mu_d}[h(t)\Pkdbar(t)]$ and consequently, we have
+$
+    \textstyle{h(t)=\sum_{k=0}^{\infty}\legendreCoeff{h}{k}\Pkdbar(t).}
+$
+
+
+
+
+

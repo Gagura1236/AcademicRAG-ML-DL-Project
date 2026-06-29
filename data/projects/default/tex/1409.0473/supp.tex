@@ -1,0 +1,354 @@
+\section{Model Architecture}
+\label{sec:model_detail}
+
+\subsection{Architectural Choices}
+
+The proposed scheme in Section~\ref{sec:main} is a general framework where one
+can freely define, for instance, the activation functions $f$ of recurrent
+neural networks (RNN) and the alignment model $a$. Here, we describe the
+choices we made for the experiments in this paper. 
+
+\subsubsection{Recurrent Neural Network}
+\label{sec:gatedrnn}
+
+For the activation function $f$ of an RNN, we use the gated hidden unit
+recently proposed by \citet{Cho2014}. The gated hidden unit is an alternative
+to the conventional {\it simple} units such as an element-wise $\tanh$.  This
+gated unit is similar to a long short-term memory (LSTM) unit proposed earlier
+by \citet{Hochreiter+Schmidhuber-1997}, sharing with it the ability to better
+model and learn long-term dependencies. This is made possible by having
+computation paths in the unfolded RNN for which the product of derivatives is
+close to 1.  These paths allow gradients to flow backward easily without
+suffering too much from the vanishing
+effect~\citep{Hochreiter91,Bengio-trnn93,Pascanu+al-ICML2013-small}. It is
+therefore possible to use LSTM units instead of the gated hidden unit described
+here, as was done in a similar context by \citet{Sutskever2014}.
+
+The new state $s_i$ of the RNN employing $n$ gated hidden units\footnote{
+    Here, we show the formula of the decoder. The same formula can be used in
+    the encoder by simply ignoring the context vector $c_i$ and the related
+    terms.
+}
+is computed by
+\begin{align*}
+    s_i = f(s_{i-1}, y_{i-1}, c_i) = (1 - z_i) \circ s_{i-1} + z_i \circ \tilde{s}_{i},
+\end{align*}
+where $\circ$ is an element-wise multiplication, and $z_i$ is the output of the
+update gates (see below). The proposed updated state $\tilde{s}_{i}$ is computed
+by
+\begin{align*}
+    \tilde{s}_{i} = \tanh \left( W e(y_{i - 1}) + U \left[ r_i \circ s_{i - 1} \right] +
+    C c_i \right),
+\end{align*}
+where $e(y_{i-1}) \in \RR^{m}$ is an $m$-dimensional embedding of a word
+$y_{i-1}$, and $r_i$ is the output of the reset gates (see below).  When $y_i$
+is represented as a $1$-of-$K$ vector, $e(y_i)$ is simply a column of an
+embedding matrix $E \in \RR^{m \times K}$. Whenever possible, we omit bias terms
+to make the equations less cluttered.
+
+The update gates $z_i$ allow each hidden unit to maintain its previous
+activation, and the reset gates $r_i$ control how much and what information from
+the previous state should be reset. We compute them by
+\begin{align*}
+    z_i &= \sigma \left( W_{z} e(y_{i - 1}) + U_{z} s_{i - 1} + C_{z} c_i\right), \\
+    r_i &= \sigma \left( W_{r} e(y_{i - 1}) + U_{r} s_{i - 1} + C_{r} c_i\right),
+\end{align*}
+where $\sigma\left(\cdot\right)$ is a logistic sigmoid function.
+
+At each step of the decoder, we compute the output probability
+(Eq.~\eqref{eq:generate_y}) as a multi-layered function~\citep{Pascanu2014rec}.
+We use a single hidden layer of maxout units~\citep{Goodfellow2013} and
+normalize the output probabilities (one for each word) with a softmax function
+(see Eq.~\eqref{eq:annotation_weight}).
+
+\subsubsection{Alignment Model}
+
+The alignment model should be designed considering that the model needs to be
+evaluated $T_x \times T_y$ times for each sentence pair of lengths $T_x$ and
+$T_y$. In order to reduce computation, we use a single-layer multilayer
+perceptron such that 
+\begin{align*}
+    a(s_{i-1}, h_j) = v_a^{\top} \tanh\left( W_a s_{i-1} + U_a h_j \right),
+\end{align*}
+where $W_a \in \RR^{n\times n}, U_a \in \RR^{n\times 2n}$ and $v_a \in \RR^{n}$
+are the weight matrices. Since $U_a h_j$ does not depend on $i$, we can
+pre-compute it in advance to minimize the computational cost. 
+
+
+\subsection{Detailed Description of the Model}
+\subsubsection{Encoder}
+
+In this section, we describe in detail the architecture of the proposed model
+(RNNsearch) used in the experiments (see
+Sec.~\ref{sec:exp_settings}--\ref{sec:exp_results}).  From here on, we omit all
+bias terms in order to increase readability.
+
+The model takes a source sentence of 1-of-K coded word vectors as input
+\[
+    \vx = (x_1, \ldots, x_{T_x}),\mbox{ }x_i \in \mathbb{R}^{K_x}
+\]
+and outputs a translated sentence of 1-of-K coded word vectors
+\[
+    \vy = (y_1, \ldots, y_{T_y}),\mbox{ }y_i \in \mathbb{R}^{K_y},
+\]
+where $K_x$ and $K_y$ are the vocabulary sizes of source and target languages,
+respectively. $T_x$ and $T_y$ respectively denote the lengths of source and
+target sentences.
+
+First, the forward states of the bidirectional recurrent neural network (BiRNN)
+are computed:
+\begin{align*}
+    \ora{h}_i =& 
+    \begin{cases}
+        (1 - \ora{z}_i) \circ \ora{h}_{i-1}  + \ora{z}_i \circ \ora{\underline{h}}_{i} &\mbox{, if }i > 0 \\
+        0 &\mbox{, if }i = 0
+    \end{cases}
+\end{align*}
+where
+\begin{align*}
+    \ora{\underline{h}}_i =& \tanh \left( \ora{W} \ov{E} x_i + \ora{U}\left[ \ora{r}_i \circ \ora{h}_{i-1} \right] \right) \\
+    \ora{z}_i =& \sigma\left( \ora{W}_z \ov{E} x_i + \ora{U}_z \ora{h}_{i-1} \right) \\
+    \ora{r}_i =& \sigma\left( \ora{W}_r \ov{E} x_i + \ora{U}_r \ora{h}_{i-1} \right).
+\end{align*}
+$\overline{E} \in \mathbb{R}^{m\times K_x}$ is the word embedding matrix.
+$\ora{W}, \ora{W}_z, \ora{W}_r \in \mathbb{R}^{n\times m}$, $\ora{U}, \ora{U}_z,
+\ora{U}_r \in \mathbb{R}^{n\times n}$ are weight matrices. $m$ and $n$ are the word
+embedding dimensionality and the number of hidden units, respectively. 
+$\sigma(\cdot)$ is as usual a logistic sigmoid function.
+
+The backward states $(\ola{h}_1, \cdots, \ola{h}_{T_x})$ are computed similarly.
+We share the word embedding matrix $\ov{E}$ between the forward and backward
+RNNs, unlike the weight matrices.
+
+We concatenate the forward and backward states to to obtain the annotations
+$(h_1, h_2, \cdots, h_{T_x})$, where
+\begin{align}
+    \label{eq:annotation}
+    h_i = \left[ 
+        \begin{array}{c}
+    \ora{h}_i \\
+    \ola{h}_i 
+\end{array}
+\right]
+    \end{align}
+
+\subsubsection{Decoder}
+
+The hidden state $s_i$ of the decoder given the annotations from the encoder is
+computed by
+\begin{align*}
+    s_i =& (1 - z_i) \circ s_{i-1} + z_i \circ \tilde{s}_i,
+\end{align*}
+where
+\begin{align*}
+    \tilde{s}_{i} =& \tanh \left( W E y_{i - 1} + U \left[ r_i \circ s_{i - 1} \right] +
+    C c_i \right) \\ 
+    z_i =& \sigma\left( W_z E y_{i - 1} + U_z s_{i-1} 
+    + C_z c_i \right)\\
+    r_i =& \sigma\left( W_r E y_{i - 1} + U_r s_{i-1}
+    + C_r c_i \right)
+\end{align*}
+$E$ is the word embedding matrix for the target language.
+$W, W_z, W_r \in \mathbb{R}^{n\times m}$, 
+$U, U_z, U_r \in \mathbb{R}^{n\times n}$, and
+$C, C_z, C_r \in \mathbb{R}^{n\times 2n}$ are weights. Again, $m$ and $n$ are the word
+embedding dimensionality and the number of hidden units, respectively.
+The initial hidden state $s_0$ is computed by 
+$
+    s_{0} = \tanh\left( W_s \ola{h}_1 \right),
+$
+where $W_s \in \RR^{n \times n}$.
+
+The context vector $c_i$ are recomputed at each step by the alignment model:
+\begin{align*}
+    c_i =& \sum_{j=1}^{T_x} \alpha_{ij} h_j,
+\end{align*}
+where
+\begin{align*}
+    \alpha_{ij} =& \frac{\exp\left(e_{ij}\right)}{\sum_{k=1}^{T_x}
+    \exp\left(e_{ik}\right)}  \\
+    e_{ij} =& v_a^{\top} \tanh\left( W_a s_{i-1} + U_a h_j \right),
+\end{align*}
+and $h_j$ is the $j$-th annotation in the source sentence (see
+Eq.~\eqref{eq:annotation}).  $v_a \in \mathbb{R}^{n'}, W_a \in
+\mathbb{R}^{n'\times n}$ and $U_a \in \mathbb{R}^{n'\times  2n}$ are weight
+matrices.  Note that the model becomes
+RNN Encoder--Decoder~\citep{Cho2014}, if we fix $c_i$ to $\ora{h}_{T_x}$.
+
+With the decoder state $s_{i-1}$, the context $c_{i}$ and the last generated word
+$y_{i-1}$, we define the probability of a target word $y_{i}$ as
+\begin{align*}
+    p(y_{i}|s_i,y_{i-1},c_{i}) \propto& \exp\left(y_{i}^{\top} W_o t_{i}\right),
+\end{align*}
+where
+\begin{align*}
+    t_i =&  \left[ \max\left\{\tilde{t}_{i, 2j-1}, \tilde{t}_{i,2j}\right\}
+    \right]_{j=1,\ldots,l}^{\top}
+\end{align*}
+and $\tilde{t}_{i,k}$ is the $k$-th element of a vector $\tilde{t}_i$ which is
+computed by
+\begin{align*}
+    \tilde{t}_{i} =& U_o s_{i - 1} + V_o E y_{i-1} + C_o c_i.
+\end{align*}
+$W_o \in \mathbb{R}^{K_y\times  l}$, $U_o \in \mathbb{R}^{2l\times n}$, $V_o \in
+\mathbb{R}^{2l\times m}$ and $C_o \in \mathbb{R}^{2l\times 2n}$ are weight
+matrices. This can be understood as having a deep output~\citep{Pascanu2014rec}
+with a single maxout hidden layer~\citep{Goodfellow2013}.
+
+\subsubsection{Model Size}
+
+For all the models used in this paper, the size of a hidden layer $n$ is 1000,
+the word embedding dimensionality $m$ is 620 and the size of the maxout hidden
+layer in the deep output $l$ is 500. The number of hidden units in the alignment
+model $n'$ is 1000.
+
+\begin{table}[t]
+    \centering                                                                                         
+    \begin{tabular}{c|cccccc}                                                                           
+        Model & Updates {\scriptsize ($\times 10^5$)} & Epochs 
+        & Hours & GPU & Train NLL & Dev. NLL \\
+        \hline                                                           
+        \hline
+        RNNenc-30 & 8.46 & 6.4 & 109 & {\small TITAN BLACK} & 28.1 & 53.0 \\                                                
+        RNNenc-50 & 6.00 & 4.5 & 108 & {\small Quadro K-6000} & 44.0 & 43.6 \\
+        \hline
+        RNNsearch-30 & 4.71 & 3.6 & 113 & {\small TITAN BLACK} & 26.7 & 47.2 \\
+        RNNsearch-50 & 2.88 & 2.2 & 111 & {\small Quadro K-6000} & 40.7 & 38.1 \\
+        \hline
+    RNNsearch-50$^\star$ & 6.67 & 5.0 & 252 & {\small Quadro K-6000} & 36.7 & 35.2 \\
+    \end{tabular}                                                                                      
+    \caption{Learning statistics and relevant information. Each update
+        corresponds to updating the parameters once using a single minibatch. 
+        One epoch is one pass through the training set.
+        NLL is the average conditional log-probabilities of the
+        sentences in either the training set or the development set. Note that
+    the lengths of the sentences differ.}
+    \label{tbl:stat}                                                                                   
+\end{table}                                                                                            
+
+
+\section{Training Procedure}
+\label{sec:training_detail}
+
+\subsection{Parameter Initialization}
+
+We initialized the recurrent weight matrices $U, U_z, U_r, \ola{U}, \ola{U}_z,
+\ola{U}_r, \ora{U}, \ora{U}_z$ and $\ora{U}_r$ as random orthogonal matrices.
+For $W_a$ and $U_a$, we initialized them by sampling each element from the
+Gaussian distribution of mean $0$ and variance $0.001^2$. All the elements of
+$V_a$ and all the bias vectors were initialized to zero. Any other weight matrix
+was initialized by sampling from the Gaussian distribution of mean $0$ and
+variance $0.01^2$.
+
+\subsection{Training}
+
+We used the stochastic gradient descent (SGD) algorithm.
+Adadelta~\citep{Zeiler2012} was used to automatically adapt the learning rate of
+each parameter ($\epsilon=10^{-6}$ and $\rho=0.95$). We explicitly normalized
+the $L_2$-norm of the gradient of the cost function each time to be at most a
+predefined threshold of $1$, when the norm was larger than the
+threshold~\citep{Pascanu2013}.  Each SGD update direction was computed with a
+minibatch of 80 sentences. 
+
+At each update our implementation requires time proportional to the length of
+the longest sentence in a minibatch. Hence, to minimize the waste of
+computation, before every 20-th update, we retrieved 1600 sentence pairs, sorted them
+according to the lengths and split them into 20 minibatches. The training data
+was shuffled once before training and was traversed sequentially in this manner.
+
+In Tables~\ref{tbl:stat} we present the statistics related to training all the
+models used in the experiments.
+
+
+\section{Translations of Long Sentences}
+\label{sec:long_translation}
+
+\begin{table}[htp]
+    \begin{minipage}{0.99\textwidth}
+        \small
+        \centering
+        \begin{tabular}{p{1.9cm} | p{12cm}}
+%Source & Everything can't be sorted out in one appointment, but you know you can count on the psychiatrist, call on him if needed, that you have not been abandoned to yourself.
+%\\
+%\hline Reference & Ce n'est pas une s\'eance qui fait tout mais on sait qu'on peut compter sur lui, le rappeler si besoin, qu'on n'est pas livr\'es à nous-m\^emes.
+%\\
+%\hline RNNenc-50 & Tout ne peut pas \^etre inscrit dans une nomination, mais vous savez que vous pouvez compter sur le psychiatre, si vous le d\'esirez, si vous n'avez pas \'et\'e abandonn\'es.
+%\\
+%\hline RNNsearch-50 & Tout ne peut pas \^etre r\'egl\'e par une nomination, mais vous savez que vous pouvez compter sur le psychiatre, qu'il vous demande si cela est n\'ecessaire, que vous n'avez pas \'et\'e abandonn\'e.
+%\\
+%\hline Google \mbox{Translate} & Tout ne peut pas \^etre rgl en un seul rendez-vous, mais
+%vous savez que vous pouvez compter sur le psychiatre, faire appel à lui en cas
+%de besoin, que vous n'avez pas t abandonn à vous-m\^eme.
+%\\
+%\hline
+%\multicolumn{2}{c}{} \\
+\hline Source & An admitting privilege is the right of a doctor to admit a patient to a hospital or a medical centre to carry out a diagnosis or a procedure, based on his status as a health care worker at a hospital.
+\\
+\hline Reference & Le privilège d'admission est le droit d'un m\'edecin, en vertu de son statut de membre soignant d'un h\^opital, d'admettre un patient dans un h\^opital ou un centre m\'edical afin d'y d\'elivrer un diagnostic ou un traitement.
+\\
+\hline RNNenc-50 & Un privilège d'admission est le droit d'un m\'edecin de reconnaître un patient à l'h\^opital ou un centre m\'edical d'un diagnostic ou de prendre un diagnostic en fonction de son \'etat de sant\'e.
+\\
+\hline RNNsearch-50 & Un privilège d'admission est le droit d'un m\'edecin d'admettre un patient à un h\^opital ou un centre m\'edical pour effectuer un diagnostic ou une proc\'edure, selon son statut de travailleur des soins de sant\'e à l'h\^opital.
+\\
+\hline Google \mbox{Translate} & Un privilège admettre est le droit d'un m\'edecin
+d'admettre un patient dans un h\^opital ou un centre m\'edical pour effectuer un
+diagnostic ou une proc\'edure, fond\'ee sur sa situation en tant que travailleur de
+soins de sant\'e dans un h\^opital.
+\\
+\hline
+\multicolumn{2}{c}{} \\
+%\hline Source & For the third quarter ended September 30 , Bombardier 's net profit fell to \$ 147 million , or 8 cents per share , from \$ 172 million , or 9 cents per share a year earlier .
+%\\
+%\hline Reference & Au troisième trimestre clos le 30 septembre , le b\'en\'efice net de Bombardier a chut\'e à 147 M \$ , ou 8 cents par action , par rapport à 172 M \$ , ou 9 cents par action , un an plus t\^ot .
+%\\
+%\hline RNNenc-50 & Pour le troisième trimestre termin\'e le 30 septembre , le b\'en\'efice net de Bombardier a chut\'e de 147 milliards de dollars , soit 8 cents , soit de 172 millions de dollars , soit 9 millions de dollars par an .
+%\\
+%\hline RNNsearch-50 & Pour le troisième trimestre , le 30 septembre , le b\'en\'efice net de Bombardier est tomb\'e à 147 millions de dollars , soit 8 cents par action , soit de 172 millions de dollars , soit 9 cents par action par rapport à l' ann\'ee pr\'ec\'edente .
+%\\
+%\hline
+%\multicolumn{2}{c}{} \\
+\hline Source & 
+This kind of experience is part of Disney's efforts to "extend
+the lifetime of its series and build new relationships with audiences via
+digital platforms that are becoming ever more important," he added.
+\\
+\hline Reference & Ce type d'exp\'erience entre dans le cadre des efforts de Disney pour "\'etendre la dur\'ee de vie de ses s\'eries et construire de nouvelles relations avec son public grâce à des plateformes num\'eriques qui sont de plus en plus importantes", a-t-il ajout\'e.
+\\
+\hline RNNenc-50 & Ce type d'exp\'erience fait partie des initiatives du Disney pour "prolonger la dur\'ee de vie de ses nouvelles et de d\'evelopper des liens avec les lecteurs num\'eriques qui deviennent plus complexes.
+\\
+\hline RNNsearch-50 & Ce genre d'exp\'erience fait partie des efforts de Disney pour "prolonger la dur\'ee de vie de ses s\'eries et cr\'eer de nouvelles relations avec des publics via des plateformes num\'eriques de plus en plus importantes", a-t-il ajout\'e.
+\\
+\hline Google \mbox{Translate} & Ce genre d'exp\'erience fait partie des efforts de Disney
+à ``\'etendre la dur\'ee de vie de sa s\'erie et construire de nouvelles relations avec
+le public par le biais des plates-formes num\'eriques qui deviennent de plus en
+plus important'', at-il ajout\'e.
+\\
+\hline
+\multicolumn{2}{c}{} \\
+\hline Source & 
+In a press conference on Thursday, Mr Blair stated that there was nothing in
+this video that might constitute a "reasonable motive" that could lead to
+criminal charges being brought against the mayor.
+\\
+\hline Reference & En conf\'erence de presse, jeudi, M. Blair a affirm\'e qu'il n'y avait rien dans cette vid\'eo qui puisse constituer des "motifs raisonnables" pouvant mener au d\'ep\^ot d'une accusation criminelle contre le maire.
+\\
+\hline RNNenc-50 & Lors de la conf\'erence de presse de jeudi, M. Blair a dit qu'il n'y avait rien dans cette vid\'eo qui pourrait constituer une "motivation raisonnable" pouvant entraîner des accusations criminelles port\'ees contre le maire.
+\\
+\hline RNNsearch-50 & Lors d'une conf\'erence de presse jeudi, M. Blair a d\'eclar\'e qu'il n'y avait rien dans cette vid\'eo qui pourrait constituer un "motif raisonnable" qui pourrait conduire à des accusations criminelles contre le maire.
+\\
+\hline Google \mbox{Translate} & 
+Lors d'une conf\'erence de presse jeudi, M. Blair a d\'eclar\'e qu'il n'y avait rien
+dans cette vido qui pourrait constituer un "motif raisonnable" qui pourrait
+mener à des accusations criminelles portes contre le maire.
+\\
+\hline
+        \end{tabular}
+    \end{minipage}
+    \caption{The translations generated by RNNenc-50 and RNNsearch-50 from long
+        source sentences (30 words or more) selected from the test set. For each
+        source sentence, we also show the gold-standard translation.  The
+        translations by Google Translate were made on 27 August 2014.
+}
+
+\label{tab:translations}
+\end{table}

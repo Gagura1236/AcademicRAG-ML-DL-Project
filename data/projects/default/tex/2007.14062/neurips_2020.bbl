@@ -1,0 +1,719 @@
+\begin{thebibliography}{110}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abboud et~al.(2014)Abboud, Williams, and
+  Weimann]{abboud2014consequences}
+A.~Abboud, V.~V. Williams, and O.~Weimann.
+\newblock Consequences of faster alignment of sequences.
+\newblock In \emph{International Colloquium on Automata, Languages, and
+  Programming}, pages 39--51. Springer, 2014.
+
+\bibitem[Abboud et~al.(2015)Abboud, Backurs, and Williams]{abboud2015tight}
+A.~Abboud, A.~Backurs, and V.~V. Williams.
+\newblock Tight hardness results for lcs and other sequence similarity
+  measures.
+\newblock In \emph{2015 IEEE 56th Annual Symposium on Foundations of Computer
+  Science}, pages 59--78. IEEE, 2015.
+
+\bibitem[Abreu et~al.(2019)Abreu, Fred, Mac{\^e}do, and
+  Zanchettin]{abreu2019hierarchical}
+J.~Abreu, L.~Fred, D.~Mac{\^e}do, and C.~Zanchettin.
+\newblock Hierarchical attentional hybrid neural networks for document
+  classification.
+\newblock In \emph{International Conference on Artificial Neural Networks},
+  pages 396--402. Springer, 2019.
+
+\bibitem[Ainslie et~al.(2020)Ainslie, Ontanon, Alberti, Pham, Ravula, and
+  Sanghai]{ainslie2020etc}
+J.~Ainslie, S.~Ontanon, C.~Alberti, P.~Pham, A.~Ravula, and S.~Sanghai.
+\newblock Etc: Encoding long and structured data in transformers.
+\newblock \emph{arXiv preprint arXiv:2004.08483}, 2020.
+
+\bibitem[Alberti et~al.(2019)Alberti, Lee, and Collins]{alberti2019bert}
+C.~Alberti, K.~Lee, and M.~Collins.
+\newblock A bert baseline for the natural questions.
+\newblock \emph{arXiv preprint arXiv:1901.08634}, 2019.
+
+\bibitem[Alt et~al.(2019)Alt, Ducatez, and Knowles]{alt2019extremal}
+J.~Alt, R.~Ducatez, and A.~Knowles.
+\newblock Extremal eigenvalues of critical erd$\backslash$h $\{$o$\}$
+  sr$\backslash$'enyi graphs.
+\newblock \emph{arXiv preprint arXiv:1905.03243}, 2019.
+
+\bibitem[Backurs and Indyk(2015)]{backurs2015edit}
+A.~Backurs and P.~Indyk.
+\newblock Edit distance cannot be computed in strongly subquadratic time
+  (unless seth is false).
+\newblock In \emph{Proceedings of the forty-seventh annual ACM symposium on
+  Theory of computing}, pages 51--58, 2015.
+
+\bibitem[Beltagy et~al.(2020)Beltagy, Peters, and Cohan]{beltagy2020longformer}
+I.~Beltagy, M.~E. Peters, and A.~Cohan.
+\newblock Longformer: The long-document transformer.
+\newblock \emph{arXiv preprint arXiv:2004.05150}, 2020.
+
+\bibitem[Benaych-Georges et~al.(2019)Benaych-Georges, Bordenave, Knowles,
+  et~al.]{benaych2019largest}
+F.~Benaych-Georges, C.~Bordenave, A.~Knowles, et~al.
+\newblock Largest eigenvalues of sparse inhomogeneous erd{\H{o}}s--r{\'e}nyi
+  graphs.
+\newblock \emph{Annals of Probability}, 47\penalty0 (3):\penalty0 1653--1676,
+  2019.
+
+\bibitem[Benaych-Georges et~al.(2020)Benaych-Georges, Bordenave, Knowles,
+  et~al.]{benaych2020spectral}
+F.~Benaych-Georges, C.~Bordenave, A.~Knowles, et~al.
+\newblock Spectral radii of sparse random matrices.
+\newblock In \emph{Annales de l'Institut Henri Poincar{\'e}, Probabilit{\'e}s
+  et Statistiques}, volume~56, pages 2141--2161. Institut Henri Poincar{\'e},
+  2020.
+
+\bibitem[Bharanikumar et~al.(2018)Bharanikumar, Premkumar, and
+  Palaniappan]{bharanikumar2018promoterpredict}
+R.~Bharanikumar, K.~A.~R. Premkumar, and A.~Palaniappan.
+\newblock Promoterpredict: sequence-based modelling of escherichia coli
+  $\sigma$70 promoter strength yields logarithmic dependence between promoter
+  strength and sequence.
+\newblock \emph{PeerJ}, 6:\penalty0 e5862, 2018.
+
+\bibitem[Buldyrev et~al.(1995)Buldyrev, Goldberger, Havlin, Mantegna, Matsa,
+  Peng, Simons, and Stanley]{buldyrev1995long}
+S.~Buldyrev, A.~Goldberger, S.~Havlin, R.~Mantegna, M.~Matsa, C.-K. Peng,
+  M.~Simons, and H.~Stanley.
+\newblock Long-range correlation properties of coding and noncoding dna
+  sequences: Genbank analysis.
+\newblock \emph{Physical Review E}, 51\penalty0 (5):\penalty0 5084, 1995.
+
+\bibitem[Busia et~al.(2019)Busia, Dahl, Fannjiang, Alexander, Dorfman, Poplin,
+  McLean, Chang, and DePristo]{busia2019deep}
+A.~Busia, G.~E. Dahl, C.~Fannjiang, D.~H. Alexander, E.~Dorfman, R.~Poplin,
+  C.~Y. McLean, P.-C. Chang, and M.~DePristo.
+\newblock A deep learning approach to pattern recognition for short dna
+  sequences.
+\newblock \emph{BioRxiv}, page 353474, 2019.
+
+\bibitem[Chen et~al.(2019{\natexlab{a}})Chen, Lin, and Durrett]{chen2019multi}
+J.~Chen, S.-t. Lin, and G.~Durrett.
+\newblock Multi-hop question answering via reasoning chains.
+\newblock \emph{arXiv preprint arXiv:1910.02610}, 2019{\natexlab{a}}.
+
+\bibitem[Chen et~al.(2019{\natexlab{b}})Chen, Gan, Cheng, Liu, and
+  Liu]{chen2019distilling}
+Y.-C. Chen, Z.~Gan, Y.~Cheng, J.~Liu, and J.~Liu.
+\newblock Distilling the knowledge of bert for text generation.
+\newblock \emph{arXiv preprint arXiv:1911.03829}, 2019{\natexlab{b}}.
+
+\bibitem[Child et~al.(2019)Child, Gray, Radford, and
+  Sutskever]{child2019generating}
+R.~Child, S.~Gray, A.~Radford, and I.~Sutskever.
+\newblock Generating long sequences with sparse transformers.
+\newblock \emph{arXiv preprint arXiv:1904.10509}, 2019.
+
+\bibitem[Chung and Lu(2002)]{chung2002average}
+F.~Chung and L.~Lu.
+\newblock The average distances in random graphs with given expected degrees.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 99\penalty0
+  (25):\penalty0 15879--15882, 2002.
+
+\bibitem[Clark and Gardner(2017)]{clark2017simple}
+C.~Clark and M.~Gardner.
+\newblock Simple and effective multi-paragraph reading comprehension.
+\newblock \emph{arXiv preprint arXiv:1710.10723}, 2017.
+
+\bibitem[Clark et~al.(2019)Clark, Khandelwal, Levy, and Manning]{clark2019does}
+K.~Clark, U.~Khandelwal, O.~Levy, and C.~D. Manning.
+\newblock What does bert look at? an analysis of bert's attention.
+\newblock \emph{arXiv preprint arXiv:1906.04341}, 2019.
+
+\bibitem[Cohan et~al.(2018)Cohan, Dernoncourt, Kim, Bui, Kim, Chang, and
+  Goharian]{cohan2018discourse}
+A.~Cohan, F.~Dernoncourt, D.~S. Kim, T.~Bui, S.~Kim, W.~Chang, and N.~Goharian.
+\newblock A discourse-aware attention model for abstractive summarization of
+  long documents.
+\newblock \emph{arXiv preprint arXiv:1804.05685}, 2018.
+
+\bibitem[Dai et~al.(2019)Dai, Yang, Yang, Carbonell, Le, and
+  Salakhutdinov]{dai2019transformer}
+Z.~Dai, Z.~Yang, Y.~Yang, J.~Carbonell, Q.~V. Le, and R.~Salakhutdinov.
+\newblock Transformer-xl: Attentive language models beyond a fixed-length
+  context.
+\newblock \emph{arXiv:1901.02860}, 2019.
+
+\bibitem[Devlin et~al.(2018)Devlin, Chang, Lee, and Toutanova]{devlin2018bert}
+J.~Devlin, M.-W. Chang, K.~Lee, and K.~Toutanova.
+\newblock Bert: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock \emph{arXiv preprint arXiv:1810.04805}, 2018.
+
+\bibitem[Dong et~al.(2019)Dong, Yang, Wang, Wei, Liu, Wang, Gao, Zhou, and
+  Hon]{dong2019unified}
+L.~Dong, N.~Yang, W.~Wang, F.~Wei, X.~Liu, Y.~Wang, J.~Gao, M.~Zhou, and H.-W.
+  Hon.
+\newblock Unified language model pre-training for natural language
+  understanding and generation.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  13042--13054, 2019.
+
+\bibitem[Dreos et~al.(2013)Dreos, Ambrosini, Cavin~P{\'e}rier, and
+  Bucher]{dreos2013epd}
+R.~Dreos, G.~Ambrosini, R.~Cavin~P{\'e}rier, and P.~Bucher.
+\newblock Epd and epdnew, high-quality promoter resources in the
+  next-generation sequencing era.
+\newblock \emph{Nucleic acids research}, 41\penalty0 (D1):\penalty0 D157--D164,
+  2013.
+
+\bibitem[Erkan and Radev(2004)]{erkan2004lexrank}
+G.~Erkan and D.~R. Radev.
+\newblock Lexrank: Graph-based lexical centrality as salience in text
+  summarization.
+\newblock \emph{Journal of artificial intelligence research}, 22:\penalty0
+  457--479, 2004.
+
+\bibitem[Fang et~al.(2019)Fang, Sun, Gan, Pillai, Wang, and
+  Liu]{fang2019hierarchical}
+Y.~Fang, S.~Sun, Z.~Gan, R.~Pillai, S.~Wang, and J.~Liu.
+\newblock Hierarchical graph network for multi-hop question answering.
+\newblock \emph{arXiv preprint arXiv:1911.03631}, 2019.
+
+\bibitem[Gates et~al.(2017)Gates, Foulds, and O’Malley]{gates2017histone}
+L.~A. Gates, C.~E. Foulds, and B.~W. O’Malley.
+\newblock Histone marks in the ‘driver’s seat’: functional roles in
+  steering the transcription cycle.
+\newblock \emph{Trends in biochemical sciences}, 42\penalty0 (12):\penalty0
+  977--989, 2017.
+
+\bibitem[Gehring et~al.(2017)Gehring, Auli, Grangier, Yarats, and
+  Dauphin]{gehring2017convolutional}
+J.~Gehring, M.~Auli, D.~Grangier, D.~Yarats, and Y.~N. Dauphin.
+\newblock Convolutional sequence to sequence learning.
+\newblock In \emph{Proceedings of the 34th International Conference on Machine
+  Learning-Volume 70}, pages 1243--1252. JMLR. org, 2017.
+
+\bibitem[Gehrmann et~al.(2018)Gehrmann, Deng, and Rush]{gehrmann2018bottom}
+S.~Gehrmann, Y.~Deng, and A.~M. Rush.
+\newblock Bottom-up abstractive summarization.
+\newblock \emph{arXiv preprint arXiv:1808.10792}, 2018.
+
+\bibitem[Ghandi et~al.(2014)Ghandi, Lee, Mohammad-Noori, and
+  Beer]{ghandi2014enhanced}
+M.~Ghandi, D.~Lee, M.~Mohammad-Noori, and M.~A. Beer.
+\newblock Enhanced regulatory sequence prediction using gapped k-mer features.
+\newblock \emph{PLoS computational biology}, 10\penalty0 (7), 2014.
+
+\bibitem[Gidiotis and Tsoumakas(2020)]{gidiotis2020divide}
+A.~Gidiotis and G.~Tsoumakas.
+\newblock A divide-and-conquer approach to the summarization of academic
+  articles.
+\newblock \emph{arXiv preprint arXiv:2004.06190}, 2020.
+
+\bibitem[Gong(2020 (accessed June 3, 2020))]{gong2020reflection}
+M.~Gong.
+\newblock \emph{ReflectionNet}, 2020 (accessed June 3, 2020).
+\newblock URL \url{https://www.microsoft.com/en-us/research/people/migon/}.
+
+\bibitem[Gray et~al.(2017)Gray, Radford, and Kingma]{gray2017gpu}
+S.~Gray, A.~Radford, and D.~P. Kingma.
+\newblock Gpu kernels for block-sparse weights.
+\newblock \emph{arXiv preprint arXiv:1711.09224}, 3, 2017.
+
+\bibitem[Guu et~al.(2020)Guu, Lee, Tung, Pasupat, and Chang]{guu2020realm}
+K.~Guu, K.~Lee, Z.~Tung, P.~Pasupat, and M.-W. Chang.
+\newblock Realm: Retrieval-augmented language model pre-training.
+\newblock \emph{arXiv preprint arXiv:2002.08909}, 2020.
+
+\bibitem[He et~al.(2019)He, Wang, Liu, Feng, and Wu]{he2019long}
+J.~He, L.~Wang, L.~Liu, J.~Feng, and H.~Wu.
+\newblock Long document classification from local word glimpses via recurrent
+  attention learning.
+\newblock \emph{IEEE Access}, 7:\penalty0 40707--40718, 2019.
+
+\bibitem[Hermann et~al.(2015)Hermann, Kocisky, Grefenstette, Espeholt, Kay,
+  Suleyman, and Blunsom]{hermann2015teaching}
+K.~M. Hermann, T.~Kocisky, E.~Grefenstette, L.~Espeholt, W.~Kay, M.~Suleyman,
+  and P.~Blunsom.
+\newblock Teaching machines to read and comprehend.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  1693--1701, 2015.
+
+\bibitem[Hochreiter and Schmidhuber(1997)]{hochreiter1997long}
+S.~Hochreiter and J.~Schmidhuber.
+\newblock Long short-term memory.
+\newblock \emph{Neural computation}, 9\penalty0 (8):\penalty0 1735--1780, 1997.
+
+\bibitem[Hoory et~al.(2006)Hoory, Linial, and Wigderson]{hoory2006expander}
+S.~Hoory, N.~Linial, and A.~Wigderson.
+\newblock Expander graphs and their applications.
+\newblock \emph{Bulletin of the American Mathematical Society}, 43\penalty0
+  (4):\penalty0 439--561, 2006.
+
+\bibitem[Izacard and Grave(2020)]{izacard2020fid}
+G.~Izacard and E.~Grave.
+\newblock Leveraging passage retrieval with generative models for open domain
+  question answering.
+\newblock \emph{arXiv preprint arXiv:2007.01282}, 2020.
+
+\bibitem[Jiang et~al.(2019)Jiang, Petrak, Song, Bontcheva, and
+  Maynard]{jiang2019team}
+Y.~Jiang, J.~Petrak, X.~Song, K.~Bontcheva, and D.~Maynard.
+\newblock Team bertha von suttner at semeval-2019 task 4: Hyperpartisan news
+  detection using elmo sentence representation convolutional network.
+\newblock In \emph{Proceedings of the 13th International Workshop on Semantic
+  Evaluation}, pages 840--844, 2019.
+
+\bibitem[Joshi et~al.(2017)Joshi, Choi, Weld, and
+  Zettlemoyer]{JoshiTriviaQA2017}
+M.~Joshi, E.~Choi, D.~S. Weld, and L.~Zettlemoyer.
+\newblock Triviaqa: A large scale distantly supervised challenge dataset for
+  reading comprehension.
+\newblock In \emph{Proceedings of the 55th Annual Meeting of the Association
+  for Computational Linguistics}, Vancouver, Canada, July 2017. Association for
+  Computational Linguistics.
+
+\bibitem[Joshi et~al.(2020)Joshi, Chen, Liu, Weld, Zettlemoyer, and
+  Levy]{joshi2020spanbert}
+M.~Joshi, D.~Chen, Y.~Liu, D.~S. Weld, L.~Zettlemoyer, and O.~Levy.
+\newblock Spanbert: Improving pre-training by representing and predicting
+  spans.
+\newblock \emph{Transactions of the Association for Computational Linguistics},
+  8:\penalty0 64--77, 2020.
+
+\bibitem[Katzav et~al.(2018)Katzav, Biham, and
+  Hartmann]{katzav2018distribution}
+E.~Katzav, O.~Biham, and A.~K. Hartmann.
+\newblock Distribution of shortest path lengths in subcritical
+  erd{\H{o}}s-r{\'e}nyi networks.
+\newblock \emph{Physical Review E}, 98\penalty0 (1):\penalty0 012301, 2018.
+
+\bibitem[Kent et~al.(2002)Kent, Sugnet, Furey, Roskin, Pringle, Zahler, and
+  Haussler]{kent2002human}
+W.~J. Kent, C.~W. Sugnet, T.~S. Furey, K.~M. Roskin, T.~H. Pringle, A.~M.
+  Zahler, and D.~Haussler.
+\newblock The human genome browser at ucsc.
+\newblock \emph{Genome research}, 12\penalty0 (6):\penalty0 996--1006, 2002.
+
+\bibitem[Khandelwal et~al.(2019)Khandelwal, Clark, Jurafsky, and
+  Kaiser]{khandelwal2019sample}
+U.~Khandelwal, K.~Clark, D.~Jurafsky, and L.~Kaiser.
+\newblock Sample efficient text summarization using a single pre-trained
+  transformer.
+\newblock \emph{arXiv preprint arXiv:1905.08836}, 2019.
+
+\bibitem[Khurana et~al.(2016)Khurana, Fu, Chakravarty, Demichelis, Rubin, and
+  Gerstein]{khurana2016role}
+E.~Khurana, Y.~Fu, D.~Chakravarty, F.~Demichelis, M.~A. Rubin, and M.~Gerstein.
+\newblock Role of non-coding sequence variants in cancer.
+\newblock \emph{Nature Reviews Genetics}, 17\penalty0 (2):\penalty0 93, 2016.
+
+\bibitem[Kiesel et~al.(2019)Kiesel, Mestre, Shukla, Vincent, Adineh, Corney,
+  Stein, and Potthast]{kiesel2019semeval}
+J.~Kiesel, M.~Mestre, R.~Shukla, E.~Vincent, P.~Adineh, D.~Corney, B.~Stein,
+  and M.~Potthast.
+\newblock Semeval-2019 task 4: Hyperpartisan news detection.
+\newblock In \emph{Proceedings of the 13th International Workshop on Semantic
+  Evaluation}, pages 829--839, 2019.
+
+\bibitem[Kim et~al.(2018)Kim, Kim, and Kim]{kim2018abstractive}
+B.~Kim, H.~Kim, and G.~Kim.
+\newblock Abstractive summarization of reddit posts with multi-level memory
+  networks.
+\newblock \emph{arXiv preprint arXiv:1811.00783}, 2018.
+
+\bibitem[Kitaev et~al.(2019)Kitaev, Kaiser, and Levskaya]{kitaev2019reformer}
+N.~Kitaev, L.~Kaiser, and A.~Levskaya.
+\newblock Reformer: The efficient transformer.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+
+\bibitem[Kudo and Richardson(2018)]{kudo2018sentencepiece}
+T.~Kudo and J.~Richardson.
+\newblock Sentencepiece: A simple and language independent subword tokenizer
+  and detokenizer for neural text processing.
+\newblock \emph{arXiv preprint arXiv:1808.06226}, 2018.
+
+\bibitem[Kumar et~al.(2020)Kumar, Choudhary, and Cho]{kumar2020data}
+V.~Kumar, A.~Choudhary, and E.~Cho.
+\newblock Data augmentation using pre-trained transformer models.
+\newblock \emph{arXiv preprint arXiv:2003.02245}, 2020.
+
+\bibitem[Kwiatkowski et~al.(2019)Kwiatkowski, Palomaki, Redfield, Collins,
+  Parikh, Alberti, Epstein, Polosukhin, Devlin, Lee,
+  et~al.]{kwiatkowski2019natural}
+T.~Kwiatkowski, J.~Palomaki, O.~Redfield, M.~Collins, A.~Parikh, C.~Alberti,
+  D.~Epstein, I.~Polosukhin, J.~Devlin, K.~Lee, et~al.
+\newblock Natural questions: a benchmark for question answering research.
+\newblock \emph{Transactions of the Association for Computational Linguistics},
+  7:\penalty0 453--466, 2019.
+
+\bibitem[Lee and Hsiang(2020)]{lee2020patent}
+J.-S. Lee and J.~Hsiang.
+\newblock Patent classification by fine-tuning bert language model.
+\newblock \emph{World Patent Information}, 61:\penalty0 101965, 2020.
+
+\bibitem[Lee et~al.(2019)Lee, Chang, and Toutanova]{lee2019latent}
+K.~Lee, M.-W. Chang, and K.~Toutanova.
+\newblock Latent retrieval for weakly supervised open domain question
+  answering.
+\newblock \emph{arXiv preprint arXiv:1906.00300}, 2019.
+
+\bibitem[Levy et~al.(2020)Levy, Titus, Petersen, Chen, Salas, and
+  Christensen]{levy2020methylnet}
+J.~J. Levy, A.~J. Titus, C.~L. Petersen, Y.~Chen, L.~A. Salas, and B.~C.
+  Christensen.
+\newblock Methylnet: an automated and modular deep learning approach for dna
+  methylation analysis.
+\newblock \emph{BMC bioinformatics}, 21\penalty0 (1):\penalty0 1--15, 2020.
+
+\bibitem[Lewis et~al.(2019)Lewis, Liu, Goyal, Ghazvininejad, Mohamed, Levy,
+  Stoyanov, and Zettlemoyer]{lewis2019bart}
+M.~Lewis, Y.~Liu, N.~Goyal, M.~Ghazvininejad, A.~Mohamed, O.~Levy, V.~Stoyanov,
+  and L.~Zettlemoyer.
+\newblock Bart: Denoising sequence-to-sequence pre-training for natural
+  language generation, translation, and comprehension.
+\newblock \emph{arXiv preprint arXiv:1910.13461}, 2019.
+
+\bibitem[Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal,
+  K{\"u}ttler, Lewis, Yih, Rockt{\"a}schel, et~al.]{lewis2020retrieval}
+P.~Lewis, E.~Perez, A.~Piktus, F.~Petroni, V.~Karpukhin, N.~Goyal,
+  H.~K{\"u}ttler, M.~Lewis, W.-t. Yih, T.~Rockt{\"a}schel, et~al.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock \emph{arXiv preprint arXiv:2005.11401}, 2020.
+
+\bibitem[Liang(2012)]{liang2012segmenting}
+W.~Liang.
+\newblock Segmenting dna sequence into words based on statistical language
+  model.
+\newblock \emph{Nature Precedings}, pages 1--1, 2012.
+
+\bibitem[Lin et~al.(2017)Lin, Liang, Tang, and Chen]{lin2017identifying}
+H.~Lin, Z.-Y. Liang, H.~Tang, and W.~Chen.
+\newblock Identifying sigma70 promoters with novel pseudo nucleotide
+  composition.
+\newblock \emph{IEEE/ACM transactions on computational biology and
+  bioinformatics}, 2017.
+
+\bibitem[Lin et~al.(2003)Lin, Quan, Sinha, Bakshi, Huynh, Katz, and
+  Karger]{lin2003makes}
+J.~Lin, D.~Quan, V.~Sinha, K.~Bakshi, D.~Huynh, B.~Katz, and D.~R. Karger.
+\newblock What makes a good answer? the role of context in question answering.
+\newblock In \emph{Proceedings of the Ninth IFIP TC13 International Conference
+  on Human-Computer Interaction (INTERACT 2003)}, pages 25--32, 2003.
+
+\bibitem[Liu et~al.(2020)Liu, Gong, Fu, Yan, Chen, Jiang, Lv, and
+  Duan]{liu2020rikinet}
+D.~Liu, Y.~Gong, J.~Fu, Y.~Yan, J.~Chen, D.~Jiang, J.~Lv, and N.~Duan.
+\newblock Rikinet: Reading wikipedia pages for natural question answering.
+\newblock \emph{arXiv preprint arXiv:2004.14560}, 2020.
+
+\bibitem[Liu and Lapata(2019)]{liu2019text}
+Y.~Liu and M.~Lapata.
+\newblock Text summarization with pretrained encoders.
+\newblock \emph{arXiv preprint arXiv:1908.08345}, 2019.
+
+\bibitem[Liu et~al.(2019)Liu, Ott, Goyal, Du, Joshi, Chen, Levy, Lewis,
+  Zettlemoyer, and Stoyanov]{liu2019roberta}
+Y.~Liu, M.~Ott, N.~Goyal, J.~Du, M.~Joshi, D.~Chen, O.~Levy, M.~Lewis,
+  L.~Zettlemoyer, and V.~Stoyanov.
+\newblock Roberta: A robustly optimized bert pretraining approach.
+\newblock \emph{arXiv preprint arXiv:1907.11692}, 2019.
+
+\bibitem[Maas et~al.(2011)Maas, Daly, Pham, Huang, Ng, and
+  Potts]{maas2011learning}
+A.~Maas, R.~E. Daly, P.~T. Pham, D.~Huang, A.~Y. Ng, and C.~Potts.
+\newblock Learning word vectors for sentiment analysis.
+\newblock In \emph{Proceedings of the 49th annual meeting of the association
+  for computational linguistics: Human language technologies}, pages 142--150,
+  2011.
+
+\bibitem[Martin et~al.(2019)Martin, Muller, Su{\'a}rez, Dupont, Romary, de~la
+  Clergerie, Seddah, and Sagot]{martin2019camembert}
+L.~Martin, B.~Muller, P.~J.~O. Su{\'a}rez, Y.~Dupont, L.~Romary, {\'E}.~V.
+  de~la Clergerie, D.~Seddah, and B.~Sagot.
+\newblock Camembert: a tasty french language model.
+\newblock \emph{arXiv preprint arXiv:1911.03894}, 2019.
+
+\bibitem[Miller(2019)]{miller2019leveraging}
+D.~Miller.
+\newblock Leveraging bert for extractive text summarization on lectures.
+\newblock \emph{arXiv preprint arXiv:1906.04165}, 2019.
+
+\bibitem[Narayan et~al.(2018)Narayan, Cohen, and Lapata]{narayan2018don}
+S.~Narayan, S.~B. Cohen, and M.~Lapata.
+\newblock Don't give me the details, just the summary! topic-aware
+  convolutional neural networks for extreme summarization.
+\newblock \emph{arXiv preprint arXiv:1808.08745}, 2018.
+
+\bibitem[Nenkova and Vanderwende(2005)]{nenkova2005impact}
+A.~Nenkova and L.~Vanderwende.
+\newblock The impact of frequency on summarization.
+\newblock \emph{Microsoft Research, Redmond, Washington, Tech. Rep.
+  MSR-TR-2005}, 101, 2005.
+
+\bibitem[Olson et~al.(2019)Olson, Zhang, and Yu]{olson2019adapting}
+M.~L. Olson, L.~Zhang, and C.-N. Yu.
+\newblock Adapting pretrained language models for long document classification.
+\newblock \emph{OpenReview}, 2019.
+
+\bibitem[Oord et~al.(2018)Oord, Li, and Vinyals]{oord2018representation}
+A.~v.~d. Oord, Y.~Li, and O.~Vinyals.
+\newblock Representation learning with contrastive predictive coding.
+\newblock \emph{arXiv preprint arXiv:1807.03748}, 2018.
+
+\bibitem[Oubounyt et~al.(2019)Oubounyt, Louadi, Tayara, and
+  Chong]{oubounyt2019deepromoter}
+M.~Oubounyt, Z.~Louadi, H.~Tayara, and K.~T. Chong.
+\newblock Deepromoter: Robust promoter predictor using deep learning.
+\newblock \emph{Frontiers in genetics}, 10, 2019.
+
+\bibitem[P{\'e}rez et~al.(2019)P{\'e}rez, Marinkovi{\'c}, and
+  Barcel{\'o}]{Perez19}
+J.~P{\'e}rez, J.~Marinkovi{\'c}, and P.~Barcel{\'o}.
+\newblock On the turing completeness of modern neural network architectures.
+\newblock \emph{arXiv preprint arXiv:1901.03429}, 2019.
+
+\bibitem[Qiu et~al.(2019)Qiu, Ma, Levy, Yih, Wang, and Tang]{qiu2019blockwise}
+J.~Qiu, H.~Ma, O.~Levy, S.~W.-t. Yih, S.~Wang, and J.~Tang.
+\newblock Blockwise self-attention for long document understanding.
+\newblock \emph{arXiv preprint arXiv:1911.02972}, 2019.
+
+\bibitem[Rae et~al.(2019)Rae, Potapenko, Jayakumar, and
+  Lillicrap]{rae2019compressive}
+J.~W. Rae, A.~Potapenko, S.~M. Jayakumar, and T.~P. Lillicrap.
+\newblock Compressive transformers for long-range sequence modelling.
+\newblock \emph{arXiv preprint arXiv:1911.05507}, 2019.
+
+\bibitem[Raffel et~al.(2019)Raffel, Shazeer, Roberts, Lee, Narang, Matena,
+  Zhou, Li, and Liu]{raffel2019exploring}
+C.~Raffel, N.~Shazeer, A.~Roberts, K.~Lee, S.~Narang, M.~Matena, Y.~Zhou,
+  W.~Li, and P.~J. Liu.
+\newblock Exploring the limits of transfer learning with a unified text-to-text
+  transformer.
+\newblock \emph{arXiv preprint arXiv:1910.10683}, 2019.
+
+\bibitem[Rothe et~al.(2019)Rothe, Narayan, and Severyn]{rothe2019leveraging}
+S.~Rothe, S.~Narayan, and A.~Severyn.
+\newblock Leveraging pre-trained checkpoints for sequence generation tasks.
+\newblock \emph{arXiv preprint arXiv:1907.12461}, 2019.
+
+\bibitem[See et~al.(2017)See, Liu, and Manning]{see2017get}
+A.~See, P.~J. Liu, and C.~D. Manning.
+\newblock Get to the point: Summarization with pointer-generator networks.
+\newblock \emph{arXiv preprint arXiv:1704.04368}, 2017.
+
+\bibitem[Sharma et~al.(2019)Sharma, Li, and Wang]{sharma2019bigpatent}
+E.~Sharma, C.~Li, and L.~Wang.
+\newblock Bigpatent: A large-scale dataset for abstractive and coherent
+  summarization.
+\newblock \emph{arXiv preprint arXiv:1906.03741}, 2019.
+
+\bibitem[Shaw et~al.(2018)Shaw, Uszkoreit, and Vaswani]{shaw2018self}
+P.~Shaw, J.~Uszkoreit, and A.~Vaswani.
+\newblock Self-attention with relative position representations.
+\newblock \emph{arXiv preprint arXiv:1803.02155}, 2018.
+
+\bibitem[Spielman and Teng(2011)]{spielman2011spectral}
+D.~A. Spielman and S.-H. Teng.
+\newblock Spectral sparsification of graphs.
+\newblock \emph{SIAM Journal on Computing}, 40\penalty0 (4):\penalty0
+  981--1025, 2011.
+
+\bibitem[Subramanian et~al.(2019)Subramanian, Li, Pilault, and
+  Pal]{subramanian2019extractive}
+S.~Subramanian, R.~Li, J.~Pilault, and C.~Pal.
+\newblock On extractive and abstractive neural document summarization with
+  transformer language models.
+\newblock \emph{arXiv preprint arXiv:1909.03186}, 2019.
+
+\bibitem[Sukhbaatar et~al.(2019)Sukhbaatar, Grave, Bojanowski, and
+  Joulin]{sukhbaatar2019adaptive}
+S.~Sukhbaatar, E.~Grave, P.~Bojanowski, and A.~Joulin.
+\newblock Adaptive attention span in transformers.
+\newblock \emph{arXiv preprint arXiv:1905.07799}, 2019.
+
+\bibitem[Sun et~al.(2019)Sun, Huang, and Qiu]{sun2019utilizing}
+C.~Sun, L.~Huang, and X.~Qiu.
+\newblock Utilizing bert for aspect-based sentiment analysis via constructing
+  auxiliary sentence.
+\newblock \emph{arXiv preprint arXiv:1903.09588}, 2019.
+
+\bibitem[Sussman(2017 (accessed June 3, 2020))]{sussman2017clusteringcoeff}
+D.~Sussman.
+\newblock \emph{Lecture Notes for Boston University MA 882 Spring 2017}, 2017
+  (accessed June 3, 2020).
+\newblock URL
+  \url{http://math.bu.edu/people/sussman/MA882_2017/2017-01-26-Lecture-2.html}.
+
+\bibitem[Sutskever et~al.(2014)Sutskever, Vinyals, and
+  Le]{sutskever2014sequence}
+I.~Sutskever, O.~Vinyals, and Q.~V. Le.
+\newblock Sequence to sequence learning with neural networks.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  3104--3112, 2014.
+
+\bibitem[Tampuu et~al.(2019)Tampuu, Bzhalava, Dillner, and
+  Vicente]{tampuu2019viraminer}
+A.~Tampuu, Z.~Bzhalava, J.~Dillner, and R.~Vicente.
+\newblock Viraminer: Deep learning on raw dna sequences for identifying viral
+  genomes in human samples.
+\newblock \emph{PloS one}, 14\penalty0 (9), 2019.
+
+\bibitem[Tang et~al.(2020)Tang, Shen, Ma, Xu, Yu, and Lu]{tang2020multi}
+Z.~Tang, Y.~Shen, X.~Ma, W.~Xu, J.~Yu, and W.~Lu.
+\newblock Multi-hop reading comprehension across documents with path-based
+  graph convolutional network.
+\newblock \emph{arXiv:2006.06478}, 2020.
+
+\bibitem[Thongtan and Phienthrakul(2019)]{thongtan2019sentiment}
+T.~Thongtan and T.~Phienthrakul.
+\newblock Sentiment classification using document embeddings trained with
+  cosine similarity.
+\newblock In \emph{Proceedings of the 57th Annual Meeting of the Association
+  for Computational Linguistics: Student Research Workshop}, pages 407--414,
+  2019.
+
+\bibitem[Trinh and Le(2018)]{trinh2018simple}
+T.~H. Trinh and Q.~V. Le.
+\newblock A simple method for commonsense reasoning.
+\newblock \emph{arXiv preprint arXiv:1806.02847}, 2018.
+
+\bibitem[Umarov and Solovyev(2017)]{umarov2017recognition}
+R.~K. Umarov and V.~V. Solovyev.
+\newblock Recognition of prokaryotic and eukaryotic promoters using
+  convolutional deep learning neural networks.
+\newblock \emph{PloS one}, 12\penalty0 (2), 2017.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{vaswani2017attention}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez,
+  {\L}.~Kaiser, and I.~Polosukhin.
+\newblock Attention is all you need.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  5998--6008, 2017.
+
+\bibitem[Wang et~al.(2018)Wang, Singh, Michael, Hill, Levy, and
+  Bowman]{wang2018glue}
+A.~Wang, A.~Singh, J.~Michael, F.~Hill, O.~Levy, and S.~R. Bowman.
+\newblock Glue: A multi-task benchmark and analysis platform for natural
+  language understanding.
+\newblock \emph{arXiv preprint arXiv:1804.07461}, 2018.
+
+\bibitem[Wang et~al.(2019)Wang, Ng, Ma, Nallapati, and Xiang]{wang2019multi}
+Z.~Wang, P.~Ng, X.~Ma, R.~Nallapati, and B.~Xiang.
+\newblock Multi-passage bert: A globally normalized bert model for open-domain
+  question answering.
+\newblock \emph{arXiv preprint arXiv:1908.08167}, 2019.
+
+\bibitem[Watts and Strogatz(1998)]{watts1998collective}
+D.~J. Watts and S.~H. Strogatz.
+\newblock Collective dynamics of ‘small-world’networks.
+\newblock \emph{nature}, 393\penalty0 (6684):\penalty0 440--442, 1998.
+
+\bibitem[Welbl et~al.(2018)Welbl, Stenetorp, and Riedel]{welbl2018constructing}
+J.~Welbl, P.~Stenetorp, and S.~Riedel.
+\newblock Constructing datasets for multi-hop reading comprehension across
+  documents.
+\newblock \emph{Transactions of the Association for Computational Linguistics},
+  6:\penalty0 287--302, 2018.
+
+\bibitem[Williams(2005)]{williams2005new}
+R.~Williams.
+\newblock A new algorithm for optimal 2-constraint satisfaction and its
+  implications.
+\newblock \emph{Theoretical Computer Science}, 348\penalty0 (2-3):\penalty0
+  357--365, 2005.
+
+\bibitem[Wiseman et~al.(2017)Wiseman, Shieber, and Rush]{wiseman2017challenges}
+S.~Wiseman, S.~M. Shieber, and A.~M. Rush.
+\newblock Challenges in data-to-document generation.
+\newblock \emph{arXiv preprint arXiv:1707.08052}, 2017.
+
+\bibitem[Xiao et~al.(2019)Xiao, Xu, Qiu, Wang, Ge, and Chou]{xiao2019ipsw}
+X.~Xiao, Z.-C. Xu, W.-R. Qiu, P.~Wang, H.-T. Ge, and K.-C. Chou.
+\newblock ipsw (2l)-pseknc: A two-layer predictor for identifying promoters and
+  their strength by hybrid features via pseudo k-tuple nucleotide composition.
+\newblock \emph{Genomics}, 111\penalty0 (6):\penalty0 1785--1793, 2019.
+
+\bibitem[Yang et~al.(2017)Yang, Zhang, Singh, and Ma]{yang2017exploiting}
+Y.~Yang, R.~Zhang, S.~Singh, and J.~Ma.
+\newblock Exploiting sequence-based features for predicting enhancer--promoter
+  interactions.
+\newblock \emph{Bioinformatics}, 33\penalty0 (14):\penalty0 i252--i260, 2017.
+
+\bibitem[Yang et~al.(2018)Yang, Qi, Zhang, Bengio, Cohen, Salakhutdinov, and
+  Manning]{yang2018hotpotqa}
+Z.~Yang, P.~Qi, S.~Zhang, Y.~Bengio, W.~W. Cohen, R.~Salakhutdinov, and C.~D.
+  Manning.
+\newblock Hotpotqa: A dataset for diverse, explainable multi-hop question
+  answering.
+\newblock \emph{arXiv preprint arXiv:1809.09600}, 2018.
+
+\bibitem[Yang et~al.(2019)Yang, Dai, Yang, Carbonell, Salakhutdinov, and
+  Le]{yang2019xlnet}
+Z.~Yang, Z.~Dai, Y.~Yang, J.~Carbonell, R.~R. Salakhutdinov, and Q.~V. Le.
+\newblock Xlnet: Generalized autoregressive pretraining for language
+  understanding.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  5754--5764, 2019.
+
+\bibitem[Yao et~al.(2019)Yao, Cao, Xiao, Zhang, and Nie]{yao2019balanced}
+Z.~Yao, S.~Cao, W.~Xiao, C.~Zhang, and L.~Nie.
+\newblock Balanced sparsity for efficient dnn inference on gpu.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~33, pages 5676--5683, 2019.
+
+\bibitem[Ye et~al.(2019)Ye, Guo, Gan, Qiu, and Zhang]{ye2019bp}
+Z.~Ye, Q.~Guo, Q.~Gan, X.~Qiu, and Z.~Zhang.
+\newblock Bp-transformer: Modelling long-range context via binary partitioning.
+\newblock \emph{arXiv preprint arXiv:1911.04070}, 2019.
+
+\bibitem[Yun et~al.(2019)Yun, Bhojanapalli, Rawat, Reddi, and Kumar]{Yun19}
+C.~Yun, S.~Bhojanapalli, A.~S. Rawat, S.~J. Reddi, and S.~Kumar.
+\newblock Are transformers universal approximators of sequence-to-sequence
+  functions?
+\newblock \emph{arXiv preprint arXiv:1912.10077}, 2019.
+
+\bibitem[Yun et~al.(2020)Yun, Chang, Bhojanapalli, Rawat, Reddi, and
+  Kumar]{yun2020on}
+C.~Yun, Y.-W. Chang, S.~Bhojanapalli, A.~S. Rawat, S.~J. Reddi, and S.~Kumar.
+\newblock $o(n)$ connections are expressive enough: Universal approximability
+  of sparse transformers.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2020.
+
+\bibitem[Zhang et~al.(2019{\natexlab{a}})Zhang, Hung, Liu, Hu, and
+  Lin]{zhang2019ncnet}
+H.~Zhang, C.-L. Hung, M.~Liu, X.~Hu, and Y.-Y. Lin.
+\newblock Ncnet: Deep learning network models for predicting function of
+  non-coding dna.
+\newblock \emph{Frontiers in genetics}, 10, 2019{\natexlab{a}}.
+
+\bibitem[Zhang et~al.(2019{\natexlab{b}})Zhang, Zhao, Saleh, and
+  Liu]{zhang2019pegasus}
+J.~Zhang, Y.~Zhao, M.~Saleh, and P.~J. Liu.
+\newblock Pegasus: Pre-training with extracted gap-sentences for abstractive
+  summarization.
+\newblock \emph{arXiv preprint arXiv:1912.08777}, 2019{\natexlab{b}}.
+
+\bibitem[Zhang et~al.(2015)Zhang, Zhao, and LeCun]{zhang2015character}
+X.~Zhang, J.~Zhao, and Y.~LeCun.
+\newblock Character-level convolutional networks for text classification.
+\newblock In \emph{Advances in neural information processing systems}, pages
+  649--657, 2015.
+
+\bibitem[Zhou and Troyanskaya(2015)]{zhou2015predicting}
+J.~Zhou and O.~G. Troyanskaya.
+\newblock Predicting effects of noncoding variants with deep learning--based
+  sequence model.
+\newblock \emph{Nature methods}, 12\penalty0 (10):\penalty0 931--934, 2015.
+
+\bibitem[Zhu et~al.(2015)Zhu, Kiros, Zemel, Salakhutdinov, Urtasun, Torralba,
+  and Fidler]{zhu2015aligning}
+Y.~Zhu, R.~Kiros, R.~Zemel, R.~Salakhutdinov, R.~Urtasun, A.~Torralba, and
+  S.~Fidler.
+\newblock Aligning books and movies: Towards story-like visual explanations by
+  watching movies and reading books.
+\newblock In \emph{IEEE international conference on computer vision}, pages
+  19--27, 2015.
+
+\end{thebibliography}

@@ -1,0 +1,235 @@
+\newcommand{\h}{0mm}
+\newcommand{\hh}{0mm}
+\newcommand{\hhh}{0mm}
+
+\newcommand{\figincremental}{
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.69\linewidth]{figures/incremental.pdf}\hfill%
+\includegraphics[width=0.28\linewidth]{figures/incremental.jpg}
+\caption{Our training starts with both the generator (\textsc{G}) and discriminator (\textsc{D}) having a low spatial resolution of 4$\times$4 pixels. As the training advances, we incrementally add layers to \textsc{G} and \textsc{D}, thus increasing the spatial resolution of the generated images. All existing layers remain trainable throughout the process. Here \framebox{\small $N\times N$} refers to convolutional layers operating on $N\times N$ spatial resolution. This allows stable synthesis in high resolutions and also speeds up training considerably. One the right we show six example images generated using progressive growing at $1024\times1024$.
+}
+\label{fig:incremental}
+\end{figure}
+}
+
+\newcommand{\figfadein}{
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.7\linewidth]{figures/fadein.pdf}
+\caption{When doubling the resolution of the generator (\textsc{G}) and discriminator (\textsc{D}) we fade in the new layers smoothly. This example illustrates the transition from $16\times16$ images (a) to $32\times32$ images (c). During the transition (b) we treat the layers that operate on the higher resolution like a residual block, whose weight $\alpha$ increases linearly from $0$ to $1$. Here \framebox{\small $2\times$} and \framebox{\small $0.5\times$} refer to doubling and halving the image resolution using nearest neighbor filtering and average pooling, respectively. The \framebox{\small toRGB} represents a layer that projects feature vectors to RGB colors and \framebox{\small fromRGB} does the reverse; both use $1\times1$ convolutions. 
+When training the discriminator, we feed in real images that are downscaled to match the current resolution of the network. 
+During a resolution transition, we interpolate between two resolutions of the real images, similarly to how the generator output combines two resolutions.
+}
+\label{fig:fadein}
+\end{figure}
+}
+
+\newcommand{\figbedroomqualitycomparison}{
+\begin{figure}
+\adjincludegraphics[width=0.33\columnwidth,trim=0 0 {.25\width} {.25\height},clip]{figures/LSGAN-bedroom2.jpg}\hfill
+\adjincludegraphics[width=0.33\columnwidth,trim=0 0 {.625\width} {.625\height},clip]{figures/WGAN-GP-bedroom.jpg}\hfill
+\adjincludegraphics[width=0.33\columnwidth,trim=0 0 {0.0\width} {0\height},clip]{generated/figures/bedroom_curated.jpg}\\
+\makebox[0.33\linewidth][c]{\footnotesize \cite{Mao2016} ($128\times128$)}\hfill
+\makebox[0.33\linewidth][c]{\footnotesize \cite{Gulrajani2017} ($128\times128$)}\hfill
+\makebox[0.33\linewidth][c]{\footnotesize Our ($256\times256$)}
+\caption{Visual quality comparison in \textsc{LSUN bedroom}; pictures copied from the cited articles.}
+\label{fig:bedroomqualitycomparison}
+\end{figure}
+}
+
+\newcommand{\x}{}
+\renewcommand{\x}{\hspace{1.8mm}}
+\newcommand{\tabMNIST}{
+\begin{table}[h]
+\resizebox{\linewidth}{!}{
+\begin{tabular}[H]{|l@{\hspace{1mm}}l|c|c||c|c|c|c|}\hline
+\textbf{Arch} & \textbf{} & \textbf{GAN} & \textbf{+ unrolling} & \textbf{WGAN-GP} & \textbf{+ our norm} & \textbf{+ mb stddev} & \textbf{+ progression}\\\hline
+\multirow{2}{*}{K/4} & \#  & $30.6\pm20.7$ & $372.2\pm20.7$ & $640.1\pm136.3$ & $856.7\pm50.4$ & $\mathbf{881.3\pm39.2}$ & $859.5\pm36.2$\\
+                               & KL & $5.99\pm0.04$ & \x$4.66\pm0.46$ & $1.97\pm0.70$ & \x$1.10\pm$0.19 & \x$1.09\pm0.16$ & \x$\mathbf{1.05\pm0.09}$\\\hline
+\multirow{2}{*}{K/2} & \#  & $628.0\pm140.9$ & $817.4\pm39.9$ & $772.4\pm146.5$ & $886.6\pm58.5$ & $918.3\pm30.2$ & $\mathbf{919.8\pm35.1}$\\
+                               & KL & $2.58\pm0.75$ & \x$1.43\pm0.12$ & $1.35\pm0.55$ & \x$0.98\pm0.33$ & \x$0.89\pm0.21$ & \x$\mathbf{0.82\pm0.13}$\\\hline
+\end{tabular}}
+\caption{Results for MNIST discrete mode test using two tiny discriminators (K/4, K/2) defined by \protect{\cite{Metz2016}}. The number of covered modes (\#) and KL divergence from a uniform distribution are given as an average $\pm$ standard deviation over 8 random initializations. Higher is better for the number of modes, and lower is better for KL divergence.}
+\label{tab:MNIST}
+\end{table}
+}
+
+\newcommand{\figCIFARresults}{
+\begin{figure}
+\adjincludegraphics[width=1.0\columnwidth,trim=0 0 0 0,clip]{generated/figures/CIFAR10_unsupervised.jpg}
+\caption{CIFAR10 images generated using a network that was trained unsupervised (no label conditioning), and achieves a record $8.80$ inception score. }
+\label{fig:CIFARresults}
+\end{figure}
+}
+
+\newcommand{\tabCIFARresults}{
+\begin{table}[h]
+\footnotesize
+\makebox[0.49\columnwidth][c]{\textsc{Unsupervised}}\hfill
+\makebox[0.49\columnwidth][c]{\textsc{Label conditioned}}\\
+\begin{minipage}[c]{0.5275\linewidth}
+\begin{tabular}{l@{\hspace{1mm}}l@{\hspace{0mm}}c}
+\hline
+Method & & Inception score\\\hline
+ALI                                & \tiny{\citep{Dumoulin2016}}   & $5.34\pm0.05$\\	%
+GMAN                            & \tiny{\citep{Durugkar2016}}  & $6.00\pm0.19$\\
+Improved GAN              & \tiny{\citep{Salimans2016B}}  & $6.86\pm0.06$\\
+CEGAN-Ent-VI              & \tiny{\citep{Dai2017}}             & $7.07\pm0.07$\\
+LR-AGN                        & \tiny{\citep{Yang2017}}          & $7.17\pm0.17$\\
+DFM                              & \tiny{\citep{Warde2017}}        & $7.72\pm0.13$\\
+WGAN-GP                    & \tiny{\citep{Gulrajani2017}}    & $7.86\pm0.07$\\
+Splitting GAN                & \tiny{\citep{Grinblat2017}}      & $7.90\pm0.09$\\\hline
+\multicolumn{2}{l}{Our (best run)}                                  & $\mathbf{8.80\pm0.05}$\\
+\multicolumn{2}{l}{Our (computed from 10 runs)}          & $\mathbf{8.56\pm0.06}$\\\hline
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.5275\linewidth}
+\begin{tabular}{l@{\hspace{1mm}}l@{\hspace{1mm}}c}
+\hline
+Method & & Inception score\\\hline
+DCGAN                         & \tiny{\citep{Radford2015}}       & $6.58$\\			%
+Improved GAN              & \tiny{\citep{Salimans2016B}}   & $8.09\pm0.07$\\
+AC-GAN                        & \tiny{\citep{Odena2017}}        & $8.25\pm0.07$\\
+SGAN                            & \tiny{\citep{Huang2016}}        & $8.59\pm0.12$\\
+WGAN-GP	            & \tiny{\citep{Gulrajani2017}}    & $8.67\pm0.14$\\
+Splitting GAN		    & \tiny{\citep{Grinblat2017}}      & $8.87\pm0.09$\\\hline
+&&\\
+&&\\
+&&\\
+&&\\
+\end{tabular}
+\end{minipage}\\
+\caption{CIFAR10 inception scores, higher is better.}
+\label{tab:CIFARresults}
+\end{table}
+}
+
+\newcommand{\tabvariants}{
+\begin{table}
+\centering
+\input{generated/table_of_variants_mssim}
+\caption{%
+Sliced Wasserstein distance (SWD) %
+between the generated and training images (Section~\ref{sec:metric}) and multi-scale structural similarity (MS-SSIM) among the generated images for several 
+training setups at $128\times128$. For SWD, each column represents one level of the Laplacian pyramid, and the last one gives an average of the four distances. %
+}
+\label{tab:variants}
+\end{table}
+}
+
+\newcommand{\figvariants}{
+\begin{figure}
+\input{generated/images_of_variants_jpg}
+\caption{%
+(a) -- (g) \textsc{CelebA} examples corresponding to rows in Table~\protect\ref{tab:variants}. These are intentionally non-converged. (h) Our converged result.
+Notice that some images show aliasing and some are not sharp -- this is a flaw of the dataset, which the model learns to replicate faithfully.
+}
+\label{fig:variants}
+\end{figure}
+}
+
+\newcommand{\figvariantsAppendixCeleb}{
+\begin{figure}
+\ifarxivversion
+	\input{generated/images_of_variants2_arxiv}
+\else
+    \input{generated/images_of_variants2_jpg}
+\fi
+\vspace*{-3mm}
+\caption{%
+A larger set of generated images corresponding to the non-converged setups in Table~\protect\ref{tab:variants}.}
+\label{fig:variants-appendix-celeb}
+\end{figure}
+}
+
+\newcommand{\figplots}{
+\begin{figure}
+\hspace*{-1.5mm}%
+\mbox{%
+\includegraphics[width=46.8mm]{figures/plot-quality-fixed2.pdf}
+\includegraphics[width=46.8mm]{figures/plot-quality-grow2.pdf}
+\includegraphics[width=46.8mm]{figures/plot-perf-fixed-vs-grow2.pdf}}\vspace*{-.5mm}\\
+\makebox[45mm][c]{\hspace*{5.5mm}\small(a)}\hfill
+\makebox[45mm][c]{\hspace*{5.5mm}\small(b)}\hfill
+\makebox[45mm][c]{\hspace*{4.5mm}\small(c)}
+\caption{%
+Effect of progressive growing on training speed and convergence. The timings were measured on a single-GPU setup using NVIDIA Tesla P100.
+(a) Statistical similarity with respect to wall clock time for \cite{Gulrajani2017} using \textsc{CelebA} at $128\times128$ resolution. Each graph represents sliced Wasserstein distance on one level of the Laplacian pyramid, and the vertical line indicates the point where we stop the training in Table~\protect\ref{tab:variants}.
+(b) Same graph with progressive growing enabled. The dashed vertical lines indicate points where we double the resolution of G and~D.
+(c) Effect of progressive growing on the raw training speed in $1024\times1024$ resolution.
+}
+\label{fig:plots}
+\end{figure}
+}
+
+\newcommand{\tabnetwork}{
+\begin{table}
+\centering
+\input{generated/network_arch_table_jpg}
+\caption{%
+Generator and discriminator that we use with \textsc{CelebA-HQ} to generate $1024\times1024$ images.
+}
+\label{tab:network}
+\end{table}
+}
+
+\newcommand{\figcelebprocess}{
+\begin{figure}
+\includegraphics[width=1.0\linewidth]{figures/process-all.pdf}\\
+\makebox[22.8mm][c]{(a)}\hfill
+\makebox[11.2mm][c]{(b)}\hfill
+\makebox[23.0mm][c]{(c)}\hfill
+\makebox[23.0mm][c]{(d)}\hfill
+\makebox[23.0mm][c]{(e)}\hfill
+\makebox[34.0mm][c]{(f)}
+\caption{%
+Creating the \textsc{CelebA-HQ} dataset.
+We start with a JPEG image (a) from the CelebA in-the-wild dataset.
+We improve the visual quality (b,top) through JPEG artifact removal (b,middle) and 4x super-resolution (b,bottom).
+We then extend the image through mirror padding (c) and Gaussian filtering (d) to produce a visually pleasing depth-of-field effect.
+Finally, we use the facial landmark locations to select an appropriate crop region (e) and perform high-quality resampling to obtain the final image at $1024\times1024$ resolution (f).
+}
+\label{fig:celeb-process}
+\end{figure}
+}
+
+\newcommand{\figcelebHQResults}{
+\begin{figure}
+\centering
+\includegraphics[width=1.0\linewidth]{generated/figures/celeb1024-results.jpg}
+\caption{$1024\times1024$ images generated using the \textsc{CelebA-HQ} dataset. See Appendix~\ref{app:CelebHQ} for a larger set of results, and the accompanying video for latent space interpolations. }
+\label{fig:celebHQResults}
+\end{figure}
+}
+
+\newcommand{\figcelebHQAppendix}{
+\begin{figure}
+\centering
+\ifarxivversion
+	\placeholderfig{1.0\linewidth}{210mm}{\arxivDisclaimer}\\
+\else
+	\includegraphics[width=1.0\linewidth]{generated/figures/celeb1024-appendix.jpg}
+\fi
+\caption{Additional $1024\times1024$ images generated using the \textsc{CelebA-HQ} dataset. 
+Sliced Wasserstein Distance (SWD) $\times10^3$ for levels 1024, \ldots, 16: 7.48, 7.24, 6.08, 3.51, 3.55, 3.02, 7.22, for which the average is 5.44. 
+Fr\'echet Inception Distance (FID) computed from 50K images was 7.30.
+See the video for latent space interpolations.
+}
+\label{fig:celebHQAppendxi}
+\end{figure}
+}
+
+\newcommand{\figcelebHQNN}{
+\begin{figure}
+\centering
+\includegraphics[width=1.0\linewidth]{generated/figures/NN2b-top.jpg}\\
+\vspace*{1.5mm}
+\includegraphics[width=1.0\linewidth]{generated/figures/NN2b-bottom.jpg}
+\caption{Top: Our \textsc{CelebA-HQ} results. \FINAL{Next five rows: Nearest neighbors found from the training data, based on feature-space distance. We used activations from five VGG layers, as suggested by \cite{Chen2017}.
+Only the crop highlighted in bottom right image was used for comparison in order to exclude image background and focus the search on matching facial features.}}
+\label{fig:celebHQNN}
+\end{figure}
+}
+

@@ -1,0 +1,190 @@
+
+\section{Visualisations}
+\label{ap:visualisations}
+See figures~\ref{fig:2dmanifolds} and~\ref{fig:mnistsamples} for visualisations of latent space and corresponding observed space of models learned with SGVB.
+
+\section{Solution of $- D_{KL}(\qPhi(\bz) || \pT(\bz))$, Gaussian case}
+\label{ap:kl_solution}
+The variational lower bound (the objective to be maximized) contains a KL term that can often be integrated analytically. Here we give the solution when both the prior $\pT(\bz) = \mathcal{N}(0,\bI)$ and the posterior approximation $\qPhi(\bz|\bxi)$ are Gaussian. Let $J$ be the dimensionality of $\bz$. Let $\bmu$ and $\bsigma$ denote the variational mean and s.d. evaluated at datapoint $i$, and let $\mu_j$ and $\sigma_j$ simply denote the $j$-th element of these vectors. Then:
+\begin{align*}
+\int \qT(\bz) \log p(\bz) \,d\bz
+&= \int \mathcal{N}(\bz;\bmu,\bsigma^2) \log \mathcal{N}(\bz;\bzero,\bI) \,d\bz \\
+&=  - \frac{J}{2} \log (2 \pi) - \frac{1}{2} \sum_{j=1}^J (\mu_j^2 + \sigma_j^2)
+\end{align*}
+And:
+\begin{align*}
+\int \qT(\bz) \log \qT(\bz) \,d\bz
+&= \int \mathcal{N}(\bz;\bmu,\bsigma^2) \log \mathcal{N}(\bz;\bmu,\bsigma^2) \,d\bz \\
+&= - \frac{J}{2} \log (2 \pi) - \frac{1}{2} \sum_{j=1}^J ( 1 + \log \sigma^2_j )
+\end{align*}
+Therefore:
+\begin{align*}
+- D_{KL}((\qPhi(\bz) || \pT(\bz)) &= \int \qT(\bz) \left(\log \pT(\bz) - \log \qT(\bz)\right) \,d\bz \\
+&= \frac{1}{2} \sum_{j=1}^J \left(1 + \log ((\sigma_j)^2) - (\mu_j)^2 - (\sigma_j)^2 \right)
+\end{align*}
+When using a recognition model $\qPhi(\bz|\bx)$ then $\bmu$ and s.d. $\bsigma$ are simply functions of $\bx$ and the variational parameters $\bphi$, as exemplified in the text.
+
+\section{MLP's as probabilistic encoders and decoders}
+\label{ap:encoders_decoders}
+In variational auto-encoders, neural networks are used as probabilistic encoders and decoders. There are many possible choices of encoders and decoders, depending on the type of data and model. In our example we used relatively simple neural networks, namely multi-layered perceptrons (MLPs). For the encoder we used a MLP with Gaussian output, while for the decoder we used MLPs with either Gaussian or Bernoulli outputs, depending on the type of data.
+
+\subsection{Bernoulli MLP as decoder}
+In this case let $\pT(\bx|\bz)$ be a multivariate Bernoulli whose probabilities are computed from $\bz$ with a fully-connected neural network with a single hidden layer:
+\begin{align*}
+\log p(\bx|\bz)
+&= \sum_{i=1}^D x_i \log y_i + (1-x_i) \cdot \log(1-y_i) \\
+\text{where\,\,\,}
+\by &= f_\sigma(\bW_2 \tanh(\bW_1 \bz + \bbb_1) + \bbb_2)
+\eqnr\end{align*}
+where $f_\sigma(.)$ is the elementwise sigmoid activation function, and where $\bT = \{\bW_1, \bW_2, \bbb_1, \bbb_2\}$ are the weights and biases of the MLP.
+
+\subsection{Gaussian MLP as encoder or decoder}
+In this case let encoder or decoder be a multivariate Gaussian with a diagonal covariance structure:
+\begin{align*}
+\log p(\bx|\bz)
+&= \log \mathcal{N}(\bx; \bmu, \bsigma^2 \bI)
+\\
+\text{where\,\,\,}
+\bmu &= \bW_4 \bh  +\bbb_4 \\
+\log \bsigma^2 &= \bW_5 \bh + \bbb_5 \\
+\bh &= \tanh(\bW_3 \bz + \bbb_3)
+\eqnr\end{align*}
+where $\{\bW_3, \bW_4, \bW_5, \bbb_3, \bbb_4, \bbb_5 \}$ are the weights and biases of the MLP and part of $\bT$ when used as decoder. Note that when this network is used as an encoder $\qPhi(\bz|\bx)$, then $\bz$ and $\bx$ are swapped, and the weights and biases are variational parameters $\bphi$.
+
+\section{Marginal likelihood estimator}
+We derived the following marginal likelihood estimator that produces good estimates of the marginal likelihood as long as the dimensionality of the sampled space is low (less then 5 dimensions), and sufficient samples are taken.  Let $\pT(\bx, \bz) = \pT(\bz) \pT(\bx|\bz)$ be the generative model we are sampling from, and for a given datapoint $\bxi$ we would like to estimate the marginal likelihood $\pT(\bxi)$.
+
+The estimation process consists of three stages:
+\begin{enumerate}
+\item Sample $L$ values $\{\bzl\}$ from the posterior using gradient-based MCMC, e.g. Hybrid Monte Carlo, using $\nabla_{\bz} \log \pT(\bz|\bx) = \nabla_{\bz} \log \pT(\bz) + \nabla_{\bz} \log \pT(\bx|\bz)$.
+\item Fit a density estimator $q(\bz)$ to these samples $\{\bzl\}$.
+\item Again, sample $L$ new values from the posterior. Plug these samples, as well as the fitted $q(\bz)$, into the following estimator:
+\begin{align*}
+\pT(\bxi) \simeq \left( \frac{1}{L} \sum_{l=1}^L \frac{q(\bzl)}{\pT(\bz) \pT(\bxi|\bzl)} \right)^{-1} \text{\quad where \quad} \bzl \sim \pT(\bz|\bxi)
+\end{align*}
+\end{enumerate}
+
+Derivation of the estimator:
+\begin{align*}
+\frac{1}{\pT(\bxi)} 
+&= \frac{\int q(\bz) \,d\bz}{\pT(\bxi)}
+= \frac{\int q(\bz) \frac{\pT(\bxi, \bz) }{\pT(\bxi, \bz)} \,d\bz}{\pT(\bxi)} \\
+&= \int \frac{\pT(\bxi, \bz)}{\pT(\bxi)} \frac{q(\bz)}{\pT(\bxi, \bz)} \,d\bz \\
+&= \int \pT(\bz|\bxi) \frac{q(\bz)}{\pT(\bxi, \bz)} \,d\bz \\
+&\simeq \frac{1}{L} \sum_{l=1}^L \frac{q(\bzl)}{\pT(\bz) \pT(\bxi|\bzl)} \text{\quad where \quad} \bzl \sim \pT(\bz|\bxi)
+\end{align*}
+
+\section{Monte Carlo EM}
+The Monte Carlo EM algorithm does not employ an encoder, instead it samples from the posterior of the latent variables using gradients of the posterior computed with $\nabla_{\bz} \log \pT(\bz|\bx) = \nabla_{\bz} \log \pT(\bz) + \nabla_{\bz} \log \pT(\bx|\bz)$. The Monte Carlo EM procedure consists of 10 HMC leapfrog steps with an automatically tuned stepsize such that the acceptance rate was 90\%, followed by 5 weight updates steps using the acquired sample. For all algorithms the parameters were updated using the Adagrad stepsizes (with accompanying annealing schedule).
+
+The marginal likelihood was estimated with the first 1000 datapoints from the train and test sets, for each datapoint sampling 50 values from the posterior of the latent variables using Hybrid Monte Carlo with 4 leapfrog steps. 
+
+\section{Full VB}
+As written in the paper, it is possible to perform variational inference on both the parameters $\bT$ and the latent variables $\bz$, as opposed to just the latent variables as we did in the paper. Here, we'll derive our estimator for that case.
+
+Let $\pA(\bT)$  be some hyperprior for the parameters introduced above, parameterized by $\balpha$. The marginal likelihood can be written as:
+\begin{align*}
+\log \pA(\bX) = D_{KL}(\qPhi(\bT)||\pA(\bT|\bX)) + \mathcal{L}(\bphi;\bX)
+\eqnr\end{align*}
+where the first RHS term denotes a KL divergence of the approximate from the true posterior, and where $\mathcal{L}(\bphi;\bX)$ denotes the variational lower bound to the marginal likelihood:
+\begin{align*}
+\mathcal{L}(\bphi;\bX) = \int \qPhi(\bT) \left( \log \pT(\bX) + \log \pA(\bT) - \log \qPhi(\bT) \right) \,d\bT
+\eqnr\label{eq:lowerbound1_ap}\end{align*}
+Note that this is a lower bound since the KL divergence is non-negative; the bound equals the true marginal when the approximate and true posteriors match exactly.
+The term $\log \pT(\bX)$ is composed of a sum over the marginal likelihoods of individual datapoints $\log \pT(\bX) = \sum_{i=1}^N \log \pT(\bxi)$, which can each be rewritten as:
+\begin{align*}
+\log \pT(\bxi) = D_{KL}(\qPhi(\bz|\bxi)||\pT(\bz|\bxi)) + \mathcal{L}(\bT,\bphi;\bxi)
+\eqnr\end{align*}
+where again the first RHS term is the KL divergence of the approximate from the true posterior, and $\mathcal{L}(\bT,\bphi;\bx)$ is the variational lower bound of the marginal likelihood of datapoint $i$:
+\begin{align*}
+\mathcal{L}(\bT,\bphi;\bxi)
+&= \int \qPhi(\bz|\bx) \left(\log \pT(\bxi | \bz) + \log \pT(\bz) - \log \qPhi(\bz|\bx)\right) \,d\bz 
+\eqnr\label{eq:lowerbound2_ap}\end{align*}
+
+%
+%
+%
+%
+
+The expectations on the RHS of eqs ~\eqref{eq:lowerbound1_ap} and \eqref{eq:lowerbound2_ap} can obviously be written as a sum of three separate expectations, of which the second and third component can sometimes be analytically solved, e.g. when both $\pT(\bx)$ and $\qPhi(\bz|\bx)$ are Gaussian. For generality we will here assume that each of these expectations is intractable.
+
+Under certain mild conditions outlined in section (see paper) for chosen approximate posteriors $\qPhi(\bT)$ and $\qPhi(\bz|\bx)$ we can reparameterize conditional samples $\btz \sim \qPhi(\bz|\bx)$ as
+\begin{align*}
+\btz = \gPhi(\beps,\bx) \text{\quad with \quad} \beps \sim p(\beps)
+\eqnr\end{align*}
+where we choose a prior $p(\beps)$ and a function $\gPhi(\beps,\bx)$ such that the following holds:
+\begin{align*}
+\mathcal{L}(\bT,\bphi;\bxi)
+&= \int \qPhi(\bz|\bx) \left(\log \pT(\bxi | \bz) + \log \pT(\bz) - \log \qPhi(\bz|\bx)\right) \,d\bz \\
+&= \int p(\beps) \left(\log \pT(\bxi | \bz) + \log \pT(\bz) - \log \qPhi(\bz|\bx)\right) \bigg|_{\bz=\gPhi(\beps,\bxi)} \,d\beps
+\eqnr\label{eq:reparameterizedbound2_ap}\end{align*}
+The same can be done for the approximate posterior $\qPhi(\bT)$:
+\begin{align*}
+\btT = \hPhi(\bzeta) \text{\quad with \quad} \bzeta \sim p(\bzeta)
+\eqnr\end{align*}
+where we, similarly as above, choose a prior $p(\bzeta)$ and a function $\hPhi(\bzeta)$ such that the following holds:
+\begin{align*}
+\mathcal{L}(\bphi;\bX)
+&= \int \qPhi(\bT) \left( \log \pT(\bX) + \log \pA(\bT) - \log \qPhi(\bT) \right) \,d\bT \\
+&= \int p(\bzeta) \left( \log \pT(\bX) + \log \pA(\bT) - \log \qPhi(\bT) \right) \bigg|_{\bT=\hPhi(\bzeta)} \,d\bzeta
+\eqnr\label{eq:reparameterizedbound1_ap}\end{align*}
+
+For notational conciseness we introduce a shorthand notation $\fPhi(\bx, \bz, \bT)$:
+\begin{align}
+\fPhi(\bx, \bz, \bT) = N \cdot (\log \pT(\bx | \bz) + \log \pT(\bz) - \log \qPhi(\bz|\bx)) + \log \pA(\bT) - \log \qPhi(\bT)
+\label{eq:f_ap}
+\end{align}
+Using equations ~\eqref{eq:reparameterizedbound1_ap} and ~\eqref{eq:reparameterizedbound2_ap}, the Monte Carlo estimate of the variational lower bound, given datapoint $\bxi$, is:
+\begin{align*}
+\mathcal{L}(\bphi;\bX)
+&\simeq \frac{1}{L} \sum_{l=1}^L \fPhi(\bxl, \gPhi(\bepsl,\bxl), \hPhi(\bzetal))
+\eqnr\label{eq:fullestimator_ap}\end{align*}
+where $\bepsl \sim p(\beps)$ and $\bzetal \sim p(\bzeta)$. 
+The estimator only depends on samples from $p(\beps)$ and $p(\bzeta)$ which are obviously not influenced by $\bphi$, therefore the estimator can be differentiated w.r.t. $\bphi$. The resulting stochastic gradients can be used in conjunction with stochastic optimization methods such as SGD or Adagrad~\cite{duchi2010adaptive}. See algorithm~\ref{algorithm} for a basic approach to computing stochastic gradients.
+
+\begin{algorithm}[t]
+\caption{Pseudocode for computing a stochastic gradient using our estimator. See text for meaning of the functions $\fPhi$, $\gPhi$ and $\hPhi$. }
+\renewcommand{\algorithmicforall}{\textbf{for each}}
+\begin{algorithmic}
+\Require $\bphi$ (Current value of variational parameters)
+\State $\bg \gets 0$
+\For{$l$ is $1$ to $L$}
+\State $\bx \gets $ Random draw from dataset $\bX$
+\State $\beps \gets $ Random draw from prior $p(\beps)$
+\State $\bzeta \gets $ Random draw from prior $p(\bzeta)$
+\State $\bg \gets \bg + \frac{1}{L} \nabla_{\bphi} \fPhi(\bx, \gPhi(\beps, \bx), \hPhi(\bzeta))$
+\EndFor \\
+\Return $\bg$
+\end{algorithmic}
+\label{algorithm_ap}
+\end{algorithm}
+
+\subsection{Example}
+Let the prior over the parameters and latent variables be the centered isotropic Gaussian $\pA(\bT) = \mathcal{N}(\bz; \bzero, \bI)$ and $\pT(\bz) = \mathcal{N}(\bz; \bzero, \bI)$. Note that in this case, the prior lacks parameters. Let's also assume that the true posteriors are approximatily Gaussian with an approximately diagonal covariance. In this case, we can let the variational approximate posteriors be multivariate Gaussians with a diagonal covariance structure:
+\begin{align*}
+\log \qPhi(\bT) &= \log \mathcal{N}(\bT; \bmu_{\bT}, \bsigma_{\bT}^2 \bI) \\
+\log \qPhi(\bz|\bx)
+&= \log \mathcal{N}(\bz; \bmu_{\bz}, \bsigma_{\bz}^2 \bI)
+\eqnr\end{align*}
+where $\bmu_{\bz}$ and $\bsigma_{\bz}$ are yet unspecified functions of $\bx$.
+Since they are Gaussian, we can parameterize the variational approximate posteriors:
+\begin{align*}
+\qPhi(\bT) &\text{\quad as \quad} \btT = \bmu_{\bT} + \bsigma_{\bT} \odot \bzeta
+&\text{\quad where \quad} \bzeta \sim \mathcal{N}(\bzero,\bI) \\
+\qPhi(\bz|\bx) &\text{\quad as \quad} \btz = \bmu_{\bz} + \bsigma_{\bz} \odot \beps
+&\text{\quad where \quad} \beps \sim \mathcal{N}(\bzero,\bI) 
+\end{align*}
+With $\odot$ we signify an element-wise product. These can be plugged into the lower bound defined above (eqs \eqref{eq:f_ap} and \eqref{eq:fullestimator_ap}).
+
+In this case it is possible to construct an alternative estimator with a lower variance, since in this model $\pA(\bT)$,  $\pT(\bz)$, $\qPhi(\bT)$ and $\qPhi(\bz|\bx)$ are Gaussian, and therefore four terms of $\fPhi$ can be solved analytically. The resulting estimator is:
+\begin{align*}
+\mathcal{L}(\bphi;\bX)
+&\simeq 
+\frac{1}{L} \sum_{l=1}^L 
+N \cdot \left( \frac{1}{2} \sum_{j=1}^J \left(1 + \log ((\sigma_{\bz,j}^{(l)})^2) - (\mu_{\bz,j}^{(l)})^2 - (\sigma_{\bz,j}^{(l)})^2 \right)
++ \log \pT(\bxi\bzi) \right) \\
+&+ \frac{1}{2} \sum_{j=1}^J \left(1 + \log ((\sigma_{\bT,j}^{(l)})^2) - (\mu_{\bT,j}^{(l)})^2 - (\sigma_{\bT,j}^{(l)})^2 \right)
+\label{eq:gaussian_estimator_ap}\eqnr\end{align*}
+$\mu_j^{(i)}$ and $\sigma_j^{(i)}$ simply denote the $j$-th element of vectors $\bmu^{(i)}$ and $\bsigma^{(i)}$.
+
+

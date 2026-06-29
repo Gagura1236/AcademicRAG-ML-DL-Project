@@ -1,0 +1,198 @@
+%
+% File emnlp2019.tex
+%
+%% Based on the style files for ACL 2019, which were
+%% Based on the style files for EMNLP 2018, which were
+%% Based on the style files for ACL 2018, which were
+%% Based on the style files for ACL-2015, with some improvements
+%%  taken from the NAACL-2016 style
+%% Based on the style files for ACL-2014, which were, in turn,
+%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
+%% EACL-2009, IJCNLP-2008...
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+% ------------------------------------------
+% ------------------------------------------
+% TODO BEFORE SUBMISSION:
+% shrink to 8 pages
+% - move training corpus details to appendix
+% [done] - move all char-lm hyperparameters to appendix 
+% - "Continued  MLM  Pretraining" section: move hyperparams to appendix and shorten discussion
+% [done] remove author names
+% [done] enable draft submission mode
+% [done] remove acknowledgements
+% [done] remove code link
+% [was already removed] remove MP comment from appendix
+% if we are uploading the code, remove AI2 mentions from the code
+% [done] add test results for hotpotqa
+% [done] cite Routing Transformer
+% update future work
+% update the TVM figure and framing
+% 
+% ------------------------------------------
+
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{emnlp2020}
+\usepackage{times}
+\usepackage{latexsym}
+\renewcommand{\UrlFont}{\ttfamily\small}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{mathtools}  
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{soul}
+\usepackage{url}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% WARNING: REMOVE THE FOLLOWING 3 LINES BEFORE SUBMITTING TO EMNLP
+\aclfinalcopy % Uncomment this line for the final submission
+% \def\aclpaperid{0} %  Enter the acl Paper ID here
+\pagestyle{plain}  % only for arxiv to show page numbers. REMOVE 
+%%%% WARNING: REMOVE THE ABOVE 3 LINES BEFORE SUBMITTING TO EMNLP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+
+
+% ----------- packages ------------------
+\usepackage{enumitem}
+\usepackage{arydshln}
+% \usepackage{array,graphics,multirow}
+% ---------------------------------------
+
+% ----------- custom stuff --------------
+\newcommand{\model}{Longformer\xspace}
+\newcommand{\seqlen}{4,096\xspace}
+
+% ---------------------------------------
+
+\newcommand{\ib}[1]{\textcolor{teal}{[#1 ({\bf IB})]}}
+\newcommand{\ac}[1]{\textcolor{purple}{[#1 ({\bf AC})]}}
+\newcommand{\matt}[1]{\textcolor{brown}{[#1 ({\bf MP})]}}
+\newcommand{\dan}[1]{\textcolor{green}{[#1 ({\bf DW})]}}
+% \newcommand{\ib}[1]{}
+% \newcommand{\ac}[1]{}
+% \newcommand{\matt}[1]{}
+% \newcommand{\dan}[1]{}
+\newcommand{\draft}[1]{\textcolor{blue}{#1}}
+
+
+
+\title{\model: The Long-Document Transformer}
+
+\author{
+Iz Beltagy\Thanks{\enspace Equal contribution.}
+~~~~~~~~~Matthew E. Peters\textcolor{darkblue}{\footnotemark[1]}
+~~~~~~~~~Arman Cohan\textcolor{darkblue}{\footnotemark[1]}\\
+Allen Institute for Artificial Intelligence, Seattle, WA, USA\\
+{\tt $\{$beltagy,matthewp,armanc$\}$@allenai.org}\\}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Transformer-based models are unable to process long sequences due to their self-attention operation, which scales quadratically with the sequence length.
+To address this limitation, we introduce the \model with an attention mechanism that scales linearly with sequence length, making it easy to process documents of thousands of tokens or longer.
+\model's attention mechanism is a drop-in replacement for the standard self-attention and combines a local windowed attention with a task motivated global attention.
+% \st{As the most important contextual information is local to each token, our attention mechanism retains the full self-attention mechanism\ib{I don't understand this sentence} but limits it to a windowed context around each token, and combines it with an end task motivated global attention.}
+%\ib{this sentence is enough explanation how our attention works. More details below are confusing}.\ib{Maybe a sentence here or at the end of the abstract that using it is a drop-in replacement of the self-attention component.}
+%In the case of character level language modeling,  we achieve state-of-the-art results because our model allows a very long attentive receptive field.
+Following prior work on long-sequence transformers, 
+we evaluate \model on character-level language modeling
+and achieve state-of-the-art results on \texttt{text8} and \texttt{enwik8}.
+In contrast to most prior work,
+we also pretrain \model
+%on a corpus of long documents
+and finetune it on a variety of downstream tasks.
+Our pretrained \model consistently outperforms RoBERTa on long document tasks
+%\ib{do we need to say "on long document tasks"?}
+% \st{on a range of long document natural language tasks}
+and sets new state-of-the-art results on WikiHop and
+% TriviaQA.\footnote{\url{https://github.com/allenai/longformer}}
+TriviaQA. We finally introduce the Longformer-Encoder-Decoder (LED), a Longformer variant for supporting long document generative sequence-to-sequence tasks, and demonstrate its effectiveness on the arXiv summarization dataset.\footnote{\url{https://github.com/allenai/longformer}}
+
+% \st{as our model allows very long attentive receptive fields.}
+% In contrast to most prior work on long-sequence transformers, we also pretrain \model on a corpus of long documents and introduce a new form of asymmetric local-global attention for finetuning tasks. \model consistently outperforms its full self-attention counterpart on a range of long document natural language tasks, while setting a new state-of-the-art for multihop question answering.
+% In contrast to most prior work on long-sequence transformers, we also evaluate \model in the pretraining-finetuning transfer learning approach and introduce a new form of asymmetric local-global attention that outperforms RoBERTa across a wide range of NLP tasks and sets new state-of-the-art results for two question answering datasets.
+% In contrast to most prior work on long-sequence transformers, we also pretrain \model on a corpus of long documents and introduce a new form of asymmetric local-global attention for finetuning tasks. \model consistently outperforms its full self-attention counterpart on a range of long document natural language tasks, while setting a new state-of-the-art for two question answering datasets.
+
+
+% introduce a new form of asymmetric local-global attention that consistatnely outperforms full self-attention architecture of RoBERTa while setting state-of-the-art results for multihop question answering.
+
+% In contrast to most prior work on long-sequence transformers, we also evaluate \model in the pretraining-finetuning transfer learning approach and introduce a new form of asymmetric local-global attention that sets state-of-the-art results for multihop question answering and text classification
+% \ib{doesn't match reported results.}
+
+
+%Transfomer-based models have recently lead to huge performance gains
+%in almost all NLP tasks.
+%However, a key limitation of such models is their inability to process long sequences due to the self-attention operation, which scales quadratically with the sequence length. 
+%This paper introduces \model, a transformer model with a self-attention 
+%pattern that scales linearly with the sequence length, making it easy to process documents of tens of thousands of tokens without the chunking and truncating 
+%that most current document-level NLP models do. 
+%\model achieves state-of-the-art results on autoregressive character-level 
+%language modeling. 
+%In contrast with almost all prior work on long-document transformers, 
+%we also focus on the pretraining-finetuning transfer learning paradigm. 
+%We pretrain our \model on masked language modeling with documents 
+%of length thousands of wordpieces,
+%which achieves state-of-the-art results on multihop question answering and document classification datasets
+%\ib{the abstract is underwhelming and can use some rewriting}. 
+%\footnote{Code and pretrained model \url{https://github.com/allenai/longformer}. 
+%Model is pretrained for sequences of length \seqlen wordpieces, 
+%and we will soon release one for 16,384 wordpieces.  }
+\end{abstract}
+
+
+\input{1-intro}
+\input{2-related}
+\input{3-model}
+\input{4-charlm}
+\input{5-mlm}
+\input{6-led}
+\input{6-discussion}
+% \input{2-related}
+
+\section{Conclusion and Future Work}
+We present \model, a transformer-based model that is scalable for processing long documents and that makes it easy to perform a wide 
+range of document-level NLP tasks without chunking/shortening the long input and without complex architecture to combine information across these chunks. 
+\model employs an attention pattern that combines local and global
+information while also scaling linearly with the sequence length.
+\model achieves state-of-the-art results on the character-level
+language modeling tasks of \texttt{text8} and \texttt{enwik8}. 
+When pretrained, 
+\model consistently outperforms RoBERTa on long document tasks and
+sets new state-of-the-art results on WikiHop and TriviaQA. 
+We further present LED, an encoder-decoder variant of Longformer for modeling sequence-to-sequence tasks, and achieve state-of-the-art results on the arXiv long document summarization task. 
+For future work, we would like to study other pretraining objectives, especially for LED, increase the sequence length, and explore other tasks that might benefit from our model. 
+
+% \ib{do we want to write somewhere about MRQA and why it is not cool to simplify NLP tasks and limit them to short sequences?}\ac{would be good, but on negative side if the reviewer is one of the mrqa organizers they wouldn't like this statement}
+% \matt{agree with AC, and we already have something that hints at this in a footnote}
+
+\section*{Acknowledgment}
+We would like to thank Noah Smith, Dan Weld, Dirk Groeneveld, Kyle Lo, Daniel King and Doug Downey for helpful discussions and feedback, and the AI2 infrastructure team for technical support. 
+
+\bibliography{emnlp2020}
+\bibliographystyle{acl_natbib}
+\clearpage
+
+\appendix
+\input{7-appendix}
+
+\end{document}

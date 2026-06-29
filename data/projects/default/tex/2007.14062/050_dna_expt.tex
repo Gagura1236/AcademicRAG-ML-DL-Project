@@ -1,0 +1,94 @@
+\section{Experiments: Genomics} 
+\label{sec:expt-bio}
+
+There has been a recent upsurge in using deep learning for genomics data \citep{tampuu2019viraminer, zhang2019ncnet, busia2019deep}, which has resulted in improved performance on several biologically-significant tasks such as
+promoter site prediction \citep{oubounyt2019deepromoter}, methylation analysis \citep{levy2020methylnet}, 
+predicting functional effects of non-coding variant \citep{zhou2015predicting}, etc.
+These approaches consume DNA sequence fragments as inputs, and therefore we believe longer input sequence handling capability of \bigb would be beneficial as many functional effects in DNA are highly non-local \citep{buldyrev1995long}.
+Furthermore, taking inspiration from NLP, we learn powerful contextual representations for DNA fragments utilizing abundant unlabeled data (e.g. human reference genome, Saccharomyces Genome Database) via MLM pretraining.
+Next, we showcase that our long input \bigb along with the proposed pretraining significantly improves performances in two downstream tasks.
+Detailed experimental setup for the two tasks are provided in~\Cref{sec:apndx-expt-bio}.
+
+
+\begin{wraptable}{r}{39mm}
+    \vspace{-4mm}
+    \centering
+    \small
+    \begin{tabular}{@{}lr@{}}
+    \toprule
+    Model &  BPC \\
+    \midrule
+    SRILM \cite{liang2012segmenting}  & 1.57  \\
+    BERT (sqln. 512)  & 1.23 \\
+    \midrule
+    % BERT &  \\
+    \bigb (sqln. 4096)   & \textbf{1.12} \\
+     \bottomrule
+    \end{tabular}
+    \caption{MLM BPC}
+    \label{tab:gml}
+    \vspace{-3mm}
+\end{wraptable}
+\paragraph{Pre-training and MLM}
+As explored in \citet{liang2012segmenting}, instead of operating on base pairs, we propose to first segment DNA into tokens so as to further increase the context length (\Cref{sec:apndx-expt-bio}, \Cref{fig:apndx_mlm_data}).
+In particular, we build a byte-pair encoding~\citep{kudo2018sentencepiece} table for the DNA sequence of size 32K, with each token representing 8.78 base pairs on average.
+We learn contextual representation of these token on the human reference genome (GRCh37)\footnote{\url{https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.13/}} using MLM objective.
+We then report the bits per character (BPC) 
+on a held-out set in \Cref{tab:gml}. 
+We find that attention based contextual representation of DNA does improve BPC, which is further improved by using longer context.
+
+ \begin{wraptable}{r}{35mm}
+    \vspace{-4mm}
+    \centering
+    \small
+    \begin{tabular}{@{}lr@{}}
+    \toprule
+    Model &  F1 \\
+    \midrule
+    CNNProm~\citep{umarov2017recognition}  & 69.7  \\
+    DeePromoter~\citep{oubounyt2019deepromoter}  & 95.6 \\
+    \midrule
+    % BERT &  \\
+    \bigb   & \textbf{99.9} \\
+     \bottomrule
+    \end{tabular}
+    \caption{Comparison.}
+    \label{tab:gpp}
+    \vspace{-3mm}
+\end{wraptable}
+\paragraph{Promoter Region Prediction}
+Promoter is a DNA region typically located upstream of the gene, which is the site of transcription initiation.
+Multiple methods have been proposed to identify the promoter regions in a given DNA sequence~\citep{yang2017exploiting, lin2017identifying, bharanikumar2018promoterpredict, xiao2019ipsw, oubounyt2019deepromoter}, as it is an important first step in understanding gene regulation.
+The corresponding machine learning task is to classify a given DNA fragment as promoter or non-promoter sequence. We use the dataset compiled by \citet{oubounyt2019deepromoter} which was built from Eukaryotic Promoter Database (EPDnew) \citep{dreos2013epd} 
+\footnote{ \url{https://epd.epfl.ch/human/human_database.php?db=human}}. 
+We finetuned the pretrained \bigb model from above, using the training data and report F1 on test dataset. 
+We compare our results to the previously reported best method in \Cref{tab:gpp}.
+We see that  
+\bigb achieve nearly perfect accuracy with a $5\%$ jump from the previous best reported accuracy.
+
+
+\begin{wraptable}{r}{57mm}
+    \centering
+    \small
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Model &  TF & HM & DHS \\
+    \midrule
+    gkm-SVM~\citep{ghandi2014enhanced}  & 89.6 & - & -  \\
+    DeepSea~\citep{zhou2015predicting}  & 95.8 & 85.6 & \textbf{92.3} \\
+    \midrule
+    % BERT &  \\
+    \bigb   & \textbf{96.1} & \textbf{88.7} & 92.1 \\
+     \bottomrule
+    \end{tabular}
+    \caption{Chromatin-Profile Prediction}
+    \label{tab:gnve} 
+    \vspace{-3mm}
+\end{wraptable}
+\paragraph{Chromatin-Profile Prediction} Non-coding regions of DNA do not code for proteins.  
+Majority of diseases and other trait associated single-nucleotide polymorphism are correlated to non-coding genomic variations \citep{zhou2015predicting, khurana2016role}.
+Thus, understanding the functional effects of non-coding regions of DNA is a very important task. An important step in this process, as defined by \citet{zhou2015predicting}, is to predict large-scale chromatin-profiling from non-coding genomic sequence. 
+To this effect, DeepSea \citep{zhou2015predicting}, compiled 919 chromatin-profile of 2.4M non-coding variants from Encyclopedia of DNA Elements (ENCODE)\footnote{\url{https://www.encodeproject.org/}} and Roadmap Epigenomics projects\footnote{\url{http://www.roadmapepigenomics.org/}}. 
+The corresponding ML task is to predict, for a given non-coding region of DNA, these 919 chromatin-profile including $690$ transcription factors (TF) binding profiles for $160$ different TFs, $125$ DNase I sensitivity (DHS) profiles and $104$ histone-mark (HM) profiles. 
+We jointly learn 919 binary classifiers to predict these functional effects from sequence of DNA fragments.
+On held-out chromosomes, we compare AUC with the baselines in~\Cref{tab:gnve} and see that we significantly improve on  performance on the harder task HM, which is known to have longer-range correlations~\citep{gates2017histone} than others.

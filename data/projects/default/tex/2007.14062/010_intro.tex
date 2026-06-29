@@ -1,0 +1,83 @@
+\section{Introduction}
+Models based on Transformers \citep{vaswani2017attention}, such as BERT \citep{devlin2018bert,liu2019roberta}, 
+are wildly successful for a wide variety of Natural Language Processing (NLP) tasks and consequently are mainstay of modern NLP research. 
+Their versatility and robustness are the primary drivers behind the wide-scale adoption of Transformers. 
+The model is easily adapted for a diverse range of sequence based tasks -- as a seq2seq model for translation~\citep{vaswani2017attention}, summarization~\citep{miller2019leveraging}, generation~\citep{chen2019distilling}, etc.~or as a standalone encoders for sentiment analysis~\citep{sun2019utilizing}, POS tagging~\citep{martin2019camembert}, machine reading comprehension~\citep{wang2019multi}, etc. -- and it is known to vastly outperform previous 
+sequence models like LSTM~\citep{hochreiter1997long}.
+The key innovation in Transformers is the introduction of a self-attention mechanism, which can be evaluated in parallel for each token of the input sequence, eliminating the sequential dependency in recurrent neural networks, like LSTM.
+This parallelism enables Transformers to leverage the full power of modern SIMD hardware accelerators like GPUs/TPUs, thereby facilitating training of NLP models on datasets of unprecedented size.
+This ability to train on large scale data has led to surfacing of models like BERT~\citep{devlin2018bert} and T5~\citep{raffel2019exploring}, which pretrain transformers on large general purpose corpora and transfer the knowledge to down-stream task. The pretraining has led to significant improvement in low data regime downstream tasks~\citep{kumar2020data} as well as tasks with sufficient data~\citep{yang2019xlnet} and thus have been a major force behind the ubiquity of transformers in contemporary NLP.
+
+The self-attention mechanism  overcomes  constraints of RNNs (namely the sequential nature of RNN)
+by allowing each token in the input sequence to attend independently to every other token 
+in the sequence.    This design choice has several interesting repercussions.
+In particular, the full self-attention have computational and memory requirement that 
+is quadratic in the sequence length. We note that while the corpus can be large, the sequence length, which provides the context in many applications is very limited. 
+Using commonly available current hardware and model sizes, this 
+requirement translates to roughly being able to handle input sequences of length 512 tokens. 
+This reduces its direct applicability to tasks that require larger context, 
+like QA~\citep{lin2003makes}, document classification, etc.
+
+
+However, while we know that self-attention and Transformers are useful, our theoretical
+understanding is rudimentary. What aspects of the self-attention model are necessary for its performance?
+What can we say about the expressivity of Transformers and similar models? Apriori, it was not 
+even clear from the  design if the proposed self-attention mechanism was as effective as RNNs. 
+For example, the self-attention does not even obey sequence order as it is permutation equivariant. 
+This concern has been partially resolved, as \citet{Yun19} showed that transformers are expressive 
+enough to capture all continuous sequence to sequence functions with a compact domain. 
+Meanwhile, \citet{Perez19} showed that the full  transformer is Turing Complete 
+(i.e.~can simulate a full Turing machine). Two natural questions arise: Can we achieve the empirical 
+benefits of a fully quadratic self-attention scheme using fewer inner-products? Do these 
+sparse attention mechanisms preserve the expressivity and flexibility of the original network?
+
+In this paper, we address both the above questions and produce a sparse attention mechanism  that
+improves performance on a multitude of tasks that require long contexts.
+We systematically develop \bigb, an attention mechanism whose complexity 
+is linear in the number of tokens (\Cref{sec:arch}). We take inspiration from graph 
+sparsification methods and understand  where the proof for expressiveness of Transformers 
+breaks down when full-attention is relaxed to form the proposed attention pattern. This understanding
+helped us develop \bigb, which is theoretically as expressive and also empirically useful. 
+In particular, our \bigb consists of three main part:
+
+\begin{itemize}[leftmargin=6mm, itemsep=0mm, partopsep=0pt,parsep=0pt]
+    \item A set of $g$ global tokens attending on all parts of the sequence.
+    \item All tokens attending to a set of $w$ local neighboring tokens.
+    \item All tokens attending to a set of $r$ random tokens.
+\end{itemize}
+This leads to a high performing attention mechanism scaling to much longer sequence lengths (8x).
+
+To summarize, our main \textbf{contributions} are:
+\begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item 
+    \bigb satisfies all the known theoretical properties of full transformer (\Cref{sec:theory}). In particular, we show that adding extra tokens allows one to express all continuous sequence to sequence functions with only $O(n)$-inner products. Furthermore, we show that under standard assumptions regarding precision, \bigb is Turing complete.
+    
+    \item 
+    Empirically, we show that the extended context modelled by \bigb benefits variety of NLP tasks. 
+    We achieve \emph{state of the art} results for  question answering and document summarization on a number of different datasets. 
+    Summary of these results are presented in \Cref{sec:expt-nlp}.
+    
+    \item
+    Lastly, we introduce a novel application of attention based models where long contexts 
+    are beneficial: extracting contextual representations of genomics sequences like DNA. 
+    With longer masked LM pretraining, \bigb improves performance on downstream tasks such as promoter-region and chromatin profile prediction (\Cref{sec:expt-bio}). 
+\end{enumerate}
+
+\subsection{Related Work}
+There have been a number of interesting attempts, that were aimed at alleviating the quadratic dependency of Transformers, which can broadly categorized into two directions.
+First line of work embraces the length limitation and develops method around it.
+Simplest methods in this category just employ sliding window~\citep{wang2019multi}, but in general most work fits in the following general paradigm:
+using some other mechanism select a smaller subset of relevant contexts to feed in the transformer and optionally iterate, i.e. call transformer block multiple time with different contexts each time. 
+Most prominently, SpanBERT~\citep{joshi2020spanbert}, ORQA~\citep{lee2019latent}, REALM~\citep{guu2020realm}, RAG~\citep{lewis2020retrieval} have achieved strong performance for different tasks. However, it is worth noting that these methods often require significant engineering efforts (like back prop through large scale nearest neighbor search) and are hard to train.
+
+Second line of work questions if full attention is essential and have tried to come up with approaches that do not require full attention, thereby reducing the memory and computation requirements.
+Prominently,~\citet{dai2019transformer, sukhbaatar2019adaptive, rae2019compressive} have proposed auto-regresive models that work well for left-to-right language modeling but suffer in tasks which require bidirectional context.
+\citet{child2019generating} proposed a sparse model that reduces the complexity to $O(n\sqrt{n})$, \citet{kitaev2019reformer} further reduced the complexity to $O(n\log(n))$ by using LSH to compute  nearest neighbors. 
+\citet{ye2019bp} proposed binary partitions of the data where as \citet{qiu2019blockwise} reduced complexity by using block sparsity. 
+Recently, Longformer \cite{beltagy2020longformer} introduced a localized sliding 
+window based mask with few global mask to reduce computation and extended BERT to longer sequence based tasks. 
+Finally, our work is closely related to and built on the work of Extended Transformers Construction~\citep{ainslie2020etc}. 
+This work was designed to encode structure in text for transformers. The idea of global tokens was used extensively by them to achieve their goals. Our theoretical work can be seen as providing a  justification for the success of these models as well.
+It is important to note that most of the aforementioned methods are heuristic based and empirically are not as versatile and robust as the original transformer, i.e. the same architecture do not attain SoTA on multiple standard benchmarks. (There is one exception of Longformer which we include in all our comparisons, see~\Cref{sec:app-related-work} for a more detailed comparison). 
+Moreover, these approximations do not come with theoretical guarantees. 
+

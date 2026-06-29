@@ -1,0 +1,171 @@
+%
+% File acl2014.tex
+%
+% Contact: koller@ling.uni-potsdam.de, yusuke@nii.ac.jp
+%%
+%% Based on the style files for ACL-2013, which were, in turn,
+%% Based on the style files for ACL-2012, which were, in turn,
+%% based on the style files for ACL-2011, which were, in turn, 
+%% based on the style files for ACL-2010, which were, in turn, 
+%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
+%% based on the style files for EACL-2009 and IJCNLP-2008...
+
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+%\usepackage[english,russian]{babel}
+\usepackage{acl2014}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{etoolbox}
+
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+%\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{caption}
+%\usepackage{authblk}
+\usepackage{multirow}
+\usepackage{comment}
+\usepackage{pdflscape}
+
+
+%\usepackage[title=normal, sections=normal, margins=normal, indent=normal]{savetrees}
+%\usepackage[normaltitle, normalsections, normalmargins, normalindent]{savetrees}
+
+\newcommand{\bmx}[0]{\begin{bmatrix}}
+\newcommand{\emx}[0]{\end{bmatrix}}
+\newcommand{\qt}[1]{\left<#1\right>}
+\newcommand{\qexp}[1]{\left<#1\right>}
+\newcommand{\qlay}[1]{\left[#1\right]}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\vects}[1]{\boldsymbol{#1}}
+\newcommand{\matr}[1]{\mathbf{#1}}
+\newcommand{\var}[0]{\operatorname{Var}}
+\newcommand{\cov}[0]{\operatorname{Cov}}
+\newcommand{\diag}[0]{\operatorname{diag}}
+\newcommand{\matrs}[1]{\boldsymbol{#1}}
+\newcommand{\vone}[0]{\vect{1}}
+\newcommand{\va}[0]{\vect{a}}
+\newcommand{\vb}[0]{\vect{b}}
+\newcommand{\vc}[0]{\vect{c}}
+\newcommand{\vh}[0]{\vect{h}}
+\newcommand{\vv}[0]{\vect{v}}
+\newcommand{\vx}[0]{\vect{x}}
+\newcommand{\vw}[0]{\vect{w}}
+\newcommand{\vs}[0]{\vect{s}}
+\newcommand{\vf}[0]{\vect{f}}
+\newcommand{\ve}[0]{\vect{e}}
+\newcommand{\vy}[0]{\vect{y}}
+\newcommand{\vg}[0]{\vect{g}}
+\newcommand{\vr}[0]{\vect{r}}
+\newcommand{\vm}[0]{\vect{m}}
+\newcommand{\vu}[0]{\vect{u}}
+\newcommand{\vL}[0]{\vect{L}}
+\newcommand{\vz}[0]{\vect{z}}
+\newcommand{\vp}[0]{\vect{p}}
+\newcommand{\mO}[0]{\matr{O}}
+\newcommand{\mC}[0]{\matr{C}}
+\newcommand{\mW}[0]{\matr{W}}
+\newcommand{\mG}[0]{\matr{G}}
+\newcommand{\mX}[0]{\matr{X}}
+\newcommand{\mQ}[0]{\matr{Q}}
+\newcommand{\mU}[0]{\matr{U}}
+\newcommand{\mV}[0]{\matr{V}}
+\newcommand{\mL}[0]{\matr{L}}
+\newcommand{\mR}[0]{\matr{R}}
+\newcommand{\mA}{\matr{A}}
+\newcommand{\mD}{\matr{D}}
+\newcommand{\mS}{\matr{S}}
+\newcommand{\mI}{\matr{I}}
+\newcommand{\td}[0]{\text{d}}
+\newcommand{\vsig}[0]{\vects{\sigma}}
+\newcommand{\valpha}[0]{\vects{\alpha}}
+\newcommand{\vmu}[0]{\vects{\mu}}
+%\newcommand{\tf}[0]{\text{f}}
+\newcommand{\tf}[0]{\text{m}}
+\newcommand{\tdf}[0]{\text{dm}}
+\newcommand{\TT}[0]{{\vects{\theta}}}
+\newcommand{\grad}[0]{\nabla}
+\newcommand{\alert}[1]{\textcolor{red}{#1}}
+\newcommand{\N}[0]{\mathcal{N}}
+\newcommand{\LL}[0]{\mathcal{L}}
+\newcommand{\HH}[0]{\mathcal{H}}
+\newcommand{\RR}[0]{\mathbb{R}}
+\newcommand{\Scal}[0]{\mathcal{S}}
+\newcommand{\sigmoid}{\sigma}
+\newcommand{\softmax}{\text{softmax}}
+\newcommand{\E}[0]{\mathbb{E}}
+\newcommand{\enabla}[0]{\ensuremath{%
+    \overset{\raisebox{-0.3ex}[0.5ex][0ex]{%
+    \ensuremath{\scriptscriptstyle e}}}{\nabla}}}
+\newcommand{\enhnabla}[0]{\nabla_{\hspace{-0.5mm}e}\,}
+\newcommand{\tred}[1]{\textcolor{red}{#1}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newtoggle{arxiv}
+\toggletrue{arxiv}
+
+\graphicspath{ {./figures/} }
+
+
+\setlength\titlebox{5.2cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\title{Learning Phrase Representations using RNN Encoder--Decoder \\ for
+Statistical Machine Translation}
+\author{
+    Kyunghyun Cho \\ 
+    {\bf Bart van Merri\"enboer~ ~Caglar Gulcehre}\\
+    Universit\'e de Montr\'eal \\
+  {\tt \small firstname.lastname@umontreal.ca} \\
+  \And
+  ~\\{\bf Dzmitry Bahdanau} \\
+    Jacobs University, Germany \\
+  {\tt \small d.bahdanau@jacobs-university.de} \\
+  \AND
+    Fethi Bougares~~~~~Holger Schwenk \\
+    Universit\'e du Maine, France \\
+  {\tt \small firstname.lastname@lium.univ-lemans.fr} \\
+  \And
+    Yoshua Bengio \\
+    Universit\'e de Montr\'eal, CIFAR Senior Fellow \\
+  {\tt \small find.me@on.the.web} \\}
+
+
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\input{main.tex}
+
+\bibliographystyle{acl}
+\bibliography{strings,strings-shorter,ml,aigaion,myref}
+
+\newpage
+\appendix
+{
+\onecolumn
+\input{supp.tex}
+}
+
+
+\end{document}

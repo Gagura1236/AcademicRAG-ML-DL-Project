@@ -1,0 +1,127 @@
+\section{Implementation details}
+\label{sec:apndx-impl}
+
+We optimize the code for modern hardware.  Hardware accelerators like GPUs and TPUs truly shine on 
+coalesced memory operations which load blocks of contiguous bytes at once.  Thus, its not very efficient 
+to have  small sporadic  look-ups caused by a sliding window or random element queries. We alleviate this by 
+``blockifying'' the  lookups.
+
+
+\begin{figure}[b]
+    \centering
+    \begin{subfigure}{.24\textwidth}
+    \includegraphics[width=\linewidth]{figures/BloackRandAttn.pdf}
+    \caption{Random Attention \label{fig:apndx_rnd_atn}}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.24\textwidth}
+    \includegraphics[width=\linewidth]{figures/BlockWindAttn.pdf}
+    \caption{Window Attention \label{fig:apndx_wnd:atn}}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.24\textwidth}
+    \includegraphics[width=\linewidth]{figures/GlobalAttention.pdf}
+    \caption{Global Attention \label{fig:apndx_gbl_atn}}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.24\textwidth}
+    \includegraphics[width=\linewidth]{figures/BlockBigBird.pdf}
+    \caption{\bigb \label{fig:apndx_bigb_atn}}
+    \end{subfigure}
+    \hfill
+    \caption{Building blocks of the \emph{block-attention} mechanism used in \bigb with block size = $2$. This implies the attention matrix is split into blocks of size $2 \times 2$. All the previous \bigb parameters work on each block as a unit. White color indicates absence of attention. (a) random attention with $r=1$, (b) sliding window attention with $w=3$ (c) global attention with $g=1$. (d) the combined \bigb model.}
+    \label{fig:apndx_my_label}
+    % \vspace{-4mm}
+\end{figure}
+
+\paragraph{GPU/TPU and Sparsity}
+Ideally, if the adjacency matrix $A$ described in~\Cref{sec:arch} is sparse, one would hope this would be sufficient to speed up the implementation.  
+Unfortunately, it is well known~\citep{gray2017gpu,yao2019balanced}, that such sparse multiplications cannot be efficiently implemented in GPUs. GPUs have thousands of cores performing operations in parallel. Thus, we cannot efficiently perform the sparse matrix multiplication mentioned in section~\Cref{sec:arch}.
+
+As a result we propose to first blockify the attention pattern i.e. we pack sets of query and keys together and then define attention on these blocks. 
+It is easier to explain this process using the example 
+shown in \Cref{fig:apndx_my_label}. Suppose, there are $12$ query and $12$ key vectors to attend to. Using a block size of $2$, we split the query matrix into $12/2 = 6$ blocks and similarly the key matrix into $12/2 = 6$ blocks. Then the three different building components of \bigb are defined on the block matrix. In particular the three different components are:
+\begin{enumerate}
+    \item Random attention: Each query block attends to $r$ random key blocks. In~\Cref{fig:apndx_rnd_atn}, $r=1$ with block size $2$. This implies that each query block of size $2$ randomly attends to a key block of size $2$. 
+    \item Window local attention: While creating the block, we ensure that the number of query blocks and the number of key blocks are the same. This helps us in defining the block window attention. Every query block with index $j$ attends to key block with index $j - (w-1)/2$ to $j + (w-1)/2$, including key block $j$. In~\Cref{fig:apndx_wnd:atn}, $w=3$ with block size $2$. It means that each query block $j$ (size $2$ queries) attends to key block $j-1, j, j+1$.
+    \item Global attention: Global attention remains the same as defined in~\Cref{sec:arch}, but we compute it in terms of blocks. In \Cref{fig:apndx_gbl_atn}, $g=1$ with block size $2$. For \bigb-\textsc{itc} this implies that one query and key block, attend to everyone. 
+\end{enumerate}
+The resulting overall attention matrix is shown in~\Cref{fig:apndx_bigb_atn}.
+Unfortunately, simply trying to compute this attention score as multiplying arbitrary pairs of query and key vectors would require use of gather operation, which is inefficient. 
+Upon closer examination of window and global attention, we observe that we can compute these attention scores without using a gather operation. 
+\begin{figure}
+    \vspace{-15mm}
+    \centering
+    \begin{subfigure}[b]{0.84\textwidth}
+         \centering
+         \includegraphics[trim=10mm 15mm 10mm 50mm, clip,width=\textwidth,page=1]{figures/BigBird-Figures.pdf}
+         \caption{Full all pair attention can be obtained by direct matrix multiplication between the query and key matrix. Groupings just shown for guidance.}
+         \label{fig:apndx_full_attn_score}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.84\textwidth}
+         \centering
+         \includegraphics[trim=10mm 36mm 10mm 50mm, clip,width=\textwidth,page=2]{figures/BigBird-Figures.pdf}
+         \caption{Block diagonal attention can be computed by ``blockifying'' the query and key matrix}
+         \label{fig:apndx_block_diag_attn_score}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.84\textwidth}
+         \centering
+         \includegraphics[trim=10mm 10mm 10mm 10mm, clip,width=\textwidth,page=3]{figures/BigBird-Figures.pdf}
+         \caption{Window local attention obtained by ``blockifying'' the query/key matrix, copying key matrix, and rolling the resulting key tensor (Obtaining rolled key-block tensor is illustrated in detail in~\Cref{fig:apndx_copy-roll}). This ensures that every query attends to at least one block and at most two blocks of keys of size $b$ on each side.}
+         \label{fig:apndx_wind_diag_attn_score}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.84\textwidth}
+         \centering
+         \includegraphics[trim=10mm 10mm 10mm 10mm, clip,width=\textwidth,page=4]{figures/BigBird-Figures.pdf}
+         \caption{Window + Random attention obtained by following the procedure above along with gathering some random key blocks.}
+         \label{fig:apndx_rand_att}
+     \end{subfigure}
+    \caption{Idea behind fast sparse attention computation in \bigb.}
+    \label{fig:apndx_bigb_calc_idea}
+    \vspace{-2mm}
+\end{figure}
+
+Recall, full dense attention scores can be calculated by simple matrix product of query and key matrix with a cost of $O(n^2d)$, as illustrated in~\Cref{fig:apndx_full_attn_score}.
+Now note that if we blockify the query and key matrix and multiply, then with only $O(nbd)$ cost we will obtain the block diagonal portion of the attention score, as depicted in~\Cref{fig:apndx_block_diag_attn_score}.
+To elaborate this lets assume that $Q, K \in \R^{n \times d}$ are the query and key matrix corresponding to $n$ tokens such that $Q_{i.} = x_i W_Q$ and $K_{i.} = x_i W_K$.
+We reshape $n \times d$ query matrix, $Q$, and key matrix, $K$, along the sequence length to obtain $\lceil n/b \rceil \times b \times d$ tensors $Q'$ and $K'$ respectively.
+Now we multiply the two tensors as
+\begin{equation}
+    A_{jst} = \sum_{u} Q'_{jsu} K'_{jtu}, \qquad j=0,1,...,\lceil n/b \rceil 
+\end{equation}
+The resulting $A$ tensor of size $\lceil n/b \rfloor \times b \times b $ can be reshaped to correspond to the block diagonal portion of the full attention pattern.
+Now to extend the attention from block diagonal to a window, i.e. where query block with index $j$ attends to key block with index $j - (w-1)/2$ to $j + (w-1)/2$, we make $w$ copies of the reshaped key tensor $K'$.
+We ``roll'' each copy of key-block tensor incrementally along the first axis of length $\lceil n/b \rceil$ as illustrated in~\Cref{fig:apndx_copy-roll}.
+Multiplying these $w$ rolled key-block tensors with the query-block tensor would yield the desired window attention scores (\Cref{fig:apndx_wind_diag_attn_score}).
+Likewise the global component, we can always include the first $g$ blocks from key tensor corresponding to the global tokens.
+Finally, for the random attention, which is very small ($r=3$ for all of our experiments), we resort to using gather ops (\Cref{fig:apndx_rand_att}). 
+Also note by design, each query block attends to exactly $r$ random blocks.
+
+Thus, the result of all the three components is basically a compact dense tensor $K''$ of size $\lceil n/b \rceil \times (g+w+r)b \times d$ as shown in~\Cref{fig:apndx_blk_cmp}.
+Computing the final attention score then just boils down to a dense tensor multiplication, at which TPU/GPU are very efficient.
+Specifically, we need to multiply $Q'$ (size: $\lceil n/b \rceil \times b \times d$) and $K''$ (size: $\lceil n/b \rceil \times (g+w+r)b \times d$) with a cost of $O(n(g+w+r)bd)$ to yield the desired attention score tensor of size $\lceil n/b \rceil \times b \times (g+w+r)b $, which can be reshaped to obtain all the attention scores according to the BigBird pattern.
+
+\begin{figure}
+    \vspace{-7mm}
+    \centering
+    \includegraphics[trim=10mm 15mm 10mm 10mm, clip,width=0.7\textwidth,page=5]{figures/BigBird-Figures.pdf}
+    \caption{Construction of rolled key-block tensor. Make $w$ copies of the key matrix. Index the copies as  $-(w-1)/2 \leq j \leq (w-1)/2$. Roll $j^\text{th}$ copy by $j$ blocks. Positive roll means circular shift entries left and likewise for negative roll corresponds to right shift. Finally, reshape by grouping the blocks along a new axis to obtain the key-blocked tensor. For illustration purpose $w=3$ is chosen.}
+    \label{fig:apndx_copy-roll}
+    \vspace{-2mm}
+\end{figure}
+
+
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/EfficientMultiplication.pdf}
+    \caption{Overview of \bigb attention computation. Structured block sparsity helps in compactly packing our operations of sparse attention, thereby making our method efficient on GPU/TPU.
+    On the left, we depict the transformed dense query and key tensors.
+    The query tensor is obtained by simply blocking and reshaping while the final key tensor by concatenating three transformations: 
+    The first green columns, corresponding to global attention, is fixed. 
+    The middle blue columns correspond to window local attention and can be obtained by appropriately rolling as illustrated in~\Cref{fig:apndx_copy-roll}.
+    For the final orange columns, corresponding to random attentions, we need to use computationally inefficient gather operation.
+    Dense multiplication between the query and key tensors efficiently calculates the sparse attention pattern (except the first row-block, which is computed by direct multiplication), using the ideas illustrated in~\Cref{fig:apndx_bigb_calc_idea}.
+    The resultant matrix on the right is same as that shown in~\Cref{fig:apndx_bigb_atn}. 
+    }
+    \label{fig:apndx_blk_cmp}
+    \vspace{-3mm}
+\end{figure}

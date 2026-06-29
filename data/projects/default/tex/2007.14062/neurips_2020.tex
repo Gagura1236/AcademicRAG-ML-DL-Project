@@ -1,0 +1,65 @@
+\documentclass{article}
+
+\PassOptionsToPackage{square,numbers}{natbib}
+
+\usepackage[final]{neurips_2020}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsthm}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{bibunits}
+
+\newcommand{\bigb}{\textsc{BigBird}\xspace}
+
+
+\include{header}
+\definecolor{violet}{rgb}{0.50, 0.16, 0.88}
+
+\title{Big Bird: Transformers for Longer Sequences}
+
+\author{%
+  Manzil Zaheer, $\quad$ $\quad$ $\quad$ Guru Guruganesh, $\quad$ $\quad$ $\quad$Avinava Dubey, \\
+  {\bf  Joshua Ainslie, $\quad$ Chris Alberti, $\quad$ Santiago Ontanon, $\quad$ Philip Pham,}  \\
+  {\bf Anirudh Ravula, $\quad$ Qifan Wang, $\quad$ Li Yang, $\quad$ Amr Ahmed } \\
+  Google Research\\
+  \texttt{\{manzilz, gurug, avinavadubey\}@google.com}
+}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+
+Transformers-based models, such as BERT, have been one of the most successful deep learning models for NLP. Unfortunately, one of their core limitations is the quadratic dependency (mainly in terms of memory) on the sequence length due to their full attention mechanism.  To remedy this, we propose, \bigb, a sparse attention mechanism that reduces this quadratic dependency to linear.  We show that \bigb is a universal approximator of sequence functions and is Turing complete, thereby preserving these  properties of the quadratic, full attention model. Along the way, our theoretical analysis reveals  some of the benefits of having $O(1)$ global tokens (such as CLS), that attend to the entire sequence  as part of the sparse attention mechanism. The proposed sparse attention can handle sequences of length up to 8x of  what was previously possible using  similar hardware.  As a consequence of the capability to handle longer context, \bigb  drastically improves performance  on various NLP tasks  such as question answering and summarization. We also propose novel applications to genomics data.
+\end{abstract}
+
+
+\input{010_intro.tex}
+
+\input{020_architecture}
+
+\input{030_theory.tex}
+
+\input{040_nlp_expt.tex}
+
+\input{050_dna_expt.tex}
+
+\input{060_conclusion.tex}
+
+\bibliographystyle{abbrvnat}
+\bibliography{ref}
+
+\newpage
+\appendix
+\include{070_appendix}
+
+\end{document}

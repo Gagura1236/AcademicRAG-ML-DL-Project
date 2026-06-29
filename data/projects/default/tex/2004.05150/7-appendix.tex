@@ -1,0 +1,295 @@
+\section{Implementation Details}
+\label{sec:tvm_details}
+
+Implementing \model's dilated sliding window attention requires a form
+of banded matrix multiplication (matrix multiplication where the output
+is all zero except certain diagonals) that is not directly supported in 
+existing deep learning libraries like PyTorch/Tensorflow. 
+Fig.~\ref{fig:tvm} compares the runtime and memory of three different ways of implementing
+it. \\
+\texttt{\model-loop} is a naive implementation that computes each diagonal separately in a loop. 
+It is memory efficient because it only computes the non-zero values, but 
+it is unusably slow. We only use it for testing because it is easy to implement but don't use 
+it to run experiments. \\
+\texttt{\model-chunks} only supports the non-dilated case. It chunks $Q$ and $K$ into 
+overlapping blocks of size $w$ and overlap of size $\frac{1}{2}w$, multiplies the blocks, 
+then mask out the diagonals. This is very compute efficient because it uses
+a single matrix multiplication operation from PyTorch, but it consumes 2x the amount of memory
+a perfectly optimized implementation should consume because it computes some of the zero values.
+Because of the compute efficiency, this implementation is most suitable for the 
+pretrain/finetune case. We didn't find the increase in memory to be a problem for this setting. \\
+\texttt{\model-cuda} is a custom CUDA kernel that we implement using 
+TVM~\cite{tvm}. It is a fully functioning implementation of our attention (not limited as \texttt{\model-chunks}), it is the most memory efficient, 
+and it is as fast as the highly optimized full self-attention.\footnote{It is worth noting that theoretically, a perfectly optimized \texttt{\model-cuda} should be faster than the $n^2$ computation. 
+However, achieving this level of performance requires special knowledge of low-level GPU programming, similar to implementing a highly optimized matrix multiplication. Our current implementation is sufficiently fast and practical to use.} We mainly use this implementation for the 
+autoregressive language modeling experiments because of the memory efficiency (allows the longest 
+sequences) and the support of dilation (needed for character-LM experiments).
+
+
+\paragraph{Tensor Virtual Machine (TVM)}
+We build our custom CUDA kernel using TVM~\cite{tvm}, a deep learning compiler stack that compiles
+high level description of a function into optimized device-specific code.
+Using TVM, we describe our banded matrix multiplication in 
+high-level python constructs, then TVM generates the corresponding CUDA code
+and compiles it for GPUs.
+
+% Fig.~\ref{fig:tvm} compares the runtime and memory of the full self-attention, 
+% our TVM implementation of the dilated sliding window, and a naive implementation of this attention. It is clear the full attention implementation is fast but it 
+% takes significant amount of memory because it needs to store all $n^2$ values. 
+% The naive implementation with loops is not memory consuming because it only stores the
+% non-zero values, however it is significantly slow and impractical to use. Finally, our implementation is both fast and memory efficient because it only computes and stores the non-zero values.
+
+% \subsection{CUDA Kernels for our Attention Pattern}
+% \label{sec:tvm}
+% In regular transformers, attention scores are computed as in Eqn.~\ref{eq:qkv}. 
+% The expensive operation is the matrix multiplication $Q K^{T}$ because both
+% $Q$ and $K$ have $n$ (sequence length) projections. 
+
+% Our dilated sliding window attention pattern is not 
+% straightforward to implement
+% using modern deep learning libraries. 
+% Implementing it requires a form 
+% of banded matrix multiplication (matrix multiplication where the output
+% is all zero except certain diagonals) that is not supported in 
+% existing deep learning libraries like PyTorch/Tensorflow. In addition, naive implementations with loops is unusably slow. To address this challenge, we provide a highly efficient custom CUDA kernel that implements these attention operations and allows parallelizing the operation on GPU threads.
+
+% \paragraph{Tensor Virtual Machine (TVM)}
+% We build our custom CUDA kernel using TVM~\cite{tvm}, a deep learning compiler stack that compiles
+% high level description of a function into optimized device-specific code.
+% Using TVM, we describe our form of banded matrix multiplication in 
+% high-level python constructs, then TVM generates the corresponding CUDA code
+% and compiles it for GPUs.
+
+% Fig.~\ref{fig:tvm} compares the runtime and memory of the full self-attention, 
+% our TVM implementation of the dilated sliding window, and a naive implementation of this attention. It is clear the full attention implementation is fast but it 
+% takes significant amount of memory because it needs to store all $n^2$ values. 
+% The naive implementation with loops is not memory consuming because it only stores the
+% non-zero values, however it is significantly slow and impractical to use. Finally, our implementation is both fast and memory efficient because it only computes and stores the non-zero values.\footnote{It is worth noting that theoretically, a perfectly optimized sliding window attention operation should be faster than the $n^2$ computation. 
+% However, achieving this level of performance requires special knowledge of low-level GPU programming, similar to implementing a highly optimized matrix multiplication. Our current implementation is sufficiently fast and practical to use.}
+
+\section{Character LM Hyperparameters}
+\label{sec:charlmapp}
+
+We evaluate on \texttt{text8} and \texttt{enwik8}, both contain 100M 
+characters from Wikipedia split into 90M, 5M, 5M for train, dev, test. 
+Our model only specifies how the self-attention component works, and it is 
+agnostic to the other design choices for the transformer model. 
+Our implementation is based on the Transformer-XL~\cite{transformerxl}
+code\footnote{\url{https://github.com/kimiyoung/transformer-xl}} 
+with the memory mechanism disabled. 
+We use relative position embeddings with sinusoidal weights as in~\citet{transformerxl}. 
+We use two different model sizes, a small (12 layers, 512 hidden size) model as in~\citet{transformerxl}, 
+and a large (30 layers, 512 hidden size) model as in~\citet{sparseOpenai}.
+% \footnote{The large
+% model of~\citet{transformerxl} (24 layers, 1024 hidden size) 
+% overfits quickly and didn't perform well on the task
+%\ib{better remove this to make results on large model look better}}.
+We employed mixed precision training (floating points 16 and 32) using apex\footnote{\url{https://github.com/NVIDIA/apex}} to reduce memory consumption and speed-up training. However,  we kept the attention computation in fp32
+to avoid numerical instability issues.\footnote{We found that using fp16 in attention operation results in floating point overflow and NaNs in later stages of training.}
+We used gradient checkpointing~\cite{gradckpt} to reduce memory usage, and ran our experiments on 48GB RTX8000 GPUs. 
+All hyperparameters and stage configurations are listed in Tab.~\ref{tab:char-hyperparams}. 
+Our CUDA kernel supports the autoregressive mode where each token 
+attends to a window of previous tokens only. Our implementation 
+also includes a version of the relative position embedding
+that is compatible with our dilated sliding window attention.
+
+We ran the small model experiments on 4 RTX8000 GPUs for 16 days.
+% where phases from 1 to 5 take 8, 2, 2, 2, 2 days respectively. 
+For the large model, we ran experiments on 8 RTX8000 GPUs for 
+13 days. 
+%  where phases take 3, 0.5, 1, 0.5, 8 days. 
+Most of our hyperparameter search is similar to the ablation in Tab.~\ref{tab:ablation_charlm} where we run the configuration for 150K steps
+on \texttt{text8}.
+We experimented with absolute position embeddings and learned position embeddings,
+dropout values of [0.1, 0.2] (small model) and [0.1, 0.4] (large model), 
+pre-layernorm and post-layernorm~\cite{layernorm}, learning rate (LR) of phase1 of values 
+% [0.00025, 0.0005, 0.0001],
+[2.5e-5, 5e-4, 1e-4]
+constant and cosine LR schedules, 
+and different configurations for dilation (on all heads, on 2 heads, no dilation).
+Number of gradient updates/phase
+reported in Tab.~\ref{tab:char-hyperparams} is determined by running each phase until the validation BPC stops getting better. 
+
+
+\begin{table*}
+ \centering
+ \small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Param & Value \\
+\midrule
+Position Embeddings & Relative and Sinusoidal as in~\citet{transformerxl} \\
+Small model config & 12 layers, 8 heads, 512 hidden size as in~\citet{transformerxl} \\
+Large model config & 30 layers, 8 heads, 512 hidden size as in~\citet{sparseOpenai} \\
+Optimizer & AdamW \\
+Dropout & 0.2 (small model), 0.4  (large model) \\
+Gradient clipping & 0.25 \\
+Weight Decay & 0.01 \\
+Layernorm Location & pre-layernorm~\cite{layernorm} \\
+Activation & GeLU \\
+Number of phases & 5 \\
+Phase 1 window sizes & 32 (bottom layer) - 8,192 (top layer) \\
+Phase 5 window sizes & 512 (bottom layer) -  (top layer) \\
+Phase 1 sequence length & 2,048 \\
+Phase 5 sequence length & 23,040  (gpu memory limit) \\
+Phase 1 LR & 0.00025 \\
+Phase 5 LR & 000015625 \\
+Batch size per phase & 32, 32, 16, 16, 16 \\
+\#Steps per phase (small) & 430K, 50k, 50k, 35k, 5k \\
+\#Steps per phase (large) & 350K, 25k, 10k, 5k, 5k \\
+Warmup & 10\% of the phase steps with maximum 10K steps \\
+LR scheduler & constant throughout each phase \\
+Dilation (small model) & 0 (layers 0-5), 1 (layers 6-7), 2 (layers 8-9), 3 (layers 10-11) \\
+Dilation (large model) & 0 (layers 0-14), 1 (layers 15-19), 2 (layers 20-24), 3 (layers 25-29) \\
+Dilation heads & 2 heads only \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparameters for the best performing model for character-level language modeling}
+\label{tab:char-hyperparams}
+ \end{table*}
+
+\section{Pretraining Data}
+\label{sec:mlm_data}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Source    & Tokens & Avg doc len \\ \midrule
+Books \cite{Zhu2015AligningBA}    & 0.5B              & 95.9K\\
+English Wikipedia & 2.1B              & 506 \\
+Realnews \cite{Zellers2019DefendingAN}  & 1.8B              & 1.7K\\
+Stories \cite{Trinh2018ASM}  & 2.1B              & 7.8K \\ \bottomrule
+\end{tabular}
+\caption{Pretraining data}\label{tab:pretrain-data}
+\end{table}
+
+In order to allow the model to learn long dependencies in pretraining, we compiled a corpus of long documents. Some of these data sources were also included in the original RoBERTa pretraining including the Books corpus \cite{Zhu2015AligningBA} plus English Wikipedia. We additionally included one third of a subset of the Realnews dataset \cite{Zellers2019DefendingAN} with documents longer than 1,200 tokens as well as one third of the Stories \cite{Trinh2018ASM} corpus. Our goal was to include a mix of long and short documents to both allow the model to learn longer dependencies while not to forget information from the original RoBERTa pretraining. The statistics of the pretraining data is shown in Tab.~\ref{tab:pretrain-data}.
+
+
+\section{Task specific model details}
+All the QA and classification models are implemented using PyTorch-Lightning\footnote{\url{https://github.com/PyTorchLightning/pytorch-lightning}}.  We use the official train/dev/test splits of all datasets except for the Hyperpartisan news which we randomely split into 80/10/10 for train/dev/test.
+
+\label{sec:taskdetails}
+
+\paragraph{WikiHop} Instances in WikiHop consist of: a question, answer candidates (ranging from two candidates to 79 candidates), supporting contexts (ranging from three paragraphs to 63 paragraphs), and the correct answer.  The dataset does not provide any intermediate annotation for the multihop reasoning chains, requiring models to instead infer them from the indirect answer supervision.
+
+To prepare the data for input to \model and RoBERTa, we first tokenize the question, answer candidates, and support contexts using RoBERTa's wordpiece tokenizer.  Then we concatenate the question and answer candidates with special tokens as \texttt{[q] question [/q] [ent] candidate1 [/ent] ... [ent] candidateN [/ent]}.  The contexts are also concatenated using RoBERTa's document delimiter tokens as separators: \texttt{</s> context1 </s> ... </s> contextM </s>}.  The special tokens \texttt{[q], [/q], [ent], [/ent]} were added to the RoBERTa vocabulary and randomly initialized before task finetuning.
+
+After preparing the input data, we compute activations from the top layer of each model as follows.
+We take the question and answer candidates and concatenate them to as much context as possible up to the model sequence length (512 for RoBERTa, 4,096 for \model), run the sequence through the model, collect the output activations, and repeat until all of the context is exhausted (for all models except \model-large, where we just include the first 4,096 length sequence due to memory requirements).  Then all activations for all chunks are concatenated into one long sequence.  In the case of \model, we use global attention to the entire question and answer candidate sequence.
+
+For prediction, we attach a linear layer to each \texttt{[ent]} that outputs a single logit, average over all logits for each candidate across the chunks, apply a softmax and use the cross entropy loss with the correct answer candidate.
+
+Training used the Adam optimizer with linear warmup over 200 gradient updates to a maximum LR, and linear decay over the remainder of training.  We used gradient accumulation to effective batch size of 32 instances, checking the development accuracy every 250 gradient updates and reported the maximum development accuracy.  Other hyperparameters (dropout, weight decay) were identical to RoBERTa pretraining.
+
+In general, we ran minimal hyperparameter trials, but for fair comparison between \model and RoBERTa ran an identical hyperparameter search with \model-base and RoBERTa-base.  This consisted of a grid search of LR in [2e-5, 3e-5, 5e-5] and number epochs in [5, 10, 15].  The best \model-base configuration used lr=3e-5, 15 epochs.  We ran two hyperparameter trials for \model-large, lr=3e-5 and number epochs in [5, 15] (the 5 epoch model had higher dev accuracy of 77.6, and was the single model submitted to the public leaderboard for test set evaluation).  All models were trained on a single RTX8000 GPU, with \model-base taking about a day for 5 epochs.
+
+\paragraph{TriviaQA}
+TriviaQA has more than 100K question, answer, document triplets for training. 
+Documents are Wikipedia articles, and answers are named entities 
+mentioned in the article. The span that answers the question is not annotated, 
+but it is found using simple text matching. 
+
+Similar to WikiHop, we tokenize the question and the document 
+using RoBERTa's tokenizer, then form the input as \texttt{[s] question [/s] 
+document [/s]}. We truncate the document at 4,096 wordpiece to avoid 
+it being very slow. Afterwards, we get the activations from RoBERTa 
+and Longformer similar to WikiHop (discussed above). 
+We use global attention on all question tokens. 
+
+For prediction, we add one layer that predicts the beginning and end of 
+the answer span. Because of the distant supervision nature of the training data (no gold answer spans), we use the loss function of~\citet{Clark2017SimpleAE}
+which works like an OR that the model only needs to get 
+one answer span right, not all of them. 
+
+Hyperparameters of the best configuration are listed in Tab.~\ref{tab:qa-hyperparams}. All other hyperparameters are similar to RoBERTa's. For hyperparameter search, we only tuned LR for the RoBERTa
+baseline and tried rates [3e-5, 5e-5, 1e-4], then used the best, which is 3e-5, 
+for all subsequent experiments with no further tuning. 
+We trained the \model-large with the best configuration once and submitted its 
+output to the leaderboard. 
+We ran our experiments on 32GB V100 GPUs.
+Small model takes 1 day to train on 4 GPUs, while large model takes 
+1 day on 8 GPUs. 
+
+
+\paragraph{HotpotQA}
+HotpotQA dataset involves answering questions from a set of 10 paragraphs from 10 different Wikipedia articles where 2 paragraphs are relevant to the question and the rest are distractors. It includes 2 tasks of answer span extraction and evidence sentence identification.
+Our model for HotpotQA combines both answer span extraction and evidence extraction in one joint model. 
+We found a higher performance using a two-stage \model model with similar setup that first identifies relevant paragraphs and then does find the final answer span and evidence.\footnote{The final dev performance of the two stage model improves over a single stage model by about 4.2 points on joint-F1 metric}  This is largely because removing the distracting paragraphs first reduces the noise for the final evidence and span detection as also found to be important by recent state-of-the-art methods in this dataset \cite{hotpotqasota}.
+Similar to Wikihop and TriviaQA, to prepare the data for input to \model, we concatenate question and then all the 10 paragraphs in one long context. We particularly use the following input format with special tokens: ``\texttt{[CLS] [q] question [/q] $\langle$t$\rangle$ $\texttt{title}_{\texttt{1}}$ $\langle$/t$\rangle$} $\texttt{sent}_{\texttt{1,1}}$ \texttt{[s]} $\texttt{sent}_{\texttt{1,2}}$ \texttt{[s]} \texttt{...} \texttt{$\langle$t$\rangle$ $\texttt{title}_{\texttt{2}}$ $\langle$/t$\rangle$ }  $\texttt{sent}_{\texttt{2,1}}$ \texttt{[s]} $\texttt{sent}_{\texttt{2,2}}$ \texttt{[s]} \texttt{...}'' where \texttt{[q]}, \texttt{[/q]}, $\langle$\texttt{t}$\rangle$, $\langle$\texttt{/t}$\rangle$, \texttt{[s]}, \texttt{[p]} are special tokens representing, question start and end, paragraph title start and end, and sentence, respectively. The special tokens were added to the \model vocabulary and randomly initialized before task finetuning. For \model, we use global attention to question tokens, paragraph title start tokens as well as sentence tokens. The model includes additional feedforward layers on top of paragraph title start tokens for prediction of relevant paragraphs, as well as sentence tokens for predicting evidence sentences. After training the first stage model, we predict relevant paragraph scores for both training and development set. We then keep up to 5 paragraphs whose raw score is higher than a pre-specified threshold (-3.0), and remove the other paragraphs from the context. We then train the second stage model on the resulting shortened context. For answer span extraction we use BERT's QA model \cite{bert} with addition of a question type (yes/no/span) classification head over the first special token (\texttt{[CLS]}). For evidence extraction we apply 2 layer feedforward networks on top of the representations corresponding to sentence and paragraph tokens to get the corresponding evidence prediction scores and use binary cross entropy loss to train the model. At inference time for evidence extraction, we use a constrained decoding strategy similar to \citet{quark2020} that ensures that the evidence sentences come from exactly two paragraphs which is the setup of this dataset. We combine span, question classification, sentence, and paragraphs losses and train the model in a multitask way using linear combination of losses. Our experiments are done on RTX8000 GPUs and training each epoch takes approximately half a day on 4 GPUs.
+We trained the model using Adam optimizer with linear warmup (1000 steps) and linear decay. We used minimal hyperparameter tuning using LRs of 3e-5 and 5e-5 and epochs of 3 to 7 and found the model with LR of 3e-5 and 5 epochs to work best. We conduct the same hyperparameter search for the RoBERTa baseline as well. The rest of hyperparameters are reported in Tab \ref{tab:qa-hyperparams}. 
+
+\begin{table}[!h]
+ \centering
+ \small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Param & WikiHop & TriviaQA & HotpotQA \\
+\midrule
+Epochs & 15 & 5 & 5 \\
+LR & 3e-5 & 3e-5 & 5e-5\\
+% LR schaduler & linear warmup \& decay & linear warmup \& decay & linear warmup \& decay \\
+Warmup steps & 200 & 1000 & 1000 \\
+Batch size & 32 & 32 & 32 \\
+Optimizer & Adam & Adam & Adam \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparameters of the QA models. All models use a similar scheduler with linear warmup and decay.}
+\label{tab:qa-hyperparams}
+ \end{table}
+
+
+\paragraph{Coreference model details}
+The coreference model is a straightforward adaptation of the coarse-to-fine BERT based model from \citet{joshi-etal-2019-bert}.  After preprocessing each document with the RoBERTa wordpiece tokenizer, it splits each document into non-overlapping segments up to the maximum sequence length, then concatenates the activations for the coarse-to-fine clustering stage that forms coreference clusters.
+The maximum sequence length was 384 for RoBERTa-base, chosen after three trials from [256, 384, 512] using the default hyperparameters in the original  implementation.\footnote{https://github.com/mandarjoshi90/coref}  For \model-base the sequence length was 4,096.  Similar to the original implementation, different learning rates were used for the pretrained RoBERTa parameters and the randomly initialized task parameters.  Using a larger learning rate in the task parameters allows the optimizer to adjust them farther from their randomly initialized values without destroying the information in the pretrained RoBERTa parameters.  
+
+Hyperparameter searches were minimal and consisted of grid searches of RoBERTa LR in [1e-5, 2e-5, 3e-5] and task LR in [1e-4, 2e-4, 3e-4] for both RoBERTa and \model for a fair comparison. The best configuration for \model-base was RoBERTa lr=1e-5, task lr=1e-4.  All other hyperparameters were the same as in the original implementation.  Training takes about 10 hours on a single GPU.
+
+Our implementation is a superhack that involves PyTorch and Tensorflow sharing a single process and GPU.  To avoid re-implementing the complicated coarse-to-fine logic from Tensorflow in PyTorch (that involves a highly optimized custom GPU kernel originally released by \citet{lee-etal-2018-higher}), we devised a system where the lower transformer portion of the model passes activations and gradients back and forth between PyTorch and Tensorflow.  The input tensors are first run through the transformer in PyTorch, the activations are collected from the top layer, transferred from GPU to CPU then from CPU to Tensorflow and back to GPU to run the coarse-to-fine clustering and compute the loss.  Then gradients are back propogated in Tensorflow to the top of the transformer and the process reversed to transfer them to PyTorch for back propogation through the remainder of the model.  Separate optimizers are maintained with identical LR schedules for parameter updates.  The overhead in this approach is minimal compared to the overall cost of running the model.
+
+
+\paragraph{Text classification}
+For classification, following BERT, we used a simple binary cross entropy loss on top of a first \texttt{[CLS]} token with addition of global attention to \texttt{[CLS]}. We used Adam optimizer with batch sizes of 32 and linear warmup and decay with warmup steps equal to 0.1 of the total training steps. For both IMDB and Hyperpartisan news we did grid search of LRs [3e-5, 5e-5] and epochs [10, 15, 20] and found the model with [3e-5] and epochs 15 to work best. Experiments were done on a single RTX8000 GPU. 
+% \subsection{WikiHop}
+% \begin{table}[!h]
+%  \centering
+%  \small
+% \begin{tabular}{@{}ll@{}}
+% \toprule
+% Param & Value \\
+% \midrule
+% Epochs & 15 \\
+% LR & ? \\
+% LR schaduler & linear warmup and decay \\
+% Warmup & ? steps \\
+% Batch size & ? \\
+% Optimizer & Adam \\
+% \bottomrule
+% \end{tabular}
+%  \end{table}
+
+
+
+% \subsection{TriviaQA} 
+% \begin{table}[!h]
+%  \centering
+%  \small
+% \begin{tabular}{@{}ll@{}}
+% \toprule
+% Param & Value \\
+% \midrule
+% Epochs & 5 \\
+% LR & 0.00003 \\
+% LR schaduler & linear warmup and decay \\
+% Warmup & 1000 steps \\
+% Batch size & 32 \\
+% Optimizer & Adam \\
+% Input & first 4096 wordpieces \\
+% \bottomrule
+% \end{tabular}
+%  \end{table}
+
+
+% \subsection{HotpotQA}

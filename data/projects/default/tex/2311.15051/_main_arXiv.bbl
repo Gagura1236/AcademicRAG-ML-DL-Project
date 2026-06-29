@@ -1,0 +1,452 @@
+\begin{thebibliography}{52}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwala et~al.(2023)Agarwala, Pedregosa, and
+  Pennington]{agarwala2023eos}
+Atish Agarwala, Fabian Pedregosa, and Jeffrey Pennington.
+\newblock {Second-order regression models exhibit progressive sharpening to the
+  edge of stability}.
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning}, volume 202 of \emph{Proceedings of Machine Learning Research},
+  pages 169--195. PMLR, 23--29 Jul 2023.
+\newblock URL \url{https://proceedings.mlr.press/v202/agarwala23b.html}.
+
+\bibitem[Ahn et~al.(2022)Ahn, Zhang, and Sra]{ahn2022stability}
+Kwangjun Ahn, Jingzhao Zhang, and Suvrit Sra.
+\newblock Understanding the unstable convergence of gradient descent.
+\newblock In \emph{Proceedings of the 39th International Conference on Machine
+  Learning}, volume 162 of \emph{Proceedings of Machine Learning Research},
+  pages 247--257. PMLR, 17--23 Jul 2022.
+\newblock URL \url{https://proceedings.mlr.press/v162/ahn22a.html}.
+
+\bibitem[Ahn et~al.(2023)Ahn, Bubeck, Chewi, Lee, Suarez, and
+  Zhang]{ahn2022threshold}
+Kwangjun Ahn, S\'{e}bastien Bubeck, Sinho Chewi, Yin~Tat Lee, Felipe Suarez,
+  and Yi~Zhang.
+\newblock {Learning threshold neurons via the "edge of stability"}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=9cQ6kToLnJ}.
+
+\bibitem[Andriushchenko et~al.(2023{\natexlab{a}})Andriushchenko, Bahri,
+  Mobahi, and Flammarion]{andriushchenko2023sam}
+Maksym Andriushchenko, Dara Bahri, Hossein Mobahi, and Nicolas Flammarion.
+\newblock {Sharpness-Aware Minimization Leads to Low-Rank Features}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023{\natexlab{a}}.
+\newblock URL \url{https://openreview.net/forum?id=29WbraPk8U}.
+
+\bibitem[Andriushchenko et~al.(2023{\natexlab{b}})Andriushchenko, Croce,
+  M\"{u}ller, Hein, and Flammarion]{andriushchenko2023sharpness}
+Maksym Andriushchenko, Francesco Croce, Maximilian M\"{u}ller, Matthias Hein,
+  and Nicolas Flammarion.
+\newblock {A Modern Look at the Relationship between Sharpness and
+  Generalization}.
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning}, volume 202 of \emph{Proceedings of Machine Learning Research},
+  pages 840--902. PMLR, 23--29 Jul 2023{\natexlab{b}}.
+\newblock URL \url{https://proceedings.mlr.press/v202/andriushchenko23a.html}.
+
+\bibitem[Arora et~al.(2022)Arora, Li, and Panigrahi]{arora2022stability}
+Sanjeev Arora, Zhiyuan Li, and Abhishek Panigrahi.
+\newblock {Understanding Gradient Descent on the Edge of Stability in Deep
+  Learning}.
+\newblock In \emph{Proceedings of the 39th International Conference on Machine
+  Learning}, volume 162 of \emph{Proceedings of Machine Learning Research},
+  pages 948--1024. PMLR, 17--23 Jul 2022.
+\newblock URL \url{https://proceedings.mlr.press/v162/arora22a.html}.
+
+\bibitem[Azulay et~al.(2021)Azulay, Moroshko, Nacson, Woodworth, Srebro,
+  Globerson, and Soudry]{azulay2021initialization}
+Shahar Azulay, Edward Moroshko, Mor~Shpigel Nacson, Blake~E Woodworth, Nathan
+  Srebro, Amir Globerson, and Daniel Soudry.
+\newblock {On the Implicit Bias of Initialization Shape: Beyond Infinitesimal
+  Mirror Descent}.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, volume 139 of \emph{Proceedings of Machine Learning Research},
+  pages 468--477. PMLR, 18--24 Jul 2021.
+\newblock URL \url{https://proceedings.mlr.press/v139/azulay21a.html}.
+
+\bibitem[Barrett and Dherin(2021)]{barrett2021implicit}
+David Barrett and Benoit Dherin.
+\newblock {Implicit Gradient Regularization}.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+\newblock URL \url{https://openreview.net/forum?id=3q5IqUrkcF}.
+
+\bibitem[Cohen et~al.(2021)Cohen, Kaur, Li, Kolter, and
+  Talwalkar]{cohen2021stability}
+Jeremy Cohen, Simran Kaur, Yuanzhi Li, J~Zico Kolter, and Ameet Talwalkar.
+\newblock {Gradient Descent on Neural Networks Typically Occurs at the Edge of
+  Stability}.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+\newblock URL \url{https://openreview.net/forum?id=jh-rTtvkGeM}.
+
+\bibitem[Cohen et~al.(2022)Cohen, Ghorbani, Krishnan, Agarwal, Medapati,
+  Badura, Suo, Cardoze, Nado, Dahl, and Gilmer]{cohen2022stability}
+Jeremy~M. Cohen, Behrooz Ghorbani, Shankar Krishnan, Naman Agarwal, Sourabh
+  Medapati, Michal Badura, Daniel Suo, David Cardoze, Zachary Nado, George~E.
+  Dahl, and Justin Gilmer.
+\newblock {Adaptive Gradient Methods at the Edge of Stability}.
+\newblock \emph{arXiv preprint arXiv:2207.14484}, 2022.
+\newblock URL \url{https://arxiv.org/abs/2207.14484}.
+
+\bibitem[Damian et~al.(2023)Damian, Nichani, and Lee]{damian2023stabilization}
+Alex Damian, Eshaan Nichani, and Jason~D. Lee.
+\newblock {Self-Stabilization: The Implicit Bias of Gradient Descent at the
+  Edge of Stability}.
+\newblock In \emph{The Eleventh International Conference on Learning
+  Representations}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=nhKHA59gXz}.
+
+\bibitem[Dinh et~al.(2017)Dinh, Pascanu, Bengio, and Bengio]{dinh2017sharp}
+Laurent Dinh, Razvan Pascanu, Samy Bengio, and Yoshua Bengio.
+\newblock {Sharp Minima Can Generalize For Deep Nets}.
+\newblock In \emph{Proceedings of the 34th International Conference on Machine
+  Learning}, volume~70 of \emph{Proceedings of Machine Learning Research},
+  pages 1019--1028. PMLR, 06--11 Aug 2017.
+\newblock URL \url{https://proceedings.mlr.press/v70/dinh17b.html}.
+
+\bibitem[Even et~al.(2023)Even, Pesme, Gunasekar, and
+  Flammarion]{even2023diagonal}
+Mathieu Even, Scott Pesme, Suriya Gunasekar, and Nicolas Flammarion.
+\newblock {(S)GD over Diagonal Linear Networks: Implicit Regularisation, Large
+  Stepsizes and Edge of Stability}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=uAyElhYKxg}.
+
+\bibitem[Fu et~al.(2023)Fu, Wang, Zhang, Zhang, Chen, and
+  Zheng]{fu2023momentum}
+Jingwen Fu, Bohan Wang, Huishuai Zhang, Zhizheng Zhang, Wei Chen, and Nanning
+  Zheng.
+\newblock {When and Why Momentum Accelerates SGD: An Empirical Study}.
+\newblock \emph{arXiv preprint arXiv:2306.09000}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2306.09000}.
+
+\bibitem[Ganesh et~al.(2023)Ganesh, Deb, Thoppe, and
+  Budhiraja]{ganesh2023momentum}
+Swetha Ganesh, Rohan Deb, Gugan Thoppe, and Amarjit Budhiraja.
+\newblock {Does Momentum Help in Stochastic Optimization? A Sample Complexity
+  Analysis}.
+\newblock In \emph{Proceedings of the Thirty-Ninth Conference on Uncertainty in
+  Artificial Intelligence}, volume 216 of \emph{Proceedings of Machine Learning
+  Research}, pages 602--612. PMLR, 31 Jul--04 Aug 2023.
+\newblock URL \url{https://proceedings.mlr.press/v216/ganesh23a.html}.
+
+\bibitem[Ghosh et~al.(2023)Ghosh, Lyu, Zhang, and Wang]{ghosh2023implicit}
+Avrajit Ghosh, He~Lyu, Xitong Zhang, and Rongrong Wang.
+\newblock {Implicit regularization in Heavy-ball momentum accelerated
+  stochastic gradient descent}.
+\newblock In \emph{International Conference on Learning Representations}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=ZzdBhtEH9yB}.
+
+\bibitem[Gilmer et~al.(2022)Gilmer, Ghorbani, Garg, Kudugunta, Neyshabur,
+  Cardoze, Dahl, Nado, and Firat]{gilmer2022stability}
+Justin Gilmer, Behrooz Ghorbani, Ankush Garg, Sneha Kudugunta, Behnam
+  Neyshabur, David Cardoze, George~Edward Dahl, Zachary Nado, and Orhan Firat.
+\newblock {A Loss Curvature Perspective on Training Instabilities of Deep
+  Learning Models}.
+\newblock In \emph{International Conference on Learning Representations}, 2022.
+\newblock URL \url{https://openreview.net/forum?id=OcKMT-36vUs}.
+
+\bibitem[Goh(2017)]{goh2017momentum}
+Gabriel Goh.
+\newblock {Why Momentum Really Works}.
+\newblock \emph{Distill}, 2017.
+\newblock \doi{10.23915/distill.00006}.
+\newblock URL \url{http://distill.pub/2017/momentum}.
+
+\bibitem[Gotmare et~al.(2019)Gotmare, Keskar, Xiong, and
+  Socher]{gotmare2018warmup}
+Akhilesh Gotmare, Nitish~Shirish Keskar, Caiming Xiong, and Richard Socher.
+\newblock {A Closer Look at Deep Learning Heuristics: Learning rate restarts,
+  Warmup and Distillation}.
+\newblock In \emph{International Conference on Learning Representations}, 2019.
+\newblock URL \url{https://openreview.net/forum?id=r14EOsCqKX}.
+
+\bibitem[Goyal et~al.(2017)Goyal, Dollár, Girshick, Noordhuis, Wesolowski,
+  Kyrola, Tulloch, Jia, and He]{goyal2017warmup}
+Priya Goyal, Piotr Dollár, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski,
+  Aapo Kyrola, Andrew Tulloch, Yangqing Jia, and Kaiming He.
+\newblock {Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour}.
+\newblock \emph{arXiv preprint arXiv:1706.02677}, 2017.
+\newblock URL \url{https://arxiv.org/abs/1706.02677}.
+
+\bibitem[Hochreiter and Schmidhuber(1997)]{hochreiter1997flat}
+Sepp Hochreiter and Jürgen Schmidhuber.
+\newblock {Flat Minima}.
+\newblock \emph{Neural Computation}, 9\penalty0 (1):\penalty0 1--42, 01 1997.
+\newblock \doi{10.1162/neco.1997.9.1.1}.
+\newblock URL \url{https://doi.org/10.1162/neco.1997.9.1.1}.
+
+\bibitem[Jacot et~al.(2018)Jacot, Gabriel, and Hongler]{jacot2018ntk}
+Arthur Jacot, Franck Gabriel, and Clement Hongler.
+\newblock {Neural Tangent Kernel: Convergence and Generalization in Neural
+  Networks}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~31, pages 8580--8589. Curran Associates, Inc., 2018.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2018/file/5a4be1fa34e62bb8a6ec6b91d2462f5a-Paper.pdf}.
+
+\bibitem[Jelassi and Li(2022)]{jelassi2022momentum}
+Samy Jelassi and Yuanzhi Li.
+\newblock Towards understanding how momentum improves generalization in deep
+  learning.
+\newblock In \emph{Proceedings of the 39th International Conference on Machine
+  Learning}, volume 162 of \emph{Proceedings of Machine Learning Research},
+  pages 9965--10040. PMLR, 17--23 Jul 2022.
+\newblock URL \url{https://proceedings.mlr.press/v162/jelassi22a.html}.
+
+\bibitem[Kalra and Barkeshli(2023)]{kalra2023catapult}
+Dayal~Singh Kalra and Maissam Barkeshli.
+\newblock {Phase diagram of early training dynamics in deep neural networks:
+  effect of the learning rate, depth, and width}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=Al9yglQGKj}.
+
+\bibitem[Kidambi et~al.(2018)Kidambi, Netrapalli, Jain, and
+  Kakade]{kidambi2018momentum}
+Rahul Kidambi, Praneeth Netrapalli, Prateek Jain, and Sham~M. Kakade.
+\newblock {On the insufficiency of existing momentum schemes for Stochastic
+  Optimization}.
+\newblock In \emph{International Conference on Learning Representations}, 2018.
+\newblock URL \url{https://openreview.net/forum?id=rJTutzbA-}.
+
+\bibitem[Kreisler et~al.(2023)Kreisler, Nacson, Soudry, and
+  Carmon]{kreisler2023gradient}
+Itai Kreisler, Mor~Shpigel Nacson, Daniel Soudry, and Yair Carmon.
+\newblock {Gradient Descent Monotonically Decreases the Sharpness of Gradient
+  Flow Solutions in Scalar Networks and Beyond}.
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning}, volume 202 of \emph{Proceedings of Machine Learning Research},
+  pages 17684--17744. PMLR, 23--29 Jul 2023.
+\newblock URL \url{https://proceedings.mlr.press/v202/kreisler23a.html}.
+
+\bibitem[Krizhevsky and Hinton(2009)]{krizhevsky2009learning}
+A.~Krizhevsky and G.~Hinton.
+\newblock Learning multiple layers of features from tiny images.
+\newblock \emph{Master's thesis, Department of Computer Science, University of
+  Toronto}, 2009.
+\newblock URL
+  \url{https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf}.
+
+\bibitem[Lewkowycz et~al.(2020)Lewkowycz, Bahri, Dyer, Sohl-Dickstein, and
+  Gur-Ari]{lewkowycz2020catapult}
+Aitor Lewkowycz, Yasaman Bahri, Ethan Dyer, Jascha Sohl-Dickstein, and Guy
+  Gur-Ari.
+\newblock {The large learning rate phase of deep learning: the catapult
+  mechanism}.
+\newblock \emph{arXiv preprint arXiv:2003.02218}, 2020.
+\newblock URL \url{https://arxiv.org/abs/2003.02218}.
+
+\bibitem[Liu et~al.(2020)Liu, Jiang, He, Chen, Liu, Gao, and
+  Han]{liu2020warmup}
+Liyuan Liu, Haoming Jiang, Pengcheng He, Weizhu Chen, Xiaodong Liu, Jianfeng
+  Gao, and Jiawei Han.
+\newblock {On the Variance of the Adaptive Learning Rate and Beyond}.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+\newblock URL \url{https://openreview.net/forum?id=rkgz2aEKDr}.
+
+\bibitem[Lu et~al.(2020)Lu, Shin, Su, and Em~Karniadakis]{lu2020dying}
+Lu~Lu, Yeonjong Shin, Yanhui Su, and George Em~Karniadakis.
+\newblock {Dying ReLU and Initialization: Theory and Numerical Examples}.
+\newblock \emph{Communications in Computational Physics}, 28\penalty0
+  (5):\penalty0 1671--1706, 2020.
+\newblock ISSN 1991-7120.
+\newblock \doi{https://doi.org/10.4208/cicp.OA-2020-0165}.
+\newblock URL \url{http://global-sci.org/intro/article_detail/cicp/18393.html}.
+
+\bibitem[Lyu and Zhu(2024)]{lyu2024momentum}
+Bochen Lyu and Zhanxing Zhu.
+\newblock {On the Role of Momentum in the Implicit Bias of Gradient Descent for
+  Diagonal Linear Networks}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=014CgNPAGy}.
+
+\bibitem[Meltzer and Liu(2023)]{meltzer2023catapult}
+David Meltzer and Junyu Liu.
+\newblock {Catapult Dynamics and Phase Transitions in Quadratic Nets}.
+\newblock \emph{arXiv preprint arXiv:2301.07737}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2301.07737}.
+
+\bibitem[Moroshko et~al.(2020)Moroshko, Woodworth, Gunasekar, Lee, Srebro, and
+  Soudry]{moroshko2020initialization}
+Edward Moroshko, Blake~E Woodworth, Suriya Gunasekar, Jason~D Lee, Nati Srebro,
+  and Daniel Soudry.
+\newblock {Implicit Bias in Deep Linear Classification: Initialization Scale vs
+  Training Accuracy}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 22182--22193. Curran Associates, Inc., 2020.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2020/file/fc2022c89b61c76bbef978f1370660bf-Paper.pdf}.
+
+\bibitem[Muehlebach and Jordan(2021)]{muhlebach2021momentum}
+Michael Muehlebach and Michael~I. Jordan.
+\newblock {Optimization with Momentum: Dynamical, Control-Theoretic, and
+  Symplectic Perspectives}.
+\newblock \emph{Journal of Machine Learning Research}, 22\penalty0
+  (73):\penalty0 1--50, 2021.
+\newblock URL \url{http://jmlr.org/papers/v22/20-207.html}.
+
+\bibitem[Nacson et~al.(2022)Nacson, Ravichandran, Srebro, and
+  Soudry]{nacson2022stepsize}
+Mor~Shpigel Nacson, Kavya Ravichandran, Nathan Srebro, and Daniel Soudry.
+\newblock {Implicit Bias of the Step Size in Linear Diagonal Neural Networks}.
+\newblock In \emph{Proceedings of the 39th International Conference on Machine
+  Learning}, volume 162 of \emph{Proceedings of Machine Learning Research},
+  pages 16270--16295. PMLR, 17--23 Jul 2022.
+\newblock URL \url{https://proceedings.mlr.press/v162/nacson22a.html}.
+
+\bibitem[Papazov et~al.(2024)Papazov, Pesme, and
+  Flammarion]{papazov2024momentum}
+Hristo Papazov, Scott Pesme, and Nicolas Flammarion.
+\newblock {Leveraging Continuous Time to Understand Momentum When Training
+  Diagonal Linear Networks}.
+\newblock In Sanjoy Dasgupta, Stephan Mandt, and Yingzhen Li, editors,
+  \emph{Proceedings of The 27th International Conference on Artificial
+  Intelligence and Statistics}, volume 238 of \emph{Proceedings of Machine
+  Learning Research}, pages 3556--3564. PMLR, 02--04 May 2024.
+\newblock URL \url{https://proceedings.mlr.press/v238/papazov24a.html}.
+
+\bibitem[Pedregosa(2023)]{pedregosa2023momentum}
+Fabian Pedregosa.
+\newblock {A Hitchhiker's Guide to Momentum}.
+\newblock In \emph{The Second Blogpost Track at ICLR 2023}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=kUk79nBY__2}.
+
+\bibitem[Pesme and Flammarion(2023)]{pesme2023hopping}
+Scott Pesme and Nicolas Flammarion.
+\newblock {Saddle-to-Saddle Dynamics in Diagonal Linear Networks}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=iuqCXg1Gng}.
+
+\bibitem[Pesme et~al.(2021)Pesme, Pillaud-Vivien, and Flammarion]{pesme2021sgd}
+Scott Pesme, Loucas Pillaud-Vivien, and Nicolas Flammarion.
+\newblock {Implicit Bias of SGD for Diagonal Linear Networks: a Provable
+  Benefit of Stochasticity}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, pages 29218--29230. Curran Associates, Inc., 2021.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper/2021/file/f4661398cb1a3abd3ffe58600bf11322-Paper.pdf}.
+
+\bibitem[Polyak(1964)]{polyak1964momentum}
+B.T. Polyak.
+\newblock Some methods of speeding up the convergence of iteration methods.
+\newblock \emph{USSR Computational Mathematics and Mathematical Physics},
+  4\penalty0 (5):\penalty0 1--17, 1964.
+\newblock \doi{https://doi.org/10.1016/0041-5553(64)90137-5}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/0041555364901375}.
+
+\bibitem[Song and Yun(2023)]{song2023bifurcation}
+Minhak Song and Chulhee Yun.
+\newblock {Trajectory Alignment: Understanding the Edge of Stability Phenomenon
+  via Bifurcation Theory}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=PnJaA0A8Lr}.
+
+\bibitem[Sutskever et~al.(2013)Sutskever, Martens, Dahl, and
+  Hinton]{sutskever2013momentum}
+Ilya Sutskever, James Martens, George Dahl, and Geoffrey Hinton.
+\newblock On the importance of initialization and momentum in deep learning.
+\newblock In \emph{Proceedings of the 30th International Conference on Machine
+  Learning}, volume~28 of \emph{Proceedings of Machine Learning Research},
+  pages 1139--1147, Atlanta, Georgia, USA, 17--19 Jun 2013. PMLR.
+\newblock URL \url{https://proceedings.mlr.press/v28/sutskever13.html}.
+
+\bibitem[Wang et~al.(2022{\natexlab{a}})Wang, Meng, Zhang, Sun, Chen, Ma, and
+  Liu]{wang2022implicit}
+Bohan Wang, Qi~Meng, Huishuai Zhang, Ruoyu Sun, Wei Chen, Zhi-Ming Ma, and
+  Tie-Yan Liu.
+\newblock {Does Momentum Change the Implicit Regularization on Separable Data?}
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~35, pages 26764--26776. Curran Associates, Inc., 2022{\natexlab{a}}.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2022/file/ab3f6bbe121a8f7a0263a9b393000741-Paper-Conference.pdf}.
+
+\bibitem[Wang et~al.(2023{\natexlab{a}})Wang, Fu, Zhou, and
+  Yan]{wang2023momentum}
+Li~Wang, Zhiguo Fu, Yingcong Zhou, and Zili Yan.
+\newblock {The Implicit Regularization of Momentum Gradient Descent in
+  Overparametrized Models}.
+\newblock \emph{Proceedings of the AAAI Conference on Artificial Intelligence},
+  37\penalty0 (8):\penalty0 10149--10156, Jun. 2023{\natexlab{a}}.
+\newblock \doi{10.1609/aaai.v37i8.26209}.
+\newblock URL \url{https://ojs.aaai.org/index.php/AAAI/article/view/26209}.
+
+\bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Xu, Zhao, and
+  Tao]{wang2023catapult}
+Yuqing Wang, Zhenghao Xu, Tuo Zhao, and Molei Tao.
+\newblock {Good regularity creates large learning rate implicit biases: edge of
+  stability, balancing, and catapult}.
+\newblock \emph{arXiv preprint arXiv:2310.17087}, 2023{\natexlab{b}}.
+\newblock URL \url{https://arxiv.org/abs/2310.17087}.
+
+\bibitem[Wang et~al.(2022{\natexlab{b}})Wang, Li, and Li]{wang2022stability}
+Zixuan Wang, Zhouzi Li, and Jian Li.
+\newblock {Analyzing Sharpness along GD Trajectory: Progressive Sharpening and
+  Edge of Stability}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~35, pages 9983--9994. Curran Associates, Inc., 2022{\natexlab{b}}.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2022/file/40bb79c081828bebdc39d65a82367246-Paper-Conference.pdf}.
+
+\bibitem[Woodworth et~al.(2020)Woodworth, Gunasekar, Lee, Moroshko, Savarese,
+  Golan, Soudry, and Srebro]{woodworth2020kernel}
+Blake Woodworth, Suriya Gunasekar, Jason~D. Lee, Edward Moroshko, Pedro
+  Savarese, Itay Golan, Daniel Soudry, and Nathan Srebro.
+\newblock {Kernel and Rich Regimes in Overparametrized Models}.
+\newblock In \emph{Proceedings of Thirty Third Conference on Learning Theory},
+  volume 125 of \emph{Proceedings of Machine Learning Research}, pages
+  3635--3673. PMLR, 09--12 Jul 2020.
+\newblock URL \url{https://proceedings.mlr.press/v125/woodworth20a.html}.
+
+\bibitem[Wu et~al.(2023)Wu, Braverman, and Lee]{wu2023logistic}
+Jingfeng Wu, Vladimir Braverman, and Jason~D Lee.
+\newblock {Implicit Bias of Gradient Descent for Logistic Regression at the
+  Edge of Stability}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36, pages 74229--74256. Curran Associates, Inc., 2023.
+\newblock URL \url{https://openreview.net/forum?id=IT9mWLYNpQ}.
+
+\bibitem[Wu et~al.(2024)Wu, Bartlett, Telgarsky, and Yu]{wu2024logistic}
+Jingfeng Wu, Peter~L. Bartlett, Matus Telgarsky, and Bin Yu.
+\newblock {Large Stepsize Gradient Descent for Logistic Loss: Non-Monotonicity
+  of the Loss Improves Optimization Efficiency}.
+\newblock \emph{arXiv preprint arXiv:2402.15926}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2402.15926}.
+
+\bibitem[Zhu et~al.(2024{\natexlab{a}})Zhu, Liu, Radhakrishnan, and
+  Belkin]{zhu2023catapult}
+Libin Zhu, Chaoyue Liu, Adityanarayanan Radhakrishnan, and Mikhail Belkin.
+\newblock {Catapults in SGD: spikes in the training loss and their impact on
+  generalization through feature learning}.
+\newblock In \emph{Proceedings of the 41st International Conference on Machine
+  Learning}, Proceedings of Machine Learning Research. PMLR,
+  2024{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/abs/2306.04815}.
+
+\bibitem[Zhu et~al.(2024{\natexlab{b}})Zhu, Liu, Radhakrishnan, and
+  Belkin]{zhu2023catapultquadratic}
+Libin Zhu, Chaoyue Liu, Adityanarayanan Radhakrishnan, and Mikhail Belkin.
+\newblock Quadratic models for understanding catapult dynamics of neural
+  networks.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations}, 2024{\natexlab{b}}.
+\newblock URL \url{https://openreview.net/forum?id=PvJnX3dwsD}.
+
+\bibitem[Zhu et~al.(2023)Zhu, Wang, Wang, Zhou, and Ge]{zhu2023minimalist}
+Xingyu Zhu, Zixuan Wang, Xiang Wang, Mo~Zhou, and Rong Ge.
+\newblock {Understanding Edge-of-Stability Training Dynamics with a Minimalist
+  Example}.
+\newblock In \emph{The Eleventh International Conference on Learning
+  Representations}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=p7EagBsMAEO}.
+
+\end{thebibliography}

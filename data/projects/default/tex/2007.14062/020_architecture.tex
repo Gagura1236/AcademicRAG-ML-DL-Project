@@ -1,0 +1,108 @@
+\begin{figure}
+    \vspace{-3mm}
+    \centering
+    \begin{subfigure}{.22\textwidth}
+        \includegraphics[width=\linewidth]{figures/RandomAttention.pdf}
+        \caption{Random attention}
+        \label{fig:rnd_atn}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.22\textwidth}
+        \includegraphics[width=\linewidth]{figures/SlidingWindow.pdf}
+        \caption{Window attention}
+        \label{fig:wnd:atn}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.22\textwidth}
+        \includegraphics[width=\linewidth]{figures/GlobalAttention.pdf}
+        \caption{Global Attention}
+        \label{fig:gbl_atn}
+    \end{subfigure}\hfill
+    \begin{subfigure}{.22\textwidth}
+        \includegraphics[width=\linewidth]{figures/BigBird.pdf}
+        \caption{\bigb}
+        \label{fig:bigb_atn}
+    \end{subfigure}
+    \hfill
+    \caption{Building blocks of the attention mechanism used in \bigb. White color indicates absence of attention. (a) random attention with $r=2$, (b) sliding window attention with $w=3$ (c) global attention with $g=2$. (d) the combined \bigb model.}
+    \label{fig:my_label}
+\end{figure}
+
+\section{\bigb Architecture}
+\label{sec:arch}
+In this section, we describe the \bigb model using the \emph{generalised attention mechanism} that is used in each layer of transformer operating on an input sequence $\mX = (\vx_1, ..., \vx_n) \in \R^{n\times d}$. 
+The \emph{generalized attention mechanism} is described by a directed graph $D$ whose vertex set is $[n] = \set{1,\dots,n}$. 
+The set of arcs (directed edges) represent the set of inner products that the attention mechanism will consider. 
+Let $N(i)$ denote the out-neighbors set of node $i$ in $D$, then the $i^\text{th}$ output vector of the generalized attention mechanism is defined as \useshortskip
+\vspace{-1mm}
+\begin{equation}\vspace{-2mm}
+\small
+\Attn_D(\mX)_i = \vx_i +  \sum_{h=1}^H \sigma \left(Q_h(\vx_i) K_h(\mX_{N(i)})^T \right) \cdot V_h(\mX_{N(i)}) %\cdot W_O^h
+\label{AT} \tag{AT}
+\end{equation}
+where $Q_h, K_h:\R^d \to \R^m$ are query and key functions respectively, $V_h:\R^d \to \R^d$ is a value function, $\sigma$ is a scoring function (e.g. softmax or hardmax) and $H$ denotes the number of heads. 
+Also note $X_{N(i)}$ corresponds to the matrix formed by only stacking $\{\vx_j : j\in N(i) \}$ and not all the inputs. 
+If $D$ is the complete digraph, we recover the full quadratic attention mechanism of \citet{vaswani2017attention}. 
+To simplify our exposition, we will operate on the adjacency matrix $A$ of the graph $D$  even though the underlying graph maybe sparse.
+To elaborate, $A \in [0, 1]^{n \times n}$ with $A(i,j)=1$ if query $i$ attends to key $j$ and is zero otherwise.
+For example, when $A$ is the ones matrix (as in BERT), it leads to quadratic complexity, since all tokens attend on every other token.
+This view of self-attention as a fully connected graph allows us to exploit existing graph theory to help reduce its complexity. 
+The problem of reducing the quadratic complexity of self-attention can now be seen as a \emph{graph sparsification problem}. 
+It is well-known that random graphs are expanders and can approximate complete graphs in a number of different contexts including in their spectral properties~\citep{spielman2011spectral,hoory2006expander}.
+We believe sparse random graph for attention mechanism should have two desiderata: small average path length between nodes and a notion of locality, each of which we discuss below.
+
+Let us consider the simplest random graph construction, known as  Erd\H{o}s-R\'enyi model, where each edge is independently chosen with a fixed probability.
+In such a random graph with just $\tilde{\Theta}(n)$ edges, %one can show that 
+the shortest path between any two nodes is logarithmic in the number of nodes~\citep{chung2002average, katzav2018distribution}.
+As a consequence, such a random graph approximates the complete graph spectrally and its second eigenvalue (of the adjacency matrix) is quite far from the first eigenvalue ~\citep{benaych2019largest,benaych2020spectral,alt2019extremal}. 
+This property leads to a rapid mixing time for random walks in the grpah, which informally suggests that information can flow fast between any pair of nodes.
+Thus, we propose a sparse attention where each query attends over $r$ random number of keys i.e. $A(i, \cdot ) = 1$ for $r$ randomly chosen keys (see~\Cref{fig:rnd_atn}).
+
+The second viewpoint which inspired the creation of \bigb is that  most contexts within NLP and computational biology have data which displays a great deal of \emph{locality of reference}. 
+In this phenomenon, a great deal of information about a token can be derived from its neighboring tokens. 
+Most pertinently, \citet{clark2019does} investigated self-attention models in NLP tasks and concluded that that neighboring inner-products are extremely important. 
+The concept of locality, proximity of tokens in linguistic structure, also forms the basis of various linguistic theories such as transformational-generative grammar.
+In the terminology of graph theory, clustering coefficient is a measure of locality of connectivity, and is high when the graph contains many cliques or near-cliques (subgraphs that are almost fully interconnected).
+Simple Erd\H{o}s-R\'enyi random graphs do not have a high clustering coefficient~\citep{sussman2017clusteringcoeff}, but
+a class of random graphs, known as small world graphs, exhibit high clustering coefficient~\citep{watts1998collective}.
+A particular model introduced by~\citet{watts1998collective} is of high relevance to us as it achieves a good balance between average shortest path and the notion of locality.
+The generative process of their model is as follows:
+Construct a regular ring lattice, a graph with $n$ nodes each connected to $w$ neighbors, $w$/2 on each side.
+
+\begin{wraptable}{r}{64mm}
+    \vspace{-3mm}
+    \centering
+    \small
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    Model &  MLM & SQuAD & MNLI \\
+    \midrule
+    BERT-base      &  64.2 & 88.5 & 83.4 \\
+    Random (R)     &  60.1 & 83.0 & 80.2 \\
+    Window (W)     &  58.3 & 76.4 & 73.1 \\
+    R + W          &  62.7 & 85.1 & 80.5 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Building block comparison @512}
+    \label{tab:init}
+    \vspace{-2mm}
+\end{wraptable}
+In other words we begin with a sliding window on the nodes.
+Then a random subset ($k$\%) of all connections is replaced with a random connection. 
+The other (100 - $k$)\% local connections are retained.
+However, deleting such random edges might be inefficient on modern hardware, so we retain it, which will not affect its properties.
+In summary, to capture these local structures in the context, in \bigb, we define a sliding window attention, so that during self attention of width $w$, query at location $i$ attends from $i-w/2$ to $i+w/2$ keys.
+In our notation, $A(i, i-w/2:i+w/2) = 1$  (see \Cref{fig:wnd:atn}). 
+As an initial sanity check, we performed basic experiments to test whether these intuitions are sufficient in getting performance close to BERT like models, while keeping attention linear in the number of tokens.
+We found that random blocks and local window were insufficient in capturing all the context necessary to 
+compete with the performance of BERT.
+
+The final piece of \bigb is inspired from our theoretical analysis  (\Cref{sec:theory}), which is critical for empirical performance. 
+More specifically, our theory utilizes the importance of ``global tokens'' (tokens that attend to all tokens in the sequence and to whom all tokens attend to (see \Cref{fig:gbl_atn}). 
+These global tokens can be defined in two ways:
+\begin{itemize}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item \bigb-\textsc{itc}: In internal transformer construction (\textsc{itc}), we make some existing tokens ``global'', which attend over the entire sequence. Concretely, we choose a subset $G$ of indices 
+    (with $g:=|G|$), such that $A(i, :) = 1$ and $A(:,i) =1$ for all $i \in G$. %This does not increase the size of the attention matrix.
+    \item \bigb-\textsc{etc}: In extended transformer construction (\textsc{etc}), we include additional ``global'' tokens such as CLS. Concretely, we add $g$ global tokens that attend to all existing tokens. In our notation, this corresponds to creating a new matrix $B \in [0, 1]^{(N+g)\times (N+g)}$ by adding $g$ rows to matrix $A$, such that $B(i,:) = 1$, and $B(:, i) =1$ for all $i \in \{1,2, \ldots g\}$, and $B(g+i, g+j) = A(i, j) \forall\ i,j \in \{1, \ldots, N \}$. This adds extra location to store context and as we will see in the experiments improves performance.
+\end{itemize}
+
+The final attention mechanism for \bigb (\Cref{fig:bigb_atn}) has all three of these properties: queries attend to $r$ random keys, each query attends to $w/2$ tokens to the left of its location and $w/2$ to the right of its location and they contain $g$ global tokens (The global tokens can be from existing tokens or extra added tokens).
+We provide implementation details in~\Cref{sec:apndx-impl}.

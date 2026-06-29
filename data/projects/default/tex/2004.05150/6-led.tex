@@ -1,0 +1,58 @@
+\section{Longformer-Encoder-Decoder (LED)}
+\label{sec:led}
+
+%\ib{do we need to mention this is the only thing added in version 2?}\matt{We can add it to the metadata on the arxiv paper}
+The original Transformer \cite{Vaswani2017AttentionIA} consisted of an encoder-decoder architecture, intended for
+sequence-to-sequence tasks \cite{Sutskever2014SequenceTS}, such as summarization and translation. 
+While encoder-only Transformers are effective on a variety of NLP tasks, pre-trained encoder-decoder Transformer models
+%\citep[e.g., BART, T5;][]{lewis-etal-2020-bart,Raffel2020ExploringTL}
+(e.g.\ BART \cite{lewis-etal-2020-bart} and T5 \cite{Raffel2020ExploringTL})
+have achieved strong results on tasks like summarization. Yet, such models can't efficiently scale to seq2seq tasks with longer inputs.
+
+
+
+
+To facilitate modeling long sequences for seq2seq learning, we propose a Longformer variant that has both the encoder and decoder Transformer stacks but instead of the full self-attention in the encoder, it uses the efficient local+global attention pattern of the Longformer.  The decoder uses the full self-attention to the entire encoded tokens and to previously decoded locations. We call this model Longformer-Encoder-Decoder (LED) which scales linearly with the input.
+%LED's architecture is similar to BART \cite{lewis-etal-2020-bart} in terms of number of layers and hidden state sizes.
+Since pre-training LED is expensive, we initialize LED parameters from the BART, and follow BART's exact architecture in terms of number of layers and hidden sizes. The only difference is that to process longer inputs, we extend position embedding to 16K tokens (up from BART's 1K tokens) and we initialize the new position embedding matrix by repeatedly copying BART's 1K position embeddings 16 times as in Section~\ref{sec:pretrain} for RoBERTa. Following BART, we release two model sizes, LED-base and LED-large, which respectively have 6 and 12 layers in both encoder and decoder stacks.
+
+%\subsection{Summarization}
+
+We evaluate LED on the summarization task using the arXiv summarization dataset \cite{arxiv2018} which focuses on long document summarization in the scientific domain. The 90th percentile of document lengths is 14.5K tokens, making it an appropriate testbed for evaluating LED. LED's encoder reads the document and its decoder generates the output summary. The encoder uses local attention with window size 1,024 tokens and global attention on the first \texttt{<s>} token. The decoder uses full attention to the entire encoder and previously decoded locations. As standard in seq2seq models, LED is trained using teacher forcing on gold training summaries and uses beam search at inference.
+
+
+\begin{table}[]
+\centering
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+                & R-1   & R-2   & R-L   \\ \midrule
+Discourse-aware \citeyearpar{arxiv2018} & 35.80 & 11.05 & 31.80 \\
+Extr-Abst-TLM \citeyearpar{Subramanian2020OnEA}   & 41.62 & 14.69 & 38.03 \\
+Dancer  \citeyearpar{Gidiotis2020ADA}        & 42.70 & 16.54 & 38.44 \\
+Pegasus \citeyearpar{zhang2019pegasus}        & 44.21 & 16.95 & 38.83 \\ 
+LED-large (seqlen: 4,096) (ours) &   44.40      &  17.94     & 39.76 \\
+BigBird (seqlen: 4,096) \citeyearpar{Zaheer2020BigBT}        & \bf{46.63} & 19.02 & 41.77 \\
+\hdashline[.4pt/1pt]
+LED-large (seqlen: 16,384) (ours) & \bf{46.63}      &  \textbf{19.62}     & \bf{41.83}       \\ \bottomrule
+\end{tabular}
+\caption{Summarization results of Longformer-Encoder-Decoder (LED) on the arXiv dataset.  Metrics from left to right are ROUGE-1, ROUGE-2 and ROUGE-L.}\label{tab:summarization}
+\end{table}
+
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{fig/fig-led-res}
+    \caption{
+    ROUGE-1 and ROUGE-2 of LED when varying the input size (arXiv validation set).
+    }
+    \label{fig:led}
+\end{figure} 
+
+
+
+Tab. \ref{tab:summarization} demonstrates the results of LED-large 16K on the arXiv summarization task. This model is merely initialized from BART, with no additional pre-training. We observe that LED achieves state-of-the-art results on arXiv, slightly outperforming BigBird \cite{Zaheer2020BigBT}.
+Note that the BigBird summarization model supports sequence length of 4K tokens but starts from and continues pre-training Pegasus \cite{zhang2019pegasus}, a model specifically designed and pre-trained for summarization.
+With no pre-training or task-specific initialization, but with ability to process longer inputs, LED can slightly outperform BigBird. Further improvements should be possible through pre-training of LED.
+Fig. \ref{fig:led} further illustrates the importance of sequence length showing the ablility to process longer input significantly improves the results. 
+

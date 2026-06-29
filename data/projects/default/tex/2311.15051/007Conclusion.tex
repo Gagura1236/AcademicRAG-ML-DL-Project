@@ -1,0 +1,33 @@
+\vspace*{-3pt}
+\section{Conclusion and Future Work}
+\vspace*{-3pt}
+In this paper, for the first time, we show that PHB with large learning rate induces large catapults, resulting in a much larger sharpness reduction than that of GD.
+We first provide empirical evidence for this on linear diagonal networks (LDNs) and nonlinear neural networks.
+We then hypothesize that the large catapult of PHB is caused by momentum {\it prolonging} self-stabilization~\citep{damian2023stabilization}.
+We verify our hypothesis for ReLU scalar networks and LDNs and rigorously prove that it holds.
+
+% as well as a scalar two-layer ReLU network, and offer an intuition of why such \emph{large catapults} occur from a self-stabilization perspective~\cite{damian2023stabilization}: momentum prolongs the sharpness reduction.
+
+% Lastly, we empirically validate this phenomenon in 
+\noindent\textbf{Future Work.}~~
+Firstly for PHB, we sometimes observe a lack of PS after the large catapults, as shown in Figure~\ref{fig:cifar10-exp}(a--c). However, with larger datasets, PS appears to occur again, as shown in Figure~\ref{fig:cifar10-exp}(d--f). We conjecture that the lack of PS in ReLU networks is due to catapults aggressively reducing the number of active ReLU neurons~\citep{lu2020dying,andriushchenko2023sam}; refer to Appendix~\ref{app:overshooting} for a detailed discussion. Understanding the presence and absence of PS in different setup is an interesting direction.
+% A more precise explanation of this phenomenon is left for future works.
+% Firstly, for PHB, we sometimes observe a lack of PS after the large catapults, as shown in Figure~\ref{fig:cifar10-exp} (a-c). However, with larger datasets, PS appears to occur again, as shown in Figure~\ref{fig:cifar10-exp}(d-f). In general, the presence or absence of PS after a large catapult seems to depend on the dataset's size and the model architecture. One possible explanation for the lack of PS in {\it ReLU networks} is that the large catapults in PHB aggressively reduce the number of active ReLU neurons~\citep{lu2020dying,andriushchenko2023sam}; see Figure~\ref{fig:deadrelu} of Appendix~\ref{app:dead}. A more precise explanation of this phenomenon is left for future works.
+Secondly, although PHB drives iterates towards flatter minima via the large catapults, we do not always observe better generalization.
+% this is in contrast to the claims of \cite{zhu2023catapult,zhu2023catapultquadratic}, where the authors claim that catapults lead to better AGOP~\citep{radhakrishnan2022agop}, and thus better generalization.
+Further exploring the connection between catapults and generalization is an interesting area for future research and may contribute to the growing literature on the connection between flatness and generalization~\citep{hochreiter1997flat,dinh2017sharp,even2023diagonal,andriushchenko2023sharpness}.
+
+% The hypothesis that flat minima generalize better~\citep{hochreiter1997flat} has been actively studied, with ``counterexamples'' being recently proposed~\citep{dinh2017sharp,even2023diagonal,andriushchenko2023sharpness}. However, no solid conclusion has been reached, and exploring the connection between catapults and generalization would be an interesting area to explore. 
+
+% \begin{remark}[Absence of Progressive Sharpening? - how to bridge catapult and EoS?]
+% \label{rmk:dead}
+%     For PHB, we sometimes observe a lack of PS after the large catapults, as shown in Figure~\ref{fig:cifar10-exp} (a-c). However, with larger datasets, PS appears to occur again, as shown in Figure~\ref{fig:cifar10-exp}(d-f).
+%     In general, the presence or absence of PS after a large catapult seems to depend on the dataset's size and the model architecture.
+%     One possible explanation for the lack of PS in ReLU networks is that the large catapults in PHB aggressively reduce the number of active ReLU neurons~\citep{lu2020dying,andriushchenko2023sam}; see Figure~\ref{fig:deadrelu} of Appendix~\ref{app:dead}
+% \end{remark}
+
+
+% \begin{remark}[Flatness and Generalization - future work]
+%     We are not claiming that flatter minima~\cite{hochreiter1997flat} necessarily lead to better generalization, and in fact, some ``counterexamples'' have been recently proposed~\citep{dinh2017sharp,even2023diagonal,andriushchenko2023sharpness}. Instead, we solely focus on the effect of momentum and learning rate warmup on how sharpness changes throughout training.
+% \end{remark}
+

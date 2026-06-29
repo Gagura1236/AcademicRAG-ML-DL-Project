@@ -1,0 +1,785 @@
+\section{Missing Proofs for Section~\ref{sec:toy}}
+\label{app:proofs}
+
+Throughout, recall the following quantities:
+\begin{equation}
+    \tau_u := \inf\left\{ t \geq 0 : u_t^2 < \frac{2 - \epsilon}{\eta} \right\}, \
+    C_u := \frac{u_{\tau_u} - \beta u_{\tau_u - 1}}{1 - \beta}, \
+    C_v := \frac{1 + \beta}{1 - \beta} \sum_{t = \tau_u}^\infty v_t^2.
+\end{equation}
+
+\subsection{Proof of Lemma~\ref{lem:u}}
+\label{app:lemma-u}
+Recall the update rule for $u$-coordinate:
+\begin{equation}
+    u_{t+1} - u_t = \beta (u_t - u_{t-1}) - \eta(1 + \beta) u_t v_t^2 \indicator[u_t \geq 0].
+\end{equation}
+
+We proceed by induction.
+For $t = 1$, it is trivial.
+For $1 < t < \tau_0$, we have that
+\begin{equation*}
+    u_{t+1} - u_t = \beta (u_t - u_{t-1}) - \eta(1 + \beta) u_t v_t^2
+    \leq 0,
+\end{equation*}
+as $u_t \leq u_{t-1}$ and $\eta u_t v_t^2 > 0$.
+If $\tau_0 = \infty$, then by monotone convergence theorem, $u_t$ converges to some $u_\infty \geq 0$.
+If not, then for $t \geq \tau_0$, we can solve the recursion to obtain
+\begin{equation*}
+    u_t = u_{\tau_0} + \frac{\beta (u_{\tau_0 - 1} - u_{\tau_0})}{1 - \beta} (\beta^{t - \tau_0} - 1).
+\end{equation*}
+As $u_{\tau_0} < u_{\tau_0-1}$ by the definition of $\tau_0$, $u_t$ also monotonically decreases for $t \geq \tau_0$ (in a geometric speed), and we conclude by again applying the monotone convergence theorem.
+\qed
+
+
+
+
+
+
+\subsection{Proof of Theorem~\ref{thm:toy}}
+\label{app:pf-toy}
+
+
+By telescoping, we have that for any $t \geq \tau_u + 1$,
+\begin{equation*}
+    u_t - u_{\tau_u} = \beta (u_{t-1} - u_{\tau_u - 1}) - \eta(1 + \beta) \sum_{k = \tau_u}^{t-1} u_k v_k^2.
+\end{equation*}
+First, let $N \geq \tau_u$ be fixed and define $C_v(N) := \frac{1 + \beta}{1 - \beta} \sum_{t = \tau_u}^N v_t^2.$
+Then, for $t \geq N + 1$,
+\begin{equation*}
+    u_t - \beta u_{t-1} = u_{\tau_u}- \beta u_{\tau_u - 1} - \eta(1 + \beta) \sum_{k = \tau_u}^{t-1} u_k v_k^2
+    \leq (1 - \beta) C_u - \eta (1 - \beta) C_v(N) u_t.
+\end{equation*}
+We can rewrite the recursive inequality as
+\begin{equation*}
+    u_t - \frac{C_u}{1 + \eta C_v(N)} \leq \frac{\beta}{1 + \eta (1-\beta) C_v(N)} \left( u_{t-1} - \frac{C_u}{1 + \eta C_v(N)} \right).
+\end{equation*}
+To deal with possibly changing sign, we consider the first time in which the iterates pass another point:
+\begin{equation}
+    \tau_u'(N) := \inf\left\{ t \geq N + 1 : u_t < \frac{C_u}{1 + \eta C_v(N)} \right\}.
+\end{equation}
+
+If $\tau_u'(N) = \infty$, then we have that for all $t \geq N + 1$,
+\begin{equation}
+    u_t \leq \frac{C_u}{1 + \eta C_v(N)} + \left( \frac{\beta}{1 + \eta (1-\beta) C_v(N)} \right)^{t - N - 1} \left( u_N - \frac{C_u}{1 + \eta C_v(N)} \right).
+\end{equation}
+
+If not, then we have that for all $t \geq \tau_u'(N)$,
+\begin{equation}
+    u_t \leq \frac{C_u}{1 + \eta C_v(N)} - \left( \frac{\beta}{1 + \eta (1-\beta) C_v(N)} \right)^{t - \tau_u'(N)} \left( \frac{C_u}{1 + \eta C_v(N)} - u_{\tau_u'(N)} \right),
+\end{equation}
+
+In either case, we obtain the desired conclusion by taking the limit $\min\{N, t\} \rightarrow \infty$ with $t \geq N + 1$.
+\qed
+
+
+
+
+
+
+
+
+
+\subsection{Proof of Theorem~\ref{thm:toy-GD}}
+\label{app:pf-toyGD}
+We start by providing a nonasymptotic version of Theorem~\ref{thm:toy-GD}:
+\begin{theorem}
+    \label{thm:toy-GD-full}
+    For sufficiently small $0 < v_0^2 < \epsilon \ll 1$, we have that
+    \begin{equation}
+        \lim_{t \rightarrow \infty} u_t \geq \sqrt{\frac{2}{\eta}} - \sqrt{P_{\tau_u} \exp\left( \frac{4\eta^2 u_{\tau_u}^2 P_{\tau_u}}{\epsilon(2 - \epsilon)} \right)},
+    \end{equation}
+    where $P_{\tau_u}$ is a quantity satisfying
+    \begin{equation}
+        P_{\tau_u} \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2 + \epsilon}{2 - \epsilon}} + 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right).
+    \end{equation}
+\end{theorem}
+
+% \begin{theorem}
+% \label{thm:toy-GD-full}
+%     For any $\delta \in (0, 1)$,
+%     \begin{equation}
+%         \limsup_{t \rightarrow \infty} \bigbrace{\sqrt{\frac{2}{\eta}} - u_t} \leq - \sqrt{\frac{\delta}{\eta}}
+%         + 2\sqrt{\frac{(2 - \epsilon)}{\eta}} W(\epsilon) \left( 1 + \frac{\exp\left( 4(2+\epsilon) W(\epsilon) \right)}{\delta ( 2 - \delta)} \right),
+%     \end{equation}
+%     where $W(\epsilon) := \left( \epsilon + \frac{\eta v_0^2}{2} \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)$,
+% \end{theorem}
+% Then, it is easy to see how it implies the asymptotic version in the main text (Theorem~\ref{thm:toy-GD}): for sufficiently small $\epsilon$ and $v_0^2 = \gO(\epsilon)$, and moderately large $\eta$ (such that it can be regarded as constant), we can choose $\delta = \epsilon^{2/3}$.
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:toy-GD-full}]
+    In contrast to the proof technique used for Theorem~\ref{thm:toy}, we utilize an energy argument that works for GD. 
+    Inspired by the empirical observation that the GD iterates roughly form an ellipse centered around the point $\left( \sqrt{\frac{2}{\eta}}, 0 \right)$, we consider the following ``elliptical energy'' function:
+    \begin{equation}
+        P_t := \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} v_t^2.
+    \end{equation}
+    Note that $P_0 \leq \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2$.
+    We will first prove that the elliptical energy is well-bounded and then use that fact to lower bound $u_\infty$.
+
+    Let us first fix $\epsilon, v_0^2 \in (0, 1)$.
+    The following key lemma, whose proof is provided at the end of this section, states that the energy is approximately well-bounded, given that $u_t$ is sufficiently lower bounded:
+    \begin{lemma}
+    \label{lem:Pt-exp-bound}
+        $P_{t+1} \leq P_t \exp\left( 2\eta^2 u_t^2 v_t^2 \right)$ for any $t \geq 0$ satisfying $u_t \ge \frac{1}{\sqrt{\eta}}$.
+    \end{lemma}
+    As $u_t^2 \geq u_{\tau_u-1}^2 \ge \frac{2-\epsilon}{\eta} > \frac{1}{\eta}$ for any $t \leq \tau_u - 1$ (due to Lemma~\ref{lem:u}), we have:
+    \begin{align*}
+        P_{\tau_u} &\leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2\eta^2 \sum_{t = 0}^{\tau_u - 1} u_t^2 v_t^2 \right) \tag{telescoping with Lemma~\ref{lem:Pt-exp-bound}} \\
+        &\leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2\eta^2 u_0^2 \sum_{t = 0}^{\tau_u - 1} v_t^2 \right) \tag{Lemma~\ref{lem:u}} \\
+        &= \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon)\eta v_{\tau_u - 1}^2 + 2(2 + \epsilon) \sum_{t = 0}^{\tau_u - 2} \frac{u_t - u_{t+1}}{u_t} \right) \tag{$u_0 = \sqrt{\frac{2 + \epsilon}{\eta}}$, $u_t - u_{t+1} = \eta v_t^2 u_t$} \\
+        &\leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon)\eta v_{\tau_u - 1}^2 +  \frac{2 \sqrt{\eta} (2 + \epsilon)}{\sqrt{2 - \epsilon}} \sum_{t = 0}^{\tau_u - 2} (u_t - u_{t+1}) \right) \tag{$u_t^2 \geq \frac{2 - \epsilon}{\eta}$ for $t \leq \tau_u - 1$} \\
+        &= \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon)\eta v_{\tau_u - 1}^2 + \frac{2 \sqrt{\eta} (2 + \epsilon)}{\sqrt{2 - \epsilon}} (u_0 - u_{\tau_u - 1}) \right) \\
+        &\leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon)\eta v_{\tau_u - 1}^2 + 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) \tag{$\sqrt{a + b} - \sqrt{b} \leq \sqrt{a}$}.
+    \end{align*}
+    Also, we have that
+    \begin{equation}
+    \label{eqn:v-tau}
+        v_{\tau_u - 1}^2 = \frac{u_{\tau_u - 1} - u_{\tau_u}}{\eta u_{\tau_u - 1}}
+        \leq \frac{u_0}{\eta \sqrt{\frac{2 - \epsilon}{\eta}}}
+        = \sqrt{\frac{2 + \epsilon}{2 - \epsilon}} \frac{1}{\eta}.
+    \end{equation}
+    Thus, we have that
+    \begin{equation}
+    \label{eqn:P-tau}
+        P_{\tau_u} \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2 + \epsilon}{2 - \epsilon}} + 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right).
+    \end{equation}
+    % \begin{corollary}
+    % \label{cor:v-tau}
+    %      For $\epsilon < 1$, $v_{\tau_u - 1}^2 \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)$.
+    % \end{corollary}
+    We now claim that
+    \begin{equation}
+        u_t \geq \frac{1}{\sqrt \eta} \ \text{ and } \ P_t \leq P_{\tau_u} \exp\left( \frac{4\eta^2 u_{\tau_u}^2 P_{\tau_u}}{\epsilon(2 - \epsilon)} \right), \quad \forall t \geq \tau_u - 1,
+    \end{equation}
+    which then implies our desired statement.
+
+    We proceed by induction.
+    The base case ($t = \tau_u - 1$) is trivial.
+    For $t' \geq \tau_u$, suppose the statement holds for all $t < t'$.
+    Again, using Lemma~\ref{lem:Pt-exp-bound}, we have that
+    \begin{equation*}
+        P_{t'} \leq P_{\tau_u} \exp\left( 2\eta^2 \sum_{t=\tau_u}^{t' - 1} u_t^2 v_t^2 \right)
+        \leq P_{\tau_u} \exp\left( 2\eta^2 u_{\tau_u}^2 \sum_{t=\tau_u}^{t' - 1} v_t^2 \right).
+    \end{equation*}
+    
+    Let us now bound $\sum_{t = \tau_u}^{t' - 1} v_t^2$.
+    For $t \in [\tau_u, t' - 1]$, we have that $(\eta u_t^2 - 1)^2 < (1 - \epsilon)^2$ by the induction hypothesis, and thus, $v_{t+1}^2 < (1 - \epsilon)^2 v_t^2$.
+    This implies that
+     \begin{equation*}
+        \sum_{t = \tau_u}^{t' - 1} v_t^2 < v_{\tau_u}^2 \sum_{t = 0}^{t' - \tau_u - 1} (1 - \epsilon)^{2t}
+        \leq v_{\tau_u}^2 \sum_{t = 0}^\infty (1 - \epsilon)^{2t}
+        = \frac{v_{\tau_u}^2}{\epsilon(2 - \epsilon)}
+        \leq \frac{2 P_{\tau_u}}{\epsilon(2 - \epsilon)},
+    \end{equation*}
+    and thus, we have that $P_{t'} \leq P_{\tau_u} \exp\left( \frac{4\eta^2 u_{\tau_u}^2 P_{\tau_u}}{\epsilon(2 - \epsilon)} \right)$.
+    From the definition of our elliptical energy, this then implies that
+    \begin{equation}
+        u_{t'} \geq \sqrt{\frac{2}{\eta}} - \sqrt{P_{\tau_u} \exp\left( \frac{4\eta^2 u_{\tau_u}^2 P_{\tau_u}}{\epsilon(2 - \epsilon)} \right)}.
+    \end{equation}
+    As $P_{\tau_u} = \gO(\epsilon)$ for small $\epsilon$ and $v_0^2 = \gO(\epsilon)$, with suitable choices we can conclude that $u_{t'} \geq \sqrt{\frac{1}{\eta}}$, and we are done.
+    % \begin{align*}
+    %     v_{\tau_u}^2 &\le 2  \\
+    %     &\leq \exp\left( 2(2+\epsilon) \eta v_{\tau_u-1}^2 \right) P_{\tau_u - 1} \tag{Lemma~\ref{lem:Pt-exp-bound}} \\
+    %     &\le 2 P_0 \exp\left( 4(2+\epsilon) \eta v_{\tau_u-1}^2 + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) \tag{Lemma~\ref{lem:Pt-exp-bound}} \\
+    %     &\le 2 P_0 \exp\left( 4(2+\epsilon) \eta P_0 \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) \tag{Corollary~\ref{cor:v-tau}} \\
+    %     &= 2 \left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) \underbrace{\exp\left( 4(2+\epsilon) \left( \epsilon + \frac{\eta v_0^2}{2} \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)}_{:=C(\epsilon, v_0)}.
+    % \end{align*}
+    % Thus $P_t \le \left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) C(\epsilon, v_0) < \left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) C(1,1)$ for all $t$ such that $u_{t-1} \ge 1/\sqrt{\eta}$. \\
+\end{proof}
+
+
+
+\begin{proof}[Proof of Lemma~\ref{lem:Pt-exp-bound}]
+    This is shown via a brute-force computation:
+    \begin{align*}
+        P_{t+1} &= \left( u_{t+1} - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} v_{t+1}^2 \\
+        &= \left( u_t - \eta u_t v_t^2 - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} \left( v_t - \eta v_t u_t^2 \right)^2 \tag{GD update} \\
+        &= P_t - 2\eta u_t v_t^2 \left(u_t - \sqrt{\frac{2}{\eta}}\right) + \eta^2 u_t^2 v_t^4 - \eta v_t^2 u_t^2 + \frac{\eta^2}{2} v_t^2 u_t^4 \\
+        &= P_t + u_t^2 v_t^2 \left( \eta^2 v_t^2 + \frac{\eta^2}{2} u_t^2 - 3\eta + \frac{2\sqrt{2\eta}}{u_t} \right).
+        % &= (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( \frac{1}{4} u_t^2 - \frac{3}{2\eta} + \frac{\sqrt{2}}{\eta\sqrt{\eta} u_t} - \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 \right).
+        % &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( -\frac{3}{4} u_t^2 - \frac{7 - 2\sqrt{2}}{2\eta} + \frac{2\sqrt{2} u_t}{\sqrt{\eta}} \right) \tag{$u_t \geq \sqrt{\frac{1}{\eta}}$} \\
+        % &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left\{ -\frac{3}{4} \left( u_t - \frac{4}{3} \sqrt{\frac{2}{\eta}} \right)^2 + \frac{6\sqrt{2} - 5}{6\eta} \right\} \\
+        % &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( -\frac{3}{4} u_0^2 - \frac{7 - 2\sqrt{2}}{2\eta} + \frac{2\sqrt{2} u_0}{\sqrt{\eta}} \right) \tag{Lemma~\ref{lem:u}} \\
+        % &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t  \tag{$u_0^2 = \frac{2+\epsilon}{\eta}$} \\
+        % &\leq P_t \exp\left( 2\eta^2 u_t^2 v_t^2 \right). \tag{$1 + z \leq e^z, \ \forall z \in \sR$}
+    \end{align*}
+    We then have the following helpful inequality, whose proof is deferred to the end:
+    \begin{lemma}
+    \label{lem:inequality}
+        For $z \geq \frac{1}{\sqrt{\eta}}$, $\frac{\eta^2}{2} z^2 - 3\eta + \frac{2\sqrt{2\eta}}{z} \leq 2\eta^2 \left( z - \sqrt{\frac{2}{\eta}} \right)^2$.
+    \end{lemma}
+    Using this and the given assumption that $u_t \geq \frac{1}{\sqrt{\eta}}$, we then have the desired statement as follows:
+    \begin{equation*}
+        P_{t+1} \leq P_t + u_t^2 v_t^2 \left( \eta^2 v_t^2 + 2\eta^2 \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 \right)
+        = (1 + 2 \eta^2 u_t^2 v_t^2) P_t.
+    \end{equation*}
+\end{proof}
+\begin{proof}[Proof of Lemma~\ref{lem:inequality}]
+    By reparametrizing $z \gets z / \sqrt{\eta}$, it suffices to prove that for $z \geq 1$, $\frac{1}{2} z^2 - 3 + \frac{2\sqrt{2}}{z} \leq 2 \left( z - \sqrt{2} \right)^2.$
+    By rearranging, this is equivalent to
+    \begin{equation*}
+        f(z) \triangleq 3z^3 - 8\sqrt{2} z^2 + 14z - 4\sqrt{2} \geq 0, \quad \forall z \geq 1.
+    \end{equation*}
+    This is then obvious, as $f$ is a cubic function with $f(0) > 0$, the local minimum of $(\sqrt{2}, 0)$ and the local maximum of $\left( \frac{7\sqrt{2}}{9}, \frac{8\sqrt{2}}{243} \right)$.
+\end{proof}
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \begin{proof}[Proof of Theorem~\ref{thm:toy-GD-full}]
+%     Similarly, as previously, we consider the first time at which the iterates ``sufficiently'' pass the MSS:
+%     \begin{equation}
+%         \tau_u := \inf\left\{ t \geq 0 : u_t^2 < \frac{2 - \epsilon}{\eta} \right\},
+%     \end{equation}
+%     % for $\delta \in (0, 1)$ to be chosen later.
+%     % We will consider only consider $t \gg \tau_u$.
+    
+%     Then, noting that $u_k - u_{k+1} = \eta u_k v_k^2$, by telescoping, we have that
+%     \begin{align*}
+%         u_t &= u_{\tau_u - 1} - \eta u_{\tau_u - 1} v_{\tau_u - 1}^2 - \eta \sum_{k = \tau_u}^{t-1} u_k v_k^2 \\
+%         &\geq \sqrt{\frac{2 - \epsilon}{\eta}} - 2\sqrt{\eta (2 - \epsilon)} v_{\tau_u - 1}^2 - \sqrt{(2 - \epsilon) \eta} \sum_{k = \tau_u}^{t-1} v_k^2,
+%     \end{align*}
+%     where the inequality follows from the definition of $\tau_u$, Lemma~\ref{lem:u} (monotonicity of $u_t$'s), and recalling that $u_0^2 = \frac{2 + \epsilon}{\eta}$.
+
+%     To bound the remaining quantities, inspired by the empirical observation that the GD iterates roughly form an ellipse, we consider the following ``energy'' function:
+%     \begin{equation}
+%         P_t := \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} v_t^2.
+%     \end{equation}
+%     Note that $P_0 \leq \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2$.
+%     The following key lemma, whose proof is provided at the end of this section, states that the energy is approximately well-bounded, at least til $t \leq \tau_u$:
+%     \begin{lemma}
+%     \label{lem:Pt-exp-bound}
+%         If $\epsilon < 1$, then $P_t \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \eta \sum_{k=0}^{t-1} v_k^2 \right)$ for any $t$ satisfying $u_{t-1} \ge 1/\sqrt{\eta}$.
+%         In particular, since $u_{\tau_u-1}^2 \ge \frac{2-\epsilon}{\eta} > \frac{1}{\eta}$, we have: $P_{\tau_u - 1} \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)$.
+%     \end{lemma}
+%     \begin{corollary}
+%     \label{cor:v-tau}
+%          For $\epsilon < 1$, $v_{\tau_u - 1}^2 \leq \left( \frac{\epsilon}{\eta} + \frac{1}{2} v_0^2 \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)$.
+%     \end{corollary}
+
+    
+%     Let us now bound $\sum_{k = \tau_u}^{t-1} v_k^2$.
+%     For $k \geq \tau_u$, we have that  $(\eta u_k^2 - 1)^2 < (1 - \epsilon)^2$, and thus, $v_{k+1}^2 < (1 - \epsilon)^2 v_k^2$.
+%     Thus,
+%      \begin{equation*}
+%         \sum_{k = \tau_u}^{t-1} v_k^2  \leq v_{\tau_u}^2 \sum_{k=0}^{t - \tau_u - 1} (1 - \epsilon)^{2k}
+%         \leq \frac{v_{\tau_u}^2}{\epsilon(2 - \epsilon)}.
+%     \end{equation*}
+%     Since $u_{\tau_u-1} \ge \frac{2-\epsilon}{\eta} > \frac{1}{\eta}$ for $\epsilon < 1$, we also have that
+%     \begin{align*}
+%         v_{\tau_u}^2 &\le 2 \exp\left( 2(2+\epsilon) \eta v_{\tau_u-1}^2 \right) P_{\tau_u - 1} \tag{Lemma~\ref{lem:Pt-exp-bound}} \\
+%         &\le 2 P_0 \exp\left( 4(2+\epsilon) \eta v_{\tau_u-1}^2 + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) \tag{Lemma~\ref{lem:Pt-exp-bound}} \\
+%         &\le 2 P_0 \exp\left( 4(2+\epsilon) \eta P_0 \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) \tag{Corollary~\ref{cor:v-tau}} \\
+%         &= 2 \left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) \underbrace{\exp\left( 4(2+\epsilon) \left( \epsilon + \frac{\eta v_0^2}{2} \right) \exp\left( 2(2 + \epsilon) \sqrt{\frac{2\epsilon}{2 - \epsilon}} \right) + 2(2+\epsilon)\sqrt{\frac{2\epsilon}{2 - \epsilon}} \right)}_{:=C(\epsilon, v_0)}.
+%     \end{align*}
+%     Thus $P_t \le 2\left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) \left( \frac{1}{\eta} + \frac{v_0^2}{2\epsilon} \right) C(\epsilon, v_0) < 2\left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) \left( \frac{1}{\eta} + \frac{v_0^2}{2\epsilon} \right) C(1,1)$ for all $t$ such that $u_{t-1} \ge 1/\sqrt{\eta}$. \\
+%     Finally, we conclude the proof by showing that for sufficiently small $\epsilon$ and $v_0^2$, $u_t \ge 1/\sqrt{\eta}$ for all $t$. We use induction on $t$. The case $t \le \tau_u-1$ holds by definition. Now suppose that $t \ge \tau_u$ and $u_{t-1} \ge 1/\sqrt{\eta}$. Then $P_t \le \left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) C(1,1)$, thus $u_{t+1} \ge \sqrt{\frac{2}{\eta}} - \sqrt{\left( \frac{\epsilon}{\eta} + \frac{v_0^2}{2} \right) C(1,1)}$. Choosing $\epsilon$ and $|v_0|$ such that $\frac{\epsilon}{\eta} + \frac{v_0^2}{2} < \frac{3 - 2\sqrt{2}}{C(1,1)\eta}$, we are done.
+    
+%     % We end the proof with a corollary that will be useful later:
+%     % \begin{corollary}
+%     % \label{cor:Cv}
+%     %     Asymptotically, for sufficiently small $\epsilon$, $v_0^2 = \gO(\epsilon)$, and $\delta = \epsilon^{2/3}$, we have that $\sum_{k=\tau_u}^\infty v_k^2 = \gO(\epsilon^{1/3})$.
+%     % \end{corollary}
+% \end{proof}
+
+
+
+% \begin{proof}[Proof of Lemma~\ref{lem:Pt-exp-bound}]
+%     We first show that $P_{t+1} \leq P_t \exp\left(2\eta^2 u_t^2 v_t^2\right)$ for all $t \leq \tau_u - 1$:
+%     \begin{align*}
+%         P_{t+1} &= \left( u_{t+1} - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} v_{t+1}^2 \\
+%         &= \left( u_t - \eta u_t v_t^2 - \sqrt{\frac{2}{\eta}} \right)^2 + \frac{1}{2} \left( v_t - \eta v_t u_t^2 \right)^2 \tag{GD update} \\
+%         &= P_t - 2\eta u_t v_t^2 \left(u_t - \sqrt{\frac{2}{\eta}}\right) + \eta^2 u_t^2 v_t^4 - \eta v_t^2 u_t^2 + \frac{\eta^2}{2} v_t^2 u_t^4 \\
+%         &= P_t + 2\eta^2 u_t^2 v_t^2 \left( \frac{1}{2} v_t^2 + \frac{1}{4} u_t^2 - \frac{3}{2\eta} + \frac{\sqrt{2}}{\eta\sqrt{\eta} u_t}  \right) \\
+%         &= (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( \frac{1}{4} u_t^2 - \frac{3}{2\eta} + \frac{\sqrt{2}}{\eta\sqrt{\eta} u_t} - \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 \right) \\
+%         &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( -\frac{3}{4} u_t^2 - \frac{3}{2\eta} + \frac{2\sqrt{2} u_t}{\sqrt{\eta}} \right) \tag{$u_t \geq \sqrt{\frac{2 - \delta}{\eta}}, \ \delta \in (0, 1)$} \\
+%         &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t + 2\eta^2 u_t^2 v_t^2 \left( -\frac{3}{4} u_0^2 - \frac{3}{2\eta} + \frac{2\sqrt{2} u_0}{\sqrt{\eta}} \right) \tag{Lemma~\ref{lem:u}} \\
+%         &\leq (1 + 2\eta^2 u_t^2 v_t^2) P_t  \tag{$u_0^2 = \frac{2+\epsilon}{\eta}$} \\
+%         &\leq P_t \exp\left( 2\eta^2 u_t^2 v_t^2 \right). \tag{$1 + z \leq e^z, \ \forall z \in \sR$}
+%     \end{align*}
+%     By telescoping and Lemma~\ref{lem:u}, we have that for any $t \leq \tau_u$,
+%     \begin{equation*}
+%         P_t \leq P_0 \exp\left( 2\eta^2 u_0^2 \sum_{k=0}^{t - 1} v_k^2 \right) = P_0 \exp\left( 2(2 + \epsilon) \eta \sum_{k=0}^{t - 1} v_k^2 \right).
+%     \end{equation*}
+
+%     For the second part, consider $t = \tau_u - 1$.
+%     Noting that $u_t - u_{t+1} = \eta v_t^2 u_t$,
+%     \begin{equation*}
+%         \sum_{k=0}^{\tau_{u}-2} v_k^2 = \frac{1}{\eta} \sum_{k=0}^{\tau_{u}-2} \frac{u_k - u_{k+1}}{u_k}
+%         \leq \frac{1}{\sqrt{(2-\epsilon)\eta}} \sum_{k=0}^{\tau_{u}-2} (u_k - u_{k+1})
+%         = \frac{u_0 - u_{\tau_{u}-1}}{\sqrt{(2-\epsilon)\eta}}
+%         \leq \frac{u_0 - \sqrt{\frac{2-\epsilon}{\eta}}}{\sqrt{(2-\epsilon)\eta}}.
+%     \end{equation*}
+%     Plugging in $\eta = \frac{2+\epsilon}{u_0^2}$ and using the elementary inequality $\sqrt{a + b} - \sqrt{b} \leq \sqrt{a}$ gives the desired statement.
+
+    
+%     % where at the last inequality, $Q^*(U, \eta) := \sup_{t \geq 0} Q(u_t, \eta)$ is well-defined due to Observation 1.
+%     % (Actually, one can see that the supremum is upper-bounded by $Q\left(\max\left\{ \frac{2}{3\sqrt{\eta}}, U \right\}, \eta\right)$.)
+    
+%     % Rewriting the recursion, we have
+%     % \begin{equation*}
+%     %     P_{t+1} + Q^*(U, \eta) \leq (1 + 2\eta^2 u_t^2 v_t^2) \left( P_t + Q^*(U, \eta) \right).
+%     % \end{equation*}
+    
+%     % We then conclude by unrolling the recursion:
+%     % \begin{align*}
+%     %     \left| P_t + Q^*(U, \eta) \right| &\leq  \left| P_0 + Q^*(U, \eta) \right| \prod_{k=0}^{t-1} (1 + 2\eta^2 u_k^2 v_k^2) \\
+%     %     &\leq \left| P_0 + Q^*(U, \eta) \right| \exp\left( 2\eta^2 \sum_{k=0}^{t-1} u_k^2 v_k^2 \right) \tag{$1 + z \leq e^z, \ \forall z \in \sR$} \\
+%     %     &\leq \left| P_0 + Q^*(U, \eta) \right| \exp\left( 2\eta^2 u_0^2 \sum_{k=0}^{t-1} v_k^2 \right). \tag{Observation 2}
+%     % \end{align*}
+% \end{proof}
+
+
+
+
+
+% \newpage
+% % \begin{lemma}
+% %     $\sum_{k = \tau_u}^{t-1} v_k^2 \leq \frac{2\exp(2(2+\delta^2)\frac{\sqrt{2\delta}u_0^2}{\sqrt{4-\delta^2}})(1+\frac{v_0^2}{2\epsilon})}{(2 - \delta)}.$
+% % \end{lemma}
+% % \begin{proof}
+    
+% %     Then, we have a simple geometric series:
+   
+
+% %     Finally,
+% %     \begin{equation*}
+% %         \sum_{k = \tau_u}^{t-1} v_k^2
+% %         \leq \frac{v_{\tau_u}^2}{\delta(2 - \delta)} \le \frac{2\exp \left( 2(2+\delta)^2 \frac{\sqrt{2\delta}u_0^2}{\sqrt{4-\delta^2}} \right) \left( 1 + \frac{v_0^2}{2\delta} \right)}{2-\delta}
+% %     \end{equation*}
+% % \end{proof}
+
+% % \begin{lemma}
+% %     $\sum_{k = \tau_u}^{t-1} v_k^2 \leq \frac{1}{\eta \delta(2 - \delta)}.$
+% % \end{lemma}
+% % \begin{proof}
+% %     For $k \geq \tau_u$, we have that $\eta u_k^2 - 1 < 1 - \delta$ and also $(\eta u_k^2 - 1)^2 < (1 - \delta)^2$.
+% %     Thus, we have that $v_{k+1}^2 < (1 - \delta)^2 v_k^2$.
+% %     Then we have a simple geometric series:
+% %     \begin{equation*}
+% %         \sum_{k = \tau_u}^{t-1} v_k^2  \leq v_{\tau_u}^2 \sum_{k=0}^{t - \tau_u - 1} (1 - \delta)^{2k}
+% %         \leq \frac{v_{\tau_u}^2}{\delta(2 - \delta)}
+% %         \leq \frac{1}{\eta \delta(2 - \delta)}.
+% %     \end{equation*}
+% % \end{proof}
+
+% {\color{red}\bf @Prin is this also good?}
+% \begin{corollary}
+%     $P_\infty \le \exp \left(2 (2+\epsilon)^2 \left( \frac{2\exp(2(2+\delta^2)\frac{\sqrt{2\delta}u_0^2}{\sqrt{4-\delta^2}})(1+\frac{v_0^2}{2\epsilon})}{(2 - \delta)} + \frac{\sqrt{2\epsilon} u_0^2}{\sqrt{4-\epsilon^2}} \right) \right) P_0$.
+% \end{corollary}
+% \begin{proof}
+%     \begin{align*}
+%         P_\infty &\le \exp\left( 2 \eta^2 u_0^2 \sum_{t=0}^\infty v_t^2 \right) P_0 \\
+%         &\le \exp \left( 2\eta^2 u_0^2 \left( u_0^2 \sqrt{\frac{\epsilon}{2(2+\epsilon)}} + \frac{1}{8\eta} \right) \right) P_0\\
+%         &= \exp \left( 2\eta^2 u_0^2 \sqrt{\frac{\epsilon}{2(2+\epsilon)}} + \frac{1}{4}\eta u_0^2 \right) P_0 \\
+%         &= \exp \left( 2(2+\epsilon)^2 \sqrt{\frac{\epsilon}{2(2+\epsilon)}} + \frac{2+\epsilon}{4} \right) P_0
+%     \end{align*}
+% \end{proof}
+
+% \begin{theorem}
+%     $u_\infty \ge \sqrt{\frac{2}{\eta}} - \exp \left( (2+\epsilon)^2 \left( \frac{2\exp(2(2+\epsilon^2)\frac{\sqrt{2\epsilon}u_0^2}{\sqrt{4-\epsilon^2}})(1+\frac{v_0^2}{2\epsilon})}{(2 - \epsilon)} + \frac{\sqrt{2\epsilon} u_0^2}{\sqrt{4-\epsilon^2}} \right) \right) \sqrt{P_0} \ge \sqrt{\frac{2}{\eta}} - \exp \left( \mathcal{O}(\exp \left( \mathcal{O}(\sqrt{\epsilon}) u_0^2 \right)) + \mathcal{O}(\sqrt{\epsilon}u_0^2) \right)\sqrt{\epsilon + \frac{v_0^2}{2}}$. If $v_0^2 = \gO(\epsilon)$, then $u_\infty \ge \sqrt{\frac{2}{\eta}} - \gO(\sqrt{\epsilon})$.
+% \end{theorem}
+
+
+
+
+
+
+
+
+
+
+% Recall the GD updates:
+% \begin{align*}
+%     u_{t+1} &= \left( 1 - \eta v_t^2 \1[u_t > 0] \right) u_t, \\
+%     v_{t+1} &= \left( 1 - \eta u_t^2 \1[u_t > 0] \right) v_t.
+% \end{align*}
+% Let us define the first time in which $u_t \leq 0$:
+% \begin{equation}
+%     \tau_- := \inf\{ t \geq 0 : u_t \leq 0 \} \in \sN \cup \{\infty\}.
+% \end{equation}
+
+% First, suppose that $\tau_- < \infty$.
+% Then, we have the following:
+% \begin{itemize}
+%     \item $u_t = u_{\tau_-}$ and $v_t = v_{\tau_-}$ for all $t \geq \tau_-$,
+%     \item $1 - \eta v_t^2 > 0$ and $0 \leq u_{t+1} \leq u_t$ for $t \leq \tau_- - 2$,
+%     \item $1 - \eta v_{\tau_- - 1}^2 \leq 0$
+% \end{itemize}
+
+% We then note that
+% \begin{equation*}
+%     \frac{1}{\eta} \leq v_{\tau_- - 1}^2 = v_{\tau_- - 2}^2 (1 - \eta u_{\tau_- - 2}^2)^2 < \frac{1}{\eta} (1 - \eta u_{\tau_- - 2}^2)^2,
+% \end{equation*}
+% which implies that $u_{\tau_- - 2} > \sqrt{\frac{2}{\eta}}$.
+% Due to the monotonicity of $u_t$ for $t \leq \tau_- - 2$, we then must have that $\inf_{t \leq \tau_- - 2} u_t > \sqrt{\frac{2}{\eta}}$.
+% This in turn implies the monotonicity of $v_t^2$: $v_t^2 \leq v_{t+1}^2 < \frac{1}{\eta}$ for $t \leq \tau_- - 2$.
+% We then have that
+% \begin{equation*}
+%     u_{\tau_- - 1} = u_0 \prod_{t=0}^{\tau_- - 2} (1 - \eta v_t^2)^2 > u_0 (1 - \eta v_{\tau_- - 2}^2)^{2(\tau_- - 1)}
+% \end{equation*}
+% {\color{red} how to conclude?}
+% \vspace{1cm}
+
+
+
+% \begin{corollary}
+%     $v_\tau^2 \le 2(1+\epsilon)^2 \exp \left( 2(2+\epsilon)^2 \sqrt{\frac{\epsilon}{2(2+\epsilon)}} \right)P_0$.
+% \end{corollary}
+% \begin{proof}
+%     From corollary~\ref{cor:Pt-exp-bound}, 
+%     \begin{align*}
+%         v_{\tau-2}^2 &\le 2P_{\tau-1} \\
+%         &\le 2\exp \left(2\eta^2 u_0^2 \sum_{t=0}^{\tau-2} v_t^2 \right) P_0 \\
+%         &\le 2\exp \left(2\eta^2u_0^4 \sqrt{\frac{\epsilon}{2(2+\epsilon)}}\right) \\
+%         &= 2\exp \left(2(2+\epsilon)^2 \sqrt{\frac{\epsilon}{2(2+\epsilon)}}\right)P_0
+%     \end{align*}
+%     Since $v_\tau \le (1+\epsilon)^2 v_{\tau-2}$, the inequality follows.
+% \end{proof}
+
+% \begin{lemma}
+% \label{lem:tau}
+%     $\tau \le \frac{\sqrt{2 + \epsilon} - \sqrt{2}}{\sqrt{2}(2 + \epsilon)} \left( \frac{u_0}{v_0} \right)^2 \le \frac{\sqrt{\epsilon}}{\sqrt{2}(2+\epsilon)} \left( \frac{u_0}{v_0} \right)^2$. 
+% \end{lemma}
+% \begin{proof}
+%     From the definition of $\tau$, we have that $|v_t| \leq |v_{t+1}|$ for all $0 \leq t \leq \tau$.
+%     Then, we have for all such $t$'s,
+%     \begin{equation*}
+%         u_t - u_{t+1} = \eta v_t^2 u_t \geq \eta v_0^2 \sqrt{\frac{2}{\eta}} = \sqrt{2\eta} v_0^2.
+%     \end{equation*}
+    
+%     As $u_0 - u_{\tau-1} = \sum_{t=0}^{\tau - 2} (u_t - u_{t+1}) > (\tau - 1) \sqrt{2\eta} v_0^2$, we have
+%     \begin{align*}
+%         \tau < \frac{u_0 - u_{\tau-1}}{v_0^2 \sqrt{2\eta}} + 1
+%         < \frac{u_0 - \sqrt{\frac{2}{\eta}}}{v_0^2 \sqrt{2\eta}} + 1
+%         = \left( \frac{u_0}{v_0} \right)^2 \left( \frac{1-\sqrt{\frac{2}{2+\epsilon}}}{\sqrt{4+2\epsilon}} \right) + 1,
+%     \end{align*}
+%     where the last line follows from our choice of $u_0$, i.e., the facts that $\sqrt{\frac{2}{\eta}} = u_0 \sqrt{\frac{2}{2 + \epsilon}}$ and $\sqrt{2\eta} = \frac{\sqrt{2(2+\epsilon)}}{u_0}$.
+% \end{proof}
+
+% \begin{lemma}
+%     If $0 < v_0 < 1$, then $|v_t| \le v_0 - \left( \frac{u_0}{v_0} \right) u_t + \frac{u_0^2}{v_0}$
+% \end{lemma}
+% \begin{proof}
+%     We use induction on $t$. The inequality clearly holds for $t=0$.
+%     \begin{align*}
+%         v_0 - \left( \frac{u_0}{v_0} \right) u_{t+1} + \frac{u_0^2}{v_0} 
+%         &= v_0 - \left( \frac{u_0}{v_0} \right) (1 - \eta v_t^2)u_t + \frac{u_0^2}{v_0} \\
+%         &= v_0 - \left( \frac{u_0}{v_0} \right) u_t + \frac{u_0^2}{v_0} + \left( \frac{v_0}{u_0} \right) \eta u_t v_t^2 \\
+%         &\ge |v_t| + \left( \frac{u_0}{v_0} \right) \eta u_t v_t^2 \\
+%         &\ge |v_t|(1 + \eta u_t^2 \frac{|v_t|}{v_0}) \\
+%         &\ge |v_t|(1 + \eta u_t^2 |v_t|) \\
+%         &\ge |v_t||(1 - \eta u_t^2 |v_t|)| \\
+%         &= |v_{t+1}|
+%     \end{align*}
+% \end{proof}
+
+
+% \begin{corollary}
+%      If $v_0 = \epsilon^p$ then $v_{\tau-1} \le \epsilon^p + u_0^2 \epsilon^{\frac{1}{2} - p}$.
+% \end{corollary}
+% \begin{proof}
+%     \begin{align*}
+%         v_{\tau-1} &\le v_0 - \frac{u_0^2}{v_0} \sqrt{\frac{2}{2+\epsilon}} + \frac{u_0^2}{v_0} \\
+%         &= v_0 + \left( 1 - \sqrt{\frac{2}{2+\epsilon}} \right) \frac{u_0^2}{v_0} \\
+%         &\le v_0 + \sqrt{\epsilon} \frac{u_0^2}{v_0} \\
+%         &= \epsilon^p + u_0^2 \epsilon^{\frac{1}{2} - p}
+%     \end{align*}
+% \end{proof}
+
+
+% \begin{lemma}
+%     For $t \ge \tau$, $|v_\tau| \le \Big\vert |v_\tau| + \left( \frac{u_\tau}{|v_\tau|} \right) u_t - \frac{u_\tau^2}{|v_\tau|} \Big\vert$.
+% \end{lemma}
+% \begin{proof}
+%     We use induction on $t$. The inequality clearly holds for $t=\tau$.
+%     \begin{align*}
+%         |v_t| + \left( \frac{u_\tau}{|v_\tau|} \right) u_{t+1} - \frac{u_\tau^2}{|v_\tau|} \Big\vert &= \Big\vert |v_\tau| + \left( \frac{u_\tau}{|v_\tau|} \right) (1 - \eta v_t^2)u_t - \frac{u_\tau^2}{|v_\tau|} \Big\vert \\
+%         &\ge \Bigg\vert \Big\vert  |v_\tau| + \left( \frac{u_\tau}{|v_\tau|} \right) u_t - \frac{u_\tau^2}{|v_\tau|} \Big\vert - \Big\vert \left( \frac{u_\tau}{|v_\tau|} \right) \eta u_t v_t^2 \Big\vert \Bigg\vert\\
+%         &\ge \Big\vert |v_t| - \eta u_t u_\tau |v_t| \frac{|v_t|}{|v_\tau|}  \Big\vert \\
+%         &\ge \big\vert|v_t| - \eta u_t^2 |v_t| \big\vert \\
+%         &= |v_{t+1}|
+%     \end{align*}
+% \end{proof}
+
+% \begin{corollary}
+%     If $v_\tau^2 < 1$, then $u_\infty > 0$.
+% \end{corollary}
+% \begin{proof}
+%     From lemma \ref{}, we have
+%     \begin{align*}
+%         u_\infty &\ge \left( \frac{u_\tau^2}{|v_\tau|} - |v_\tau| \right) \left( \frac{|v_\tau|}{u_\tau} \right) \\
+%         &= \frac{1}{u_\tau} (1 - v_\tau^2) \\
+%         &> 0
+%     \end{align*}
+% \end{proof}
+
+% \begin{lemma}
+%     If $v_\tau^2 < \min\{1/\eta, u_\tau^2\}$, then $\sum_{t=0}^\infty v_t$ converges.
+% \end{lemma}
+% \begin{proof}
+%     If $\eta v_\tau^2 < 1$, then $\sum_{t=0}^\tau v_t < \frac{\tau}{\eta}$. Furthermore, $u_t > 0$ for all $t > \tau$. For $t > \tau$, $u_t < \sqrt{\frac{2}{\eta}} = \sqrt{\frac{2}{2+\epsilon}} u_0$, thus $| 1 - \eta u_t^2 | = | 1 - (2+\epsilon)\left( \frac{u_t}{u_0} \right)^2 | < 1$. Then for all $t > \tau$,
+%     \begin{align*}
+%         \frac{v_{t+1}^2}{v_t} &= (1 - \eta u_t^2)^2 \\
+%         &< 1
+%     \end{align*}
+%     By the ratio test, $\sum_{t>\tau} v_t^2$ converges. Since $\sum_{t=0}^\tau v_t$ is bounded, $\sum_{t=0}^\infty v_t$ also converges.
+% \end{proof}
+
+% \begin{theorem}
+%     If $u_t \ge \frac{1}{3} \sqrt{\frac{2}{\eta}}$, then $\frac{3}{2}v_t^2 + \frac{1}{2}u_t^2 \le C_0 - (u_t - \sqrt{2/\eta})^2$ where $C_0 = \frac{3}{2}v_0^2 + \frac{1}{2}u_0^2 + (u_0 - \sqrt{2/\eta})^2$.
+% \end{theorem}
+% \begin{proof}
+%     Let $D_t = \frac{1}{2}u_t^2 + v_t^2$. We first note the following update equation for $D_t$:
+%     \begin{align*}
+%         D_{t+1} &= \frac{1}{2}u_{t+1}^2 + v_{t+1}^2 \\
+%         &= \frac{1}{2}(1-\eta v_t^2)^2 u_t^2 + (1-\eta u_t^2)v_t^2 \\
+%         &= (1 + \eta^2 u_t^2 v_t^2 )D_t - 3\eta u_t^2 v_t^2
+%     \end{align*}
+%     We use induction on $t$. $t=0$ holds with equality. We also note that $\frac{1}{2}v_{t+1}^2 = \frac{1}{2}v_t^2 - \eta u_t^2 v_t^2 + \frac{1}{2}\eta^2 u_t^4 u_t^2$.
+%     \begin{align*}
+%         C_0 - \left(u_{t+1} - \sqrt{\frac{2}{\eta}} \right)^2 &= C_0 - \left( u_t - \sqrt{\frac{2}{\eta}} - \eta v_t^2 u_t \right)^2 \\
+%         &= \Big( C_0 - \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 \Big) + 2\eta v_t^2 u_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 \\
+%         &\ge \frac{3}{2}v_t^2 + \frac{1}{2}u_t^2 + 2\eta v_t^2 u_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 \\
+%         &= \frac{1}{2}v_t^2 + D_t + 2\eta v_t^2 u_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 \\
+%         &= \frac{1}{2}v_{t+1}^2 + D_t + 3\eta u_t^2 v_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 -\frac{1}{2}\eta^2 u_t^4 v_t^2 \\
+%         &= \frac{1}{2}v_{t+1}^2 + D_t + 3\eta u_t^2 v_t^2 - \eta^2 u_t^2 v_t^2 D_t - 2\sqrt{2\eta} v_t^2 u_t \\
+%         &= \frac{1}{2}v_{t+1}^2 + (1-\eta^2 u_t^2 v_t^2) D_t - 3\eta u_t^2 v_t^2 + 6\eta u_t^2 v_t^2 - 2\sqrt{2\eta} v_t^2 u_t \\
+%         &= \frac{1}{2}v_{t+1}^2 + D_{t+1} + 6\eta u_t^2 v_t^2 - 2\sqrt{2\eta} v_t^2 u_t \\
+%         &\ge \frac{3}{2}v_{t+1}^2 + \frac{1}{2}u_{t+1}^2 + 2\eta u_t v_t^2 (3u_t - \sqrt{2/\eta}) \\
+%         &\ge \frac{3}{2}v_{t+1}^2 + \frac{1}{2}u_{t+1}^2 
+%     \end{align*}
+% \end{proof}
+
+% \begin{theorem}
+%     \label{thm:gd-loose-energy}
+%     If $\eta u_t^2 (1-\eta v_t^2) \ge 1$ and $\frac{v_0^2}{u_0^2} \le 2 - \frac{2\epsilon}{2+\epsilon} - \frac{1}{1+\epsilon}\left( \frac{2}{2+\epsilon} \right)^{3/2}$, then 
+%     \begin{align*}
+%         \epsilon u_{t+1}^2 + \left( u_{t+1} - \sqrt{\frac{2}{\eta}} \right)^2 + (1+\epsilon)v_{t+1}^2 \le C_0 
+%     \end{align*}
+%     where $C_0 = \epsilon u_0^2 + \left( u_0 - \sqrt{\frac{2}{\eta}} \right)^2 + (1+\epsilon)v_0^2$
+% \end{theorem}
+% \begin{proof}
+%     Let $D_t = \epsilon u_t^2 + v_t^2$. We first note the following update equation for $D_t$:
+%     \begin{align*}
+%         D_{t+1} &= \epsilon (1 - \eta v_t^2)^2 u_t^2 + (1 - \eta u_t^2)^2 v_t^2 \\
+%         &=D_t - (1+\epsilon) 2\eta u_t^2 v_t^2 + \eta^2 u_t^2 v_t^2 (u_t^2 + \epsilon v_t^2)
+%     \end{align*}
+%     We use induction on $t$. $t=0$ holds with equality. We also note that $v_{t+1}^2 = v_t^2 - 2\eta u_t^2 v_t^2 + \eta^2 u_t^4 v_t^2$.
+%     \begin{align*}
+%         C_0 - \left(u_{t+1} - \sqrt{\frac{2}{\eta}} \right)^2 &= C_0 - \left( u_t - \sqrt{\frac{2}{\eta}} - \eta v_t^2 u_t \right)^2 \\
+%         &= \Big( C_0 - \left( u_t - \sqrt{\frac{2}{\eta}} \right)^2 \Big) + 2\eta v_t^2 u_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 \\
+%         &\ge (1+\epsilon)v_t^2 + \epsilon u_t^2 + 2\eta v_t^2 u_t^2 - 2\sqrt{2\eta} v_t^2 u_t - \eta^2 v_t^4 u_t^2 \\
+%         &= \epsilon v_t^2 + D_t + 2\eta u_t^2 v_t^2 - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^4 \\
+%         &= \epsilon v_{t+1}^2 + D_t + 2(1+\epsilon) \eta u_t^2 v_t^2 - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^2 (v_t^2 + \epsilon u_t^2) \\
+%         &= \epsilon v_{t+1}^2 + D_{t+1} + (1+\epsilon) \eta u_t^2 v_t^2 - \eta^2 u_t^2 v_t^2 (u_t^2 + \epsilon v_t^2) \\
+%         & \ \ \ \ + 2(1+\epsilon) \eta u_t^2 v_t^2 - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^2 (v_t^2 + \epsilon u_t^2) \\
+%         &= (1+\epsilon) v_{t+1}^2 + \epsilon u_{t+1}^2 + 4 \eta u_t^2 v_t^2 (1+\epsilon) - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^2 (1+\epsilon)(u_t^2 + v_t^2)
+%     \end{align*}
+%     It suffices to show that $4 \eta u_t^2 v_t^2 (1+\epsilon) - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^2 (1+\epsilon)(u_t^2 + v_t^2) \ge 0$: 
+%     \begin{align*}
+%         &4 \eta u_t^2 v_t^2 (1+\epsilon) - 2\sqrt{2\eta} u_t v_t^2 - \eta^2 u_t^2 v_t^2 (1+\epsilon)(u_t^2 + v_t^2) \ge 0 \\
+%         \iff & u_t (1+\epsilon)(4-\eta (u_t^2 + v_t^2)) \ge 2\sqrt{\frac{2}{\eta}} 
+%     \end{align*}
+%     Let $F_t = u_t(4 - \eta (u_t^2 + v_t^2))$. We note that $u_{t+1}^2 + v_{t+1}^2 = (1 + \eta^2 u_t^2 v_t^2)(u_t^2 + v_t^2) - 4\eta u_t^2 v_t^2$.
+%     \begin{align*}
+%         F_{t+1} &= u_{t+1}(4 - \eta (u_{t+1}^2 + v_{t+1}^2)) \\
+%         &= (1-\eta v_t^2)u_t (4 - \eta (1+\eta^2 u_t^2 v_t^2)(u_t^2 + v_t^2) + 4 \eta^2 u_t^2 v_t^2) \\
+%         &= (1-\eta v_t^2)u_t (1+\eta^2 u_t^2 v_t^2)(4-\eta(u_t^2 + v_t^2)) \\
+%         &= (1-\eta v_t^2)(1+\eta^2 u_t^2 v_t^2)F_t \\
+%         &= (1 + \eta v_t^2 (\eta u_t^2 - 1 - \eta^2 u_t^2 v_t^2)) F_t \\
+%         &= (1 + \eta v_t^2 (\eta u_t^2 (1 - \eta v_t^2) - 1) F_t
+%     \end{align*}
+%     Since $\eta u_t^2 (1 - \eta v_t^2) \ge 1$, $F_t$ is increasing. Finally, $(1+\epsilon)F_0 \ge 2\sqrt{\frac{2}{\eta}}$ follows from $\frac{v_0^2}{u_0^2} \le 2 - \frac{2\epsilon}{2+\epsilon} - \frac{1}{1+\epsilon}\left( \frac{2}{2+\epsilon} \right)^{3/2}$.
+% \end{proof}
+
+% \begin{corollary}
+%     If $v_0^2 \le \frac{1}{2\eta}$ and $\epsilon < \frac{1}{u_0^2 + v_0^2 +1} \left( \frac{u_0^2}{2(2+\epsilon)} - v_0^2 \right)$ then $v_\tau^2 \le (1+\epsilon)(\epsilon(u_0^2+v_0^2+1) + v_0^2)$.
+% \end{corollary}
+% \begin{proof}
+%     For $t < \tau$, $u_t^2 \ge 2/\eta$, thus
+%     \begin{align*}
+%         \eta u_t^2 (1 - \eta v_t^2) &\ge 2(1 - \eta v_t^2) \\
+%     \end{align*}
+%     We can apply theorem~\ref{thm:gd-loose-energy} as long as $v_t^2 \le \frac{1}{2\eta}$. This condition holds for $t=0$ by one of our assumptions. Proceed by induction on $t$. Suppose $v_{t-1}^2 \le \frac{1}{2\eta}$. By theorem~\ref{thm:gd-loose-energy}, $(1+\epsilon)v_{t}^2 \le C_0 - \epsilon (\sqrt{2/\eta})^2 - (1+\epsilon)v_0^2$. From our upper bound on $\epsilon$, we have for all $t < \tau$,
+%     \begin{align*}
+%         v_t^2 &\le \frac{\epsilon u_0^2 + (1+\epsilon) v_0^2 + \epsilon}{1+\epsilon} \\
+%         &\le \epsilon u_0^2 + (1+\epsilon) v_0^2 + \epsilon \\
+%         &= \epsilon(u_0^2 + v_0^2 + 1) + v_0^2 \\
+%         &\le \frac{u_0^2}{2(2+\epsilon)} \\
+%         &= \frac{1}{2\eta}
+%     \end{align*}
+%     Then $v_{\tau-1}^2 \le \frac{\epsilon u_0^2 + (1+\epsilon) v_0^2 + \epsilon}{1+\epsilon}$, and 
+%     \begin{align*}
+%         v_{\tau}^2 &\le (1+\epsilon)^2 v_{\tau-1}^2 \\
+%         &\le (1+\epsilon)(\epsilon(u_0^2+v_0^2+1) + v_0^2)
+%     \end{align*}
+% \end{proof}
+
+% \begin{corollary}
+%     If $\eta u_t^2 (1 - \eta v_t^2) \ge 1$ and for $\frac{v_0^2}{u_0^2} \le 2 - \frac{2\epsilon}{2+\epsilon} - \frac{1}{1+\epsilon}\left( \frac{2}{2+\epsilon} \right)^{3/2}$, 
+%     \begin{align*}
+%         u_t \ge \sqrt{\frac{2}{\eta}} - \sqrt{\frac{2}{\eta}} \frac{\epsilon}{1+\epsilon} - \frac{\sqrt{4C_0 - \frac{8}{\eta}\epsilon}}{2(1+\epsilon)}
+%     \end{align*}
+%     where $C_0 = \epsilon u_0^2 + \left( u_0 - \sqrt{\frac{2}{\eta}} \right)^2 + (1+\epsilon)v_0^2$
+% \end{corollary}
+
+
+
+
+
+
+
+% \newpage
+% % \begin{theorem}
+% %     For $t \ge 1$, define $E_t = u_t u_{t-1} - v_t v_{t-1}$. If $u_t^2 > \frac{u_0^2}{2+\epsilon}$, then $E_\infty \le u_0^2 - v_0^2 - \eta \beta \sum_{t=1}^\infty u_t^2 v_{t-1}^2$.
+% % \end{theorem}
+% % \begin{proof}
+% %     \begin{align*}
+% %         u_{t+1}u_t &= (u_t - \eta u_t v_t^2 + \beta u_t - \beta u_{t-1})u_t \\
+% %         &= u_t^2 - \eta u_t^2 v_t^2 + \beta u_t^2 - \beta u_t u_{t-1} \\
+% %         &\le (1+\beta)u_t u_{t-1} - \eta u_t^2 v_t^2 + \beta u_t^2 \\
+% %         v_{t+1}v_t &= (v_t - \eta u_t^2 v_t +\beta v_t - \beta v_{t-1})v_t \\
+% %         &= v_t^2 - \eta u_t^2 v_t^2 + \beta v_t^2 - \beta v_t v_{t-1} \\
+% %         E_{t+1} &\le (1-\beta)u_t u_{t-1} - \eta u_t^2 v_t^2 + \beta u_t^2 - (v_t^2 - \eta u_t^2 v_t^2 + \beta v_t^2 - \beta v_t v_{t-1}) \\
+% %         &= (u_t u_{t-1} - v_t^2) - \beta E_t + \beta(u_t^2 - v_t^2) \\
+% %         &\le (1-\beta) E_t + v_t(v_{t-1} - v_t) + \beta(u_t^2 - v_t^2)
+% %     \end{align*}
+
+% %     Next, we bound $u_t^2 - v_t^2$:
+% %     \begin{align*}
+% %         u_t u_{t-1} - v_t v_{t-1} - (u_t^2 - v_t^2) &= u_t (u_{t-1} - u_t) - v_t (v_{t-1} - v_t) \\
+% %         &= u_t (\eta v_{t-1}^2 u_{t-1} - v_t (v_{t-1} - v_t) \\
+% %         &\ge \eta v_{t-1}^2 u_t^2 - v_t(v_{t-1} - v_t) \\
+% %         u_t^2 - v_t^2 &\le E_t - \eta u_t^2 v_{t-1}^2 + v_t(v_{t-1} - v_t)
+% %     \end{align*}
+
+% %     Putting everything together,
+% %     \begin{align*}
+% %         E_{t+1} &\le (1-\beta) E_t + \beta (E_t - \eta u_t^2 v_{t-1}^2 + v_t(v_{t-1} - v_t)) + v_t(v_{t-1} - v_t) \\
+% %         &= E_t - \eta \beta u_t^2 v_{t-1}^2 + (1+\beta) v_t(v_{t-1} - v_t) \\
+% %         &\le E_1 -  \eta \beta \sum_{t=1}^\infty u_t^2 v_{t-1}^2 + (1+\beta) \sum_{t=1}^\infty v_t(v_{t-1} - v_t)
+% %     \end{align*}
+
+% %     Now let $A_t = v_t v_{t-1}$. We have
+% %     \begin{align*}
+% %         A_t &= (v_{t-1} - \eta u_{t-1}^2 v_{t-1} + \beta (v_{t-1} - v_{t-2})) v_{t-1} \\
+% %         &= v_{t-1}^2 - \eta u_{t-1}^2 v_{t-1} + \beta (v_{t-1} - v_{t-2})) v_{t-1} \\
+% %         &= (1+\beta) v_{t-1}^2 - \eta u_{t-1}^2 v_{t-1}^2 - \beta v_{t-1}v_{t-2} \\
+% %         &= -\eta u_{t-1}^2 v_{t-1}^2 + (1+\beta)v_{t-1}^2 - \beta A_{t-1}
+% %     \end{align*}
+% %     Thus, $A_t + \beta A_{t-1} = -\eta u_{t-1}^2 v_{t-1}^2 + (1+\beta)v_{t-1}^2 = v_{t-1}^2 (1+\beta - \eta u_{t-1}^2)$. If $u_t^2 > \frac{1+\beta}{\eta} = \frac{u_0^2}{2+\epsilon}$, then $A_t + \beta A_{t-1} < 0$. Finally, we have
+% %     \begin{align*}
+% %         E_\infty &\le E_1 - \eta \beta \sum_{t=1}^\infty u_t v_{t-1}^2 + \sum_{t=1}^\infty \left( v_t v_{t-1} + \beta v_{t-1} v_{t-2} - (1+\beta)v_t^2 \right) + \beta v_1 v_0 \\
+% %         &= u_0^2 - v_0^2 - \eta \beta \sum_{t=1}^\infty u_t^2 v_{t-1}^2 + \sum_{t=1}^\infty v_{t-1}^2 (1+\beta - \eta u_{t-1}^2) - (1+\beta)v_t^2 + \beta v_1 v_0 \\
+% %         &= u_0^2 - v_0^2 + \sum_{t=1}^\infty \left( v_{t-1}^2 (1+\beta - \eta (u_{t-1}^2 + \beta u_t^2)) - (1+\beta)v_t^2 \right) + \beta (1 - \eta u_0^2) v_0^2 
+% %     \end{align*}
+% % \end{proof}
+
+% Let $\eta = \frac{(2+\epsilon)(1+\beta)}{u_0^2} > \lambda_{max}(u_0,0)$. For PHB, our general strategy will be to show that the momentum from $|u_{\tau} - u_{\tau-1}|$ is sufficient to induce a larger sharpness reduction than GD. First, we will need a lower bound on $|v_i|$.
+
+% \begin{theorem}
+%     Let $E_t = \left(u_t - \sqrt{\frac{2(1+\beta)}{\eta}} \right)^2 + \frac{1}{2} v_t^2$ and $\epsilon \le \frac{2}{\left( 1-\beta/2 \right)^2}-2$. For $u_t \ge \frac{2(1+\beta)}{\eta}$, $E_t$ is increasing.
+% \end{theorem}
+% \begin{proof}
+%     \begin{align*}
+%         E_{t+1} - E_t &\ge 2\left(u_t - \sqrt{\frac{2(1+\beta)}{\eta}} \right)(\beta(u_t - u_{t-1}) - \eta u_t v_t^2) + \beta^2 (u_t - u_{t-1})^2 \\
+%         &+ (\beta (v_t - v_{t-1}) - \eta u_t^2 v_t) v_t + \frac{1}{2} \beta^2 (v_t - v_{t-1})^2 + \frac{1}{2} \eta^2 u_t^4 v_t^2 \\
+%         &\ge 2\beta u_t (u_t - u_{t-1}) - 2\beta \sqrt{\frac{2(1+\beta)}{\eta}} (u_t - u_{t-1}) + 2\sqrt{2\eta(1+\beta)}u_t v_t^2 - 3\eta u_t^2 v_t^2 + \frac{1}{2} \eta^2 u_t^4 v_t^2 \\
+%         &= u_t^2 v_t^2 \underbrace{\left( \frac{2\sqrt{2\eta (1+\beta)}}{u_t} - 3\eta + \frac{1}{2} \eta^2 u_t^2 \right)}_{(\ast)} + 2\beta (u_{t-1} - u_t) \underbrace{\left( \sqrt{\frac{2(1+\beta)}{\eta}} - u_t \right)}_{(\ast \ast)}
+%     \end{align*}
+%     We also have
+%     \begin{align*}
+%         \frac{2\sqrt{2\eta (1+\beta)}}{u_t} - 3\eta + \frac{1}{2} \eta^2 u_t^2 &\ge \eta \left( \frac{2\sqrt{1+\beta}}{u_0} \sqrt{\frac{2}{\eta}} - 2 + \beta \right) \\
+%         &= \eta \left( 2 \sqrt{\frac{2}{2+\epsilon}} - 2 + \beta \right) \\
+%         &= \eta \left( 2\sqrt{\frac{2}{2+\epsilon}} - 2 + \beta \right) \\
+%         &\ge 0
+%     \end{align*}
+%     Thus we also have $(\ast) \ge 0$.
+% \end{proof}
+
+% \begin{corollary}
+%     $u_\infty \le \sqrt{\frac{2(1+\beta)}{\eta}} - 2 \frac{\sqrt{2(1+\beta)\eta}}{1-\beta} E_0$
+% \end{corollary}
+
+% \begin{lemma}
+%     \label{lem:phb-v-general-bound}
+%     If $\eta u_i^2 - 1 \ge 1 + \beta + \beta \frac{|v_{i-2}|}{|v_{i-1}|}$, then $|v_i| \ge |v_{i-1}|$ and $\text{sign}(v_i) = -\text{sign}(v_{i-1})$.
+% \end{lemma}
+% \begin{proof}
+%     We have
+%     \begin{align*}
+%         |v_i| &= \big\vert (1 - \eta u_{i-1}^2) v_{i-1} + \beta (v_{i-1} - v_{i-2}) \big\vert \\
+%         &= \Big\vert (\eta u_{i-1}^2 - 1) \big\vert v_{i-1} \big\vert - \beta \big\vert v_{i-1} - v_{i-2} \big\vert \Big\vert \\
+%         &= \Big\vert (\eta u_{i-1}^2 - 1) \big\vert v_{i-1} \big\vert - \beta \left( \big\vert v_{i-1} \big\vert + \big\vert v_{i-2} \big\vert \right) \Big\vert
+%     \end{align*}
+%     If $\eta u_i^2 - 1 \ge 1 + \beta + \beta \frac{|v_{i-2}|}{|v_{i-1}|}$, then
+%     \begin{align*}
+%         |v_i|
+%         &= \Big\vert (\eta u_{i-1}^2 - 1) \big\vert v_{i-1} \big\vert - \beta \left( \big\vert v_{i-1} \big\vert + \big\vert v_{i-2} \big\vert \right) \Big\vert \\
+%         &\ge \left( 1 + \beta + \beta \frac{|v_{i-2}|}{|v_{i-1}|} \right) |v_{i-1}| - \beta |v_{i-1}| - \beta |v_{i-2}| \\
+%         &= |v_{i-1}|
+%     \end{align*}
+% \end{proof}
+
+% \begin{corollary}
+%     If $\eta u_i^2 - 1 \ge 1+2\beta$, then $|v_i| \ge |v_{i-1}|$ and $\text{sign}(v_i) = -\text{sign}(v_{i-1})$.
+% \end{corollary}
+% \begin{proof}
+%     This follows immediately from lemma \ref{lem:phb-v-general-bound}.
+% \end{proof}
+
+% \begin{corollary}
+%     \label{cor:phb-v-lower-bound}
+%     For all $t > 0$ such that $\eta u_{t-1}^2 - 1 \ge 1+2\beta$, the following holds:
+%     \begin{align*}
+%         |v_t| \ge \left( 1 + 2 \beta \frac{1 - \beta^{t}}{1 - \beta} \right) |v_0|
+%     \end{align*}
+% \end{corollary}
+% \begin{proof}
+%     First, note that $|v_1| = (\eta u_0^2 - 1) |v_0| \ge (1+2\beta) |v_0|$. We first show that $|v_t| - |v_{t-1}| \ge 2\beta^t |v_0|$. Proceed by induction on $t$. Suppose that $|v_{t-1}| - |v_{t-2}| \ge 2\beta^{t-1} |v_0|$. Then
+%     \begin{align*}
+%         |v_t| &= (\eta u_{t-1}^2 - 1) |v_{t-1}| + \beta (|v_{t-1}| + |v_{t-2}|) \\
+%         &= \Big\vert (\eta u_{t-1}^2 - 1) \big\vert v_{t-1} \big\vert - \beta \left( \big\vert v_{t-1} \big\vert + \big\vert v_{t-2} \big\vert \right) \Big\vert \\
+%         &\ge (1+2\beta) |v_{t-1}| - \beta (|v_{t-1}| + |v_{t-2}|) \\
+%         &= |v_{t-1}| + \beta (|v_{t-1}| - |v_{t-2}|) \\
+%         &\ge |v_{t-1}| + 2\beta^{t}|v_0| \\
+%     \end{align*}
+
+%     Next, we show that $|v_t| \ge \left( 1 + 2 \sum_{i=1}^t \beta^i \right) |v_0|$. Proceed by induction on $t$. 
+%     \begin{align*}
+%         |v_t| &\ge |v_{t-1}| + \beta (|v_{t-1}| - |v_{t-2}|) \\
+%         &\ge \left( 1 + 2 \sum_{i=1}^{t-1} \beta^i \right) |v_0|  + 2\beta^{t}|v_0| \\
+%         &\ge \left( 1 + 2 \sum_{i=1}^{t} \beta^i \right) |v_0| \\
+%         &= \left( 1 + 2 \beta \frac{1 - \beta^{t}}{1 - \beta} \right) |v_0|
+%     \end{align*}
+% \end{proof}
+
+% \begin{corollary}
+%     $u_\infty \le u_0 - \sqrt{2(1+\beta)\eta}\frac{v_0^2}{1-\beta} \sum_{t=0}^{\tau-1} \left( 1 + 2\beta \frac{1-\beta^t}{1-\beta} \right)^2$
+% \end{corollary}
+
+

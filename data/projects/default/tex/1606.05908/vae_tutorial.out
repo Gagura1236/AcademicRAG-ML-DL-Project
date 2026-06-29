@@ -1,0 +1,15 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Preliminaries: Latent Variable Models}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Variational Autoencoders}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Setting up the objective}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.2}{Optimizing the objective}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.3}{Testing the learned model}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.4}{Interpreting the objective}{section.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.4.1}{The error from D[Q\(z|X\)P\(z|X\)]}{subsection.2.4}% 8
+\BOOKMARK [3][-]{subsubsection.2.4.2}{The information-theoretic interpretation}{subsection.2.4}% 9
+\BOOKMARK [3][-]{subsubsection.2.4.3}{VAEs and the regularization parameter}{subsection.2.4}% 10
+\BOOKMARK [1][-]{section.3}{Conditional Variational Autoencoders}{}% 11
+\BOOKMARK [1][-]{section.4}{Examples}{}% 12
+\BOOKMARK [2][-]{subsection.4.1}{MNIST variational autoencoder}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{MNIST conditional variational autoencoder}{}% 14
+\BOOKMARK [1][-]{appendix.A}{Proof in 1D that VAEs have zero approximation error given arbitrarily powerful learners.}{}% 15

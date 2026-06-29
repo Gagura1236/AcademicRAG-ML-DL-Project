@@ -1,0 +1,131 @@
+\begin{thebibliography}{10}
+
+\bibitem{Kingma14a}
+Diederik~P Kingma and Max Welling.
+\newblock Auto-encoding variational {B}ayes.
+\newblock {\em ICLR}, 2014.
+
+\bibitem{Salimans15}
+Tim Salimans, Diederik Kingma, and Max Welling.
+\newblock Markov chain monte carlo and variational inference: Bridging the gap.
+\newblock {\em ICML}, 2015.
+
+\bibitem{Rezende14}
+Danilo~Jimenez Rezende, Shakir Mohamed, and Daan Wierstra.
+\newblock Stochastic backpropagation and approximate inference in deep
+  generative models.
+\newblock In {\em ICML}, 2014.
+
+\bibitem{kulkarni2015deep}
+Tejas~D Kulkarni, William~F. Whitney, Pushmeet Kohli, and Josh Tenenbaum.
+\newblock Deep convolutional inverse graphics network.
+\newblock In {\em NIPS}, 2015.
+
+\bibitem{Kingma14b}
+Diederik~P Kingma, Shakir Mohamed, Danilo~Jimenez Rezende, and Max Welling.
+\newblock Semi-supervised learning with deep generative models.
+\newblock In {\em NIPS}, 2014.
+
+\bibitem{Gregor15}
+Karol Gregor, Ivo Danihelka, Alex Graves, Danilo Rezende, and Daan Wierstra.
+\newblock Draw: A recurrent neural network for image generation.
+\newblock In {\em ICCV}, 2015.
+
+\bibitem{sohn2015learning}
+Kihyuk Sohn, Honglak Lee, and Xinchen Yan.
+\newblock Learning structured output representation using deep conditional
+  generative models.
+\newblock In {\em NIPS}, 2015.
+
+\bibitem{walker2016uncertain}
+Jacob Walker, Carl Doersch, Abhinav Gupta, and Martial Hebert.
+\newblock An uncertain future: Forecasting from static images using variational
+  autoencoders.
+\newblock In {\em ECCV}, 2016.
+
+\bibitem{krizhevsky2012imagenet}
+Alex Krizhevsky, Ilya Sutskever, and Geoff Hinton.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock In {\em NIPS}, 2012.
+
+\bibitem{olshausen1996emergence}
+Bruno~A Olshausen and David~J Field.
+\newblock Emergence of simple-cell receptive field properties by learning a
+  sparse code for natural images.
+\newblock {\em Nature}, 381(6583):607--609, 1996.
+
+\bibitem{lee2006efficient}
+Honglak Lee, Alexis Battle, Rajat Raina, and Andrew~Y Ng.
+\newblock Efficient sparse coding algorithms.
+\newblock In {\em NIPS}, 2006.
+
+\bibitem{vincent2008extracting}
+Pascal Vincent, Hugo Larochelle, Yoshua Bengio, and Pierre-Antoine Manzagol.
+\newblock Extracting and composing robust features with denoising autoencoders.
+\newblock In {\em ICML}, 2008.
+
+\bibitem{bengio2013deep}
+Yoshua Bengio, Eric Thibodeau-Laufer, Guillaume Alain, and Jason Yosinski.
+\newblock Deep generative stochastic networks trainable by backprop.
+\newblock {\em ICML}, 2014.
+
+\bibitem{bengio2013generalized}
+Yoshua Bengio, Li~Yao, Guillaume Alain, and Pascal Vincent.
+\newblock Generalized denoising auto-encoders as generative models.
+\newblock In {\em NIPS}, pages 899--907, 2013.
+
+\bibitem{devroye1986sample}
+Luc Devroye.
+\newblock {\em Sample-based non-uniform random variate generation}.
+\newblock Springer-Verlag, New York, 1986.
+
+\bibitem{dayan1995helmholtz}
+Peter Dayan, Geoffrey~E Hinton, Radford~M Neal, and Richard~S Zemel.
+\newblock The helmholtz machine.
+\newblock {\em Neural computation}, 7(5):889--904, 1995.
+
+\bibitem{hinton1995wake}
+Geoffrey~E Hinton, Peter Dayan, Brendan~J Frey, and Radford~M Neal.
+\newblock The" wake-sleep" algorithm for unsupervised neural networks.
+\newblock {\em Science}, 268(5214):1158--1161, 1995.
+
+\bibitem{hinton2006fast}
+Geoffrey~E Hinton, Simon Osindero, and Yee-Whye Teh.
+\newblock A fast learning algorithm for deep belief nets.
+\newblock {\em Neural computation}, 18(7):1527--1554, 2006.
+
+\bibitem{salakhutdinov2009deep}
+Ruslan Salakhutdinov and Geoffrey~E Hinton.
+\newblock Deep boltzmann machines.
+\newblock In {\em International conference on artificial intelligence and
+  statistics}, pages 448--455, 2009.
+
+\bibitem{hinton1993keeping}
+Geoffrey~E Hinton and Drew Van~Camp.
+\newblock Keeping the neural networks simple by minimizing the description
+  length of the weights.
+\newblock In {\em Proceedings of the sixth annual conference on Computational
+  learning theory}, 1993.
+
+\bibitem{hinton1994autoencoders}
+Geoffrey~E Hinton and Richard~S Zemel.
+\newblock Autoencoders, minimum description length, and helmholtz free energy.
+\newblock In {\em NIPS}, 1994.
+
+\bibitem{jia2014caffe}
+Yangqing Jia, Evan Shelhamer, Jeff Donahue, Sergey Karayev, Jonathan Long, Ross
+  Girshick, Sergio Guadarrama, and Trevor Darrell.
+\newblock Caffe: Convolutional architecture for fast feature embedding.
+\newblock In {\em ACM-MM}, 2014.
+
+\bibitem{kingma2014adam}
+Diederik Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock {\em ICLR}, 2015.
+
+\bibitem{theis2015note}
+Lucas Theis, A{\"a}ron van~den Oord, and Matthias Bethge.
+\newblock A note on the evaluation of generative models.
+\newblock {\em ICLR}, 2016.
+
+\end{thebibliography}

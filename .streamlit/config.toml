@@ -1,0 +1,26 @@
+[server]
+# 🔥 最關鍵設定：關閉檔案監視器
+# 預設情況下，Streamlit 會監視所有 Python 檔案與 data/ 目錄。
+# 只要 LoRA 訓練存檔或 FAISS 索引更新，就會偵測到「檔案變更」並自動重啟伺服器，
+# 導致 @st.cache_resource 全部失效，強迫使用者等待 30 秒重新載入模型。
+# 設為 "none" 後，模型快取將永久存活，直到使用者手動重啟伺服器為止。
+fileWatcherType = "none"
+
+# 關閉「存檔即重跑」功能（與 fileWatcherType=none 搭配）
+runOnSave = false
+
+[runner]
+# 啟用快速重新運行：對於不涉及模型的 UI 互動（如切換分頁、滑桿），
+# 跳過部分中間狀態計算，讓頁面切換感覺更流暢
+fastReruns = true
+
+[client]
+# 只顯示精簡的錯誤訊息，不顯示完整 Traceback（展示時更美觀）
+showErrorDetails = false
+
+# 關閉右上角的「Deploy」按鈕（展示用，不需要部署）
+toolbarMode = "minimal"
+
+[theme]
+# 使用深色主題作為基礎
+base = "dark"

@@ -1,0 +1,48 @@
+\section{Related Works}
+\label{app:related-works}
+
+%\subsection{Catapults in (S)GD}
+\paragraph{Catapults in (S)GD.}
+\citet{lewkowycz2020catapult} are the first to describe the catapult mechanism of GD, the phenomenon of momentary spikes in training loss resulting in lower sharpness. They then analytically prove that catapults occur for $f = d^{-1/2} \vu^T \vv$, where $\vu, \vv \in \sR^d$, when $d$ is sufficiently large.
+Since then, the theoretical analysis of the catapult mechanism has been extended to other models such as (neural) quadratic models~\citep{zhu2023catapultquadratic,meltzer2023catapult,agarwala2023eos} and matrix factorization~\citep{wang2022implicit,wang2023catapult} (from the perspective of ``balancing'' effect).
+On the empirical side, \citet{zhu2023catapult} study the loss spikes that occur during the catapults of SGD by decomposing the loss into components corresponding to different eigenspaces of the neural tangent kernel (NTK; \citet{jacot2018ntk}) and show that catapults improve generalization through feature learning.
+% They observe that the loss spikes occur in the top eigenspace of the NTK while the loss components corresponding to lower eigenspaces are unaffected, resulting in the loss quickly decreasing after the catapults.
+% They also show that  and quantitatively measure this using average gradient outer product (AGOP) alignment, and observe that learning rate warmup can induce multiple catapults.
+Recent work by \citet{kalra2023catapult} explores the training dynamics of SGD for neural networks for various settings and uncovers four distinct regimes controlled by critical values of the sharpness.
+Despite an abundance of works on the catapult mechanism, to the best of our knowledge, we are the first to report the substantial differences in the catapult mechanism and sharpness reduction between GD and PHB.% (in the presence of learning rate warmup).
+
+
+% \citte{lewkowycz2020catapult} show that GD with large learning rates can induce catapults, resulting in.
+% % Several other works \citep{zhu2023catapult, meltzer2023catapult} have also explored the catapult mechanism of GD. 
+% The theoretical analysis in \citet{lewkowycz2020catapult} focuses on the network function 
+% \citet{zhu2023catapultquadratic,meltzer2023catapult} extend this work by theoretically deriving sufficient conditions for catapults in quadratic nets.
+
+
+
+% However, none of the prior works report substantial differences between GD and PHB. 
+% They also briefly mention the effects of using momentum, but unlike in our work, they do not 
+% One possible explanation is the usage of learning rate warmup in our work which is not present in theirs.
+% Furthermore, since our work considers linear learning rate warmup, we also observe the interactions between the sharpness and the MSS during training and note that GD and PHB display qualitatively different behaviors.
+
+%\subsection{Edge of Stability}
+\paragraph{Edge of Stability.}
+% The first work to systemically report the phenomena of {\it progressive sharpening (PS)} and the {\it edge of stability (EoS)} is \cite{cohen2021stability}, in which the authors consistently observed PS and EoS across various modern neural networks.
+% Classical optimization theory suggests that if the sharpness $\lambda := \lambda_{max}(\nabla^2 \mathcal{L})$ (the maximum eigenvalue of the hessian of the training loss) is larger than a certain threshold, then training diverges. We refer to this threshold as the \emph{maximum stable sharpness} or \emph{MSS} and it is equal to $2/\eta$ for GD and $2(1+\beta)/\eta$ for momentum. However, \citet{cohen2021stability} show that this divergence does not always occur in neural network training, and neural network training consistently displays phenomena that seemingly contradict classical optimization theory. Their work systematically reports two surprising phenomena known as {\it progressive sharpening (PS)} and the {\it edge of stability (EoS)}.
+% During PS, the sharpness increases as long as it is below the MSS. Eventually, PS causes the sharpness to increase above the MSS, and EoS occurs. Instead of diverging, as indicated by classical optimization theory, during EoS the sharpness oscillates around the MSS and the loss decreases non-monotonically. This indicates that as long as the sharpness does not diverge too far from the MSS, the sharpness will force itself to remain close to the MSS.
+
+% PS is the phenomenon of the sharpness increasing until it reaches the MSS, when we run GD(m) with a learning rate below MSS.
+% This is followed by EoS, which is the phenomenon in which, instead of diverging as predicted by classical convex optimization theory, the loss decreases non-monotonically and displays an oscillatory behavior.
+% At the same time, the sharpness also oscillates around the MSS, indicating that as long as the sharpness does not diverge too far from the MSS, the sharpness will force itself to remain close to the MSS.
+Many works have been devoted to the theoretical analysis of PS and EoS~\citep{ahn2022stability,zhu2023minimalist,ahn2022threshold,wang2022stability,arora2022stability,damian2023stabilization,song2023bifurcation,wu2023logistic,wu2024logistic} as well as their systematic empirical analyses~\citep{gilmer2022stability,cohen2021stability,cohen2022stability}. \citet{ahn2022threshold} rigorously characterize the EoS phenomenon in a single-neuron network. They show that the single-neuron training dynamics under the large learning rate regime display oscillatory ``bouncing'' behavior accompanied by a decrease in sharpness so that the sharpness converges below the MSS. \citet{song2023bifurcation} extend the results of \citet{ahn2022threshold} to two-layer fully connected linear networks trained using a single data point. \citet{damian2023stabilization} explain the EoS phenomenon by proving a ``self-stabilization'' property in GD. By utilizing cubic Taylor expansions of the loss function, they prove that if the sharpness is above the MSS, GD will begin to oscillate and diverge in the leading eigenvector direction. However, the oscillations induce a ``self-stabilization'' effect which moves the iterates in the $-\nabla S$ direction thus reducing the sharpness and stabilizing the dynamics. This interplay between the oscillations and self-stabilization result in the EoS behavior.
+There are also works explaining the effect of optimization tricks by considering their interaction with EoS \citep{gilmer2022stability,fu2023momentum}.
+Lastly, we note that although the main focus of \citet{cohen2021stability} is on GD, the authors also include PHB experiments, mostly in their Appendix~N. Their experiments also display occasional larger catapults, but this difference is not highlighted.%y do not highlight the difference in the magnitude of the catapults.}
+% Although traditional convergence analyses show that training diverges if $\lambda$ (referred to as \textit{sharpness}), the largest eigenvalue of the Hessian of the training loss, exceeds the maximum stable sharpness (MSS) $\text{MSS} = 2/\eta$ where $\eta$ is the learning rate, the recent empirical work by \cite{cohen2021stability} suggests that this is not true in practice. Instead, as the sharpness exceeds the MSS, . This period of oscillatory behavior is referred to as the \textit{Edge of Stability (EoS) Regime} and during the regime, training loss decreases nonmonotonically.
+
+
+
+%\subsection{Role of Momentum in Generalization}
+\paragraph{Role of Momentum in Generalization.}
+Closely related works are \citet{ghosh2023implicit,jelassi2022momentum}, which also consider the positive effects of momentum for nonlinear neural networks.
+\citet{jelassi2022momentum} prove that a binary classification setting exists where PHB provably generalizes better than GD for a one-hidden-layer convolutional network.
+\citet{ghosh2023implicit} derive an implicit gradient regularizer~\cite{barrett2021implicit} for PHB that biases the solution towards flatter minima, and they showed that the momentum regularizer term is stronger than that of GD by a factor of $\frac{1+\beta}{1 - \beta}$.
+In contrast, we report that the behaviors of PHB and GD are fundamentally different.

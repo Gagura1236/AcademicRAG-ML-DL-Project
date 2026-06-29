@@ -1,0 +1,84 @@
+
+\section{The model}
+\label{sec:model}
+
+The Recurrent Neural Network (RNN) \cite{werbos,rumelhart1986learning}
+is a natural generalization of feedforward neural networks to
+sequences.  Given a sequence of inputs $(x_1,\ldots,x_T)$, a
+standard RNN computes a sequence of outputs $(y_1,\ldots,y_T)$ by
+iterating the following equation: 
+\begin{eqnarray*}
+h_t &=& \mathrm{sigm}\left(W^{\mathrm{hx}} x_t + W^{\mathrm{hh}} h_{t-1}\right) \\
+y_t &=& W^{\mathrm{yh}}h_t
+\end{eqnarray*}
+The RNN can easily map sequences to sequences whenever the alignment
+between the inputs the outputs is known ahead of time. However, it is
+not clear how to apply an RNN to problems whose input and the output
+sequences have different lengths with complicated and non-monotonic
+relationships.
+
+The simplest strategy for general sequence learning is to map the input
+sequence to a fixed-sized vector using one RNN, and then to map the
+vector to the target sequence with another RNN (this approach has also been
+taken by Cho et al.~\cite{cho14}).  While it could work
+in principle since the RNN is provided with all the relevant
+information, it would be difficult to train the RNNs due to the
+resulting long term dependencies
+(figure \ref{fig:translation-model2})
+\cite{hochreiter_long_term,bengio_long_term,hochreiter97,Hochreiter01gradientflow}. However, the Long
+Short-Term Memory (LSTM) \cite{hochreiter97} is known to learn
+problems with long range temporal dependencies, so an LSTM may succeed
+in this setting.
+
+The goal of the LSTM is to estimate the conditional probability
+$p(y_1,\ldots,y_{T'} | x_1,\ldots,x_T)$ where $(x_1,\ldots,x_T)$ is an
+input sequence and $y_1,\ldots,y_{T'}$ is its corresponding output
+sequence whose length $T'$ may differ from $T$. The LSTM computes this
+conditional probability by first obtaining the fixed-dimensional
+representation $v$ of the input sequence $(x_1,\ldots,x_T)$ given by
+the last hidden state of the LSTM, and then computing the probability
+of $y_1,\ldots,y_{T'}$ with a standard LSTM-LM formulation whose
+initial hidden state is set to the representation $v$ of
+$x_1,\ldots,x_T$:
+\begin{equation}
+p(y_1,\ldots,y_{T'} | x_1,\ldots,x_T) = \prod_{t=1}^{T'} p(y_t | v, y_1, \ldots, y_{t-1})
+\label{eqn:keyequation}
+\end{equation}
+In this equation, each $p(y_t | v, y_1, \ldots, y_{t-1})$ distribution
+is represented with a softmax over all the words in the
+vocabulary.  We use the LSTM formulation from Graves \cite{graves13c}.
+Note that we require that each sentence ends with a special
+end-of-sentence symbol ``$<$EOS$>$'', which enables the model to define a
+distribution over sequences of all possible lengths. The overall
+scheme is outlined in figure \ref{fig:translation-model2}, where the
+shown LSTM computes the representation of ``A'', ``B'', ``C'', ``$<$EOS$>$''
+and then uses this representation to compute the probability of ``W'',
+``X'', ``Y'', ``Z'', ``$<$EOS$>$''.
+
+Our actual models differ from the above description in three important
+ways.  First, we used two different LSTMs: one for the input sequence
+and another for the output sequence, because doing so increases the
+number model parameters at negligible computational cost and makes it
+natural to train the LSTM on multiple language pairs simultaneously
+\cite{kal13}.  Second, we found that deep LSTMs significantly
+outperformed shallow LSTMs, so we chose an LSTM with four layers.
+Third, we found it extremely valuable to reverse the order of the
+words of the input sentence. So for example, instead of mapping the
+sentence $a,b,c$ to the sentence $\alpha, \beta, \gamma$, the LSTM is
+asked to map $c,b,a$ to $\alpha, \beta, \gamma$, where $\alpha, \beta,
+\gamma$ is the translation of $a,b,c$.  This way, $a$ is in close
+proximity to $\alpha$, $b$ is fairly close to $\beta$, and so on, a
+fact that makes it easy for SGD to ``establish communication'' between
+the input and the output.  We found this simple data transformation to
+greatly improve the performance of the LSTM.
+
+%% It may appear that the LSTM is incapable of translating long sentences
+%% \cite{bog14,curse,cho14}, which was also confirmed by our early
+%% experiments.  We tried to address this problem by partitioning long
+%% sentences into a small number of medium-sized pieces (of length 30)
+%% and concatenate translations of each piece.  However, we found that
+%% LSTMs trained on reversed source sentences were hurt by this technique
+%% because could translate long sentences with little difficulty (see
+%% fig.~\ref{fig:oriol}).
+
+

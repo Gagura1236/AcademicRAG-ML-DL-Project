@@ -1,0 +1,151 @@
+\section{Proofs for Sample Complexity Lower Bounds for Kernel Method}\label{app:lb-sketch}
+In this section, we present a sample complexity lower bound for kernel methods with any inner product kernel. That is, the kernel $K:\Sp\times\Sp\to \R$ can be written as $K(x,z)=\kappa(x^\top z)$ for some one-dimensional function $\kappa:[-1,1]\to\R$. Inner product kernels are rotational invariant and do not specialize to any coordinate. In particular, NTK of two-layer neural networks is an inner product kernel (e.g., \citet{du2018gradient,wei2019regularization}).
+
+To prove \Cref{thm:lb-main}, we only need to work on the degree-$k$ spherical harmonics component of the target function and its estimation because, by the orthogonality of spherical harmonics, any lower bound for the degree-$k$ components directly translates to the original setting. The following lemma states the lower bound for general $k\ge 0$, while \Cref{thm:lb-main} only requires the case $k=4.$
+\begin{lemma}\label{lem:lb-technical-main}
+    Fixed any $k\ge 1$, let $g^\star(x)=\overline{P}_{k,d}(u^\top x)$ for some fixed $u\in\Sp$. When $d$ is larger than a sufficiently large universal constant and $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$, with probability at least $1/2$ over the randomness of $n$ i.i.d.~data $\{x_1,\cdots,x_n\}$ drawn uniformly from $\Sp$, any estimation $g$ of the form $g(x)=\sum_{i=1}^{n}\beta_i \overline{P}_{k,d}(x^\top x_i)$ must have a constant error:
+    \begin{align}
+        \E_{x\sim \Sp}(g(x)-g(x)^\star)^2\ge 3/4.
+    \end{align}
+\end{lemma}
+Proof of \Cref{lem:lb-technical-main} is deferred to Appendix~\ref{app:pf-lem-lb}, where our key observation is that $\Pkdbar(\dotp{x_i}{\cdot})$ cannot correlate too much with $g^\star$ when $x_i$ is uniformly randomly drawn from the unit sphere. Indeed, $\dotp{\Pkdbar(\dotp{x_i}{\cdot})}{g^\star}=P_{k,d}(x_i^\top u)$ concentrates within $\pm 1/N_{k,d}$ (Lemma~\ref{lem:max-legendre-poly}). Hence, we can upperbound $\dotp{g}{g^\star}=\sum_{i=1}^{n}\beta_i P_{k,d}(x_i^\top u)\lesssim \|\beta\|_2\sqrt{n/N_{k,d}}$. However, we also have $\|g\|_2^2=\sum_{i,j\in [n]}\beta_i\beta_jP_{k,d}(x_i^\top x_j)\gtrsim \|\beta\|_2^2$ because the matrix $(P_{k,d}(x_i^\top x_j))_{i,j\in[n]}$ concentrates around $I$ (Lemma~\ref{lem:kernel-lb}). Since $\|g-g^\star\|_2^2<3/4$ requires $\dotp{g}{g^\star}> \|g\|_2/2$, we must have $n\gtrsim N_{k,d}\approx d^{-k}$.
+
+\subsection{Proof of Theorem~\ref{thm:lb-main}}\label{app:pf-thm-lb}
+The following theorem states that for every $k\ge 0$, to achieve a constant population error, we need at least $C_k d^{-k}(\ln d)^{-(k+2)}$ samples where $C_k=(8k)^{-(3k+1)}$ is a constant that only depends on $k$. Hence, \Cref{thm:lb-main} is a direct corollary of \Cref{thm:lb} by taking $k=4.$
+\begin{theorem}\label{thm:lb}
+Let $y:\Sp\to\R$ be a function of the form $y(x)=\h(q_\star^\top x)$ where $q_\star\in\Sp$ is a fixed vector and $\h:[-1,1]\to \R$ is a one-dimensional function. Let $\Kernel:\Sp\times\Sp\to \R$ be any inner product kernel. When $d$ is larger than a universal constant and $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$, with probability at least $1/2$ over the randomness of $n$ i.i.d.~ data points $\{x_i\}_{i=1}^{n}$, any estimation $f$ of the form $f(x)=\sum_{i=1}^{n}\beta_i \Kernel(x_i,x)$ must have a significant error: $$\|y-f\|_2^2\ge \frac{3}{4}(\legendreCoeff{h}{k})^2.$$
+\end{theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:lb}]
+	In the following we first fix a degree $k\ge 1$.
+	For every $l>0$, let $\mathbb{Y}_{l,d}$ be the space of degree-$l$ spherical harmonics and $\Proj_l$ the projection to $\mathbb{Y}_{l,d}$. By the orthogonality of $\mathbb{Y}_{l,d}$, we have
+	\begin{align}
+		\|y-f\|_2^2=\sum_{l=0}^{\infty}\|\Proj_l(y-f)\|_2^2\ge \|\Proj_k(y-f)\|_2^2.
+	\end{align}
+	By \citet[Section 2.3]{atkinson2012spherical}, the projection operator $\Proj_k$ is given by 
+	\begin{align}
+		(\Proj_k f)(x)=\sqrt{N_{k,d}}\E_{\xi\sim \Sp}[\overline{P}_{k,d}(x^\top \xi)f(\xi)].
+	\end{align}
+	Consequently, we have $(\Proj_k y)(x)=\sqrt{N_{k,d}}\E_{\xi\sim \Sp}[\overline{P}_{k,d}(x^\top \xi)\h(q_\star^\top \xi)].$ Recall that
+\begin{align}
+\mu_d(t)\defeq (1-t^2)^{\frac{d-3}{2}}\frac{\Gamma(d/2)}{\Gamma((d-1)/2)}\frac{1}{\sqrt{\pi}}
+\end{align}
+is the density of $u_1$ when $u=(u_1,\cdots,u_d)$ is drawn uniformly from $\Sp$, and $\legendreCoeff{h}{k}=\E_{t\sim \mu_d}[\overline{P}_{k,d}(t)h(t)].$ By Funk-Hecke formula (Theorem~\ref{thm:funk-hecke}) we get 
+	\begin{align}
+		(\Proj_k y)(x)=\legendreCoeff{h}{k} \overline{P}_{k,d}(x^\top q_\star),\quad\forall x\in\Sp.
+	\end{align}
+	Similarly, we can write the inner product kernel $\Kernel$ as $\Kernel(x,z)=\kernel(x^\top z)$. Define $\legendreCoeff{\kappa}{k}=\E_{t\sim \mu_d}[\overline{P}_{k,d}(t)\kernel(t)].$ Then we have 
+	\begin{align}
+		(\Proj_k f)(x)=\legendreCoeff{\kappa}{k} \sum_{i=1}^{n}\beta_i\overline{P}_{k,d}(x^\top x_i),\quad\forall x\in\Sp.
+	\end{align}
+	Now we apply Lemma~\ref{lem:lb-technical-main} to the function $(\legendreCoeff{h}{k})^{-1}(\Proj_k y)=\overline{P}_{k,d}(\dotp{q_\star}{\cdot})$. As a result, with probability at least $1/2$ over the randomness of $\{x_i\}_{i=1}^{n}$, for any function $f$ of the form $f(\cdot)=\sum_{i=1}^{n}\beta_i \Kernel(x_i,\cdot)$, we have $\|(\legendreCoeff{h}{k})^{-1}\Proj_4(y-f)\|_2^2\ge 3/4,$ which implies $\|y-f\|_2^2\ge \frac{3}{4}(\legendreCoeff{h}{k})^2.$
+\end{proof}
+
+\subsection{Proof of \Cref{lem:lb-technical-main}}\label{app:pf-lem-lb}
+\begin{proof}[Proof of Lemma~\ref{lem:lb-technical-main}]
+	First we prove that when $\|g^\star\|_2=1$, $\|g-g^\star\|_2^2<3/4$ implies $\dotp{g}{g^\star}\ge \|g\|_2/2.$ 
+	To this end, by basic algebra we get
+	\begin{align}
+		3/4>\|g-g^\star\|_2^2=\|g\|_2^2+\|g^\star\|_2^2-2\dotp{g}{g^\star}.
+	\end{align}
+	Consequently, 
+	\begin{align}\label{equ:pf-thm-lb-1}
+		\dotp{g}{g^\star}\ge \frac{1}{2}\(\|g\|_2^2+\frac{1}{4}\)\ge \frac{1}{2}\|g\|_2,
+	\end{align}
+	where the last inequality follows from AM-GM. In the following, we prove that with probability at least $1/2$, Eq.~\eqref{equ:pf-thm-lb-1} is impossible when $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$.
+	
+	Recall that Lemma~\ref{lem:legendre-poly-inner-product} states that for every $x,z\in\Sp$ and $k\ge 0$,
+	\begin{align}
+		\dotp{\overline{P}_{k,d}(\dotp{x}{\cdot})}{\overline{P}_{k,d}(\dotp{z}{\cdot})}=P_{k,d}(\dotp{x}{z}).
+	\end{align}
+	
+	As a result,
+	\begin{align}
+		\|g\|_2^2=\sum_{i,j=1}^{n}\beta_i\beta_j\dotp{\overline{P}_{k,d}(\dotp{x_i}{\cdot})}{\overline{P}_{k,d}(\dotp{x_j}{\cdot})}=\sum_{i,j=1}^{n}\beta_i\beta_jP_{k,d}(\dotp{x_i}{x_j}).
+	\end{align}
+	Invoking Lemma~\ref{lem:kernel-lb}, with probability at least $3/4$ over the randomness of $\{x_i\}_{i\in [n]}$, we have
+	\begin{align}\label{equ:pf-thm-lb-2}
+		\|g\|_2^2=\sum_{i,j=1}^{n}\beta_i\beta_jP_{k,d}(\dotp{x_i}{x_j})\ge \frac{1}{2}\|\beta\|_2^2.
+	\end{align}
+	For the LHS of Eq.~\eqref{equ:pf-thm-lb-1}, 
+	\begin{align}
+		\dotp{g}{g^\star}&=\sum_{i=1}^{n} \beta_i\dotp{\overline{P}_{k,d}(\dotp{x_i}{\cdot})}{\overline{P}_{k,d}(\dotp{u}{\cdot})}=\sum_{i=1}^{n}\beta_iP_{k,d}(\dotp{x_i}{u})\\
+		&\le \(\sum_{i=1}^{n}\beta_i^2\)^{1/2}\(\sum_{i=1}^{n}P_{k,d}(\dotp{x_i}{u})^2\)^{1/2}=\|\beta\|_2\(\sum_{i=1}^{n}P_{k,d}(\dotp{x_i}{u})^2\)^{1/2}.
+	\end{align}
+	By Lemma~\ref{lem:max-legendre-poly}, when $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$, with probability at least $3/4$ we have
+	\begin{align}
+		&\dotp{g}{g^\star}\le \|\beta\|_2\(\sum_{i=1}^{n}P_{k,d}(\dotp{x_i}{u})^2\)^{1/2}\le \|\beta\|_2\(n\max_{i\in [n]} P_{k,d}(\dotp{x_i}{u})^2\)^{1/2}\\
+		\le\;& \|\beta\|_2\sqrt{\frac{n(32k\ln(dn))^k}{d^{k}}}\le \|\beta\|_2\sqrt{\frac{1}{\ln d}}.\label{equ:pf-thm-lb-3}
+	\end{align}
+	Combining Eq.~\eqref{equ:pf-thm-lb-2} and Eq.~\eqref{equ:pf-thm-lb-3}, there exists a universal constant $d_0>0$ such that when $d>d_0$, with probability at least $1/2$ over the randomness of $\{x_1,\cdots,x_n\}$,
+	\begin{align}
+		\dotp{g}{g^\star}<\|\beta\|_2/4\le \|g\|_2/2.
+	\end{align} 
+	Recall that $\|g-g^\star\|_2^2<3/4$ implies $\dotp{g}{g^\star}\ge \|g\|_2/2$. Consequently, with probability at least $1/2$, when $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$ and $d>d_0$ we have $\|g-g^\star\|_2^2\ge 3/4.$
+\end{proof}
+
+\begin{lemma}\label{lem:kernel-lb}
+	Let $x_1,\cdots,x_n$ be i.i.d.~random variables drawn uniformly from $\Sp$, and $P_{k,d}$ the degree-$k$ Legendre polynomial. For any fixed $k\ge 1$, define the matrix $M_k\in\R^{n\times n}$ where $[M_k]_{i,j}=P_{k,d}(\dotp{x_i}{x_j}).$
+	There exists universal constants $d_0$ such that, when $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$ and $d>d_0$, with probability at least $3/4$, 
+	\begin{align}\label{equ:lem-evlb-1}
+		\lambda_{\min}(M_k)\ge 1/2.
+	\end{align}
+\end{lemma}
+\begin{proof}
+    In the following, we fix $k\ge 1$. First, we prove that
+    \begin{align}\label{equ:pf-evlb-1}
+        \E[\lambda_{\min}(M_k)]\ge 7/8.
+    \end{align}
+    To this end, we invoke Theorem~\ref{thm:heavy-tail-columns} by constructing a matrix $A$ such that $\frac{1}{N_{k,d}}A^\top A=M_k$. 
+    
+    By Lemma~\ref{lem:legendre-kernel-feature}, there exists a feature mapping $\phi:\Sp\to\R^{N_{k,d}}$ such that for every $u,v\in\Sp$
+    \begin{align}
+        &\dotp{\phi(u)}{\phi(v)}=N_{k,d}P_{k,d}(u^\top v),\label{equ:pf-evlb-2}\\
+        &\|\phi(u)\|_2^2=N_{k,d},\\
+        &\E_{u\sim \Sp}[\phi(u)\phi(u)^\top]=I.
+    \end{align}
+    We set $A_i=\phi(x_i),\forall 1\le i\le n$. Consequently,
+    \begin{align}
+        &\frac{1}{N_{k,d}}A^\top A=M_k,\\
+        &\|A_i\|_2^2=N_{k,d},\\
+        &\E[A_iA_i^\top]=I.
+    \end{align}
+    
+    In the following, we upper bound the incoherence parameter $p$ defined in Theorem~\ref{thm:heavy-tail-columns}:
+    \begin{align}
+        p=\frac{1}{N_{k,d}}\E\[\max_{i\le n}\sum_{j\in[n],j\neq i}\dotp{A_i}{A_j}^2\].
+    \end{align}
+    By Eq.~\eqref{equ:pf-evlb-2} we get
+    \begin{align}
+        &\frac{1}{N_{k,d}}\E\[\max_{i\le n}\sum_{j\in[n],j\neq i}\dotp{A_i}{A_j}^2\]=N_{k,d}\E\[\max_{i\le n}\sum_{j\in[n],j\neq i}P_{k,d}(\dotp{x_i}{x_j})^2\]\\
+        \le\; &n N_{k,d}\E\[\max_{i\le n}\max_{j\neq i} P_{k,d}(\dotp{x_i}{x_j})^2\].
+    \end{align}
+    Invoking Lemma~\ref{lem:max-legendre-poly} we get
+    \begin{align}
+        N_{k,d}\E\[\max_{i\le n}\max_{j\neq i} P_{k,d}(\dotp{x_i}{x_j})^2\]\lesssim (32k\ln(dn))^k.
+    \end{align}
+    It follows that $p\lesssim n(32k\ln(dn))^k$. 
+    
+    Now that we have established the conditions, by Theorem~\ref{thm:heavy-tail-columns} we have
+    \begin{align}
+        \E[\|M-I\|]\lesssim \sqrt{\frac{n(\ln n)(32k\ln(dn))^k}{N_{k,d}}}.
+    \end{align}
+    Note that $N_{k,d}\ge \binom{k+d-2}{k}\ge (d/k)^k$ when $k\ge 2$, and clearly $N_{1,d}\ge d$. Hence, there exists a universal constant $d_0$ such that, when $n<d^k(8k)^{-(3k+1)}(\ln d)^{-(k+2)}$.
+    \begin{align}
+        \frac{n(\ln n)(32k\ln(dn))^k}{N_{k,d}}\le \frac{n(8k)^{2k}\ln(dn)^{k+1}}{d^k}\le  \frac{n(8k)^{2k}\ln(d^{k+1})^{k+1}}{d^k}\le \frac{1}{\ln d}.
+    \end{align}
+    Hence, there exists a universal constant $d_0$ such that when $d\ge d_0$, 
+    \begin{align}
+        \E[\lambda_{\min}(M)]\ge 1-O(1)\sqrt{\frac{n(\ln n)(32k\ln(dn))^k}{N_{k,d}}}\ge 1-O(1)\sqrt{\frac{1}{\ln d}}\ge 7/8.
+    \end{align}
+    
+    Now we prove Eq.~\eqref{equ:lem-evlb-1}. Let $t=1-\lambda_{\min}(M)$ be a random variable. Note that by Eq.~\eqref{equ:pf-evlb-1} we have $\E[t]\le 1/8.$ By basic algebra, we also have
+    \begin{align}
+        \lambda_{\min}(M)\le M_{1,1}=P_{k,d}(\dotp{x_1}{x_1})=P_{k,d}(1)=1,
+    \end{align}
+    which implies $t\ge 0.$
+    Therefore, by Markov inequality we get
+    \begin{align}
+        \Pr(\lambda_{\min}(M)\le 1/2)=\Pr(t\ge 1/2)\le 2\E[t]\le 1/4.
+    \end{align}
+\end{proof}

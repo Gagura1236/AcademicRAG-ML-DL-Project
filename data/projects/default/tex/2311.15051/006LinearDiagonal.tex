@@ -1,0 +1,53 @@
+\subsection{Simple Network \#2. Linear Diagonal Networks}
+\label{sec:ldn-hypothesis}
+
+% \begin{hypothesis}
+    % For nonlinear loss function $\gL(\cdot)$, consider running GD/PHB from initialization $\bm\theta_0$ satisfying $\lambda_{\max}(\nabla^2 \gL(\bm\theta_0)) = \frac{2 + \epsilon}{\eta}$ for some small $\epsilon \in (0, 1)$.
+    % Then, the $C_u$ and $C_v$ in our ReLU scalar network ``extends'' to the following:
+    % \begin{equation}
+    %     C_u := \left\langle \frac{\nabla S(\bm\theta_{\tau_u}^*)}{\bignorm{\nabla S(\bm\theta_{\tau_u}^*)}_2}, \bm\theta_{\tau_u}^* \right\rangle - \beta \left\langle \frac{\nabla S(\bm\theta_{\tau_u - 1}^*)}{\bignorm{\nabla S(\bm\theta_{\tau_u - 1}^*)}_2}, \bm\theta_{\tau_u - 1}^* \right\rangle, \
+    %     C_v := \sum_{t= \tau_u}^\infty \left\langle \vw_{\max}(\bm\theta_t^*), \bm\theta_t - \bm\theta_t^* \right\rangle^2,
+    % \end{equation}
+    % where $\{\bm\theta_t\}_t$ is the trajectory of GD/PHB, $\tau_u := \inf\left\{ t \geq 0 : \lambda_{\max}(\bm\theta_t) < \frac{2 - \epsilon}{\eta} \right\}$, $\bm\theta_t^* := \argmin_{\bm\theta \in \sR^d : \gL(\bm\theta) = 0} \bignorm{\bm\theta - \bm\theta_t}_2$ is the projection of $\bm\theta_t$ onto the nearest manifold of minima, and $\vw_{\max}(\bm\theta^*)$ is the leading eigenvector\footnote{{\color{red} If this is non-unique, then we sum the squared inner product over all the leading eigenvectors as well.}} of $\nabla^2 \gL(\bm\theta^*)$.
+% \end{hypothesis}
+
+To show the potential of our verification of hypothesis extending beyond the scalar ReLU network, we revisit the LDNs and perform similar experiments as in the ReLU scalar networks, i.e., we plot the sharpness across 4 scenarios: {\color{blue} GD}, {\color{orange} PHB}, {\color{darkgreen} GD $\to$ PHB}, and {\color{red} PHB $\to$ GD}.
+This is to show empirical evidence that Hypothesis~\ref{hypothesis} also holds for LDNs.
+We first initialize the weights close to a minimum by running GD until the (MSE) loss is less than $0.001$.
+We then run each scenario from that same initialization using $\eta = \frac{(2+\epsilon)(1+\beta)}{S_0}$ (and adjusting the learning rates as needed after the sharpness crosses the MSS) where $\epsilon = 0.03$ and $S_0$ is the sharpness of the initialization. As shown in Figure~\ref{subfig:LDNonoff}, in increasing order of reduction, we again have {\color{blue} GD} < {\color{red} PHB $\to$ GD} < {\color{darkgreen} GD $\to$ PHB} < {\color{orange} PHB}.
+
+\begin{figure}
+    \centering
+    \subfigure[Sharpness of LDN for {\color{blue} (1) GD}, {\color{orange} (2) PHB}, {\color{red} (3) PHB $\to$ GD}, and {\color{darkgreen} (4) GD $\to$ PHB}. ]{
+        \includegraphics[width=0.42\textwidth]{figures/ldn/LDN_on_off.pdf}
+        \label{subfig:LDNonoff}
+    }
+    \hfill
+    \subfigure[Numerical verification of Theorem~\ref{thm:toy} for $\gL(u,v) = \frac{1}{2} (u^2 - v^2 - 1)^2$.]{
+        \includegraphics[width=0.42\textwidth]{figures/ldn/ldn-2d-ub.pdf}
+        \label{subfig:LDNlb}
+    }
+    \caption{Empirical Validation of Hypothesis~\ref{hypothesis} and theory using LDNs}
+    \label{fig:ldn-momentum-on-off}
+\end{figure}
+
+We now turn to the question of whether Theorem~\ref{thm:toy} can be extended to LDNs as well.
+For a general loss function $\gL(\bm\theta)$, consider running GD and PHB (with rescaled learning rate) from initialization $\bm\theta_0$ satisfying $\lambda_{\max}(\nabla^2 \gL(\bm\theta_0)) = \frac{2 + \epsilon}{\eta}$ for some small $\epsilon \in (0, 1)$.
+Then, we extend the definition of $C_u$ and $C_v$ (Eqn.~\eqref{eq:CuCv}) as the following. For the GD/PHB iterates $\{\bm\theta_t\}_{t\geq 0}$, we solve gradient flow (GF) starting from $\bm\theta_t$ to convergence, and obtain the solution $\bm\theta_t^*$, which can be viewed as the global minimum ``closest'' to $\bm\theta_t$. Then, for $\tau_u := \inf\left\{ t \geq 0 : \lambda_{\max}(\bm\theta_t^*) < \frac{2 - \epsilon}{\eta} \right\}$, define
+\begin{equation}
+\label{eq:CuCv2}
+    %\tau_u := \inf\left\{ t \geq 0 : \lambda_{\max}(\bm\theta_t^*) < \frac{2 - \epsilon}{\eta} \right\},\quad
+    C_u := \tfrac{\sqrt{S(\bm\theta_{\tau_u}^*)} - \beta \sqrt{S(\bm\theta_{\tau_u-1}^*)}}{1-\beta},\quad
+    C_v := \tfrac{1+\beta}{1-\beta} \sum\nolimits_{t= \tau_u}^\infty \left\langle \vw_{\max}(\bm\theta_t^*), \bm\theta_t - \bm\theta_t^* \right\rangle^2,
+\end{equation}
+where $\vw_{\max}(\bm\theta^*)$ is the leading eigenvector
+% \footnote{{\color{red} If this is non-unique, then we sum the squared inner product over all the leading eigenvectors as well.}} 
+of $\nabla^2 \gL(\bm\theta^*)$.
+Once we calculate Eqn.~\eqref{eq:CuCv2}, a ``lower bound'' on the sharpness displacement can be derived from Eqn.~\eqref{eq:uinfub}, although there is no theoretical guarantee that this should indeed hold for the new $\gL$. Still, we can numerically calculate it and assess the possibility of extending Theorem~\ref{thm:toy} to general functions.
+% and derive reasonable lower bounds on the amount of sharpness reduction.
+
+However, running GF to convergence at every iteration is the biggest bottleneck of numerical verification.
+As a proof of concept, we consider a simple function motivated by the LDN architecture: $\gL(u,v) = \frac{1}{2} (u^2 - v^2 - 1)^2$.
+This corresponds to the MSE loss of LDN for a single data point $(\vx,y) = (\ve_1, 1)$, and has the nice property that the GF trajectory $(u(t),v(t))$ satisfies $u(t)v(t) = u(0)v(0)$ for all $t \geq 0$ (see Appendix~\ref{sec:LDNLBdetails} for the proof). Using this property, we can calculate $\bm\theta_t^*$ for any $\bm\theta_t$, hence calculating the desired lower bound. Starting from a $\bm\theta_0 = (u_0, v_0)$ with sharpness $\frac{2+\epsilon}{\eta}$, we ran GD/PHB for a range of $\beta$'s, calculated the actual sharpness displacement and its lower bound. Appendix~\ref{sec:LDNLBdetails} contains further details on the experiment.
+The results are shown in Figure~\ref{subfig:LDNlb}, which shows a similar trend as in the scalar ReLU network.
+There is a small decrease in sharpness reduction at $\beta=0.99$, which can be attributed to overshooting; refer to Appendix~\ref{app:overshooting} for a discussion.

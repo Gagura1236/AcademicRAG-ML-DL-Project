@@ -1,0 +1,609 @@
+\section{Toolbox}
+
+
+\subsection{Rademacher Complexity and Generalization Bounds}
+
+\begin{lemma}[Special Case of Contraction Principle (Lemma 4.6 of \citet{ALPT2009_concentration})] \label{lemma:basic_contraction_principle}
+Let $\calF$ be a family of functions from $D$ to $\R$, and let $\varphi$ be an $L$-Lipschitz function with $\varphi(0) = 0$. Then, for any $S = \{x_1, \ldots, x_N\} \subset D$,
+\begin{align}
+\E_{\epsilon_i} \sup_{f \in \calF} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \varphi(f(x_i)) \leq L \cdot \E_{\epsilon_i} \sup_{f \in \calF} \frac{1}{N} \sum_{i = 1}^N \epsilon_i f(x_i)
+\end{align}
+where the expectations are taken over i.i.d. Rademacher random variables $\epsilon_1, \ldots, \epsilon_N$.
+\end{lemma}
+
+In the following, for a function family $\calH$, we let $\RN(\calH)$ denote its Rademacher complexity and $\RS(\calH)$ denote its empirical Rademacher complexity (given a fixed dataset $S$) --- see Section 4.4.2 of \citet{cs229m_notes} for a definition of these concepts.
+
+\begin{lemma}[Empirical Rademacher Complexity of Products] \label{lemma:product_rademacher_complexity}
+Suppose $\calF$ and $\calG$ are two families of functions from $D$ to $\R$, with $D \subset \R^d$, which are uniformly bounded by $B > 0$. Then, for any set $S = \{x_1, \ldots, x_N\} \subset D$,
+\begin{align}
+\RS(\calF \cdot \calG)
+& \leq B \cdot (\RS(\calF) + \RS(\calG)) \comma
+\end{align}
+where $\calF \cdot \calG = \{fg \mid f \in \calF, g \in \calG\}$. As a corollary,
+\begin{align}
+\RN(\calF \cdot \calG)
+& \leq B \cdot (\RN(\calF) + \RN(\calG)) \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:product_rademacher_complexity}]
+We can write
+\begin{align}
+\RS(\calF \cdot \calG)
+& = \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i f(x_i) g(x_i) \\
+& = \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \cdot \frac{(f(x_i) + g(x_i))^2 - (f(x_i) - g(x_i))^2}{4} \\
+& \leq \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \cdot \frac{(f(x_i) + g(x_i))^2}{4} + \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \frac{(f(x_i) - g(x_i))^2}{4} \period
+\end{align}
+Using \Cref{lemma:basic_contraction_principle} and the fact that the function $x \mapsto x^2$ is $2B$ Lipschitz on the interval $[-B, B]$, we have
+\begin{align}
+\RS(\calF \cdot \calG)
+& \leq 2B \cdot \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \cdot \frac{f(x) + g(x)}{4} + 2B \cdot \E_{\epsilon_i} \sup_{f \in \calF, g \in \calG} \frac{1}{N} \sum_{i = 1}^N \epsilon_i \frac{f(x_i) - g(x_i)}{4} \\
+& \leq \frac{B}{2} \cdot (\RS(\calF) + \RS(\calG)) + \frac{B}{2} \cdot (\RS(\calF) + \RS(\calG)) \\
+& = B \cdot (\RS(\calF) + \RS(\calG)) \comma
+\end{align}
+as desired.
+\end{proof}
+
+\begin{lemma}[Symmetrization --- Analogous to Corollary 4.7 of \citet{ALPT2009_concentration}] \label{lemma:symmetrization}
+Let $X_1, \ldots, X_N$ be independent random variables. Let $\calF$ be a family of functions from $D \subset \R^d$ to $\R$ that is uniformly bounded by $B_1 \geq 1$, and let $\calG$ be a family of functions from $D \subset \R^d$ to $\R$. Then, for nonnegative integers $p_1, p_2, p_3, p_4$ and a fixed $g \in \calG$ that is bounded by $B_2 \geq 1$, we have
+\begin{align}
+\E_{X_i} \sup_{f_1, f_2, f_3, f_4 \in \calF, g \in \calG} & \Big| \frac{1}{N} \sum_{i = 1}^N \Big(|f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \\
+& \nextlinespace\nextlinespace - \E_{X_i} \Big[ |f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \Big] \Big) \Big| \\
+& \leq \poly(p_1, p_2, p_3, p_4, B_1^{p_1 + p_2 + p_3 + p_4}, B_2) \cdot \RN(\calF)
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:symmetrization}]
+By Theorem 4.13 of \citet{cs229m_notes},
+\begin{align}
+\E_{X_i} \sup_{f_1, f_2, f_3, f_4 \in \calF, g \in \calG} & \Big| \frac{1}{N} \sum_{i = 1}^N \Big(|f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \\
+& \nextlinespace\nextlinespace - \E_{X_i} \Big[ |f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \Big] \Big) \Big| \\
+& \lesssim \RN(\calF^{p_1} \cdot \calF^{p_2} \cdot \calF^{p_3} \cdot \calF^{p_4} \cdot g) 
+& \tag{By Theorem 4.13 of \citet{cs229m_notes}} \\
+& \lesssim \max(B_1^{p_1 + p_2 + p_3 + p_4}, B_2) \cdot \Big(\RN(\calF^{p_1} \cdot \calF^{p_2} \cdot \calF^{p_3} \cdot \calF^{p_4}) + \RN(\{g\})\Big)
+& \tag{By \Cref{lemma:product_rademacher_complexity}} \\
+& \lesssim \max(B_1^{p_1 + p_2 + p_3 + p_4}, B_2) \cdot \RN(\calF^{p_1} \cdot \calF^{p_2} \cdot \calF^{p_3} \cdot \calF^{p_4}) \\
+& \lesssim \max(B_1^{p_1 + p_2 + p_3 + p_4}, B_2)
+\cdot \max(B_1^{p_1}, B_1^{p_2 + p_3 + p_4})
+\cdot \max(B_1^{p_2}, B_1^{p_3 + p_4}) \\
+& \nextlinespace\nextlinespace \cdot \max(B_1^{p_3}, B_1^{p_4})
+\cdot (\RN(\calF^{p_1}) + \RN(\calF^{p_2}) + \RN(\calF^{p_3}) + \RN(\calF^{p_4}))
+& \tag{By repeated applications of \Cref{lemma:product_rademacher_complexity}} \\
+& \lesssim \max(B_1^{O(p_1 + p_2 + p_3 + p_4)}, B_2) \cdot (\RN(\calF^{p_1}) + \RN(\calF^{p_2}) + \RN(\calF^{p_3}) + \RN(\calF^{p_4}))
+\end{align}
+Finally, we simplify $\RN(\calF^{p_i})$ for each $i$. For nonnegative integers $p$, since $\calF$ is uniformly bounded by $B_1$, the function $x \mapsto x^p$ is $p B_1^{p - 1}$-Lipschitz on $[-B_1, B_1]$ for $p \geq 1$ and is $1$-Lipschitz for $p = 0$. Thus, by \Cref{lemma:basic_contraction_principle}, we have $\RN(\calF^p) \leq \min(1, p B_1^{p - 1}) \RN(\calF)$, and
+\begin{align}
+\E_{X_i} \sup_{f_1, f_2, f_3, f_4 \in \calF, g \in \calG} & \Big| \frac{1}{N} \sum_{i = 1}^N \Big(|f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \\
+& \nextlinespace\nextlinespace - \E_{X_i} \Big[ |f_1(X_i)|^{p_1} |f_2(X_i)|^{p_2} |f_3(X_i)|^{p_3} |f_4(X_i)|^{p_4} |g(X_i)| \Big] \Big) \Big| \\
+& \lesssim \max(B_1^{O(p_1 + p_2 + p_3 + p_4)}, B_2) \cdot \max(p_1 B_1^{p_1}, p_2 B_1^{p_2}, p_3 B_1^{p_3}, p_4 B_1^{p_4}) \cdot \RN(\calF) \\
+& \lesssim \poly(p_1, p_2, p_3, p_4, B_1^{p_1 + p_2 + p_3 + p_4}, B_2) \cdot \RN(\calF)
+\end{align}
+as desired.
+\end{proof}
+
+\subsection{Concentration Lemmas}
+\begin{theorem}[Theorem 5.62 of \citet{vershynin2010introduction}]\label{thm:heavy-tail-columns}
+	Let $A$ be an $m\times n$ matrix with independent columns $\{A_j\}_{j=1}^{n}$ and $m\ge n$. Suppose $A_j$ is isotropic, i.e., $\E[A_j A_j^\top]=I$ and $\|A_j\|_2=\sqrt{m}$ for every $j\in[n]$. Let $p$ be the incoherence parameter defined by 
+	\begin{align}
+		p\defeq \frac{1}{m}\E\[\max_{i\le n}\sum_{j\in[n],j\neq i}\dotp{A_i}{A_j}^2\].
+	\end{align}
+	Then there is a universal constant $C_0$ such that 
+	\begin{align}
+		\E\[\norm{\frac{1}{m}A^\top A-I}\]\le C_0\sqrt{\frac{p\ln n}{m}}.
+	\end{align}
+\end{theorem}
+
+The following proposition gives the tail bound for inner products of random vectors in $\Sp$ (c.f. Theorem 3.4.6 of \citet{vershynin2018high}).
+\begin{proposition}\label{prop:sphere-tail-bound}
+	Let $u$ be a vector drawn uniformly at random from the unit sphere $\Sp$. For any fixed vector $v\in\Sp$, we have
+	\begin{align}
+		\forall t>0,\quad \Pr(|u^\top v|\ge t)\le 2\exp\(-\frac{t^2d}{2}\).
+	\end{align}
+\end{proposition}
+\begin{proof}[Proof of \Cref{prop:sphere-tail-bound}]
+	By the symmetricity of $u$ and $v$, we can assume that $v=(1,0,\cdots,0)$ without loss of generality. Let $x=\frac{1}{2}(u^\top v+1)$. Then we have $x\sim \text{Beta}(\frac{d-1}{2},\frac{d-1}{2}).$ Hence, the desired result follows directly from \citet[Theorem 1]{skorski2023bernstein}.
+\end{proof}
+
+\begin{lemma}[Modification of Proposition 4.4 of \citet{ALPT2009_concentration}]\label{lemma:uniform_convergence_two_sup}
+Let $X_1, \ldots, X_N$ be i.i.d. random vectors drawn uniformly from $\sqrt{d} \bbS^{d - 1}$, and let $p_1, p_2, p_3, p_4, q_1, q_2$ be nonnegative integers. Suppose $p_1 + p_2 + p_3 + p_4 \geq 2$. Then, for fixed $w_1, w_2 \in \bbS^{d - 1}$, as long as $N \leq d^C$ for any universal constant $C > 0$, we have
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} & \Big|\frac{1}{N} \sum_{i = 1}^N |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[|\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\langle X, w_1 \rangle|^{q_1} |\langle X, w_2 \rangle|^{q_2} \Big] \\
+& \leq C_{p_1, p_2, p_3, p_4, q_1, q_2} (\log d)^{O(p_1 + p_2 + p_3 + p_4 + q_1 + q_2)} \cdot \sqrt{\frac{d}{N}} \\
+& \nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4} (\log d)^{O(q_1 + q_2)} \cdot \frac{d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}}{N} + \frac{C_{p_1, p_2, p_3, p_4, q_1, q_2}}{d^{\Omega(\log d)}}
+\end{align}
+with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$. Here, $C_{p_1, p_2, p_3, p_4, q_1, q_2}$ is a sufficiently large constant which depends on $p_1, p_2, p_3, p_4, q_1, q_2$ and $C_{p_1, p_2, p_3, p_4}$ is a constant which depends on $p_1, p_2, p_3, p_4$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:uniform_convergence_two_sup}]
+We largely follow the proof of Proposition 4.4 of \citet{ALPT2009_concentration}, with some minor modifications. First, let $E_1$ be the event that $|\langle X_i, w_1 \rangle| \leq (\log d)^2$ for all $i = 1, \ldots, N$, and define $E_2$ analogously for $w_2$. By \Cref{lemma:subexponential_norm_sphere}, the sub-exponential norm of $\langle X_i, w_1 \rangle$ is at most an absolute constant $K > 0$. Thus, by Proposition 2.7.1 of \citet{vershynin2018high}, we have
+\begin{align}
+\Prob\Big(|\langle X_i, w_1 \rangle| \geq (\log d)^2\Big)
+& \leq 2 \exp\Big(- \Omega\Big(\frac{(\log d)^2}{\|\langle X_i, w_1 \rangle\|_{\psi_1}}\Big) \Big) \\
+& \lesssim \exp\Big(-\Omega(\log d)^2 \Big) \\
+& \lesssim \frac{1}{d^{\Omega(\log d)}} \period
+\end{align}
+Thus, by a union bound, with probability at least $1 - \frac{N}{d^{\Omega(\log d)}}$, for all $i = 1, \ldots, N$, we have $|\langle X_i, w_1 \rangle| \leq (\log d)^2$, and $|\langle X_i, w_2 \rangle| \leq (\log d)^2$ (by performing a similar union bound using the sub-exponential norm of $\langle X_i, w_2 \rangle$). In summary, $E_1$ and $E_2$ simultaneously hold with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$ since $N \leq d^C$ for some universal constant $C > 0$.
+
+Now, as in \citet{ALPT2009_concentration}, define $B > 1$, which we will specify later --- this is the amount by which we will truncate $\langle X_i, u_1 \rangle$, $\langle X_i, u_2 \rangle$, $\langle X_i, u_3 \rangle$ and $\langle X_i, u_4 \rangle$. For convenience, define the function $\truncB: \R \to \R$ given by
+\begin{align} \label{eq:truncB_def}
+\truncB(t)
+= \begin{cases}
+t & t \in [-B, B] \\
+B & t > B \\
+-B & t < B
+\end{cases}
+\end{align}
+Define $B' = (\log d)^2$, and define $\truncBprime$ similarly to $\truncB$, but with $B$ replaced by $B'$. If $E_1$ and $E_2$ hold, then for all $u_1, u_2, u_3, u_4 \in \bbS^{d - 1}$, we have
+\begin{align} \label{eq:final_quantity}
+& \Big|\frac{1}{N} \sum_{i = 1}^N |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2} \\
+& \nextlinespace\nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[|\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\truncBprime(\langle X, w_1 \rangle)|^{q_1} |\truncBprime(\langle X, w_2 \rangle)|^{q_2} \Big] \Big| \\
+& = \Big|\frac{1}{N} \sum_{i = 1}^N |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace\nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[|\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\truncBprime(\langle X, w_1 \rangle)|^{q_1} |\truncBprime(\langle X, w_2 \rangle)|^{q_2} \Big] \Big| 
+& \tag{B.c. $E_1$ and $E_2$ hold} \\
+& = \Big|\frac{1}{N} \sum_{i = 1}^N |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[|\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\langle X, w_1 \rangle|^{q_1} |\langle X, w_2 \rangle|^{q_2} \Big] \Big| \\
+& \nextlinespace\nextlinespace\nextlinespace \pm C_{p_1, \ldots, p_4, q_1, q_2} e^{-\Omega(B')} \period
+& \tag{By \Cref{lemma:truncated_expectation}}
+\end{align}
+Thus, the rest of the proof will focus on obtaining an upper bound on 
+\begin{align}
+\concBound := & \sup_{u_1, u_2, u_3, u_4} \Big|\frac{1}{N} \sum_{i = 1}^N |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[|\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\truncBprime(\langle X, w_1 \rangle)|^{q_1} |\truncBprime(\langle X, w_2 \rangle)|^{q_2} \Big] \Big|
+\end{align}
+First define
+\begin{align}
+\concBoundTrunc := & \sup_{u_1, u_2, u_3, u_4} \Big|\frac{1}{N} \sum_{i = 1}^N |\truncB(\langle X_i, u_1 \rangle)|^{p_1} |\truncB(\langle X_i, u_2 \rangle)|^{p_2} |\truncB(\langle X_i, u_3 \rangle)|^{p_3} |\truncB(\langle X_i, u_4 \rangle)|^{p_4} \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[
+|\truncB(\langle X, u_1 \rangle)|^{p_1} |\truncB(\langle X, u_2 \rangle)|^{p_2} |\truncB(\langle X, u_3 \rangle)|^{p_3} |\truncB(\langle X, u_4 \rangle)|^{p_4} \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace |\truncBprime(\langle X, w_1 \rangle)|^{q_1} |\truncBprime(\langle X, w_2 \rangle)|^{q_2} \Big] \Big|
+\end{align}
+We will first obtain an upper bound on $\concBoundTrunc$, then show that $\concBoundTrunc$ and $\concBound$ are close. We apply \Cref{lemma:symmetrization} with $\calF = \{x \mapsto \truncB(\langle x, u \rangle) \mid u \in \bbS^{d - 1}\}$, and with $f_i$ corresponding to $\truncB(\langle x, u_i \rangle)$, and finally with $g(x) = |\truncBprime(\langle x, w_1 \rangle)|^{q_1} |\truncBprime(\langle x, w_2 \rangle)|^{q_2}$, to find that
+\begin{align}
+\E_{X_i} \concBoundTrunc
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \RN(\calF) 
+& \tag{By \Cref{lemma:symmetrization}} \\
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \E_{X_i, \epsilon_i} \sup_{u \in \bbS^{d - 1}} \Big|\frac{1}{N} \sum_{i = 1}^N \epsilon_i \truncB(\langle X_i, u \rangle) \Big| \\
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \E_{X_i, \epsilon_i} \sup_{u \in \bbS^{d - 1}} \Big|\frac{1}{N} \sum_{i = 1}^N \epsilon \langle X_i, u \rangle\Big|
+& \tag{By \Cref{lemma:basic_contraction_principle} since $\truncB$ is $1$-Lipschitz} \\
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \E_{X_i, \epsilon_i} \Big\| \frac{1}{N} \sum_{i = 1}^N \epsilon_i X_i \Big\|_2 \\
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \sqrt{\frac{d}{N}} \period
+& \tag{By \Cref{lemma:sign_times_gaussian_vector}}
+\end{align}
+Now, to show a high-probability upper bound on $\concBoundTrunc$, we apply Lemma 4.8 of \citet{ALPT2009_concentration} (Talagrand's concentration inequality), and we ensure that all of the conditions are satisfied:
+\begin{itemize}
+    \item We set $\srvL_1, \ldots, \srvL_N$ in Lemma 4.8 of \citet{ALPT2009_concentration} to be as defined in the statement of \Cref{lemma:uniform_convergence_two_sup}.
+    \item For convenience, define
+    \begin{align}
+    g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(x) & = |\truncB(\langle x, u_1 \rangle)|^{p_1} |\truncB(\langle x, u_2 \rangle)|^{p_2} |\truncB(\langle x, u_3 \rangle)|^{p_3} |\truncB(\langle x, u_4 \rangle)|^{p_4} \\
+    & \nextlinespace\nextlinespace |\truncBprime(\langle x, w_1 \rangle)|^{q_1} |\truncBprime(\langle x, w_2 \rangle)|^{q_2} \period
+    \end{align}
+    Then, we let 
+    \begin{align}
+    \calF = \{x \mapsto g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(x) - \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(\srvL)] \mid u_1, u_2, u_3, u_4 \in \bbS^{d - 1} \} 
+    \end{align}
+    where $w_1$ and $w_2$ are fixed (i.e. as defined in the statement of \Cref{lemma:uniform_convergence_two_sup}).
+    \item We let $a = 2 B^{p_1 + p_2 + p_3 + p_4} (B')^{q_1 + q_2}$, which is a uniform bound on all the functions in $\calF$.
+    \item Observe that for all $f \in \calF$, $\E_{X \sim \sqrt{d} \bbS^{d - 1}} f(X) = 0$. 
+    \item We let $Z = \sup_{f \in \calF} \sum_{i = 1}^N f(X_i)$ and $\sigma^2 = \sup_{f \in \calF} \sum_{i = 1}^N \E f(X_i)^2$. Observe that $\sigma^2 \leq a^2 N$.
+\end{itemize}
+Thus, we apply Lemma 4.8 of \citet{ALPT2009_concentration} with 
+\begin{align}
+t = a \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \sqrt{\frac{d}{N}} \cdot (\log d)^2
+\geq a (\log d)^2 \E_{X_i} \concBoundTrunc
+\end{align}
+to find that
+\begin{align}
+\concBoundTrunc
+& \leq \E_{\srvL_i} \concBoundTrunc + a \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot \sqrt{\frac{d}{N}}
+\end{align}
+with failure probability at most
+\begin{align}
+\exp\Big(-\frac{t^2 N^2}{2(\sigma^2 + 2 a N \E \concBoundTrunc) + 3atN}\Big)
+& \leq \exp\Big(-\frac{t^2N^2}{12 \max(\sigma^2 + 2 a \cdot N \E \concBoundTrunc, atN)}\Big) \\
+& = \exp\Big(-\frac{1}{12} \min\Big(\frac{t^2N^2}{\sigma^2 + 2a N \E \concBoundTrunc}, \frac{tN}{a}\Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{12} \min\Big(\frac{t^2 N^2}{a^2 N + 2 a N \E U'}, \frac{tN}{a} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{12} \min\Big(\frac{t^2 N^2}{a^2 N + 2 a N \E U'}, \sqrt{dN} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{12} \min\Big(\frac{t^2 N}{a^2 + 2 a \E U'}, \sqrt{dN} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{24} \min\Big(\frac{t^2 N}{a^2}, \frac{t^2 N}{2 a \E U'}, \sqrt{dN} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{24} \min\Big(d, \frac{t^2 N}{2 a \E U'}, \sqrt{dN} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{24} \min\Big(d, tN, \sqrt{dN} \Big)\Big) \\
+& \leq \exp\Big(-\frac{1}{24} \min\Big(d, \sqrt{dN} \Big)\Big) \\
+& \leq \exp(-\Omega(\sqrt{d})) \period
+\end{align}
+Observe that Talagrand's concentration inequality only gives us a bound on $\sup_{f \in \calF} \sum_{i = 1}^N f(X_i)$, while we wish to obtain a high-probability bound on $\sup_{f \in \calF} |\sum_{i = 1}^N f(X_i)|$. However, using the same argument, we can obtain a similar high-probability bound on $\sup_{f \in \calF} \sum_{i = 1}^N -f(X_i) = -\inf_{f \in \calF} \sum_{i = 1}^N f(X_i)$. Thus, we obtain a lower bound on $\inf_{f \in \calF} \sum_{i = 1}^N f(X_i)$ which is the negative of the upper bound that we obtained for $\sup_{f \in \calF} \sum_{i = 1}^N f(X_i)$, meaning that the upper bound we obtained for $\sup_{f \in \calF} \sum_{i = 1}^N f(X_i)$ also holds for $\sup_{f \in \calF} | \sum_{i = 1}^N f(X_i) |$. In summary,
+\begin{align}
+\concBoundTrunc
+& \leq \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot (\log d)^2 \cdot \sqrt{\frac{d}{N}}
+\end{align}
+with probability at least $1 - \exp(-\Omega(\sqrt{d}))$.
+
+Now that we have obtained a high-probability bound on $\concBoundTrunc$, let us analyze the difference between $\concBoundTrunc$ and $\concBound$. Recall the definition of $g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}$ from above. Additionally, for convenience, let $g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(x) = |\langle x, u_1 \rangle|^{p_1} |\langle x, u_2 \rangle|^{p_2} |\langle x, u_3 \rangle|^{p_3} |\langle x, u_4 \rangle|^{p_4} |\truncBprime(\langle x, w_1 \rangle)|^{q_1} |\truncBprime(\langle x, w_2 \rangle)|^{q_2}$, i.e. we are simply removing the truncation by $B$. Then, following the proof of Proposition 4.4 in \citet{ALPT2009_concentration}, we have
+\begin{align} \label{eq:concentration_decomposition}
+\concBound
+& \leq \concBoundTrunc \\
+& + \sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \frac{1}{N} \sum_{i = 1}^N |g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i) - g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i)|1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\}\Big) \\
+&  + \sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \frac{1}{N} \sum_{i = 1}^N \E_{X_i} |g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i) - g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i)|1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\}\Big) \comma
+\end{align}
+where $\{C\}$ denotes the event that the condition $C$ holds. Here the inequality holds because the difference $g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i) - g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i)$ is nonzero if and only if $1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\}\Big)$ is nonzero. We have obtained a high probability bound on $\concBoundTrunc$. Let us now obtain a bound on the third term on the right-hand side of \Cref{eq:concentration_decomposition} (here, $C_{p_1, p_2, p_3, p_4, q_1, q_2}$ is a constant that depends on $p_1, p_2, p_3, p_4, q_1, q_2$):
+\begin{align}
+& \E_{\srvL_i} |g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i) - g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i)| 1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\} \Big) \\
+& \leq \E_{\srvL_i} |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2}  1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\} \Big) \\
+& \leq \E_{\srvL_i} [|\langle X_i, u_1 \rangle|^{2 p_1} |\langle X_i, u_2 \rangle|^{2 p_2} |\langle X_i, u_3 \rangle|^{2 p_3} |\langle X_i, u_4 \rangle|^{2 p_4} |\langle X_i, w_1 \rangle|^{2 q_1} |\langle X_i, w_2 \rangle|^{2 q_2}]^{1/2} \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace \Prob\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\} \Big)^{1/2}
+& \tag{By Cauchy-Schwarz inequality} \\
+& \leq C_{p_1, p_2, p_3, p_4, q_1, q_2} \Prob\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\} \Big)^{1/2} \period
+\end{align}
+To obtain the last inequality, we apply the Cauchy-Schwarz inequality multiple times to write 
+\begin{align}
+\E_{\srvL_i} [|\langle X_i, u_1 \rangle|^{2 p_1} |\langle X_i, u_2 \rangle|^{2 p_2} |\langle X_i, u_3 \rangle|^{2 p_3} |\langle X_i, u_4 \rangle|^{2 p_4} |\langle X_i, w_1 \rangle|^{2 q_1} |\langle X_i, w_2 \rangle|^{2 q_2}]^{1/2}
+\end{align}
+as a product of moments of $|\langle X_i, u_j \rangle|$ and $|\langle X_i, w_j \rangle|$, and by \Cref{lemma:subexponential_norm_sphere}, each of these moments can be bounded above by a constant that depends on $p_1, p_2, p_3, p_4, q_1, q_2$. Additionally, by \Cref{lemma:subexponential_norm_sphere} and Proposition 2.7.1, part (a) of \citet{vershynin2018high}, we have $\Prob(|\langle X_i, u_j \rangle| \geq B) \lesssim e^{-\Omega(B)}$, since $|\langle X_i, u_j \rangle|$ has constant sub-exponential norm. In summary,
+\begin{align}
+& \E_{\srvL_i} |g_{B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i) - g_{B, B', u_1, u_2, u_3, u_4, w_1, w_2}(X_i)| 1\Big(\bigcup_{j = 1}^4 \{|\langle X_i, u_j \rangle| \geq B\} \Big) \\
+& \nextlinespace\nextlinespace \leq C_{p_1, p_2, p_3, p_4, q_1, q_2} e^{-\Omega(B)} \period
+\end{align}
+To complete the proof, we bound the second term on the right-hand side of \Cref{eq:concentration_decomposition}. Following the proof of Proposition 4.4 of \citet{ALPT2009_concentration}, we apply \Cref{lemma:sparse_operator_norm_adamczak} (a variant of Theorem 3.6 of \citet{ALPT2009_concentration}) to find that, with failure probability at most $e^{-\Omega(\sqrt{d})}$, for all $m$-sparse vectors $z \in \bbS^{N - 1}$, we have
+\begin{align} \label{eq:sparse_operator_norm_bound}
+\Big\| \sum_{i = 1}^N z_i X_i \Big\|_2 \lesssim \sqrt{d} + \sqrt{m} \log\Big(\frac{2N}{m}\Big)  \period
+\end{align}
+Let $\Esparse$ be the event that \Cref{eq:sparse_operator_norm_bound} holds. For convenience, let $A \in \R^{d \times N}$ be the matrix whose $i^{th}$ column is $X_i$. Additionally, for any subset $S \subset [N]$, let $A_S$ be the matrix whose columns have indices in $S$. If $S \subset [N]$ with $|S| = m$, then assuming $\Esparse$ holds, the operator norm of $A_S$ is at most $\sqrt{d} + \sqrt{m} \log \Big(\frac{2N}{m}\Big)$ up to a constant factor. Thus, for any set $S \subset [N]$, if $\Esparse$ holds,
+\begin{align} \label{eq:pq_norm_bound}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}}&  \Big( \sum_{i \in S} |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4}  |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2}\Big)^{\frac{1}{p_1 + p_2 + p_3 + p_4}} \\
+& \leq (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big( \sum_{i \in S} |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} \Big)^{\frac{1}{p_1 + p_2 + p_3 + p_4}} \\
+& \leq (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big(\sum_{i \in S} |\langle X_i, u_1 \rangle|^{\frac{2p_1}{p_1 + p_2 + p_3 + p_4}} |\langle X_i, u_2 \rangle|^{\frac{2p_2}{p_1 + p_2 + p_3 + p_4}} \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace |\langle X_i, u_3 \rangle|^{\frac{2p_3}{p_1 + p_2 + p_3 + p_4}} |\langle X_i, u_4 \rangle|^{\frac{2p_4}{p_1 + p_2 + p_3 + p_4}} \Big)^{\frac{1}{2}}
+\tag{B.c. $\|x\|_2 \geq \|x\|_p$ for $p \geq 2$ and $x \in \R^d$, and $p_1 + p_2 + p_3 + p_4 \geq 2$} \\
+& \leq C_{p_1, p_2, p_3, p_4} (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big(\sum_{i \in S} |\langle X_i, u_1 \rangle|^2 + |\langle X_i, u_2 \rangle|^2 \\
+& \nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace\nextlinespace + |\langle X_i, u_3 \rangle|^2 + |\langle X_i, u_4 \rangle|^2 \Big)^{\frac{1}{2}}
+\tag{By Weighted AM-GM Inequality, with $C_{p_1, p_2, p_3, p_4}$ a constant depending on $p_1, p_2, p_3, p_4$} \\
+& \lesssim C_{p_1, p_2, p_3, p_4} (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \cdot \Big(\sqrt{d} + \sqrt{|S|} \log\Big(\frac{2N}{|S|}\Big)\Big) \period
+\end{align}
+where the last inequality is because $\Esparse$ holds.
+
+Following the proof of Proposition 4.4 of \citet{ALPT2009_concentration}, we now define $S_B = \{i \in [N] \mid |\langle X_i, u_j \rangle| \geq B \text{ for some }j \in [4]\}$. Note that $S_B$ depends on $u_1, u_2, u_3, u_4$, and we will now show that if we select $B$ to be a certain value which is not too large, this will still ensure that $S_B$ is small. Observe that
+\begin{align}
+\Big(\sum_{i \in S_B} |\langle X_i, u_1 \rangle|^2 + |\langle X_i, u_2 \rangle|^2 + |\langle X_i, u_3 \rangle|^2 + |\langle X_i, u_4 \rangle|^2 \Big)^{1/2} \geq \Big(\sum_{i \in S_B} B^2\Big)^{1/2} \geq B\sqrt{|S_B|}
+\end{align}
+and
+\begin{align}
+\Big(\sum_{i \in S_B} |\langle X_i, u_1 \rangle|^2 + |\langle X_i, u_2 \rangle|^2 + |\langle X_i, u_3 \rangle|^2 + |\langle X_i, u_4 \rangle|^2 \Big)^{1/2}
+& \lesssim \sqrt{d} + \sqrt{|S_B|} \log\Big(\frac{N}{|S_B|}\Big) \period
+& \tag{B.c. $\Esparse$ holds}
+\end{align}
+Combining these we obtain
+\begin{align} \label{eq:recursion_for_B}
+B\sqrt{|S_B|}
+& \lesssim \sqrt{d} + \sqrt{|S_B|} \log\Big(\frac{N}{|S_B|}\Big) \period
+\end{align}
+Therefore, if we select $B \gtrsim \log\Big(\frac{N}{|S_B|}\Big)$, we can eliminate the second term on the right-hand side of \Cref{eq:recursion_for_B}, finding that $|S_B| \lesssim \frac{d}{B^2}$. Combining this with \Cref{eq:pq_norm_bound}, if $B \gtrsim \log N$ and $\Esparse$ holds we obtain
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}}&  \Big( \sum_{i \in S_B} |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4}  |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2}\Big)^{\frac{1}{p_1 + p_2 + p_3 + p_4}} \\
+& \lesssim C_{p_1, p_2, p_3, p_4} (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \cdot \Big(\sqrt{d} + \sqrt{|S_B|} \log N\Big) \\
+& \lesssim C_{p_1, p_2, p_3, p_4} (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \cdot \Big(\sqrt{d} + \frac{\sqrt{d}}{B} \log N\Big)
+& \tag{B.c. $|S_B| \lesssim \frac{d}{B^2}$} \\
+& \lesssim C_{p_1, p_2, p_3, p_4} (B')^{\frac{q_1 + q_2}{p_1 + p_2 + p_3 + p_4}} \sqrt{d} \period
+& \tag{B.c. $B \gtrsim \log N$}
+\end{align}
+Raising both sides to the $(p_1 + p_2 + p_3 + p_4)^{\textup{th}}$ power, we finally obtain
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}}&  \sum_{i \in S_B} |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4}  |\truncBprime(\langle X_i, w_1 \rangle)|^{q_1} |\truncBprime(\langle X_i, w_2 \rangle)|^{q_2} \\
+& \lesssim C_{p_1, p_2, p_3, p_4}' (B')^{q_1 + q_2} \cdot d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}
+\end{align}
+with probability $1 - e^{-\Omega(\sqrt{d})}$, where $C_{p_1, p_2, p_3, p_4}'$ is a constant which depends on $p_1, p_2, p_3, p_4$.
+
+In summary, assuming $\Esparse$ holds and the high-probability bound on $\concBoundTrunc$ holds (and these both hold simultaneously with probability at least $1 - \exp(-\Omega(\sqrt{d}))$), we obtain
+\begin{align}
+\concBound
+& \lesssim \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot (\log d)^2 \cdot \sqrt{\frac{d}{N}} + C_{p_1, p_2, p_3, p_4}' (B')^{q_1 + q_2} \cdot \frac{d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}}{N} \\
+& \nextlinespace\nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4, q_1, q_2} e^{-\Omega(B)}
+\end{align}
+by \Cref{eq:concentration_decomposition}. Finally, by \Cref{eq:final_quantity}, we have
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big|\frac{1}{N} \sum_{i = 1}^N & |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[ |\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\langle X, w_1 \rangle|^{q_1} |\langle X, w_2 \rangle|^{q_2} \Big] \Big| \\
+& = \concBound \pm C_{p_1, p_2, p_3, p_4, q_1, q_2} e^{-\Omega(B')}
+\end{align}
+as long as the events $E_1$ and $E_2$ hold, and these events simultaneously hold with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$. Thus, by our above bound on $\concBound$ we have
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big|\frac{1}{N} \sum_{i = 1}^N & |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[ |\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\langle X, w_1 \rangle|^{q_1} |\langle X, w_2 \rangle|^{q_2} \Big] \Big| \\
+& \lesssim \poly(p_1, p_2, p_3, p_4, B^{p_1 + p_2 + p_3 + p_4}, (B')^{q_1 + q_2}) \cdot (\log d)^2 \cdot \sqrt{\frac{d}{N}} \\
+& \nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4}' (B')^{q_1 + q_2} \cdot \frac{d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}}{N} + C_{p_1, p_2, p_3, p_4, q_1, q_2} e^{-\Omega(B)} \\
+& \nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4, q_1, q_2} e^{-\Omega(B')} \period
+\end{align}
+Setting $B' = (\log d)^2$ and $B \gtrsim \max(\log N, (\log d)^2) \asymp (\log d)^2$ (recall that $N \leq d^C$ for a universal constant $C$), we have
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} \Big|\frac{1}{N} \sum_{i = 1}^N & |\langle X_i, u_1 \rangle|^{p_1} |\langle X_i, u_2 \rangle|^{p_2} |\langle X_i, u_3 \rangle|^{p_3} |\langle X_i, u_4 \rangle|^{p_4} |\langle X_i, w_1 \rangle|^{q_1} |\langle X_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{X \sim \sqrt{d} \bbS^{d - 1}} \Big[ |\langle X, u_1 \rangle|^{p_1} |\langle X, u_2 \rangle|^{p_2} |\langle X, u_3 \rangle|^{p_3} |\langle X, u_4 \rangle|^{p_4} |\langle X, w_1 \rangle|^{q_1} |\langle X, w_2 \rangle|^{q_2} \Big] \Big| \\
+& \leq C_{p_1, p_2, p_3, p_4, q_1, q_2} (\log d)^{O(p_1 + p_2 + p_3 + p_4 + q_1 + q_2)} \cdot \sqrt{\frac{d}{N}} \\
+& \nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4} (\log d)^{O(q_1 + q_2)} \cdot \frac{d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}}{N} + \frac{C_{p_1, p_2, p_3, p_4, q_1, q_2}}{d^{\Omega(\log d)}}
+\end{align}
+with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$, as desired.
+\end{proof}
+
+\begin{lemma}[Corollary for Uniform Samples from $\bbS^{d - 1}$] \label{lemma:main_concentration_lemma}
+Let $\srv_1, \ldots, \srv_N$ be i.i.d. random vectors sampled uniformly from $\bbS^{d - 1}$, and let $p_1, p_2, p_3, p_4, q_1, q_2$ be nonnegative integers. Suppose $p_1 + p_2 + p_3 + p_4 \geq 2$. Then, for fixed $w_1, w_2 \in \bbS^{d - 1}$, as long as $N \leq d^C$ for any universal constant $C > 0$, we have
+\begin{align}
+\sup_{u_1, u_2, u_3, u_4 \in \bbS^{d - 1}} & \Big|\frac{1}{N} \sum_{i = 1}^N |\langle x_i, u_1 \rangle|^{p_1} |\langle x_i, u_2 \rangle|^{p_2} |\langle x_i, u_3 \rangle|^{p_3} |\langle x_i, u_4 \rangle|^{p_4} |\langle x_i, w_1 \rangle|^{q_1} |\langle x_i, w_2 \rangle|^{q_2} \\
+& \nextlinespace - \E_{x \sim \bbS^{d - 1}} \Big[|\langle x, u_1 \rangle|^{p_1} |\langle x, u_2 \rangle|^{p_2} |\langle x, u_3 \rangle|^{p_3} |\langle x, u_4 \rangle|^{p_4} |\langle x, w_1 \rangle|^{q_1} |\langle x, w_2 \rangle|^{q_2} \Big] \\
+& \leq \frac{1}{d^{\frac{p_1 + p_2 + p_3 + p_4 + q_1 + q_2}{2}}} \Big( C_{p_1, p_2, p_3, p_4, q_1, q_2} (\log d)^{O(p_1 + p_2 + p_3 + p_4 + q_1 + q_2)} \cdot \sqrt{\frac{d}{N}} \\
+& \nextlinespace\nextlinespace + C_{p_1, p_2, p_3, p_4} (\log d)^{O(q_1 + q_2)} \cdot \frac{d^{\frac{p_1 + p_2 + p_3 + p_4}{2}}}{N} + \frac{C_{p_1, p_2, p_3, p_4, q_1, q_2}}{d^{\Omega(\log d)}} \Big)
+\end{align}
+with probability at least $1 - \frac{1}{d^{\Omega(\log d)}}$. Here, $C_{p_1, p_2, p_3, p_4, q_1, q_2}$ is a constant which depends on $p_1, p_2, p_3, p_4, q_1, q_2$, and $C_{p_1, p_2, p_3, p_4}$ is a constant which depends on $p_1, p_2, p_3, p_4$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:main_concentration_lemma}]
+This is a direct corollary of \Cref{lemma:uniform_convergence_two_sup}, obtained by dividing both sides of \Cref{lemma:uniform_convergence_two_sup} by $\frac{1}{d^{(p_1 + p_2 + p_3 + p_4 + q_1 + q_2)/2}}$.
+\end{proof}
+
+\begin{lemma}[Moments for Truncated Dot Products with Random Spherical Vectors] \label{lemma:truncated_expectation}
+Let $P$ be a positive integer, and for $i = 1, \ldots, P$, let $u_i \in \bbS^{d - 1}$ and $p_i$ be a nonnegative integer. Additionally, let $B \geq 1$. Finally, let $X$ be a random vector drawn uniformly from $\sqrt{d} \bbS^{d - 1}$. Then, for some absolute constant $c > 0$ we have
+\begin{align}
+\Big| \E_X \Big[ \prod_{i = 1}^P |\langle X, u_i \rangle|^{p_i} \Big] - \E_X \Big[ \prod_{i = 1}^P |\truncB(\langle X, u_i \rangle)|^{p_i} \Big] \Big| 
+& \leq C_{p_1, \ldots, p_P} e^{-cB}
+\end{align}
+where $\truncB$ is defined as
+\begin{align}
+\truncB(t)
+= \begin{cases}
+t & t \in [-B, B] \\
+B & t > B \\
+-B & t < B
+\end{cases}
+\end{align}
+and $C_{p_1, \ldots, p_P}$ is a constant which depends only on $p_1, \ldots, p_P$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:truncated_expectation}]
+We use an argument similar to one used in part of the proof of Proposition 4.4 in \citet{ALPT2009_concentration}. First, for $i \in [P]$, we can write 
+\begin{align} \label{eq:trunc_exp}
+|\langle X, u_i \rangle|^{p_i} = |\truncB(\langle X, u_i \rangle)|^{p_i} + (|\langle X, u_i \rangle|^{p_i} - B^{p_i}) 1_{|\langle X, u_i \rangle \geq B} \period
+\end{align}
+Thus, in the expression
+\begin{align} \label{eq:inner_prod_diff}
+\prod_{i = 1}^P |\langle X, u_i \rangle|^{p_i} - \prod_{i = 1}^P |\truncB(\langle X, u_i \rangle)|^{p_i} \comma
+\end{align}
+if we expand the first product using \Cref{eq:trunc_exp}, then we obtain terms of the form $\prod_{i = 1}^P F_i$, where $F_i$ is either $|\truncB(\langle X, u_i \rangle)|^{p_i}$ or $(|\langle X, u_i \rangle|^{p_i} - B^{p_i}) 1(|\langle X, u_i \rangle| \geq B)$. Observe that the term where $F_i = |\truncB(\langle X, u_i \rangle)|^{p_i}$ for all $i \in [P]$ cancels with the second term in \Cref{eq:inner_prod_diff}. Thus, in order to obtain an upper bound on
+\begin{align}
+\E_X \Big[ \prod_{i = 1}^P |\langle X, u_i \rangle|^{p_i} - \prod_{i = 1}^P |\truncB(\langle X, u_i \rangle)|^{p_i} \Big] \comma
+\end{align}
+it suffices to upper bound the terms $\prod_{i = 1}^P F_i$ where at least one of the $F_i$ is $(|\langle X, u_i \rangle|^{p_i} - B^{p_i}) 1(|\langle X, u_i \rangle| \geq B)$. Observe however that
+\begin{align}
+(|\langle X, u_i \rangle|^{p_i} - B^{p_i}) 1(|\langle X, u_i \rangle| \geq B) 
+& \leq |\langle X, u_i \rangle|^{p_i} 1(|\langle X, u_i \rangle| \geq B) \period
+\end{align}
+Thus, because $|\truncB(\langle X, u_i \rangle)| \leq |\langle X, u_i \rangle|$, in order to upper bound the terms $\prod_{i = 1}^P F_i$ where at least one of the $F_i$ is $(|\langle X, u_i \rangle|^{p_i} - B^{p_i}) 1(|\langle X, u_i \rangle \geq B)$, it suffices to obtain an upper bound on the expected value of
+\begin{align}
+1(|\langle X, u_i \rangle| \geq B \text{ for some } i \in [P]) \prod_{i = 1}^P |\langle X, u_i \rangle|^{p_i}
+& \leq \sum_{i = 1}^P 1(|\langle X, u_i \rangle| \geq B) \prod_{j = 1}^P |\langle X, u_j \rangle|^{p_i} \period
+\end{align}
+Without loss of generality, let us bound the expected value of the first term in the sum above:
+\begin{align}
+\E_X \Big[ 1(|\langle X, u_1 \rangle| \geq B) \prod_{i = 1}^P |\langle X, u_j \rangle|^{p_i} \Big]
+& \leq \E_X [1( |\langle X, u_1 \rangle| \geq B)]^{1/2} \E_X \Big[ \prod_{i = 1}^P |\langle X, u_j \rangle|^{2p_i} \Big]^{1/2}
+& \tag{By the Cauchy-Schwarz Inequality} \\
+& \leq \E_X [1( |\langle X, u_1 \rangle| \geq B)]^{1/2} \cdot \prod_{i = 1}^P \E_X [|\langle X, u_j \rangle|^{2^{i + 1} p_i}]^{\frac{1}{2^{i + 1}}}
+& \tag{By applying the Cauchy-Schwarz inequality $P - 1$ times} \\
+& \leq C_{p_1, \ldots, p_P} \E_X[1(|\langle X, u_1 \rangle| \geq B]^{1/2} \comma
+& \label{eq:final_cauchy_schwarz_prob_bound}
+\end{align}
+where the last inequality is by \Cref{lemma:subexponential_norm_sphere} and Proposition 2.7.1 of \citet{vershynin2018high}. Finally, since the sub-exponential norm of $\langle X, u_1 \rangle$ is at most an absolute constant by \Cref{lemma:subexponential_norm_sphere}, we have that
+\begin{align}
+\E_X[1(|\langle X, u_1 \rangle| \geq B] = \Prob(|\langle X, u_1 \rangle| \geq B) \lesssim e^{-cB}
+\end{align}
+for some absolute constant $c > 0$. Thus, by \Cref{eq:final_cauchy_schwarz_prob_bound}, we obtain
+\begin{align}
+\E_X \Big[ 1(|\langle X, u_1 \rangle| \geq B) \prod_{i = 1}^P |\langle X, u_j \rangle|^{p_j} \Big]
+& \lesssim C_{p_1, \ldots, p_P} e^{-cB}
+\end{align}
+for some absolute constant $c > 0$. This completes the proof.
+\end{proof}
+
+\begin{lemma} \label{lemma:sign_times_gaussian_vector}
+Let $N, d \in \N$. Let $X_1, \ldots, X_N$ i.i.d. random vectors drawn uniformly from $\sqrt{d} \bbS^{d - 1}$. Additionally, let $\epsilon_1, \ldots, \epsilon_N$ be i.i.d. Rademacher random variables. Then,
+\begin{align}
+\E_{X, \epsilon_i} \Big\| \frac{1}{N} \sum_{i = 1}^N \epsilon_i X_i \Big\|_2
+& \leq \sqrt{\frac{d}{N}} \period
+\end{align}
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:sign_times_gaussian_vector}]
+We first bound the second moment of the norm:
+\begin{align}
+\E_{X, \epsilon_i} \Big\|\frac{1}{N} \sum_{i = 1}^N \epsilon_i X_i \Big\|_2^2
+& = \frac{1}{N^2} \sum_{i = 1}^N \sum_{j = 1}^N \E_{\epsilon_i, X_i} \epsilon_i \epsilon_j \langle X_i, X_j \rangle \\
+& = \frac{1}{N^2} \sum_{i = 1}^N \E_{X_i} \|X_i\|_2^2 
+& \tag{B.c. $\E[\epsilon_i \epsilon_j] = 0$ for $i \neq j$} \\
+& = \frac{1}{N^2} \sum_{i = 1}^N d
+& \tag{B.c. $\|X_i\|_2 = \sqrt{d}$ with probability $1$} \\
+& = \frac{Nd}{N^2} \\
+& = \frac{d}{N} \period
+\end{align}
+Thus, $\E_{X, \epsilon_i} \Big\| \frac{1}{N} \sum_{i = 1}^N \epsilon_i X_i \Big\|_2 \leq \Big(\E_{X, \epsilon_i} \Big\| \frac{1}{N} \sum_{i = 1}^N \epsilon_i X_i \Big\|_2^2 \Big)^{1/2} \leq \sqrt{\frac{d}{N}}$, as desired.
+\end{proof}
+
+\begin{lemma}[Sub-Exponential Norm of Uniform Distribution on $\sqrt{d} \bbS^{d - 1}$] \label{lemma:subexponential_norm_sphere}
+Assume $d \geq C$ for some sufficiently large universal constant $C$. Then there exists an absolute constant $K > 0$ such that, if $X$ is a random vector drawn uniformly from $\sqrt{d} \bbS^{d - 1}$ and $v \in \bbS^{d - 1}$ is a fixed vector, then $\| \langle X, v \rangle \|_{\psi_1} \leq K$, where $\|\cdot \|_{\psi_1}$ denotes the sub-exponential norm of a random variable. (See Definition 2.7.5 of \citet{vershynin2018high}.) As a corollary, for any $p \geq 1$, there exists a constant $C_p > 0$ depending on $p$ such that for any $v \in \bbS^{d - 1}$, $\E_{X \sim \sqrt{d} \bbS^{d - 1}} [|\langle X, v \rangle|^p] \leq C_p$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:subexponential_norm_sphere}]
+Let $X$ be drawn uniformly at random from the uniform distribution on $\sqrt{d} \bbS^{d - 1}$, and let $v \in \bbS^{d - 1}$. Observe that the distribution of $\frac{1}{\sqrt{d}} \langle X, v \rangle$ is $\mu_d$. Thus, the density of $\frac{1}{\sqrt{d}} \langle X, v \rangle$ is $p(t) = \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} (1 - t^2)^{\frac{d - 3}{2}}$ by Eqs. (1.16) and (1.18) of \citet{atkinson2012spherical}. By a change of variables, the density of $\langle X, v \rangle$ is
+\begin{align}
+p(t)
+& = \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \Big(1 - \frac{t^2}{d}\Big)^{\frac{d - 3}{2}} \cdot \frac{1}{\sqrt{d}}.
+\end{align}
+Thus, for any $t \geq 0$,
+\begin{align}
+\Prob(|\langle X, v \rangle| \geq t)
+& \lesssim 2 \int_t^\infty p(s) ds \\
+& \lesssim 2 \int_t^\infty \frac{\Gamma(d/2)}{\sqrt{\pi} \Gamma((d - 1)/2)} \Big(1 - \frac{s^2}{d}\Big)^{\frac{d - 3}{2}} \cdot \frac{1}{\sqrt{d}} ds \\
+& \lesssim \int_t^\infty \Big(1 - \frac{s^2}{d}\Big)^{\frac{d - 3}{2}} ds
+& \tag{By Stirling's formula} \\
+& \lesssim \int_t^\infty e^{-\frac{d - 3}{2} \cdot \frac{s^2}{d}} ds
+& \tag{B.c. $1 + x \leq e^{x}$} \\
+& \lesssim \int_t^\infty e^{-\frac{s^2}{3}} ds
+& \tag{B.c. $\frac{d - 3}{2d} \geq \frac{1}{3}$ for $d$ sufficiently large}
+\end{align}
+Thus, for some absolute constant $C > 0$ and all $t \geq 0$,
+\begin{align}
+\Prob(|\langle X, v \rangle| \geq t)
+ \leq C \int_t^\infty e^{-\frac{s^2}{3}} ds
+ \leq C \int_t^\infty e^{-\frac{st}{3}} ds
+ = C \Big(-\frac{3}{t} e^{-\frac{st}{3}} \Big)\Big|_t^\infty
+ = \frac{3C}{t} e^{-\frac{t^2}{3}}
+ \leq e^{-\frac{t^2}{3} + \log \frac{3C}{t}}
+\end{align}
+Suppose $t \geq (18 C)^{1/3}$. Then, $\frac{t^2}{6} \geq \log \frac{3C}{t}$, meaning that $-\frac{t^2}{3} + \log \frac{3C}{t} \leq -\frac{t^2}{6}$, and therefore
+\begin{align}
+\Prob(|\langle X, v \rangle| \geq t)
+& \leq e^{-\frac{t^2}{6}}
+\end{align}
+Thus, by the definition of sub-Gaussian norm (Definition 2.5.6 and Proposition 2.5.2 of \citet{vershynin2018high}), the sub-Gaussian norm of $\langle X, v \rangle$ is bounded by a constant, i.e. for any $v \in \bbS^{d - 1}$, we have $\| \langle X, v \rangle\|_{\psi_2} \leq K$ for some absolute constant $K > 0$ (here $\| \cdot \|_{\psi_2}$ denotes the sub-Gaussian norm of a random variable). By Propositions 2.5.2 and 2.7.1, and Definition 2.7.5, of \citet{vershynin2018high}, this implies that $\| \langle X, v \rangle\|_{\psi_1} \lesssim 1$, since sub-Gaussian random variables are always sub-exponential (specifically, using item (ii) of Proposition 2.5.2 and item (b) of Proposition 2.7.1 of \citet{vershynin2018high}). The last statement of the lemma follows directly from Proposition 2.7.1, item (b) of \citet{vershynin2018high}.
+\end{proof}
+
+\begin{lemma}[Modification of Theorem 3.6 of \citet{ALPT2009_concentration}] \label{lemma:sparse_operator_norm_adamczak}
+Let $d \geq C$ for some absolute constant $C$, and $1 \leq N \leq e^{\sqrt{d}}$. Let $\srvL_1, \ldots, \srvL_N$ be i.i.d. random vectors sampled from the uniform distribution on $\sqrt{d} \bbS^{d - 1}$. Finally, let $t \geq 1$. Then, for some absolute constant $c > 0$, with probability at least $1 - e^{-ct \sqrt{d}}$, for all $m \in [N]$,
+\begin{align}
+\sup_{\substack{z \in \bbS^{d - 1} \\ |\supp \, z| \leq m}} \Big\| \sum_{i = 1}^N z_i X_i \Big\|_2 \lesssim t \Big(\sqrt{d} + \sqrt{m} \log \Big(\frac{2N}{m}\Big)\Big)
+\end{align}
+Here, we use $\supp \, z$ to denote the set of nonzero coordinates of $z$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:sparse_operator_norm_adamczak}]
+The proof is the same as that of Theorem 3.6 of \citet{ALPT2009_concentration} --- while Theorem 3.6 of \citet{ALPT2009_concentration} is shown for the case where $\srvL_1, \ldots, \srvL_N$ are sampled from an isotropic, log-concave probability distribution, the proof can be generalized to the case where the $\srvL_i$ are sampled from $\sqrt{d} \bbS^{d - 1}$. To see why, observe that the proof only uses the fact that the distribution of the $\srvL_i$ is log-concave in the following places: (i) when applying Lemma 3.1 (also of \citet{ALPT2009_concentration}), of which the conclusion is that $\max_{i \leq N} \|X_i\|_2 \leq C_0 K \sqrt{d}$ with probability at least $1 - e^{-K \sqrt{d}}$, for some absolute constant $C_0$, (ii) when applying Lemmas 3.3 and 3.4 (also of \citet{ALPT2009_concentration}) the proof requires that $\| \langle X_i, y \rangle\|_{\psi_1} \leq \psi$ for some absolute constant $\psi > 0$ and any $y \in \bbS^{d - 1}$. However, property (i) trivially holds when the $X_i$ are on $\sqrt{d} \bbS^{d - 1}$ since $\|X_i\|_2 = \sqrt{d}$, and property (ii) holds by \Cref{lemma:subexponential_norm_sphere}.
+\end{proof}
+
+
+\subsection{Helper Lemmas}
+
+\begin{lemma}\label{lemma:integral_bound}
+Let $f: [0, \infty) \to \R_{\geq 0}$ such that
+\begin{align}
+\frac{d}{dt} f(t)^2 \leq p_t f(t) + q_t f(t)^2
+\end{align}
+where $p_t, q_t > 0$ for $t \in [0, \infty)$. Then, for $T>0$ we have
+	\begin{align}
+		f(T)^2 \le \Big(f(0) + \frac{\max_tp_t}{\min_t q_t }\Big)^2 \exp\Big(\int_{0}^T q_tdt\Big).
+	\end{align}
+\end{lemma}
+\begin{proof}
+	\begin{align}
+		\frac{d f(t)}{dt} = \frac{1}{2f(t)} \frac{d f(t)^2}{dt} \le \frac{p_t}{2} + \frac{q_t}{2} f(t) \le \frac{\max_t p_t}{2} + \frac{q_t}{2} f(t).
+	\end{align}
+	Thus, we have
+	\begin{align}
+		\frac{d}{dt} \Big(f(t)+\frac{\max_t p_t}{\min_t q_t}\Big) \le \frac{q_t}{2} \Big(f(t) + \frac{\max_t p_t}{\min_t q_t}\Big).
+	\end{align} 
+	As a result, by \Cref{fact:gronwall},
+	\begin{align}
+		f(T) \le \Big(f(0) + \frac{\max_t p_t}{\min_t q_t}\Big) \exp\Big(\int_{0}^T \frac{q_t}{2}dt\Big).
+	\end{align}
+	Taking the square of both sides finishes the proof.
+\end{proof}
+
+\begin{fact}[Gronwall's Inequality \citep{bainov1992integral}] \label{fact:gronwall}
+Let $a < b$, and let $f: [a, b] \to \R_{\geq 0}$ and $g: [a, b] \to \R$ be differentiable functions, such that
+\begin{align}
+f'(t) \leq g(t) f(t)
+\end{align}
+for all $t \in [a, b]$. Then, for all $t \in [a, b]$, $f(t) \leq f(a) \exp(\int_a^s g(s) ds)$. Additionally, suppose $f, g$ satisfy
+\begin{align}
+f'(t) \geq g(t) f(t)
+\end{align}
+for all $t \in [a, b]$. Then, for all $t \in [a, b]$, $f(t) \geq f(a) \exp(\int_a^s g(s) ds)$.
+\end{fact}
+
+\begin{proposition}\label{prop:existence-1d-distribution}
+    For any $\beta_2,\beta_4$ such that $0\le \beta_2^2\le \beta_4\le \beta_2 \le 1$, there exists a one-dimensional distribution $\mu$ that satisfies
+    \begin{align}
+        &\E_{w\sim \mu}[w^2]=\beta_2,\\
+        &\E_{w\sim \mu}[w^4]=\beta_4,\\
+        &{\rm supp}(\mu)\subseteq [-1,1].
+    \end{align}
+\end{proposition}
+\begin{proof}
+    Let $p=\beta_2^2/\beta_4.$ By the assumptions we have $0\le p\le 1$. Consider the distribution 
+    \begin{align}
+        \mu(x)=\frac{\beta_2^2}{\beta_4}\dirac{x=\beta_4^{1/2}\beta_2^{-1/2}}+\(1-\frac{\beta_2^2}{\beta_4}\)\dirac{x=0},
+    \end{align}
+    where $\dirac{x=t}$ denotes the Dirac measure at $x=t$. First of all, since $\beta_2^2\le \beta_4$, the distribution $\mu(x)$ is well-defined. And we can verify that
+    \begin{align}
+        &\E_{w\sim \mu}[w^2]=\frac{\beta_2^2}{\beta_4}(\beta_4^{1/2}\beta_2^{-1/2})^2=\beta_2,\\
+        &\E_{w\sim \mu}[w^4]=\frac{\beta_2^2}{\beta_4}(\beta_4^{1/2}\beta_2^{-1/2})^4=\beta_4.
+    \end{align}
+    Note that $0\le \beta_4\le \beta_2$ implies $\beta_4^{1/2}\beta_2^{-1/2}\in [0,1]$. Consequently,
+    \begin{align}
+        {\rm supp}(\mu)\subseteq [-1,1].
+    \end{align}
+\end{proof}
+
+\begin{lemma}\label{lemma:gradient_is_scaler_multiple_of_z}
+Let $\rho$ be a distribution which is rotationally invariant as in \Cref{def:rot_inv_symmetry}. Let $\nabla_\u L(\rho)$ be defined as in \Cref{eq:projected_gradient_flow_population}, and let $\nabla_\z L(\rho)$ denote the last $(d - 1)$ coordinates of $\nabla_\u L(\rho)$. Then, for any particle $\u = (\w, \z)$, we have that $\nabla_\z L(\rho)$ is a scalar multiple of $\z$. In particular, if $\pgrad_{\u} L(\rho)$ is defined as in \Cref{eq:projected_gradient_flow_population} and $\pgrad_{\z} L(\rho)$ denotes the last $(d - 1)$ coordinates of $\pgrad_{\u} L(\rho)$, then $\pgrad_{\z} L(\rho)$ is a scalar multiple of $\z$.
+\end{lemma}
+\begin{proof}
+From \Cref{eq:projected_gradient_flow_population}, we have
+\begin{align}
+\nabla_\u L(\rho)
+& = \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - y(x)) \sigma'(\u^\top x) x] \period
+\end{align}
+Since $\rho$ is rotationally invariant, if $x, x' \in \bbS^{d - 1}$ such that $\langle \e, x \rangle = \langle \e, x' \rangle$, then $f_\rho(x) - y(x) = f_\rho(x') - y(x')$. Thus, $(f_\rho(x) - y(x)) \sigma'(\u^\top x)$ only depends on $\langle \e, x \rangle$ and $\langle \u, x \rangle$. 
+
+Let $P_{\e, \u} \in \R^{d \times d}$ denote the projection matrix into the subspace spanned by $\e$ and $\u$. Then,
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - y(x)) \sigma'(\u^\top x) (x - P_{\e, \u} x)] = 0
+\end{align}
+because if $v \in \bbS^{d - 1}$ is orthogonal to $\e$ and $\u$, then the distribution of $\langle v, x \rangle$ conditioned on $\langle \e, x \rangle$ and $\langle \u, x \rangle$ is symmetric around $0$. Thus,
+\begin{align}
+\nabla_{\u} L(\rho)
+ = \E_{x \sim \bbS^{d - 1}} [(f_\rho(x) - y(x)) \sigma'(\u^\top x) P_{\e, \u} x] = P_{\e, \u} (\nabla_{\u} L(\rho))
+\end{align}
+and we have that $\nabla_{\u} L(\rho)$ is in the subspace spanned by $\e$ and $\u$. In other words, there are scalars $c_1, c_2 \in \R$ such that
+\begin{align}
+\nabla_{\u} L(\rho)
+& = c_1 \e + c_2 \u
+\end{align}
+and taking the last $(d - 1)$ coordinates of both sides of this equation gives $\nabla_{\u} L(\rho) = c_2 \z$, as desired. The last statement of the lemma holds because $\pgrad_{\u} L(\rho) = (I - \u \u^\top) \nabla_{\u} L(\rho)$, which is also a linear combination of $\e$ and $\u$.
+\end{proof}
+
+\begin{lemma} \label{lemma:polynomial_difference}
+Let $P$ be a polynomial of degree at most $k > 0$, where $k$ is bounded by a universal constant, and let $w_1, w_2 \in [-1, 1]$. Suppose the coefficients of $P$ are bounded by $B$. Then, $|P(w_1) - P(w_2)| \lesssim B |w_1 - w_2|$.
+\end{lemma}
+\begin{proof}
+Let $c_i$ be the coefficient of the $i^{th}$ degree term in $P$. Then, the lemma follows from expanding $P(w_1) - P(w_2)$ as
+\begin{align}
+|P(w_1) - P(w_2)|
+& \leq \sum_{i = 0}^k |c_i| |w_1^i - w_2^i| \\
+& \leq \sum_{i = 0}^k |c_i| |w_1 - w_2| \cdot \sum_{j = 0}^i |w_1|^j |w_2|^{i - j} \\
+& \leq \sum_{i = 0}^k (i + 1) \cdot |c_i| |w_1 - w_2|
+& \tag{B.c. $|w_1|, |w_2| \leq 1$} \\
+& \leq B (k + 1) \sum_{i = 0}^k |w_1 - w_2| \\
+& = B(k + 1)^2 |w_1 - w_2| \\
+& \lesssim B |w_1 - w_2|
+& \tag{B.c. $k$ is at most an absolute constant}
+\end{align}
+as desired.
+\end{proof}
+
+\begin{lemma}[Powers of Dot Products on $\bbS^{d - 1}$] \label{lemma:sphere_moment}
+Let $\u_1, \u_2, \u_3, \u_4, \u_5 \in \bbS^{d - 1}$, and $p, q, r, s, t \geq 1$. Then,
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [|\langle \u_1, x \rangle|^p |\langle \u_2, x \rangle|^q |\langle \u_3, x \rangle|^r |\langle \u_4, x \rangle|^s |\langle \u_5, x \rangle|^t] \leq C_{p, q, r, s, t} \frac{1}{d^{(p + q + r + s + t)/2}} \period
+\end{align}
+Here, $C_{p, q, r, s, t}$ is a constant depending on $p, q, r, s, t$.
+\end{lemma}
+\begin{proof}[Proof of \Cref{lemma:sphere_moment}]
+By repeated applications of the Cauchy-Schwarz inequality, we have
+\begin{align}
+\E_{\srvL \sim \sqrt{d}\bbS^{d - 1}} & [|\langle \u_1, \srvL \rangle|^p |\langle \u_2, \srvL \rangle|^q |\langle \u_3, \srvL \rangle|^r |\langle \u_4, \srvL \rangle|^s |\langle \u_5, \srvL \rangle|^t] \\
+& \leq \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [\langle \u_1, \srvL \rangle|^{2p}]^{1/2} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_2, \srvL \rangle|^{2q} |\langle \u_3, \srvL \rangle|^{2r} |\langle \u_4, \srvL \rangle|^{2s} |\langle \u_5, \srvL \rangle|^{2t}]^{1/2} \\
+& \leq \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [\langle \u_1, \srvL \rangle|^{2p}]^{1/2} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_2, \srvL \rangle|^{4q}]^{1/4} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}}[|\langle \u_3, \srvL \rangle|^{4r} |\langle \u_4, \srvL \rangle|^{4s} |\langle \u_5, \srvL \rangle|^{4t}]^{1/4} \\
+& \leq \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [\langle \u_1, \srvL \rangle|^{2p}]^{1/2} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_2, \srvL \rangle|^{4q}]^{1/4} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}}[|\langle \u_3, \srvL \rangle|^{8r}]^{1/8} \\
+& \nextlinespace\nextlinespace \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_4, \srvL \rangle|^{8s} |\langle \u_5, \srvL \rangle|^{8t}]^{1/8} \\
+& \leq \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [\langle \u_1, \srvL \rangle|^{2p}]^{1/2} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_2, \srvL \rangle|^{4q}]^{1/4} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}}[|\langle \u_3, \srvL \rangle|^{8r}]^{1/8} \\
+& \nextlinespace\nextlinespace \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}} [|\langle \u_4, \srvL \rangle|^{16s}]^{1/16} \E_{\srvL \sim \sqrt{d} \bbS^{d - 1}}[|\langle \u_5, \srvL \rangle|^{16t}]^{1/16}
+\end{align}
+where each line results from a single application of the Cauchy-Schwarz inequality. Thus, by \Cref{lemma:subexponential_norm_sphere}, we have
+\begin{align}
+\E_{\srvL \sim \sqrt{d}\bbS^{d - 1}} [|\langle \u_1, \srvL \rangle|^p |\langle \u_2, \srvL \rangle|^q |\langle \u_3, \srvL \rangle|^r |\langle \u_4, \srvL \rangle|^s |\langle \u_5, \srvL \rangle|^t] 
+& \leq C_{p, q, r, s, t} \period
+\end{align}
+Dividing both sides by $d^{(p + q + r + s + t)/2}$, we obtain
+\begin{align}
+\E_{x \sim \bbS^{d - 1}} [|\langle \u_1, x \rangle|^p |\langle \u_2, x \rangle|^q |\langle \u_3, x \rangle|^r |\langle \u_4, x \rangle|^s |\langle \u_5, x \rangle|^t] \leq C_{p, q, r, s, t} \frac{1}{d^{(p + q + r + s + t)/2}}
+\end{align}
+as desired.
+\end{proof}

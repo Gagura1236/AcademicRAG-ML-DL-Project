@@ -1,0 +1,943 @@
+%% CIFAR10
+@article{krizhevsky2009learning,
+  title={Learning multiple layers of features from tiny images},
+  author={Krizhevsky, A. and Hinton, G.},
+  journal={Master's thesis, Department of Computer Science, University of Toronto},
+  year={2009},
+  url={https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf}
+}
+
+%% second-order regression
+@InProceedings{agarwala2023eos,
+  title = 	 {{Second-order regression models exhibit progressive sharpening to the edge of stability}},
+  author =       {Agarwala, Atish and Pedregosa, Fabian and Pennington, Jeffrey},
+  booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	 {169--195},
+  year = 	 {2023},
+  volume = 	 {202},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {23--29 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v202/agarwala23b/agarwala23b.pdf},
+  url = 	 {https://proceedings.mlr.press/v202/agarwala23b.html},
+}
+
+%% lr warmup
+@inproceedings{liu2020warmup,
+title={{On the Variance of the Adaptive Learning Rate and Beyond}},
+author={Liyuan Liu and Haoming Jiang and Pengcheng He and Weizhu Chen and Xiaodong Liu and Jianfeng Gao and Jiawei Han},
+booktitle={International Conference on Learning Representations},
+year={2020},
+url={https://openreview.net/forum?id=rkgz2aEKDr}
+}
+
+@inproceedings{gotmare2018warmup,
+title={{A Closer Look at Deep Learning Heuristics: Learning rate restarts, Warmup and Distillation}},
+author={Akhilesh Gotmare and Nitish Shirish Keskar and Caiming Xiong and Richard Socher},
+booktitle={International Conference on Learning Representations},
+year={2019},
+url={https://openreview.net/forum?id=r14EOsCqKX},
+}
+
+@article{goyal2017warmup,
+    title={{Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour}},
+    author={Priya Goyal and Piotr Dollár and Ross Girshick and Pieter Noordhuis and Lukasz Wesolowski and Aapo Kyrola and Andrew Tulloch and Yangqing Jia and Kaiming He},
+    journal={arXiv preprint arXiv:1706.02677},
+    url={https://arxiv.org/abs/1706.02677},
+    year={2017}
+}
+
+
+
+
+%% related:
+@InProceedings{jelassi2022momentum,
+  title = 	 {Towards understanding how momentum improves generalization in deep learning},
+  author =       {Jelassi, Samy and Li, Yuanzhi},
+  booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+  pages = 	 {9965--10040},
+  year = 	 {2022},
+  volume = 	 {162},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {17--23 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v162/jelassi22a/jelassi22a.pdf},
+  url = 	 {https://proceedings.mlr.press/v162/jelassi22a.html},
+}
+
+@inproceedings{ghosh2023implicit,
+title={{Implicit regularization in Heavy-ball momentum accelerated stochastic gradient descent}},
+author={Avrajit Ghosh and He Lyu and Xitong Zhang and Rongrong Wang},
+booktitle={International Conference on Learning Representations},
+year={2023},
+url={https://openreview.net/forum?id=ZzdBhtEH9yB}
+}
+
+
+% catapult mechanism
+@article{lewkowycz2020catapult,
+	title={{The large learning rate phase of deep learning: the catapult mechanism}},
+	author={Aitor Lewkowycz and Yasaman Bahri and Ethan Dyer and Jascha Sohl-Dickstein and Guy Gur-Ari},
+	journal={arXiv preprint arXiv:2003.02218},
+	url={https://arxiv.org/abs/2003.02218},
+	year={2020}
+}
+
+@InProceedings{zhu2023catapult,
+  title = 	 {{Catapults in SGD: spikes in the training loss and their impact on generalization through feature learning}},
+  author =       {Libin Zhu and Chaoyue Liu and Adityanarayanan Radhakrishnan and Mikhail Belkin},
+  booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
+  year = 	 {2024},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher =    {PMLR},
+  pdf = 	 {https://arxiv.org/pdf/2306.04815},
+  url = 	 {https://arxiv.org/abs/2306.04815},
+}
+
+@inproceedings{zhu2023catapultquadratic,
+title={Quadratic models for understanding catapult dynamics of neural networks},
+author={Libin Zhu and Chaoyue Liu and Adityanarayanan Radhakrishnan and Mikhail Belkin},
+booktitle={The Twelfth International Conference on Learning Representations},
+year={2024},
+url={https://openreview.net/forum?id=PvJnX3dwsD}
+}
+
+@article{meltzer2023catapult,
+  title={{Catapult Dynamics and Phase Transitions in Quadratic Nets}},
+  author={Meltzer, David and Liu, Junyu},
+  journal={arXiv preprint arXiv:2301.07737},
+    url={https://arxiv.org/abs/2301.07737},
+  year={2023}
+}
+
+@article{wang2023catapult,
+  title={{Good regularity creates large learning rate implicit biases: edge of stability, balancing, and catapult}},
+  author={Yuqing Wang and Zhenghao Xu and Tuo Zhao and Molei Tao},
+  journal={arXiv preprint arXiv:2310.17087},
+	url={https://arxiv.org/abs/2310.17087},
+  year={2023}
+}
+
+@inproceedings{kalra2023catapult,
+ author = {Dayal Singh Kalra and Maissam Barkeshli},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{Phase diagram of early training dynamics in deep neural networks: effect of the learning rate, depth, and width}},
+ url = {https://openreview.net/forum?id=Al9yglQGKj},
+ volume = {36},
+ year = {2023}
+}
+
+@article{liu2023logistic,
+AUTHOR = {Liu, Chunrui and Huang, Wei and Xu, Richard Yi Da},
+TITLE = {{Implicit Bias of Deep Learning in the Large Learning Rate Phase: A Data Separability Perspective}},
+JOURNAL = {Applied Sciences},
+VOLUME = {13},
+YEAR = {2023},
+NUMBER = {6},
+ARTICLE-NUMBER = {3961},
+URL = {https://www.mdpi.com/2076-3417/13/6/3961},
+ISSN = {2076-3417},
+DOI = {10.3390/app13063961}
+}
+
+@article{wu2024logistic,
+	title={{Large Stepsize Gradient Descent for Logistic Loss: Non-Monotonicity of the Loss Improves Optimization Efficiency}},
+	author={Jingfeng Wu and Peter L. Bartlett and Matus Telgarsky and Bin Yu},
+	journal={arXiv preprint arXiv:2402.15926},
+	url={https://arxiv.org/abs/2402.15926},
+	year={2024}
+}
+
+@inproceedings{wu2023logistic,
+ author = {Wu, Jingfeng and Braverman, Vladimir and Lee, Jason D},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {74229--74256},
+ publisher = {Curran Associates, Inc.},
+ title = {{Implicit Bias of Gradient Descent for Logistic Regression at the Edge of Stability}},
+ url = {https://openreview.net/forum?id=IT9mWLYNpQ},
+ volume = {36},
+ year = {2023}
+}
+
+
+
+
+@article{radhakrishnan2022agop,
+	title={{Mechanism of feature learning in deep fully connected networks and kernel machines that recursively learn features}},
+	author={Adityanarayanan Radhakrishnan and Daniel Beaglehole and Parthe Pandit and Mikhail Belkin},
+	journal={arXiv preprint arXiv:2212.13881},
+	url={https://arxiv.org/abs/2212.13881},
+	year={2022}
+}
+
+
+
+% implicit bias + diagonal linear network
+@InProceedings{woodworth2020kernel,
+  title = 	{{Kernel and Rich Regimes in Overparametrized Models}},
+  author =       {Woodworth, Blake and Gunasekar, Suriya and Lee, Jason D. and Moroshko, Edward and Savarese, Pedro and Golan, Itay and Soudry, Daniel and Srebro, Nathan},
+  booktitle = 	 {Proceedings of Thirty Third Conference on Learning Theory},
+  pages = 	 {3635--3673},
+  year = 	 {2020},
+  volume = 	 {125},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {09--12 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v125/woodworth20a/woodworth20a.pdf},
+  url = 	 {https://proceedings.mlr.press/v125/woodworth20a.html},
+}
+
+@InProceedings{azulay2021initialization,
+  title = 	 {{On the Implicit Bias of Initialization Shape: Beyond Infinitesimal Mirror Descent}},
+  author =       {Azulay, Shahar and Moroshko, Edward and Nacson, Mor Shpigel and Woodworth, Blake E and Srebro, Nathan and Globerson, Amir and Soudry, Daniel},
+  booktitle = 	 {Proceedings of the 38th International Conference on Machine Learning},
+  pages = 	 {468--477},
+  year = 	 {2021},
+  volume = 	 {139},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {18--24 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v139/azulay21a/azulay21a.pdf},
+  url = 	 {https://proceedings.mlr.press/v139/azulay21a.html},
+}
+
+@inproceedings{moroshko2020initialization,
+ author = {Moroshko, Edward and Woodworth, Blake E and Gunasekar, Suriya and Lee, Jason D and Srebro, Nati and Soudry, Daniel},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {22182--22193},
+ publisher = {Curran Associates, Inc.},
+ title = {{Implicit Bias in Deep Linear Classification: Initialization Scale vs Training Accuracy}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2020/file/fc2022c89b61c76bbef978f1370660bf-Paper.pdf},
+ volume = {33},
+ year = {2020}
+}
+
+@inproceedings{pesme2021sgd,
+ author = {Pesme, Scott and Pillaud-Vivien, Loucas and Flammarion, Nicolas},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {29218--29230},
+ publisher = {Curran Associates, Inc.},
+ title = {{Implicit Bias of SGD for Diagonal Linear Networks: a Provable Benefit of Stochasticity}},
+ url = {https://proceedings.neurips.cc/paper/2021/file/f4661398cb1a3abd3ffe58600bf11322-Paper.pdf},
+ volume = {34},
+ year = {2021}
+}
+
+@inproceedings{even2023diagonal,
+ author = {Mathieu Even and Scott Pesme and Suriya Gunasekar and Nicolas Flammarion},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{(S)GD over Diagonal Linear Networks: Implicit Regularisation, Large Stepsizes and Edge of Stability}},
+ url = {https://openreview.net/forum?id=uAyElhYKxg},
+ volume = {36},
+ year = {2023}
+}
+
+@inproceedings{pesme2023hopping,
+ author = {Scott Pesme and Nicolas Flammarion},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{Saddle-to-Saddle Dynamics in Diagonal Linear Networks}},
+ url = {https://openreview.net/forum?id=iuqCXg1Gng},
+ volume = {36},
+ year = {2023}
+}
+
+@InProceedings{nacson2022stepsize,
+  title = 	 {{Implicit Bias of the Step Size in Linear Diagonal Neural Networks}},
+  author =       {Nacson, Mor Shpigel and Ravichandran, Kavya and Srebro, Nathan and Soudry, Daniel},
+  booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+  pages = 	 {16270--16295},
+  year = 	 {2022},
+  volume = 	 {162},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {17--23 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v162/nacson22a/nacson22a.pdf},
+  url = 	 {https://proceedings.mlr.press/v162/nacson22a.html},
+}
+
+
+@InProceedings{papazov2024momentum,
+  title = 	 {{Leveraging Continuous Time to Understand Momentum When Training Diagonal Linear Networks}},
+  author =       {Papazov, Hristo and Pesme, Scott and Flammarion, Nicolas},
+  booktitle = 	 {Proceedings of The 27th International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {3556--3564},
+  year = 	 {2024},
+  editor = 	 {Dasgupta, Sanjoy and Mandt, Stephan and Li, Yingzhen},
+  volume = 	 {238},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {02--04 May},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v238/papazov24a/papazov24a.pdf},
+  url = 	 {https://proceedings.mlr.press/v238/papazov24a.html},
+}
+
+@misc{lyu2024momentum,
+title={{On the Role of Momentum in the Implicit Bias of Gradient Descent for Diagonal Linear Networks}},
+author={Bochen Lyu and Zhanxing Zhu},
+year={2024},
+url={https://openreview.net/forum?id=014CgNPAGy}
+}
+
+
+%% momentum continuous
+@article{kovachki2021momentum,
+  author  = {Nikola B. Kovachki and Andrew M. Stuart},
+  title   = {{Continuous Time Analysis of Momentum Methods}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2021},
+  volume  = {22},
+  number  = {17},
+  pages   = {1--40},
+  url     = {http://jmlr.org/papers/v22/19-466.html}
+}
+
+@article{muhlebach2021momentum,
+  author  = {Michael Muehlebach and Michael I. Jordan},
+  title   = {{Optimization with Momentum: Dynamical, Control-Theoretic, and Symplectic Perspectives}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2021},
+  volume  = {22},
+  number  = {73},
+  pages   = {1--50},
+  url     = {http://jmlr.org/papers/v22/20-207.html}
+}
+
+@article{wang2023momentum,
+title={{The Implicit Regularization of Momentum Gradient Descent in Overparametrized Models}},
+volume={37},
+url={https://ojs.aaai.org/index.php/AAAI/article/view/26209},
+DOI={10.1609/aaai.v37i8.26209},
+number={8},
+journal={Proceedings of the AAAI Conference on Artificial Intelligence},
+author={Wang, Li and Fu, Zhiguo and Zhou, Yingcong and Yan, Zili},
+year={2023},
+month={Jun.},
+pages={10149-10156}
+}
+
+@inproceedings{wang2022implicit,
+ author = {Wang, Bohan and Meng, Qi and Zhang, Huishuai and Sun, Ruoyu and Chen, Wei and Ma, Zhi-Ming and Liu, Tie-Yan},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {26764--26776},
+ publisher = {Curran Associates, Inc.},
+ title = {{Does Momentum Change the Implicit Regularization on Separable Data?}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2022/file/ab3f6bbe121a8f7a0263a9b393000741-Paper-Conference.pdf},
+ volume = {35},
+ year = {2022}
+}
+
+
+
+
+%% when momentum accelerates
+@article{fu2023momentum,
+    title={{When and Why Momentum Accelerates SGD: An Empirical Study}},
+    author={Jingwen Fu and Bohan Wang and Huishuai Zhang and Zhizheng Zhang and Wei Chen and Nanning Zheng},
+    journal={arXiv preprint arXiv:2306.09000},
+    url={https://arxiv.org/abs/2306.09000},
+    year={2023}
+}
+
+@article{goh2017momentum,
+  author = {Goh, Gabriel},
+  title = {{Why Momentum Really Works}},
+  journal = {Distill},
+  year = {2017},
+  url = {http://distill.pub/2017/momentum},
+  doi = {10.23915/distill.00006}
+}
+
+@inproceedings{pedregosa2023momentum,
+title={{A Hitchhiker's Guide to Momentum}},
+author={Fabian Pedregosa},
+booktitle={The Second Blogpost Track at ICLR 2023},
+year={2023},
+url={https://openreview.net/forum?id=kUk79nBY__2}
+}
+
+
+% edge of stability - pt 1
+@inproceedings{cohen2021stability,
+title={{Gradient Descent on Neural Networks Typically Occurs at the Edge of Stability}},
+author={Jeremy Cohen and Simran Kaur and Yuanzhi Li and J Zico Kolter and Ameet Talwalkar},
+booktitle={International Conference on Learning Representations},
+year={2021},
+url={https://openreview.net/forum?id=jh-rTtvkGeM}
+}
+
+@inproceedings{gilmer2022stability,
+title={{A Loss Curvature Perspective on Training Instabilities of Deep Learning Models}},
+author={Justin Gilmer and Behrooz Ghorbani and Ankush Garg and Sneha Kudugunta and Behnam Neyshabur and David Cardoze and George Edward Dahl and Zachary Nado and Orhan Firat},
+booktitle={International Conference on Learning Representations},
+year={2022},
+url={https://openreview.net/forum?id=OcKMT-36vUs}
+}
+
+@article{cohen2022stability,
+    title={{Adaptive Gradient Methods at the Edge of Stability}},
+    author={Jeremy M. Cohen and Behrooz Ghorbani and Shankar Krishnan and Naman Agarwal and Sourabh Medapati and Michal Badura and Daniel Suo and David Cardoze and Zachary Nado and George E. Dahl and Justin Gilmer},
+    journal={arXiv preprint arXiv:2207.14484},
+    url={https://arxiv.org/abs/2207.14484},
+    year={2022}
+}
+
+
+
+% edge of stability - pt 2
+@InProceedings{arora2022stability,
+  title = 	 {{Understanding Gradient Descent on the Edge of Stability in Deep Learning}},
+  author =       {Arora, Sanjeev and Li, Zhiyuan and Panigrahi, Abhishek},
+  booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+  pages = 	 {948--1024},
+  year = 	 {2022},
+  volume = 	 {162},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {17--23 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v162/arora22a/arora22a.pdf},
+  url = 	 {https://proceedings.mlr.press/v162/arora22a.html},
+}
+
+@InProceedings{ahn2022stability,
+  title = 	 {Understanding the unstable convergence of gradient descent},
+  author =       {Ahn, Kwangjun and Zhang, Jingzhao and Sra, Suvrit},
+  booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+  pages = 	 {247--257},
+  year = 	 {2022},
+  volume = 	 {162},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {17--23 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v162/ahn22a/ahn22a.pdf},
+  url = 	 {https://proceedings.mlr.press/v162/ahn22a.html},
+}
+
+@inproceedings{wang2022stability,
+ author = {Wang, Zixuan and Li, Zhouzi and Li, Jian},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {9983--9994},
+ publisher = {Curran Associates, Inc.},
+ title = {{Analyzing Sharpness along GD Trajectory: Progressive Sharpening and Edge of Stability}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2022/file/40bb79c081828bebdc39d65a82367246-Paper-Conference.pdf},
+ volume = {35},
+ year = {2022}
+}
+
+@inproceedings{zhu2023minimalist,
+title={{Understanding Edge-of-Stability Training Dynamics with a Minimalist Example}},
+author={Xingyu Zhu and Zixuan Wang and Xiang Wang and Mo Zhou and Rong Ge},
+booktitle={The Eleventh International Conference on Learning Representations },
+year={2023},
+url={https://openreview.net/forum?id=p7EagBsMAEO}
+}
+
+
+@inproceedings{song2023bifurcation,
+ author = {Minhak Song and Chulhee Yun},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{Trajectory Alignment: Understanding the Edge of Stability Phenomenon via Bifurcation Theory}},
+ url = {https://openreview.net/forum?id=PnJaA0A8Lr},
+ volume = {36},
+ year = {2023}
+}
+
+@inproceedings{ahn2022threshold,
+ author = {Kwangjun Ahn and S\'{e}bastien Bubeck and Sinho Chewi and Yin Tat Lee and Felipe Suarez and Yi Zhang},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{Learning threshold neurons via the "edge of stability"}},
+ url = {https://openreview.net/forum?id=9cQ6kToLnJ},
+ volume = {36},
+ year = {2023}
+}
+
+
+%% NTK
+@inproceedings{jacot2018ntk,
+ author = {Jacot, Arthur and Gabriel, Franck and Hongler, Clement},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {8580--8589},
+ publisher = {Curran Associates, Inc.},
+ title = {{Neural Tangent Kernel: Convergence and Generalization in Neural Networks}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2018/file/5a4be1fa34e62bb8a6ec6b91d2462f5a-Paper.pdf},
+ volume = {31},
+ year = {2018}
+}
+
+
+
+%% momentum
+@article{polyak1964momentum,
+title = {Some methods of speeding up the convergence of iteration methods},
+journal = {USSR Computational Mathematics and Mathematical Physics},
+volume = {4},
+number = {5},
+pages = {1-17},
+year = {1964},
+doi = {https://doi.org/10.1016/0041-5553(64)90137-5},
+url = {https://www.sciencedirect.com/science/article/pii/0041555364901375},
+author = {B.T. Polyak},
+}
+
+@article{nesterov1983momentum,
+title = {A method of solving a convex programming problem with convergence rate $O\left(\frac{1}{k^2} \right)$},
+journal = {Doklady Akademii Nauk SSSR},
+volume = {269},
+number = {3},
+pages = {543--547},
+year = {1983},
+url = {https://www.mathnet.ru/links/5f71dabae51ab2fd5cb66dfbbc1a0405/dan46009.pdf},
+author = {Yurii E. Nesterov},
+}
+
+@InProceedings{sutskever2013momentum,
+  title = 	 {On the importance of initialization and momentum in deep learning},
+  author = 	 {Sutskever, Ilya and Martens, James and Dahl, George and Hinton, Geoffrey},
+  booktitle = 	 {Proceedings of the 30th International Conference on Machine Learning},
+  pages = 	 {1139--1147},
+  year = 	 {2013},
+  volume = 	 {28},
+  number =       {3},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Atlanta, Georgia, USA},
+  month = 	 {17--19 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v28/sutskever13.pdf},
+  url = 	 {https://proceedings.mlr.press/v28/sutskever13.html},
+}
+
+
+%% dynamical system, difference equations
+@article{GSPT,
+title = {Geometric singular perturbation theory for ordinary differential equations},
+journal = {Journal of Differential Equations},
+volume = {31},
+number = {1},
+pages = {53-98},
+year = {1979},
+doi = {https://doi.org/10.1016/0022-0396(79)90152-9},
+url = {https://www.sciencedirect.com/science/article/pii/0022039679901529},
+author = {Neil Fenichel}
+}
+
+@book{elaydi2005difference,
+    place={New York, NY},
+    series={Undergraduate Texts in Mathematics},
+    title={{An Introduction to Difference Equations}},
+    publisher={Springer-Verlag New York},
+    author={Saber Elaydi},
+    year={2005},
+    collection={Undergraduate Texts in Mathematics},
+    edition={3}
+}
+
+@book{arnold1986catastrophe,
+    title={{Catastrophe Theory}},
+    publisher={Springer Berlin, Heidelberg},
+    author={Vladimir Igorevich Arnold},
+    year={1986},
+    edition={2}
+}
+
+@book{guckenheimer1983dynamical,
+    title={{Nonlinear Oscillations, Dynamical Systems, and Bifurcations of Vector Fields}},
+    publisher={Springer New York, NY},
+    author={John Guckenheimer and Philip Holmes},
+    year={1983},
+    series={Applied Mathematical Sciences},
+    collection={Applied Mathematical Sciences},
+}
+
+@book{teschl2012dynamical,
+    title={{Ordinary Differential Equations and Dynamical Systems}},
+    author={Gerald Teschl},
+    publisher={American Mathematical Society},
+    year={2012},
+    series={Graduate Studies in Mathematics},
+    collection={Graduate Studies in Mathematics},
+    vol={140}
+}
+
+
+
+
+
+
+% misc
+@inproceedings{barrett2021implicit,
+title={{Implicit Gradient Regularization}},
+author={David Barrett and Benoit Dherin},
+booktitle={International Conference on Learning Representations},
+year={2021},
+url={https://openreview.net/forum?id=3q5IqUrkcF}
+}
+
+@article{hochreiter1997flat,
+    author = {Hochreiter, Sepp and Schmidhuber, Jürgen},
+    title = {{Flat Minima}},
+    journal = {Neural Computation},
+    volume = {9},
+    number = {1},
+    pages = {1-42},
+    year = {1997},
+    month = {01},
+    doi = {10.1162/neco.1997.9.1.1},
+    url = {https://doi.org/10.1162/neco.1997.9.1.1},
+    eprint = {https://direct.mit.edu/neco/article-pdf/9/1/1/813385/neco.1997.9.1.1.pdf},
+}
+
+
+@InProceedings{dinh2017sharp,
+  title = 	 {{Sharp Minima Can Generalize For Deep Nets}},
+  author =       {Laurent Dinh and Razvan Pascanu and Samy Bengio and Yoshua Bengio},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {1019--1028},
+  year = 	 {2017},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/dinh17b/dinh17b.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/dinh17b.html},
+}
+
+@InProceedings{andriushchenko2023sharpness,
+  title = 	 {{A Modern Look at the Relationship between Sharpness and Generalization}},
+  author =       {Andriushchenko, Maksym and Croce, Francesco and M\"{u}ller, Maximilian and Hein, Matthias and Flammarion, Nicolas},
+  booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	 {840--902},
+  year = 	 {2023},
+  volume = 	 {202},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {23--29 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v202/andriushchenko23a/andriushchenko23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v202/andriushchenko23a.html},
+}
+
+
+% implicit bias of adaptive algs
+@inproceedings{pagliana2019implicit,
+ author = {Pagliana, Nicol\`{o} and Rosasco, Lorenzo},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {14481--14491},
+ publisher = {Curran Associates, Inc.},
+ title = {{Implicit Regularization of Accelerated Methods in Hilbert Spaces}},
+ url = {https://proceedings.neurips.cc/paper/2019/file/c61aed648da48aa3893fb3eaadd88a7f-Paper.pdf},
+ volume = {32},
+ year = {2019}
+}
+
+@inproceedings{qian2019implicit,
+ author = {Qian, Qian and Qian, Xiaoyuan},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {},
+ publisher = {Curran Associates, Inc.},
+ title = {{The Implicit Bias of AdaGrad on Separable Data}},
+ url = {https://proceedings.neurips.cc/paper/2019/file/3335881e06d4d23091389226225e17c7-Paper.pdf},
+ volume = {32},
+ year = {2019}
+}
+
+@InProceedings{wang2021implicit,
+  title = 	 {{The Implicit Bias for Adaptive Optimization Algorithms on Homogeneous Neural Networks}},
+  author =       {Wang, Bohan and Meng, Qi and Chen, Wei and Liu, Tie-Yan},
+  booktitle = 	 {Proceedings of the 38th International Conference on Machine Learning},
+  pages = 	 {10849--10858},
+  year = 	 {2021},
+  volume = 	 {139},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {18--24 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v139/wang21q/wang21q.pdf},
+  url = 	 {https://proceedings.mlr.press/v139/wang21q.html},
+}
+
+@InProceedings{ji2021fast,
+  title = 	 {Fast margin maximization via dual acceleration},
+  author =       {Ji, Ziwei and Srebro, Nathan and Telgarsky, Matus},
+  booktitle = 	 {Proceedings of the 38th International Conference on Machine Learning},
+  pages = 	 {4860--4869},
+  year = 	 {2021},
+  volume = 	 {139},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {18--24 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v139/ji21a/ji21a.pdf},
+  url = 	 {https://proceedings.mlr.press/v139/ji21a.html},
+}
+
+
+
+% label noise
+@InProceedings{blanc2020noise,
+  title = 	 {{Implicit regularization for deep neural networks driven by an Ornstein-Uhlenbeck like process}},
+  author =       {Blanc, Guy and Gupta, Neha and Valiant, Gregory and Valiant, Paul},
+  booktitle = 	 {Proceedings of Thirty Third Conference on Learning Theory},
+  pages = 	 {483--513},
+  year = 	 {2020},
+  volume = 	 {125},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {09--12 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v125/blanc20a/blanc20a.pdf},
+  url = 	 {https://proceedings.mlr.press/v125/blanc20a.html},
+}
+
+@inproceedings{damian2021noise,
+ author = {Damian, Alex and Ma, Tengyu and Lee, Jason D},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {27449--27461},
+ publisher = {Curran Associates, Inc.},
+ title = {{Label Noise SGD Provably Prefers Flat Global Minimizers}},
+ url = {https://openreview.net/forum?id=x2TMPhseWAW},
+ volume = {34},
+ year = {2021}
+}
+
+@inproceedings{damian2023stabilization,
+title={{Self-Stabilization: The Implicit Bias of Gradient Descent at the Edge of Stability}},
+author={Alex Damian and Eshaan Nichani and Jason D. Lee},
+booktitle={The Eleventh International Conference on Learning Representations },
+year={2023},
+url={https://openreview.net/forum?id=nhKHA59gXz}
+}
+
+@InProceedings{vivien2022noise,
+  title = 	 {{Label noise (stochastic) gradient descent implicitly solves the Lasso for quadratic parametrisation}},
+  author =       {Vivien, Loucas Pillaud and Reygner, Julien and Flammarion, Nicolas},
+  booktitle = 	 {Proceedings of Thirty Fifth Conference on Learning Theory},
+  pages = 	 {2127--2159},
+  year = 	 {2022},
+  volume = 	 {178},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {02--05 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v178/vivien22a/vivien22a.pdf},
+}
+
+
+
+
+
+% continuous analysis of Nesterov
+@article{su2016nesterov,
+  author  = {Weijie Su and Stephen Boyd and Emmanuel J. Cand{{\`e}}s},
+  title   = {{A Differential Equation for Modeling Nesterov's Accelerated Gradient Method: Theory and Insights}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2016},
+  volume  = {17},
+  number  = {153},
+  pages   = {1--43},
+  url     = {http://jmlr.org/papers/v17/15-084.html}
+}
+
+
+@InProceedings{li2017stochastic,
+  title = 	 {{Stochastic Modified Equations and Adaptive Stochastic Gradient Algorithms}},
+  author =       {Qianxiao Li and Cheng Tai and Weinan E},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {2101--2110},
+  year = 	 {2017},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/li17f/li17f.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/li17f.html},
+}
+
+@article{li2019stochastic,
+  author  = {Qianxiao Li and Cheng Tai and Weinan E},
+  title   = {{Stochastic Modified Equations and Dynamics of Stochastic Gradient Algorithms I: Mathematical Foundations}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2019},
+  volume  = {20},
+  number  = {40},
+  pages   = {1--47},
+  url     = {http://jmlr.org/papers/v20/17-526.html}
+}
+
+
+
+
+%%% minima stability
+@inproceedings{wu2018stability,
+ author = {Wu, Lei and Ma, Chao and E, Weinan},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {8289--8298},
+ publisher = {Curran Associates, Inc.},
+ title = {{How SGD Selects the Global Minima in Over-parameterized Learning: A Dynamical Stability Perspective}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2018/file/6651526b6fb8f29a00507de6a49ce30f-Paper.pdf},
+ volume = {31},
+ year = {2018}
+}
+
+@inproceedings{mulayoff2021stability,
+ author = {Mulayoff, Rotem and Michaeli, Tomer and Soudry, Daniel},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {17749--17761},
+ publisher = {Curran Associates, Inc.},
+ title = {{The Implicit Bias of Minima Stability: A View from Function Space}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2021/file/944a5ae3483ed5c1e10bbccb7942a279-Paper.pdf},
+ volume = {34},
+ year = {2021}
+}
+
+@inproceedings{ma2021stability,
+ author = {Ma, Chao and Ying, Lexing},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {16805--16817},
+ publisher = {Curran Associates, Inc.},
+ title = {{On Linear Stability of SGD and Input-Smoothness of Neural Networks}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2021/file/8c26d2fad09dc76f3ff36b6ea752b0e1-Paper.pdf},
+ volume = {34},
+ year = {2021}
+}
+
+
+@InProceedings{wu2023stability,
+  title = 	 {{The Implicit Regularization of Dynamical Stability in Stochastic Gradient Descent}},
+  author =       {Wu, Lei and Su, Weijie J},
+  booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	 {37656--37684},
+  year = 	 {2023},
+  volume = 	 {202},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {23--29 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v202/wu23r/wu23r.pdf},
+  url = 	 {https://proceedings.mlr.press/v202/wu23r.html},
+}
+
+@article{bof2018lyapunov,
+    title={{Lyapunov Theory for Discrete Time Systems}},
+    author={Nicoletta Bof and Ruggero Carli and Luca Schenato},
+    journal={arXiv preprint arXiv:1809.05289},
+    url={https://arxiv.org/abs/1809.05289},
+    year={2018}
+}
+
+
+
+
+%% Matrix analysis
+@article{silvester2000block, 
+    title={Determinants of block matrices},
+    volume={84},
+    DOI={10.2307/3620776},
+    number={501},
+    journal={The Mathematical Gazette},
+    publisher={Cambridge University Press},
+    author={Silvester, John R.},
+    year={2000},
+    pages={460–467}
+}
+
+
+
+%% momentum may not help in stochastic
+@inproceedings{kidambi2018momentum,
+title={{On the insufficiency of existing momentum schemes for Stochastic Optimization}},
+author={Rahul Kidambi and Praneeth Netrapalli and Prateek Jain and Sham M. Kakade},
+booktitle={International Conference on Learning Representations},
+year={2018},
+url={https://openreview.net/forum?id=rJTutzbA-},
+}
+
+@InProceedings{ganesh2023momentum,
+  title = 	 {{Does Momentum Help in Stochastic Optimization? A Sample Complexity Analysis}},
+  author =       {Ganesh, Swetha and Deb, Rohan and Thoppe, Gugan and Budhiraja, Amarjit},
+  booktitle = 	 {Proceedings of the Thirty-Ninth Conference on Uncertainty in Artificial Intelligence},
+  pages = 	 {602--612},
+  year = 	 {2023},
+  volume = 	 {216},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {31 Jul--04 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v216/ganesh23a/ganesh23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v216/ganesh23a.html},
+}
+
+
+
+
+%%% dying ReLU, low-rank features
+@article{lu2020dying,
+author = {Lu , Lu and Shin, Yeonjong and Su, Yanhui and Em Karniadakis, George},
+title = {{Dying ReLU and Initialization: Theory and Numerical Examples}},
+journal = {Communications in Computational Physics},
+year = {2020},
+volume = {28},
+number = {5},
+pages = {1671--1706},
+issn = {1991-7120},
+doi = {https://doi.org/10.4208/cicp.OA-2020-0165},
+url = {http://global-sci.org/intro/article_detail/cicp/18393.html}
+}
+
+@inproceedings{andriushchenko2023sam,
+ author = {Maksym Andriushchenko and Dara Bahri and Hossein Mobahi and Nicolas Flammarion},
+ booktitle = {Advances in Neural Information Processing Systems},
+ publisher = {Curran Associates, Inc.},
+ title = {{Sharpness-Aware Minimization Leads to Low-Rank Features}},
+ url = {https://openreview.net/forum?id=29WbraPk8U},
+ volume = {36},
+ year = {2023}
+}
+
+
+
+%%% learning theory
+@inproceedings{srebro2010smoothness,
+ author = {Srebro, Nathan and Sridharan, Karthik and Tewari, Ambuj},
+ booktitle = {Advances in Neural Information Processing Systems},
+ pages = {2199--2207},
+ publisher = {Curran Associates, Inc.},
+ title = {{Smoothness, Low Noise and Fast Rates}},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2010/file/76cf99d3614e23eabab16fb27e944bf9-Paper.pdf},
+ volume = {23},
+ year = {2010}
+}
+
+@book{understandingML,
+    author = {S. Shalev-Schwartz and S. Ben-David},
+    title = {{Understanding Machine Learning: From Theory to Algorithms}},
+    publisher = {Cambridge University Press},
+    year = {2014},
+}
+
+
+
+
+%%% landscape
+@article{cooper2021landscape,
+author = {Cooper, Yaim},
+title = {{Global Minima of Overparameterized Neural Networks}},
+journal = {SIAM Journal on Mathematics of Data Science},
+volume = {3},
+number = {2},
+pages = {676-691},
+year = {2021},
+doi = {10.1137/19M1308943},
+URL = {https://doi.org/10.1137/19M1308943},
+eprint = {https://doi.org/10.1137/19M1308943}
+}
+
+@InProceedings{kreisler2023gradient,
+  title = 	 {{Gradient Descent Monotonically Decreases the Sharpness of Gradient Flow Solutions in Scalar Networks and Beyond}},
+  author =       {Kreisler, Itai and Nacson, Mor Shpigel and Soudry, Daniel and Carmon, Yair},
+  booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	 {17684--17744},
+  year = 	 {2023},
+  volume = 	 {202},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {23--29 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v202/kreisler23a/kreisler23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v202/kreisler23a.html}
+}

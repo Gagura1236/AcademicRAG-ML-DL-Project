@@ -1,0 +1,242 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{Auli \bgroup et al.\egroup }2013]{Auli2013}
+Michael Auli, Michel Galley, Chris Quirk, and Geoffrey Zweig.
+\newblock 2013.
+\newblock Joint language and translation modeling with recurrent neural
+  networks.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 1044--1054.
+
+\bibitem[\protect\citename{Axelrod \bgroup et al.\egroup }2011]{Axelrod2011}
+Amittai Axelrod, Xiaodong He, and Jianfeng Gao.
+\newblock 2011.
+\newblock Domain adaptation via pseudo in-domain data selection.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 355--362.
+
+\bibitem[\protect\citename{Bastien \bgroup et al.\egroup
+  }2012]{Bastien-Theano-2012}
+Fr{\'{e}}d{\'{e}}ric Bastien, Pascal Lamblin, Razvan Pascanu, James Bergstra,
+  Ian~J. Goodfellow, Arnaud Bergeron, Nicolas Bouchard, and Yoshua Bengio.
+\newblock 2012.
+\newblock Theano: new features and speed improvements.
+\newblock Deep Learning and Unsupervised Feature Learning NIPS 2012 Workshop.
+
+\bibitem[\protect\citename{Bengio \bgroup et al.\egroup }2003]{Bengio2003lm}
+Yoshua Bengio, R{\'e}jean Ducharme, Pascal Vincent, and Christian Janvin.
+\newblock 2003.
+\newblock A neural probabilistic language model.
+\newblock {\em J. Mach. Learn. Res.}, 3:1137--1155, March.
+
+\bibitem[\protect\citename{{Bengio} \bgroup et al.\egroup }2013]{Bengio2013rec}
+Y.~{Bengio}, N.~{Boulanger-Lewandowski}, and R.~{Pascanu}.
+\newblock 2013.
+\newblock Advances in optimizing recurrent networks.
+\newblock In {\em Proceedings of the 38th International Conference on
+  Acoustics, Speech, and Signal Processing (ICASSP 2013)}, May.
+
+\bibitem[\protect\citename{Bergstra \bgroup et al.\egroup
+  }2010]{bergstra+al:2010-scipy}
+James Bergstra, Olivier Breuleux, Fr{\'{e}}d{\'{e}}ric Bastien, Pascal Lamblin,
+  Razvan Pascanu, Guillaume Desjardins, Joseph Turian, David Warde-Farley, and
+  Yoshua Bengio.
+\newblock 2010.
+\newblock Theano: a {CPU} and {GPU} math expression compiler.
+\newblock In {\em Proceedings of the Python for Scientific Computing Conference
+  ({SciPy})}, June.
+\newblock Oral Presentation.
+
+\bibitem[\protect\citename{Chandar \bgroup et al.\egroup }2014]{Chandar2014}
+Sarath Chandar, Stanislas Lauly, Hugo Larochelle, Mitesh Khapra, Balaraman
+  Ravindran, Vikas Raykar, and Amrita Saha.
+\newblock 2014.
+\newblock An autoencoder approach to learning bilingual word representations.
+\newblock {\em ar{X}iv:{\tt 1402.1454 [cs.CL]}}, February.
+
+\bibitem[\protect\citename{Dahl \bgroup et al.\egroup }2012]{Dahl2012}
+George~E. Dahl, Dong Yu, Li~Deng, and Alex Acero.
+\newblock 2012.
+\newblock Context-dependent pre-trained deep neural networks for large
+  vocabulary speech recognition.
+\newblock {\em IEEE Transactions on Audio, Speech, and Language Processing},
+  20(1):33--42.
+
+\bibitem[\protect\citename{Devlin \bgroup et al.\egroup }2014]{Devlin2014}
+Jacob Devlin, Rabih Zbib, Zhongqiang Huang, Thomas Lamar, Richard Schwartz, ,
+  and John Makhoul.
+\newblock 2014.
+\newblock Fast and robust neural network joint models for statistical machine
+  translation.
+\newblock In {\em Proceedings of the ACL 2014 Conference}, ACL '14, pages
+  1370--1380.
+
+\bibitem[\protect\citename{Gao \bgroup et al.\egroup }2013]{Gao2013}
+Jianfeng Gao, Xiaodong He, Wen tau Yih, and Li~Deng.
+\newblock 2013.
+\newblock Learning semantic representations for the phrase translation model.
+\newblock Technical report, Microsoft Research.
+
+\bibitem[\protect\citename{Glorot \bgroup et al.\egroup
+  }2011]{Glorot+al-AI-2011-small}
+X.~Glorot, A.~Bordes, and Y.~Bengio.
+\newblock 2011.
+\newblock Deep sparse rectifier neural networks.
+\newblock In {\em AISTATS'2011}.
+
+\bibitem[\protect\citename{Goodfellow \bgroup et al.\egroup
+  }2013]{Goodfellow_maxout_2013}
+Ian~J. Goodfellow, David Warde-Farley, Mehdi Mirza, Aaron Courville, and Yoshua
+  Bengio.
+\newblock 2013.
+\newblock Maxout networks.
+\newblock In {\em ICML'2013}.
+
+\bibitem[\protect\citename{Graves}2012]{Graves-book2012}
+Alex Graves.
+\newblock 2012.
+\newblock {\em Supervised Sequence Labelling with Recurrent Neural Networks}.
+\newblock Studies in Computational Intelligence. Springer.
+
+\bibitem[\protect\citename{Hochreiter and Schmidhuber}1997]{Hochreiter1997}
+S.~Hochreiter and J.~Schmidhuber.
+\newblock 1997.
+\newblock Long short-term memory.
+\newblock {\em Neural Computation}, 9(8):1735--1780.
+
+\bibitem[\protect\citename{Kalchbrenner and Blunsom}2013]{Kalchbrenner2012}
+Nal Kalchbrenner and Phil Blunsom.
+\newblock 2013.
+\newblock Two recurrent continuous translation models.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 1700--1709.
+
+\bibitem[\protect\citename{Koehn \bgroup et al.\egroup }2003]{Koehn2003}
+Philipp Koehn, Franz~Josef Och, and Daniel Marcu.
+\newblock 2003.
+\newblock Statistical phrase-based translation.
+\newblock In {\em Proceedings of the 2003 Conference of the North American
+  Chapter of the Association for Computational Linguistics on Human Language
+  Technology - Volume 1}, NAACL '03, pages 48--54.
+
+\bibitem[\protect\citename{Koehn}2005]{Koehn2005}
+P.~Koehn.
+\newblock 2005.
+\newblock Europarl: A parallel corpus for statistical machine translation.
+\newblock In {\em Machine Translation Summit X}, pages 79--86, Phuket,
+  Thailand.
+
+\bibitem[\protect\citename{Krizhevsky \bgroup et al.\egroup
+  }2012]{Krizhevsky-2012}
+Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton.
+\newblock 2012.
+\newblock {ImageNet} classification with deep convolutional neural networks.
+\newblock In {\em Advances in Neural Information Processing Systems 25
+  (NIPS'2012)}.
+
+\bibitem[\protect\citename{Marcu and Wong}2002]{Marcu2002}
+Daniel Marcu and William Wong.
+\newblock 2002.
+\newblock A phrase-based, joint probability model for statistical machine
+  translation.
+\newblock In {\em Proceedings of the ACL-02 Conference on Empirical Methods in
+  Natural Language Processing - Volume 10}, EMNLP '02, pages 133--139.
+
+\bibitem[\protect\citename{Mikolov \bgroup et al.\egroup }2013]{Mikolov2013}
+Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg Corrado, and Jeff Dean.
+\newblock 2013.
+\newblock Distributed representations of words and phrases and their
+  compositionality.
+\newblock In {\em Advances in Neural Information Processing Systems 26}, pages
+  3111--3119.
+
+\bibitem[\protect\citename{Moore and Lewis}2010]{Moore2010}
+Robert~C. Moore and William Lewis.
+\newblock 2010.
+\newblock Intelligent selection of language model training data.
+\newblock In {\em Proceedings of the ACL 2010 Conference Short Papers},
+  ACLShort '10, pages 220--224, Stroudsburg, PA, USA.
+
+\bibitem[\protect\citename{Pascanu \bgroup et al.\egroup }2014]{Pascanu2014rec}
+R.~Pascanu, C.~Gulcehre, K.~Cho, and Y.~Bengio.
+\newblock 2014.
+\newblock How to construct deep recurrent neural networks.
+\newblock In {\em Proceedings of the Second International Conference on
+  Learning Representations (ICLR 2014)}, April.
+
+\bibitem[\protect\citename{Saxe \bgroup et al.\egroup }2014]{Saxe2014}
+Andrew~M. Saxe, James~L. McClelland, and Surya Ganguli.
+\newblock 2014.
+\newblock Exact solutions to the nonlinear dynamics of learning in deep linear
+  neural networks.
+\newblock In {\em Proceedings of the Second International Conference on
+  Learning Representations (ICLR 2014)}, April.
+
+\bibitem[\protect\citename{Schwenk \bgroup et al.\egroup }2006]{Schwenk2006}
+Holger Schwenk, Marta~R. Costa-Juss{\`a}, and Jos{\'e} A.~R. Fonollosa.
+\newblock 2006.
+\newblock Continuous space language models for the iwslt 2006 task.
+\newblock In {\em IWSLT}, pages 166--173.
+
+\bibitem[\protect\citename{Schwenk}2007]{Schwenk2007}
+Holger Schwenk.
+\newblock 2007.
+\newblock Continuous space language models.
+\newblock {\em Comput. Speech Lang.}, 21(3):492--518, July.
+
+\bibitem[\protect\citename{Schwenk}2012]{Schwenk2012}
+Holger Schwenk.
+\newblock 2012.
+\newblock Continuous space translation models for phrase-based statistical
+  machine translation.
+\newblock In Martin Kay and Christian Boitet, editors, {\em Proceedings of the
+  24th International Conference on Computational Linguistics (COLIN)}, pages
+  1071--1080.
+
+\bibitem[\protect\citename{Socher \bgroup et al.\egroup
+  }2011]{SocherEtAl2011:PoolRAE}
+Richard Socher, Eric~H. Huang, Jeffrey Pennington, Andrew~Y. Ng, and
+  Christopher~D. Manning.
+\newblock 2011.
+\newblock Dynamic pooling and unfolding recursive autoencoders for paraphrase
+  detection.
+\newblock In {\em Advances in Neural Information Processing Systems 24}.
+
+\bibitem[\protect\citename{Son \bgroup et al.\egroup }2012]{Son2012}
+Le~Hai Son, Alexandre Allauzen, and Fran\c{c}ois Yvon.
+\newblock 2012.
+\newblock Continuous space translation models with neural networks.
+\newblock In {\em Proceedings of the 2012 Conference of the North American
+  Chapter of the Association for Computational Linguistics: Human Language
+  Technologies}, NAACL HLT '12, pages 39--48, Stroudsburg, PA, USA.
+
+\bibitem[\protect\citename{van~der Maaten}2013]{Maaten2013}
+Laurens van~der Maaten.
+\newblock 2013.
+\newblock Barnes-hut-sne.
+\newblock In {\em Proceedings of the First International Conference on Learning
+  Representations (ICLR 2013)}, May.
+
+\bibitem[\protect\citename{Vaswani \bgroup et al.\egroup
+  }2013]{vaswanidecoding}
+Ashish Vaswani, Yinggong Zhao, Victoria Fossum, and David Chiang.
+\newblock 2013.
+\newblock Decoding with large-scale neural language models improves
+  translation.
+\newblock {\em Proceedings of the Conference on Empirical Methods in Natural
+  Language Processing}, pages 1387--1392.
+
+\bibitem[\protect\citename{Zeiler}2012]{Zeiler-2012}
+Matthew~D. Zeiler.
+\newblock 2012.
+\newblock {ADADELTA}: an adaptive learning rate method.
+\newblock Technical report, arXiv 1212.5701.
+
+\bibitem[\protect\citename{Zou \bgroup et al.\egroup }2013]{Zou2013}
+Will~Y. Zou, Richard Socher, Daniel~M. Cer, and Christopher~D. Manning.
+\newblock 2013.
+\newblock Bilingual word embeddings for phrase-based machine translation.
+\newblock In {\em Proceedings of the ACL Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 1393--1398.
+
+\end{thebibliography}

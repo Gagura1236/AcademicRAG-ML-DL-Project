@@ -1,0 +1,125 @@
+\begin{table}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{1pt}
+    \begin{tabular}{@{}lcccr@{}}
+    \toprule
+    Model & attention & char-LM & other & pretrain  \\
+          &    matrix       &         & tasks &   \\
+    \midrule
+    Transformer-XL~\shortcite{transformerxl} & ltr & yes & no & no \\
+    Adaptive Span~\shortcite{adaptivespan} & ltr & yes & no & no \\
+    Compressive~\shortcite{compressive} & ltr & yes & no & no \\ \hdashline[0.4pt/2pt]
+    Reformer~\shortcite{reformer} & sparse & yes & no & no \\
+    Sparse~\shortcite{sparseOpenai} & sparse & yes & no & no \\
+    Routing~\shortcite{roy2020efficient} & sparse & yes & no & no \\
+    \hdashline[0.4pt/2pt]
+    BP-Transformer~\shortcite{BPTransformer} & sparse & yes & MT & no \\
+    % Sparse Sinkhorn~\shortcite{sinkhorn} & sparse & yes & yes & no \\
+    % \hdashline[0.4pt/2pt]
+    Blockwise~\shortcite{blockbert} & sparse & no & QA & yes \\
+    \hdashline[0.4pt/2pt]
+    Our \model & sparse & yes & multiple & yes \\
+    \bottomrule
+    \end{tabular}
+    \caption{Summary of prior work on adapting Transformers for long documents. ltr: left-to-right.}
+    \label{tab:related}
+\end{table}
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{subfigure}[t]{0.22\textwidth}
+        \centering
+        \includegraphics[height=1.0in]{fig/fig-attn-full.pdf}
+        \caption{Full $n^2$ attention}
+        \label{fig:attna}
+    \end{subfigure}%
+    ~~~~ 
+    \begin{subfigure}[t]{0.22\textwidth}
+        \centering
+        \includegraphics[height=1.0in]{fig/fig-attn-window.pdf}
+        \caption{Sliding window attention}
+        \label{fig:attnb}
+    \end{subfigure}
+    ~~~~
+    \begin{subfigure}[t]{0.22\textwidth}
+        \centering
+        \includegraphics[height=1.0in]{fig/fig-attn-dilated.pdf}
+        \caption{Dilated sliding window}
+        \label{fig:attnc}
+    \end{subfigure}
+    ~~~~
+    \begin{subfigure}[t]{0.22\textwidth}
+        \centering
+        \includegraphics[height=1.0in]{fig/fig-attn-combined.pdf}
+        \caption{Global{+}sliding window}
+        \label{fig:attnd}
+    \end{subfigure}
+    \caption{Comparing the full self-attention pattern and the configuration of attention patterns in our \model. 
+    % (c) and (d) give the benefit of full $O(n^2)$ attention with $O(n)$ complexity.
+    %\ib{strong statement that we can't evaluate, and unlikely to be true}
+    }
+\label{fig:attn}
+\end{figure*}
+
+
+\section{Related Work}
+\label{sec:related}
+
+% \matt{made some modifications to related work to make the language more terse, and remove references to results that haven't been presented yet}
+\paragraph{Long-Document Transformers}
+Tab.~\ref{tab:related} summarizes recent prior work on long documents. Two types of self-attention approaches have been explored. 
+The first is a left-to-right (ltr) approach that processes the document in chunks moving from left-to-right.
+While such models have been successful in autoregressive language modeling, they are unsuitable for transfer learning approaches with tasks that benefit from bidirectional context.
+%While such models lead to successful results in character LM (Tables~\ref{tab:charlm-small}, ~\ref{tab:charlm-large}), they are unsuitable for the pretraining-finetuning transfer learning setting and difficult to use with most other NLP tasks which usually favor bidirectional models that can process the whole document at once. \ac{is bidrectional context more important (for tasks like squad) or processing document at once?}
+
+Our work falls within the other general approach that defines some form of sparse attention pattern and avoids computing 
+the full quadratic attention matrix multiplication.
+% \ib{curious why removing this ? ``We generally outperform such models on character-level language modeling (Tables~\ref{tab:charlm-small}, ~\ref{tab:charlm-large}).``} \matt{It seems strange to introduce results in the related work section without first discussing the dataset or models?  We also already have a paragraph in the intro about the character-LM results.  also trying to shorten the text and avoid repetition to get down to 8 pages.}
+The model with the most similar attention pattern to ours is Sparse Transformer~\cite{sparseOpenai}, which uses a form of dilated sliding window of blocks of size 8x8 provided by BlockSparse~\cite{blocksparse}. 
+%The model with the most similar attention pattern to ours is Sparse Transformer~\cite{sparseOpenai}. It uses a slightly different form of dilated sliding window of blocks of size 8x8 provided by BlockSparse~\cite{blocksparse}. 
+Our implementation (\S\ref{sec:model}) also includes a custom CUDA kernel, but it is more flexible and maintainable than BlockSparse which is implemented in C++, and designed for a specific version of TensorFlow.
+%While both models use custom CUDA kernels, ours is implemented in TVM~\cite{tvm}  (\S\ref{sec:tvm}) making it more customizable and maintainable than BlockSparse which is implemented in C++, and designed for a specific versions of TensorFlow.
+%\ib{First time to mention our custom cuda kernel. Maybe rephase?}
+We also introduce additional task motivated global attention patterns suitable for common NLP tasks
+% \ib{difficult to parse ``additional NLP task motivated global attention patterns''}\matt{tried to re-word - wanted to get the "NLP" piece in there to distinguish from sparse transformer which has patterns for pixelwise image generation (which we don't need to acknowledge, but a reader familiar with that paper will remember)}
+(\S\ref{sec:model}) and show they are essential for good performance in the transfer learning setting.
+%\ib{global attention is being introduced here for the first time. Is it better to introduce it in the intro, reference it here?}\matt{see comments in intro - we can add a paragraph/two sentences in intro that describe the attention}
+
+%We were unable to get BlockSparse to work to compare its performance with ours \ac{might trigger the reviewer to think about this and say maybe you didn't try hard enough, maybe just saying that our kernel is more easy to use is safer.}, but from the code, we suspect that our CUDA kernel is more memory efficient, and both kernels are comparable in terms of speed. \ac{maybe add that our gloabl attention pattern unlike sparse transformers is end task motivated and the pretrained \model can easily replace existing pretrained LMs like RoBERTa}
+
+A few models tried tasks other than autoregressive language modeling,
+which is 
+a step forward because arguably focusing on 
+language modeling as the primary evaluation
+has led to the development of models with limited applicability.  BP-Transformer~\cite{BPTransformer} evaluated on 
+machine translation (MT), but didn't explore the pretrain-finetune setting.
+Blockwise attention~\cite{blockbert} pretrained their models and evaluated 
+on question answering (QA). However, the evaluation is 
+limited as it doesn't include language modeling, and the QA datasets
+are of relatively short documents,\footnote{
+SQuAD contexts typically fit within the 512 limit, 
+and MRQA is constructed by dropping long-document examples. 
+%This is the reason we evaluate on the full vesrion of TriviaQA and HotPotQA.
+} therefore the effectiveness of this model on long document tasks remains unexplored.
+% \ib{do we need to mention that this is why they have positive results without our global attention?}
+% \matt{I'd leave this out, it's speculation and can do more harm then good}
+
+\paragraph{Task-specific Models for Long Documents}
+Many task-specific approaches have been developed to 
+workaround the 512 limit of pretrained transformer models like BERT.
+The simplest approach just truncates the document, commonly used for classification~\cite{truncateimdb}. 
+Another approach chunks the document into chunks of 
+length 512 (could be overlapping), processes each chunk separately, then combines the activations with a task specific model \cite{joshi-etal-2019-bert}.
+A third approach popular for multihop and open domain QA tasks uses a two-stage model where the first stage retrieves relevant documents that are passed onto the second stage for answer extraction \cite{Clark2017SimpleAE,Chen2017ReadingWT}.
+All of these approaches suffer from information loss due to truncation or cascading errors from the two stage approach.
+%using a two-stage system; the first stage picks the relevant information
+%from the document, and the second stage performs the task considering only the extracted information.
+%\citet{Clark2017SimpleAE} applied this for TriviaQA where an IR system identifies relevant paragraphs, then each paragraph is encoded separately. Similarly for HotpotQA, \citet{Tu2019SelectAA} selects relevant sentences, concatenate them, then encode them using BERT.
+%In contrast, our pretrained \model is much easier to use for downstream tasks as it can process the whole document at one. 
+In contrast, \model can process long sequences without truncating or chunking, allowing us to adopt a much simpler approach that concatenates the available context and processes it in a single pass. 
+
+A few contemporaneous works\footnote{All were published on arXiv after Longformer.} have explored similar ideas to Longformer using local + global attention in Transformers, and pre-training it for long document natural language tasks. In particular, ETC \cite{ainslie-etal-2020-etc} uses a similar local + global attention instead of full self-attention to scale Transformers to long documents. Different from Longformer, ETC uses relative position embeddings (which we only used for the Autoregressive LM setting), introduces an additional training objective (CPC loss) for pre-training, and configures global attention in a slightly different way. It shows strong results on several tasks including reading comprehension and classification.
+GMAT \cite{Gupta2020GMATGM} uses a similar idea of few global locations in the input serving as global memory. BigBird \cite{Zaheer2020BigBT} is an extension over ETC with evaluation on additional tasks, including summarization. Importantly, through theoretical analysis, BigBird shows that sparse Transformers are universal approximators of sequence functions and preserve these properties of the full self-attention.
+

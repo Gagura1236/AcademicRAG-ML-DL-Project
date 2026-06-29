@@ -1,0 +1,314 @@
+\begin{thebibliography}{52}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Berg et~al.(2014)Berg, Liu, Woo~Lee, Alexander, Jacobs, and
+  Belhumeur]{birdsnap}
+Berg, T., Liu, J., Woo~Lee, S., Alexander, M.~L., Jacobs, D.~W., and Belhumeur,
+  P.~N.
+\newblock Birdsnap: Large-scale fine-grained visual categorization of birds.
+\newblock \emph{CVPR}, pp.\  2011--2018, 2014.
+
+\bibitem[Bossard et~al.(2014)Bossard, Guillaumin, and Van~Gool]{food101}
+Bossard, L., Guillaumin, M., and Van~Gool, L.
+\newblock Food-101--mining discriminative components with random forests.
+\newblock \emph{ECCV}, pp.\  446--461, 2014.
+
+\bibitem[Cai et~al.(2019)Cai, Zhu, and Han]{proxyless18}
+Cai, H., Zhu, L., and Han, S.
+\newblock Proxylessnas: Direct neural architecture search on target task and
+  hardware.
+\newblock \emph{ICLR}, 2019.
+
+\bibitem[Chollet(2017)]{xception17}
+Chollet, F.
+\newblock Xception: Deep learning with depthwise separable convolutions.
+\newblock \emph{CVPR}, pp.\  1610--02357, 2017.
+
+\bibitem[Cubuk et~al.(2019)Cubuk, Zoph, Mane, Vasudevan, and Le]{autoaugment18}
+Cubuk, E.~D., Zoph, B., Mane, D., Vasudevan, V., and Le, Q.~V.
+\newblock Autoaugment: Learning augmentation policies from data.
+\newblock \emph{CVPR}, 2019.
+
+\bibitem[Elfwing et~al.(2018)Elfwing, Uchibe, and Doya]{swishsil18}
+Elfwing, S., Uchibe, E., and Doya, K.
+\newblock Sigmoid-weighted linear units for neural network function
+  approximation in reinforcement learning.
+\newblock \emph{Neural Networks}, 107:\penalty0 3--11, 2018.
+
+\bibitem[Gholami et~al.(2018)Gholami, Kwon, Wu, Tai, Yue, Jin, Zhao, and
+  Keutzer]{squeezeNext18}
+Gholami, A., Kwon, K., Wu, B., Tai, Z., Yue, X., Jin, P., Zhao, S., and
+  Keutzer, K.
+\newblock Squeezenext: Hardware-aware neural network design.
+\newblock \emph{ECV Workshop at CVPR'18}, 2018.
+
+\bibitem[Han et~al.(2016)Han, Mao, and Dally]{quantize15}
+Han, S., Mao, H., and Dally, W.~J.
+\newblock Deep compression: Compressing deep neural networks with pruning,
+  trained quantization and huffman coding.
+\newblock \emph{ICLR}, 2016.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{resnet16}
+He, K., Zhang, X., Ren, S., and Sun, J.
+\newblock Deep residual learning for image recognition.
+\newblock \emph{CVPR}, pp.\  770--778, 2016.
+
+\bibitem[He et~al.(2017)He, Gkioxari, Doll{\'a}r, and Girshick]{maskrcnn17}
+He, K., Gkioxari, G., Doll{\'a}r, P., and Girshick, R.
+\newblock Mask r-cnn.
+\newblock \emph{ICCV}, pp.\  2980--2988, 2017.
+
+\bibitem[He et~al.(2018)He, Lin, Liu, Wang, Li, and Han]{amc18}
+He, Y., Lin, J., Liu, Z., Wang, H., Li, L.-J., and Han, S.
+\newblock Amc: Automl for model compression and acceleration on mobile devices.
+\newblock \emph{ECCV}, 2018.
+
+\bibitem[Hendrycks \& Gimpel(2016)Hendrycks and Gimpel]{gelu16}
+Hendrycks, D. and Gimpel, K.
+\newblock Gaussian error linear units (gelus).
+\newblock \emph{arXiv preprint arXiv:1606.08415}, 2016.
+
+\bibitem[Howard et~al.(2017)Howard, Zhu, Chen, Kalenichenko, Wang, Weyand,
+  Andreetto, and Adam]{mobilenetv117}
+Howard, A.~G., Zhu, M., Chen, B., Kalenichenko, D., Wang, W., Weyand, T.,
+  Andreetto, M., and Adam, H.
+\newblock Mobilenets: Efficient convolutional neural networks for mobile vision
+  applications.
+\newblock \emph{arXiv preprint arXiv:1704.04861}, 2017.
+
+\bibitem[Hu et~al.(2018)Hu, Shen, and Sun]{senet18}
+Hu, J., Shen, L., and Sun, G.
+\newblock Squeeze-and-excitation networks.
+\newblock \emph{CVPR}, 2018.
+
+\bibitem[Huang et~al.(2016)Huang, Sun, Liu, Sedra, and Weinberger]{droppath16}
+Huang, G., Sun, Y., Liu, Z., Sedra, D., and Weinberger, K.~Q.
+\newblock Deep networks with stochastic depth.
+\newblock \emph{ECCV}, pp.\  646--661, 2016.
+
+\bibitem[Huang et~al.(2017)Huang, Liu, Van Der~Maaten, and
+  Weinberger]{densenet17}
+Huang, G., Liu, Z., Van Der~Maaten, L., and Weinberger, K.~Q.
+\newblock Densely connected convolutional networks.
+\newblock \emph{CVPR}, 2017.
+
+\bibitem[Huang et~al.(2018)Huang, Cheng, Chen, Lee, Ngiam, Le, and
+  Chen]{gpipe18}
+Huang, Y., Cheng, Y., Chen, D., Lee, H., Ngiam, J., Le, Q.~V., and Chen, Z.
+\newblock Gpipe: Efficient training of giant neural networks using pipeline
+  parallelism.
+\newblock \emph{arXiv preprint arXiv:1808.07233}, 2018.
+
+\bibitem[Iandola et~al.(2016)Iandola, Han, Moskewicz, Ashraf, Dally, and
+  Keutzer]{squeezenet16}
+Iandola, F.~N., Han, S., Moskewicz, M.~W., Ashraf, K., Dally, W.~J., and
+  Keutzer, K.
+\newblock Squeezenet: Alexnet-level accuracy with 50x fewer parameters and
+  $<$0.5 mb model size.
+\newblock \emph{arXiv preprint arXiv:1602.07360}, 2016.
+
+\bibitem[Ioffe \& Szegedy(2015)Ioffe and Szegedy]{batchnorm15}
+Ioffe, S. and Szegedy, C.
+\newblock Batch normalization: Accelerating deep network training by reducing
+  internal covariate shift.
+\newblock \emph{ICML}, pp.\  448--456, 2015.
+
+\bibitem[Kornblith et~al.(2019)Kornblith, Shlens, and Le]{imagenettransfer18}
+Kornblith, S., Shlens, J., and Le, Q.~V.
+\newblock Do better imagenet models transfer better?
+\newblock \emph{CVPR}, 2019.
+
+\bibitem[Krause et~al.(2013)Krause, Deng, Stark, and Fei-Fei]{stanfordcars}
+Krause, J., Deng, J., Stark, M., and Fei-Fei, L.
+\newblock Collecting a large-scale dataset of fine-grained cars.
+\newblock \emph{Second Workshop on Fine-Grained Visual Categorizatio}, 2013.
+
+\bibitem[Krizhevsky \& Hinton(2009)Krizhevsky and Hinton]{cifar}
+Krizhevsky, A. and Hinton, G.
+\newblock Learning multiple layers of features from tiny images.
+\newblock \emph{Technical Report}, 2009.
+
+\bibitem[Krizhevsky et~al.(2012)Krizhevsky, Sutskever, and Hinton]{alexnet12}
+Krizhevsky, A., Sutskever, I., and Hinton, G.~E.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock In \emph{NIPS}, pp.\  1097--1105, 2012.
+
+\bibitem[Lin \& Jegelka(2018)Lin and Jegelka]{expressoneneuron18}
+Lin, H. and Jegelka, S.
+\newblock Resnet with one-neuron hidden layers is a universal approximator.
+\newblock \emph{NeurIPS}, pp.\  6172--6181, 2018.
+
+\bibitem[Lin et~al.(2017)Lin, Doll{\'a}r, Girshick, He, Hariharan, and
+  Belongie]{retinanet17}
+Lin, T.-Y., Doll{\'a}r, P., Girshick, R., He, K., Hariharan, B., and Belongie,
+  S.
+\newblock Feature pyramid networks for object detection.
+\newblock \emph{CVPR}, 2017.
+
+\bibitem[Liu et~al.(2018)Liu, Zoph, Shlens, Hua, Li, Fei-Fei, Yuille, Huang,
+  and Murphy]{pnas18}
+Liu, C., Zoph, B., Shlens, J., Hua, W., Li, L.-J., Fei-Fei, L., Yuille, A.,
+  Huang, J., and Murphy, K.
+\newblock Progressive neural architecture search.
+\newblock \emph{ECCV}, 2018.
+
+\bibitem[Lu et~al.(2018)Lu, Pu, Wang, Hu, and Wang]{expresswidth18}
+Lu, Z., Pu, H., Wang, F., Hu, Z., and Wang, L.
+\newblock The expressive power of neural networks: A view from the width.
+\newblock \emph{NeurIPS}, 2018.
+
+\bibitem[Ma et~al.(2018)Ma, Zhang, Zheng, and Sun]{shufflenetv218}
+Ma, N., Zhang, X., Zheng, H.-T., and Sun, J.
+\newblock Shufflenet v2: Practical guidelines for efficient cnn architecture
+  design.
+\newblock \emph{ECCV}, 2018.
+
+\bibitem[Mahajan et~al.(2018)Mahajan, Girshick, Ramanathan, He, Paluri, Li,
+  Bharambe, and van~der Maaten]{imagenetinstagram18}
+Mahajan, D., Girshick, R., Ramanathan, V., He, K., Paluri, M., Li, Y.,
+  Bharambe, A., and van~der Maaten, L.
+\newblock Exploring the limits of weakly supervised pretraining.
+\newblock \emph{arXiv preprint arXiv:1805.00932}, 2018.
+
+\bibitem[Maji et~al.(2013)Maji, Rahtu, Kannala, Blaschko, and
+  Vedaldi]{aircraft}
+Maji, S., Rahtu, E., Kannala, J., Blaschko, M., and Vedaldi, A.
+\newblock Fine-grained visual classification of aircraft.
+\newblock \emph{arXiv preprint arXiv:1306.5151}, 2013.
+
+\bibitem[Ngiam et~al.(2018)Ngiam, Peng, Vasudevan, Kornblith, Le, and
+  Pang]{domainjft18}
+Ngiam, J., Peng, D., Vasudevan, V., Kornblith, S., Le, Q.~V., and Pang, R.
+\newblock Domain adaptive transfer learning with specialist models.
+\newblock \emph{arXiv preprint arXiv:1811.07056}, 2018.
+
+\bibitem[Nilsback \& Zisserman(2008)Nilsback and Zisserman]{flowers}
+Nilsback, M.-E. and Zisserman, A.
+\newblock Automated flower classification over a large number of classes.
+\newblock \emph{ICVGIP}, pp.\  722--729, 2008.
+
+\bibitem[Parkhi et~al.(2012)Parkhi, Vedaldi, Zisserman, and
+  Jawahar]{oxfordpets}
+Parkhi, O.~M., Vedaldi, A., Zisserman, A., and Jawahar, C.
+\newblock Cats and dogs.
+\newblock \emph{CVPR}, pp.\  3498--3505, 2012.
+
+\bibitem[Raghu et~al.(2017)Raghu, Poole, Kleinberg, Ganguli, and
+  Sohl-Dickstein]{expressdepth17}
+Raghu, M., Poole, B., Kleinberg, J., Ganguli, S., and Sohl-Dickstein, J.
+\newblock On the expressive power of deep neural networks.
+\newblock \emph{ICML}, 2017.
+
+\bibitem[Ramachandran et~al.(2018)Ramachandran, Zoph, and Le]{swish18}
+Ramachandran, P., Zoph, B., and Le, Q.~V.
+\newblock Searching for activation functions.
+\newblock \emph{arXiv preprint arXiv:1710.05941}, 2018.
+
+\bibitem[Real et~al.(2019)Real, Aggarwal, Huang, and Le]{amoebanets18}
+Real, E., Aggarwal, A., Huang, Y., and Le, Q.~V.
+\newblock Regularized evolution for image classifier architecture search.
+\newblock \emph{AAAI}, 2019.
+
+\bibitem[Russakovsky et~al.(2015)Russakovsky, Deng, Su, Krause, Satheesh, Ma,
+  Huang, Karpathy, Khosla, Bernstein, et~al.]{imagenet15}
+Russakovsky, O., Deng, J., Su, H., Krause, J., Satheesh, S., Ma, S., Huang, Z.,
+  Karpathy, A., Khosla, A., Bernstein, M., et~al.
+\newblock Imagenet large scale visual recognition challenge.
+\newblock \emph{International Journal of Computer Vision}, 115\penalty0
+  (3):\penalty0 211--252, 2015.
+
+\bibitem[Sandler et~al.(2018)Sandler, Howard, Zhu, Zhmoginov, and
+  Chen]{mobilenetv218}
+Sandler, M., Howard, A., Zhu, M., Zhmoginov, A., and Chen, L.-C.
+\newblock Mobilenetv2: Inverted residuals and linear bottlenecks.
+\newblock \emph{CVPR}, 2018.
+
+\bibitem[Sharir \& Shashua(2018)Sharir and Shashua]{expressoverlap18}
+Sharir, O. and Shashua, A.
+\newblock On the expressive power of overlapping architectures of deep
+  learning.
+\newblock \emph{ICLR}, 2018.
+
+\bibitem[Srivastava et~al.(2014)Srivastava, Hinton, Krizhevsky, Sutskever, and
+  Salakhutdinov]{dropout14}
+Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., and Salakhutdinov,
+  R.
+\newblock Dropout: a simple way to prevent neural networks from overfitting.
+\newblock \emph{The Journal of Machine Learning Research}, 15\penalty0
+  (1):\penalty0 1929--1958, 2014.
+
+\bibitem[Szegedy et~al.(2015)Szegedy, Liu, Jia, Sermanet, Reed, Anguelov,
+  Erhan, Vanhoucke, and Rabinovich]{googlenet14}
+Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Erhan, D.,
+  Vanhoucke, V., and Rabinovich, A.
+\newblock Going deeper with convolutions.
+\newblock \emph{CVPR}, pp.\  1--9, 2015.
+
+\bibitem[Szegedy et~al.(2016)Szegedy, Vanhoucke, Ioffe, Shlens, and
+  Wojna]{inceptionv316}
+Szegedy, C., Vanhoucke, V., Ioffe, S., Shlens, J., and Wojna, Z.
+\newblock Rethinking the inception architecture for computer vision.
+\newblock \emph{CVPR}, pp.\  2818--2826, 2016.
+
+\bibitem[Szegedy et~al.(2017)Szegedy, Ioffe, Vanhoucke, and
+  Alemi]{inceptionv417}
+Szegedy, C., Ioffe, S., Vanhoucke, V., and Alemi, A.~A.
+\newblock Inception-v4, inception-resnet and the impact of residual connections
+  on learning.
+\newblock \emph{AAAI}, 4:\penalty0 12, 2017.
+
+\bibitem[Tan et~al.(2019)Tan, Chen, Pang, Vasudevan, Sandler, Howard, and
+  Le]{mnas18}
+Tan, M., Chen, B., Pang, R., Vasudevan, V., Sandler, M., Howard, A., and Le,
+  Q.~V.
+\newblock {MnasNet}: Platform-aware neural architecture search for mobile.
+\newblock \emph{CVPR}, 2019.
+
+\bibitem[Xie et~al.(2017)Xie, Girshick, Doll{\'a}r, Tu, and He]{resnext17}
+Xie, S., Girshick, R., Doll{\'a}r, P., Tu, Z., and He, K.
+\newblock Aggregated residual transformations for deep neural networks.
+\newblock \emph{CVPR}, pp.\  5987--5995, 2017.
+
+\bibitem[Yang et~al.(2018)Yang, Howard, Chen, Zhang, Go, Sze, and
+  Adam]{netadapt18}
+Yang, T.-J., Howard, A., Chen, B., Zhang, X., Go, A., Sze, V., and Adam, H.
+\newblock Netadapt: Platform-aware neural network adaptation for mobile
+  applications.
+\newblock \emph{ECCV}, 2018.
+
+\bibitem[Zagoruyko \& Komodakis(2016)Zagoruyko and Komodakis]{wideresnet16}
+Zagoruyko, S. and Komodakis, N.
+\newblock Wide residual networks.
+\newblock \emph{BMVC}, 2016.
+
+\bibitem[Zhang et~al.(2017)Zhang, Li, Loy, and Lin]{polynet17}
+Zhang, X., Li, Z., Loy, C.~C., and Lin, D.
+\newblock Polynet: A pursuit of structural diversity in very deep networks.
+\newblock \emph{CVPR}, pp.\  3900--3908, 2017.
+
+\bibitem[Zhang et~al.(2018)Zhang, Zhou, Lin, and Sun]{shufflenet17}
+Zhang, X., Zhou, X., Lin, M., and Sun, J.
+\newblock Shufflenet: An extremely efficient convolutional neural network for
+  mobile devices.
+\newblock \emph{CVPR}, 2018.
+
+\bibitem[Zhou et~al.(2016)Zhou, Khosla, Lapedriza, Oliva, and Torralba]{cam16}
+Zhou, B., Khosla, A., Lapedriza, A., Oliva, A., and Torralba, A.
+\newblock Learning deep features for discriminative localization.
+\newblock \emph{CVPR}, pp.\  2921--2929, 2016.
+
+\bibitem[Zoph \& Le(2017)Zoph and Le]{nas_cifar17}
+Zoph, B. and Le, Q.~V.
+\newblock Neural architecture search with reinforcement learning.
+\newblock \emph{ICLR}, 2017.
+
+\bibitem[Zoph et~al.(2018)Zoph, Vasudevan, Shlens, and Le]{nas_imagenet18}
+Zoph, B., Vasudevan, V., Shlens, J., and Le, Q.~V.
+\newblock Learning transferable architectures for scalable image recognition.
+\newblock \emph{CVPR}, 2018.
+
+\end{thebibliography}

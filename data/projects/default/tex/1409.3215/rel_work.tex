@@ -1,0 +1,46 @@
+\section{Related work}
+\label{sec:rel_work}
+
+There is a large body of work on applications of neural networks to
+machine translation. So far, the simplest and most effective way of
+applying an RNN-Language Model (RNNLM) \cite{mikolov2010recurrent} or
+a Feedforward Neural Network Language Model (NNLM) \cite{bengio} to an
+MT task is by rescoring the n-best lists of a strong MT baseline
+\cite{mikolov2012}, which reliably improves translation quality.
+
+More recently, researchers have begun to look into ways of including
+information about the source language into the NNLM.  Examples of this
+work include Auli et al.~\cite{auli13}, who combine an NNLM with a
+topic model of the input sentence, which improves rescoring
+performance.  Devlin et al.~\cite{devlin14} followed a similar
+approach, but they incorporated their NNLM into the decoder of an MT
+system and used the decoder's alignment information to provide the
+NNLM with the most useful words in the input sentence.  Their approach
+was highly successful and it achieved large improvements over their
+baseline.
+
+Our work is closely related to Kalchbrenner and Blunsom \cite{kal13},
+who were the first to map the input sentence into a vector and then
+back to a sentence, although they map sentences to vectors using
+convolutional neural networks, which lose the ordering of the words.
+Similarly to this work, Cho et al.~\cite{cho14} used an LSTM-like RNN
+architecture to map sentences into vectors and back, although their
+primary focus was on integrating their neural network into an SMT
+system.  Bahdanau et al.~\cite{bog14} also attempted direct
+translations with a neural network that used an attention mechanism to
+overcome the poor performance on long sentences experienced by Cho et
+al.~\cite{cho14} and achieved encouraging results.  Likewise,
+Pouget-Abadie et al.~\cite{curse} attempted to address the memory
+problem of Cho et al.~\cite{cho14} by translating pieces of the source
+sentence in way that produces smooth translations, which is similar to
+a phrase-based approach.  We suspect that they could achieve similar
+improvements by simply training their networks on reversed source
+sentences.
+
+
+End-to-end training is also the focus of Hermann et
+al.~\cite{hermann14}, whose model represents the inputs and outputs by
+feedforward networks, and map them to similar points in
+space. However, their approach cannot generate translations directly:
+to get a translation, they need to do a look up for closest vector in
+the pre-computed database of sentences, or to rescore a sentence.

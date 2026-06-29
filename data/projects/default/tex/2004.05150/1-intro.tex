@@ -1,0 +1,132 @@
+\section{Introduction}
+
+%\ib{where to mention that our procedure can be easily applied to any pretrained transformoer model to get a long-version of it?}\matt{We have this in the abstract and end of 3rd paragraph in intro}
+
+% \ac{We need to improve motivation that why this model is intuitively reasonable, that is why we don't need to attend to all tokens at all layers. Perhaps mentioning something about importance of immediate local context and then having higher level representations using multiple layers where upper layers have access to the entire document. }
+
+%In recent years, models based on Transformers \cite{Vaswani2017AttentionIA} have achieved state-of-the-art results in a wide range of Natural Language tasks including language modeling \cite{adaptivespan,transformerxl,compressive}, text generation \cite{gpt2}, sentence-level tasks and question answering \cite{bert,roberta}. 
+Transformers~\cite{Vaswani2017AttentionIA} have achieved state-of-the-art results in a wide range of natural language tasks including generative language modeling~\cite{transformerxl,gpt2} and discriminative language understanding~\cite{bert}. 
+This success is partly due to the self-attention component which enables the network to capture contextual information from the entire sequence. While powerful, the memory and computational requirements of self-attention grow quadratically with sequence length, making it infeasible (or very expensive) to process long sequences.% on current hardware.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=1\linewidth]{fig/fig-speed-mem-new}
+    \caption{
+    % Runtime and memory of full self-attention 
+    % and different implementations of our self-attention.
+Runtime and memory of full self-attention 
+and different implementations of \model's self-attention; \texttt{\model-loop} is non-vectorized, \texttt{\model-chunk} is vectorized, and \texttt{\model-cuda} is a custom cuda kernel implementations.  
+\model's memory usage scales linearly with the sequence length, unlike the full self-attention mechanism that runs out of memory for long sequences on current GPUs. Different implementations vary in speed, 
+with the vectorized \texttt{\model-chunk} being the fastest. More details are in section~\ref{sec:tvm}.
+%     \texttt{\model-chunks} only supports the non-dilated case. 
+    }
+    \label{fig:tvm}
+\end{figure} 
+
+
+To address this limitation, we present \model, a modified Transformer architecture
+with a self-attention operation that scales linearly with the sequence length, making it versatile for processing long documents (Fig~\ref{fig:tvm}).
+This is an advantage for natural language tasks such as long document classification, question answering (QA), and coreference resolution, where existing approaches partition or shorten the long context into smaller sequences that fall within the typical 512 token limit of BERT-style pretrained models. Such partitioning could potentially result in loss of important cross-partition information, and to mitigate this problem, existing methods often rely on complex architectures to address such interactions. On the other hand, our proposed \model is able to build contextual representations of the entire context using multiple layers of attention, reducing the need for task-specific architectures. 
+
+Recent work has addressed the computational inefficiency of Transformers on long sequences (see Tab.~\ref{tab:related}).
+However, they primarily focus on autoregressive language modeling (LM), 
+while the application of long document transformers to document-level NLP tasks in the transfer learning setting \cite{NIPS2015_5949,Peters2018DeepCW,Howard2018UniversalLM,bert} has remained largely unexplored.  We address this gap and show that \model's attention mechanism can act as a drop-in replacement for the self-attention mechanism in pretrained Transformers, and leads to gains across a suite of document NLP tasks.
+% \ib{last sentence is a bit confusing}
+% \matt{tried to address this, is it better?}
+
+%\model works by replacing the full all-pair self-attention in Transformer with the combination of a local context self-attention and an end task motivated global attention.
+\model's attention mechanism is a combination of a windowed local-context self-attention and an end task motivated global attention that encodes inductive bias about the task.
+Through ablations and controlled trials we show both attention types are essential -- the local attention is primarily used to build contextual representations, while the global attention allows \model to build full sequence representations for prediction.
+
+%VERSION 1:
+
+%Considerable number of recent works have attempted addressing the computational efficiency problem in Transformers (see Table \ref{tab:related}). However, we are the first to make use of sparse attention patterns that are versatile, motivated by end tasks, and can be used in both autoregressive language modeling and downstream natural language tasks. Our \model, unlike existing work, can easily replace pretrained Transformer models with full self-attention like RoBERTa \cite{roberta} and result in gains in long context representation learning. 
+
+
+%VERSION 2: 
+
+%Existing work on long-sequence transformers \cite{sparseOpenai,transformerxl,compressive,reformer} approach the problem using methods such as sparse attention patterns, compressing the memory, and locality sensitive hashing. However, they primarily focus on autoregressive language modeling; application of long document transformers on actual document-level natural language tasks in the  pretraining-transfer learning paradigm \cite{NIPS2015_5949,Peters2018DeepCW,Howard2018UniversalLM,Radford2018,bert} has remained largely unexplored. 
+
+%\ib{should we drop this paragraph now that related work section is here?}
+
+%\ib{Should we write a sentence around ``we are the first to do so and so `` ?} \ac{added another version to address these comments. }
+
+
+% Transformer-XL~\cite{transformerxl} and Compressive Transformers~\cite{compressive} adopt recurrence to preserve past activations in memory. Their approaches are, however, left-to-right, making them less suitable for masked language modeling and transfer learning \cite{bert}. Adaptive Span \cite{adaptivespan} learns optimal attention window spans in Transformers but their model is based on the Transformer-XL with similar limitations. More close to our work is Sparse Transformers \cite{sparseOpenai}, where sparse attention patterns are used with customized GPU kernels \cite{blocksparse} to generate long sequences. However, such kernels work on block-sparse operations (e.g., 8x8 blocks) and are library specific (at the time of writing they only support specific versions of Tensorflow). More importantly, that all of above-mentioned prior work in long document modeling do not investigate the pretrain-finetune transfer learning. \matt{This paragraph is good, but should be shortened. It feels too much like a related work section. we just want to recognize the relevant papers here so we can discuss differences from them in the Model section.}
+
+%Our proposed \model decomposes the full self-attention matrix into a set of attention patterns consisting of windowed local-context attention, dilated attention and a an end-task motivated global attention. We further provide highly optimized GPU kernels to support efficient  implementation of these customized attention patterns.
+%As opposed to \citet{sparseOpenai}, \model includes additional attention patterns that are useful for document-level natural language tasks. Further, through pretraining on a large corpus of long documents, \model is a drop-in replacement for existing state-of-the-art pretrained language models such as RoBERTa \cite{roberta}, replacing its  full self-attention pattern and allows it to scale to long documents with tens of thousands of tokens.
+
+% includes two additional attention patterns and furthermore is focused on windowed attention pattern bears similarities with the sparse attention patterns of \citet{sparseOpenai}, however \model includes two additional attention patterns, a dilated attention pattern for autoregressive language modeling and a global  contrast to  and global attention to custom locations in the input. These attention patterns are aimed at capturing contextual information across the sequence while allowing the computation to scale linearly with the sequence length. 
+% While existing standard deep learning libraries do not support efficient implementation of this type of customized multiplication, we provide our highly-optimized GPU kernels to support these custom self-attention operation. 
+% Compared with existing blocksparse kernels \cite{sparseOpenai}, our kernels are more versatile and easy to use. 
+
+% With a typical deep network consisting of multiple layers \model's receptive field spans to tens of thousands of tokens which allows top layers to form a higher-level representation of the entire input useful for the task, without the need for the expensive full-context attention.
+
+% Such form of customized self-attention is challenging to efficiently implement; existing libraries such as Tensorflow and PyTorch do not support this custom matrix multiplication operation. 
+% To address this challenge, we use TVM\footnote{https://github.com/apache/incubator-tvm}, an open compiler stack for specialized accelerators (e.g., GPUs) to implement efficient GPU kernels highly optimized for this operation. \matt{This feels like too much detail for the intro, we can remove some of it as it's covered later.  Also the dilation piece should be moved to the next paragraph as it's only relevant for character LM}
+% Compared with blocksparse kernels \cite{sparseOpenai}, these kernels are more versatile and easy to use. With a typical deep network consisting of multiple layers and through our newly proposed dilated self-attention patterns, \model's receptive field spans to tens of thousands of tokens which allows top layers to form a higher-level representation of the entire input useful for the task, without the need for the expensive full-context attention.
+
+%Many Natural Language tasks such as document-level classification, question answering and coreference resolution require processing documents that are longer than the input capacity of existing pretrained language models such as BERT \cite{bert}\footnote{The input size limit for existing pretrained BERT and RoBERTa models is 512 Wordpieces.}. \mp{Add a sentence here about multihop/open domain QA that makes an assumption the model can't process long sequences.} The majority of existing successful approaches for such problems fall into the general category of breaking/truncating the long input sequence into smaller chunks of interest, processing the chunks and then aggregating information across the chunks. \mp{add some citations here - spanbert, some recent multihop QA papers} However, these approaches are bottlenecked by the context length, limiting their representational power.  In contrast, we show that removing the bottleneck and processing contexts of thousands of tokens leads to gains for multi-hop QA and coreference resolution.
+
+% \matt{Here we can discuss more details about the end tasks and task specific attention. One paragraph for character language modeling that discusses dilation.  Then one paragraph that discusses transfer learning and promotes our new form of asymmetric attention with separate weight matrices that combines local and global attention.}
+
+We first evaluate \model on autoregressive character-level language modeling using a combination of windowed and a new dilated attention pattern, allowing the model to process sequences of up to 32K characters on modern GPUs. We achieve state-of-the-art results on \texttt{text8} and \texttt{enwik8} benchmark datasets, demonstrating the effectiveness of \model in long document modeling. 
+
+% Motivated by success of the pretraining-transfer learning approach \cite{NIPS2015_5949,Peters2018DeepCW,Howard2018UniversalLM,Radford2018,bert}, 
+%To evaluate how our proposed \model can replace the full-self attention operation of existing pretrained models, we pretrain it with the masked language modeling (MLM) objective, continuing from the RoBERTa \cite{roberta} released checkpoint and apply it to downstream language tasks through fine-tuning. We demonstrate that \model consistently outperforms RoBERTa on a wide range of document-level natural language tasks including text classification, QA and coreference resolution and even achieves state-of-the-art results on two of these datasets.
+
+Then, to evaluate \model's ability to replace the full self-attention operation of existing pretrained models, we pretrain
+it with the masked language modeling (MLM) objective, continuing from the RoBERTa \cite{roberta} released checkpoint.
+After pretraining, we apply it to downstream language tasks through finetuning and demonstrate that \model consistently outperforms RoBERTa on a wide range of document-level natural language tasks including text classification, QA, and coreference resolution, achieving state-of-the-art results on two of these datasets.
+
+We finally introduce a variant of Longformer which instead of an encoder-only Transformer architecture, it follows an encoder-decoder architecture similar to the original Transformer model \cite{Vaswani2017AttentionIA}, and it is intended for sequence-to-sequence (seq2seq) learning \cite{Sutskever2014SequenceTS}. We call this model Longformer-Encoder-Decoder (LED) that uses Longformer's efficient attention pattern on the encoder network, allowing it to address long document seq2seq tasks such as summarization. We demonstrate the effectiveness of LED on the arXiv summarization dataset~\cite{arxiv2018}.
+
+% \ib{The intro doesn't mention global attention anymore. Did we delete the sentence about the combination of windows and global attention that is motivated by the task?}
+% \matt{Added third paragraph in intro that introduces this idea}
+
+%Our contributions are summarized below: 
+%(1) we propose \model, a new transformer model for processing long documents that replaces the full self-attention operation of transformers efficient attention patterns.~\ib{it is just one pattern}
+%(2) We achieve state-of-the-art results on autoregressive long sequence character-level language modeling. 
+%(3) We pretrain \model on a large corpus of long documents and release a model that is equivalent to RoBERTa but replaces the full-attention operation with our proposed attention patterns and allowing it to scale to documents thousands of tokens long. 
+%(4) We consistently outperform RoBERTa across a wide range of long document tasks and achieve state-of-the-art results on two QA datasets.
+
+
+% For fine-tuning, \model uses the local self-attention patterns combined with an additional global attention to task specific input locations of interest. 
+% This allows \model to directly access all locations in the entire input sequence to form a global representation for prediction (e.g., \texttt{[CLS]} token for text classification).
+%We use symmetric attention between input locations and these global locations with addition of separate weight matrices to maximize model's ability to use global information across the sequence. The \model  is able to process input sequences of thousands of tokens. \model outperforms RoBERTa on a wide range of document-level Natural Language tasks including text classification, multihop QA and coreference resolution.
+% In addition, all tokens are able to attend to the global representations and thereby form representations that combine both local and global context.
+% We introduce an additional set of projection matrices in the multiheaded attention operation for these global attentions, and show it is essential for improving performance.  
+
+
+% \ib{if we have space, a list of contributions will be good }
+% - Transfomer is cool\\
+% - We want to use it for document-level tasks like QA, summarization and coref. It will be handy compared to the current chunk/extract/combine hack 
+% (e.g. multihop QA). We might even do multi-document if the seqlen is long enough. 
+% - n2 self-attention is slow \\
+% - Prior work, like transformer-xl (and its successors) and sparseTransformer
+% evaluate mainly on autoregressive LM, 
+% but they don't actually work for the pretrain/finetune paradigm. \\
+% - Transformer-xl process the long sequence in chunks from left to right, 
+% making it limited to autoregressive models, and it is unusable for MLM. 
+% - sparseTransformer and reformer won't work for finetuning because they are missing a key component that we discuss later. 
+% - In this work, we propose \model, a transformer model that can process
+% long documents, and it is suitable for finetuning on downstream applications. We replace the 
+% n2 selfattention with a sliding window with dilation 
+% This form of self-attention allows for a huge receptive field while scaling linearly with the sequence length. The attention pattern also include 
+% global attention which is task specific, and it needs its own projection layers. 
+
+
+% Our contributions are summarized below:
+% \begin{itemize}[itemsep=0pt,parsep=0pt,leftmargin=8pt]
+%     \item We introduce \model, a modified Transformer model with capacity to process long documents via new factorized attention patterns that scale linearly with the sequence length.
+%         \item We achieve state-of-the-art result on character-level language modeling \texttt{enwik8} and \texttt{text8}.
+%     % \item We are the first to use TVM (Tensor Virtual Machine)]\footnote{\url{https://github.com/dmlc/tvm/}} for NLP applications. TVM can potentially be an enabler for many NLP applications that require operations that aren't supported in DL libraries. \ac{while interesting I'm not sure if being the first to use a library for nlp is a notable contribution, specially given that we have many contributions already}
+%      \item We release \pretrained, a \model augmented with a focused global attention and additional weight matrices pretrained on the Masked Language Modeling objective with input capacity of 16K Wordpieces (32x RoBERTa). 
+
+%     % Seqlen 23K at training and 32K at testing (2x and 3x that of prior work~\cite{reformer,sparseOpenai}
+   
+%     \item We demonstrate that \pretrained can achieve state-of-the-art on a range of document-level NLP tasks including classification, multihop QA and coreference resolution. 
+%     % In addition, it enables the application of pretrained transformers for document-level tasks without the chunk-extract-combine hack. You can rely on the   model to do this for you instead of designing it for each separate  task/dataset. 
+    
+% \end{itemize}

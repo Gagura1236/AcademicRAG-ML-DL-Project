@@ -1,0 +1,111 @@
+\section{Limitations} 
+\label{sec:apndx-limit}
+
+Finally, we show that sparse attention mechanisms can not universally replace dense attention mechanisms, i.e.~there is no free lunch.
+We demonstrate a natural task which can be solved by the full attention mechanism in $O(1)$-layers.
+However, under standard complexity theoretic assumptions, we show that this problem will require 
+$\tilde{\Omega}(n)$-layers for any sparse attention layers with $\tilde{O}(n)$ edges (not just \bigb).
+(We use the standard notation $\tilde{\Omega}(n)$  to hide the dependence on poly-logarithmic factors. )
+
+We consider the simple problem of finding the furthest vector for each vector 
+in the given sequence of length $n$ and dimension $d \in \Omega(\log^2n)$. The assumption on 
+the dimension is mild , as in many situations the dimension $d =768$ is actually comparable to 
+the number of $n$. 
+
+\begin{task}
+Given $n$ unit vectors $\{u_1,\dots,u_n\}$, each in $\R^d$ where $d=\Theta(\log^2n)$, 
+compute $f(u_1,\dots,u_n) \to (u_{1^*}, \dots, u_{n^*})$  where for a fixed $j \in [n]$, we define 
+$ j^* = \argmax_{k} \|u_k - u_j\|_2^2$.
+\end{task}
+% \mznote{The task definition doesn't compute. $j*$ definition seems to be stale}
+
+Finding vectors that are furthest apart boils down to minimizing inner product search 
+in case of unit vectors. For a full-attention mechanism with appropriate query and keys, 
+this task is very easy as we can evaluate all pair-wise inner products. 
+
+The impossibility for sparse-attention follows from hardness results stemming from  
+Orthogonal Vector Conjecture (OVC) \citep{abboud2015tight,abboud2014consequences,williams2005new,backurs2015edit}, which is a widely used assumption in fine-grained complexity. Informally, it states that 
+one cannot determine if the minimum inner product among $n$ Boolean vectors is $0$ in 
+subquadratic time.  
+\begin{conjecture}[Orthogonal Vectors Conjecture] \label{conj:ovc}
+For every $\epsilon>0$, there is a $c \geq 1$ such that given $n$ Boolean vectors in 
+$d$ dimension, cannot determine if there is a pair of orthogonal vectors in $O(n^{2-\epsilon})$
+time on instances with $d  \geq  c \log n$. 
+\end{conjecture}
+
+Using~\cref{conj:ovc}, we show a reduction to show that a 
+transformer $g \in \mathcal{T}_D^{H=O(d),m=O(d),q=O(d)}$ for any sparse directed graph $D$ 
+which completes Task $1$  must require a superlinear number of layers. 
+
+\begin{proposition}
+    There exists a single layer full-attention network $g\in\mathcal{T}^{H=1,m=2d,q=0}$ that can 
+    evaluate Task 1,  i.e. $g(u_1,...,u_n) = [u_{1^*},\dots, u_{n^*}]$, but for any sparse-attention network in $\mathcal{T}_D^{H=O(d),m=O(d),q=O(d)}$ with
+    graph $D$ having $\tilde{O}(n)$ edges (i.e.~inner product evaluations), would require $\tilde{\Omega}(n^{1-o(1)})$ layers.
+\end{proposition}
+\begin{proof}
+We will break this proof into two parts:
+\paragraph{Part 1: The full attention mechanism can solve the problem in $O(1)$ layer}
+We begin by providing an explicit construction of a single layer full self-attention that can evaluate Task 1.
+
+\textbf{Step 1} 
+We embed each $u_i$ in the input into $\R^{2d}$ as follows:
+\begin{equation}
+    x_i := E(u_i) = [u_i; 0]
+\end{equation}
+
+\textbf{Step 2}
+Construct query, key, value functions as follows:
+\begin{equation}
+\begin{aligned}
+    Q([a; b]) &= -a \\
+    K([a; b]) &= a \\
+    V([a; b]) &= [0; a] \\
+\end{aligned}
+\end{equation}
+
+Then $\mathrm{Attn}(Q(x_i), K(X), V(X) = [0; u_{\argmax_{j} \langle -u_i, u_j \rangle}] $. Then,
+\begin{equation}
+    a_i = \mathrm{Attn}(Q(x_i), K(X), V(X)) + x_i = [u_i; u_{\argmax_{j} \langle -u_i, u_j \rangle}] = [u_i; u_{i^*}]
+\end{equation}
+
+\textbf{Step 3} 
+Let $O(a_i) = 0$, then the output $z_i = [u_i; u_{i^*}]$ as desired.
+
+To complete the argument, observe that it now only takes $O(n)$ inner products to check
+if there is a pair of orthogonal vectors as we need only compare $\bkt{u_i}{u_{i^*}}$. 
+
+\paragraph{Part 2: Every Sparse Attention Mechanism will need $\tilde{\Omega}(n^{1-\epsilon})$ layers}
+    We prove by contradiction that it is impossible to solve Task 1 by any 
+    $g\in\mathcal{T}_D^{H=O(d),m=O(d),q=O(d)}$ sparse-attention graph $D$ with $\tilde{O}(n)$ edges.
+
+    Suppose we can solve Task 1 using a network $g\in\mathcal{T}_D^{H=O(d),m=O(d),q=O(d)}$ that has 
+    $l$ layers. Recall that all the computation we do in one layer is:
+    \begin{equation}
+    \begin{aligned}
+        a_i &= \Attn_D(Q(x_i), K(X_{N(i)}), V(X_{N(i)}) + x_i \\
+        x_i &= O(a_i) + a_i
+    \end{aligned}
+    \end{equation}
+    where $\mathrm{Attn}_D$ is defined in \cref{AT_app}.
+
+    Thus, total computation per layer is $\tilde{O}(nd^3)$ and consequently $\tilde{O}(nld^3)$ for the 
+    whole network consisting of $l$ layers.
+    
+    We can use the result of Task 1 to solve the orthogonal vector (OV) problem (defined 
+    in~\Cref{conj:ovc}) in linear time. So in total, we will be able to solve any instance of OV in $\tilde{O}(nld^3)$ time.
+    
+    Now if $l=O(n^{1-\epsilon})$ for any $\epsilon > 0$ and $d=\Theta(\log^2 n)$, then it 
+    appears that we are able to solve OV in $\tilde{O}(n^{2-\epsilon})$ which contradicts~\Cref{conj:ovc}.
+    Therefore, we need at least $\tilde{\Omega}(n^{1-o(1)})$ layers.
+\end{proof}
+
+
+
+%Note
+%\begin{equation}
+%\begin{aligned}
+%    j^* = \argmax_{k} \|u_k - u_j\|_2^2 
+%    = \argmax_{k} 2 - 2 \langle u_k, u_j \rangle
+%    = \argmax_{k} \langle -u_k, u_j \rangle
+%\end{aligned}
+%\end{equation}

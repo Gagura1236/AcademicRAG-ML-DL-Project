@@ -1,0 +1,316 @@
+\newcommand{\Gdpos}{\ensuremath{\mathbf{G}^{E}_{\delta}}}
+\newcommand{\FCDpos}{\ensuremath{\mathcal{F}^{E}_{CD}}}
+\newcommand{\tx}{\ensuremath{\tilde{x}}}
+\newcommand{\tl}{\ensuremath{\tilde{f}}}
+
+\section{Universal Approximators} \label{sec:apndx-universal}
+
+\subsection{Notation}
+\label{sec:apndx-enc-notation}
+We begin by setting up some notations following \citet{Perez19} to formally describe the complete architecture of Transformers. 
+A single layer of Transformer encoder is a parametric function $\Enc$ receiving a sequence $\mX = (\vx_1, ..., \vx_n)$ of vectors in $\R^d$ and returning a sequence $\mZ = (\vz_1, ..., \vz_n)$ of the same length.
+Each $\vz_i$ is a $d$ dimensional vector as well.
+We interchangeably treat the sequence $\mX$ as a matrix in $\R^{n\times d}$.
+$\Enc$ has two components: 
+%
+\begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item An attention mechanism $\Attn$ that takes in the sequence $\mX$ and returns sequence $(\va_1, ..., \va_n)$ of the same length and dimensionality; and 
+    \item A two layer fully connected network $O$ that takes in a vector in $\R^d$ and returns a vector in $\R^d$. 
+\end{enumerate}
+Then $i$-th output vector of $\Enc(\mX)$ is computed as follows:
+\begin{align}
+    \vz_i = O(\va_i) + \va_i \qquad\text{where}\qquad \va_i = \Attn(\mX)_i + \vx_i
+\end{align}
+%
+Now it remains to define $\Attn$ and $O$ which we do next.
+
+As described in~\Cref{sec:arch}, an attention mechanism is parameterized by three functions: $Q,K,V: \R^{d} \to \R^{m}$. 
+In this paper, we assume that they are simply matrix products: $Q(\vx) = \vx W_Q $, 
+$K(\vx) = \vx W_K $, and $V(\vx) = \vx W_V $, where $W_Q, W_K, W_V \in \R^{d \times m}$ and 
+$W_V\in \R^{d \times d}$.
+In reality a multi-headed attention is used, i.e. we have not only one,
+but $H$-sets of Query/Key/Value weight matrices, $W_Q^h, W_V^h, W_K^h \text{ for }h=1,...,H$.
+Thus, for a directed graph $D$ over $[n]$, the $i^\text{th}$ output vector of the generalized attention mechanism would be
+\begin{align}
+\Attn_D(\mX)_i &=  \sum_{h=1}^H \sigma \left((\vx_i W_Q^h) (\mX_{N(i)} W_K^h)^T  \right) \cdot (\mX_{N(i)} W_V^h ) \label{AT_app} \tag{AT}
+\end{align}
+where $N(i)$ denote the out-neighbors set of node $i$ in $D$.
+In other words, the set of arcs (directed edges) in $D$ represents the set of inner products that our attention mechanism will consider.
+Also recall that $\sigma$ is a scoring function such as softmax or hardmax. 
+
+
+Lastly, we define the output fully connected network as follows:
+\begin{align*}
+    O(\va_i) &= \relu \left(\va_i W_1 + b_1 \right)  W_2\cdot 
+                    + b_2 \label{FF} \tag{FF}
+\end{align*}
+Here $W_1 \in \R^{ d\times q }$, $W_2 \in \R^{q \times d}$, $b_1\in\R^p$, and $b_2\in\R^d$ are parameters of 
+output network $O$. 
+
+\textbf{Additional Notation} We introduce a few pieces of additional notation that will be useful. 
+Let $[a,b)_{\delta} = \{ a, a+\delta, \dots, a + \lfloor \frac{b-a}{\delta} \rfloor \cdot \delta \} $. Therefore,
+$[0,1)_{\delta} = \{ 0, \delta, 2\delta, \dots, (1-\delta)\}$. 
+We use $\mathbf{1} [ \mathcal{E}]$ to denote the indicator variable; it is $1$ if the event $\mathcal{E}$ occurs and $0$ otherwise. 
+
+\subsection{Proof}
+In this section, we will present the full proof of~\cref{thm:universal}. 
+The proof will contain three parts. 
+The first and the third part will largely follow standard techniques. The main innovation lies is in the second part. 
+
+
+\subsubsection{Approximate \texorpdfstring{$\mathcal{F}_{CD}$}{Fcd} by piece-wise constant functions}
+    First, we consider a suitable partition of the region $(0,1)$ into a 
+    grid of granularity $\delta$, which we denote by $G_\delta$.  We do this using Lemma~8 from \citet{Yun19}, which we restate for completeness:
+    \begin{lemma}[Lemma 8~\citep{Yun19}] \label{lem:piecewise}
+       For any given $f \in \mathcal{F}_{CD}$ and $1\leq p \leq \infty$, there exists a $\delta >0$ such that
+        there exists a piece-wise constant function $\bar{f}$ with $d_{p}(f,\bar{f}) \leq \frac{\epsilon}{3}$. 
+         Concretely, $\bar{f}$ is defined as 
+    \[ \bar{f}(X) = \sum_{P \in \Gd} f(P) \cdot \mathbf{1} \left[ \norm{\relu(X-P)}_{\infty} \leq  \delta  \right]  \] 
+    \end{lemma}
+
+    Since transformers can learn a positional embedding $E$, without any loss of generality, 
+    we can consider the translated function. In particular, define
+    \[ E = \begin{bmatrix}
+    0 & 0 & 0 & \dots & 0  \\
+    \delta^{-d} & \delta^{-d} & \delta^{-d} & \dots & \delta^{-d}  \\
+    \delta^{-2d} & \delta^{-2d} & \delta^{-2d} & \dots & \delta^{-2d}  \\
+    \vdots \\
+    \delta^{-(n-1)d}  & \delta^{-(n-1)d}  & \delta^{-(n-1)d}  & \dots & \delta^{-(n-1)d}  \\
+    \end{bmatrix} \] 
+    
+    We will try to approximate $g(X) = f(X - E)$ where $g$ is defined on the domain 
+    $[0,1]^d \times [\delta^{-d}, \delta^{-d}+1]^d \times \dots \times [\delta^{-(n-1)d}, \delta^{-(n-1)d}+1]^d  $. To do so, we will apply a suitable modification of ~\Cref{lem:piecewise},
+    which will consider the discretized grid 
+    \[ \Gdpos := [0,1]_{\delta}^d \times [\delta^{-d}, \delta^{-d}+1]_{\delta}^d \times \dots \times [\delta^{-(n-1)d}, \delta^{-(n-1)d}+1]_{\delta}^d. \] 
+    
+    Therefore, it suffices to approximate a function $\bar{f}: \Gdpos \to \R^{n \times d}$ 
+   defined as  
+    \[ \bar{f}(X) = \sum_{P \in \Gdpos} f(P-E) \cdot \mathbf{1} \left[ \norm{\relu(X-P)}_{\infty} \leq  \delta  \right].  \] 
+
+\subsubsection{Contextual Mappings and Sparse Attention Mechanisms}
+
+Throughout this section, we will assume that we are given a function that has an extra global token 
+at index $0$ and all vectors have an extra dimension appended to them. The latter assumption is  
+without loss of generality as we can use the Feed-Forward Network to append sparse dimensions. 
+In particular, we will associate $X \in \R^{(n+1) \times (d+1)}$ where we write $X = (x_0,x_1,\dots,x_n)$. 
+Although our function is only defined for $\Gdpos \subset \R^{n \times d}$, 
+we can amend the function in a natural way by making it ignore the first column. 
+To avoid excessive clutter, we will assume that the function value is evaluated on the last $n$ columns. 
+
+
+The main idea in this section is the use of contextual mapping to enable Transformers 
+to compute any discretized function. A contextual mapping is an unique encoding of each 
+tuple  $(X,x_i) $ where  $X \in \Gdpos$, and  each column $x_i \in [\delta^{-(i-1)d}, \delta^{-(i-1)d}+1)^d_{\delta}$ for all $i \in [n]$. 
+We restate the definition adapted to our setting below
+\begin{definition}[Defn 3.1~\cite{Yun19}] (Contextual Mapping)
+\label{defn:contextual-mapping}
+A contextual mapping is a function mapping $q: \Gdpos \to \R^{n}$  if it satisfies the following:
+    \begin{enumerate}
+        \item For any $P \in \Gdpos$,  $q(P)$  contains distinct entries.
+        \item For any two $P, P' \in \Gdpos$ with $P \neq P'$, all entries of $q(P)$ and $q(P')$ 
+            are distinct. 
+    \end{enumerate}
+\end{definition}
+
+The key technical novelty of the proof is computing a contextual mapping using only the 
+sparse attention mechanism.  We create a 
+``selective shift'' operator which only shifts entries of a vector that 
+lie in  a certain range.  We will use this shift operator strategically to ensure that 
+we attain a contextual mapping at the end of the process. 
+The lemma below, which is based on parts of the proof of Lemma 6 of \cite{Yun19}, 
+states that we can implement a suitable ``selective'' shift operator using a 
+sparse attention mechanism. 
+\begin{lemma}
+    Given a function $\psi : \R^{(n+1)\times (d+1)} \times \R^2 \to \R^{(n+1) \times 1}$ and a vector $u \in \R^{d+1}$ and a sparse attention mechanism
+    based on the directed graph $D$, we can implement a selective shift operator that receives as input
+    a matrix $X \in \R^{(n+1) \times (d+1) }$  and outputs $X +  \rho \cdot \psi_u(X,b_1,b_2)$ where
+     \[ 
+    \psi_u(Z; b_1, b_2)_{i} =   \begin{cases}
+        (\max_{j \in N(i)} u^T Z_{j} - \min_{j \in N(i)} u^T Z_{j})e_1  & \text{ if } b_1\leq  u^T Z_{j} \leq b_2\\
+        0 & \text{ else. } 
+    \end{cases}
+    \]
+    Note that $e_1 \in R^{d+1}$ denotes $(1,0,\dots,0)$. 
+\end{lemma}
+\begin{proof}
+    Consider the function , which can be implemented by a sparse attention mechanism :
+    \[ \tilde{\psi}(X,b)_i = \sigma_H \Big[ (u^T \cdot X_i)^T \cdot (u^T X_{N(i)} - b1_{N(i)}^T) e^{(1)} (u^T X_{N(i)})   \Big] \] 
+    This is because the Key, Query and Value functions are simply affine transformations of $X$. 
+    
+    Given any graph $D$, the above function will evaluate to the following:
+    \[ 
+   \tilde{\psi}(Z; b)_{i} =  \begin{cases}
+        (\max_{j \in N(i)} u^T Z_{j}) e_1 & \text{ if } u^T Z_{j} > b\\
+        (\min_{j \in N(i)} u^T Z_{j}) e_1 & \text{ if } u^T Z_{j} < b \\
+    \end{cases}
+    \] 
+    
+    Therefore we can say that $\tilde{\psi}(Z; b_{Q}) - \tilde{\psi}(Z; b_{Q'})$ satisfies 
+    \[ 
+    \psi(Z; b_1, b_2)_{i} =   \begin{cases}
+        (\max_{j \in N(i)} u^T Z_{j} - \min_{j \in N(i)} u^T Z_{j}) e_1  & \text{ if } b_1\leq  u^T Z_{j} \leq b_2\\
+        0 & \text{ else } 
+    \end{cases}
+    \] 
+\end{proof}
+
+The following lemma, which is the heart of the proof, uses the above selective shift operators
+to construct contextual mappings. 
+
+\begin{lemma}
+    \label{lem:contextual}
+    There  exists  a function $g_c: \R^{(n+1) \times (d+1)} \to \R^{(n+1)} $ and 
+    a unique vector $u$, such that for all $P \in \Gdpos$ $g_c(P) := \bkt{u}{g(P)}$ 
+    satisfies the property that $g_c$ is a  contextual mapping of $P$. 
+    Furthermore, $g_c \in \mathcal{T}_D^{2,1,1}$ using a composition of sparse attention layers
+    as long as $D$ contains the star graph. 
+\end{lemma}
+\begin{proof}
+    Define $u \in \R^{d+1} = [1,\delta^{-1},\delta^{-2},\dots, \delta^{-d+1},\delta^{-nd}]$ and let 
+    $X_{0} = (0,\dots,0,1)$.  We will assume that $\bkt{x_i}{x_0}=0$, by assuming that all the 
+    columns $x_1,\dots, x_n$ are appended by $0$. 
+    
+    To successfully encode the entire context in each token, we will interleave the shift operator
+    to target the original columns $1,\dots,n$ and to target the global column $0$. After a column $i$ is targeted, its inner product with $u$ will encode the entire context of the first $i$ columns. 
+    Next, we will shift the global token to take this context into account. This can be subsequently used by the  remaining columns.    
+    
+    For $i \in \{0,1,\dots,n\} $, we will use  $l_i$ to denote the innerproducts $\bkt{u}{x_i}$ at the beginning. For 
+    $f_i = \bkt{u}{x_i}$ after the $i^{th}$ column has changed for $i \in \{1,\dots,n\}$ and we will use
+    $f_0^k $ to denote $\bkt{u}{x_0}$ after the $k^{th}$ phase. We need to distinguish the global token  
+    further as it's inner product will change in each phase. 
+    Initially, given  $X \in \Gdpos$, the following are true:
+    \begin{align*}
+     \delta^{-(i-1)d} &\leq \bkt{u}{X_{i}} \leq \delta^{-id}-\delta \qquad \text{ for all } i \in [n]  \\
+     \delta^{-(n+1)d} &= \bkt{u}{X_{0}} 
+    \end{align*}
+   Note that all $l_i$ ordered in distinct buckets $l_1 < l_2 < \dots < l_n <l_0$. 
+    
+We do this in phases indexed from $i  \in \{1,\dots, n\}$.  Each phase consists of two distinct parts:
+    \newline
+    \textbf{ The low shift operation:} These operation will be  of the form
+        \[ X \leftarrow X +  \delta^{-d}\psi \left(X,v -\delta/2, v + \delta/2 \right) \]  for values
+        $v \in [\delta^{-id}), \delta^{-(i+1)d})_{\delta}$. 
+        The range is chosen so that only $l_i$ will be in the range and no other $l_j$ $j\neq i$
+        is in the range. 
+        This will shift exactly the $i^{th}$ column $x_i$ so that the new inner product
+        $f_i = \bkt{u}{x_i} $  is substantially larger than $l_i$. Furthermore, no
+        other column of $X$ will be affected. 
+    \newline
+    \textbf{ The high shift operation: }
+    These operation will be  of the form
+        \[ X \leftarrow X +  \delta^{-nd} \cdot \psi \left(X,v -\delta/2, v + \delta/2 \right)\] 
+        for values $v \in [S_i, T_i)_{\delta}$. The range $[S_{i}, T_i)_{\delta}$ is chosen to 
+        only affect the column $x_0$ (corresponding to the global token) and no other column. In particular, this 
+        will shift the global token by a further $\delta^{-nd}$. Let $\tl_0^i$ denote the value of 
+        $\tl^i_0 = \bkt{u}{x_0}$ at the end of $i^{th}$ high operation. 
+    
+    Each phase interleaves a shift operation to column $i$ and updates the global token. 
+    After each phase, the updated $i^{th}$ column $f_i = \bkt{u}{x_i} $ will contain a unique token
+    encoding the values of all the $l_1,\dots,l_i$. After the high update, $\tl_{0}^i = \bkt{u}{x_0}$
+    will contain information about the first $i$ tokens. 
+    
+    Finally, we define the following constants for all $k \in \{0,1,\dots,n\}$. 
+     \begin{align}
+    T_k &= (\delta^{-(n+1)d} + 1)^{k} \cdot \delta^{-nd} -  \sum_{t=2}^k  (\delta^{-(n+1)d} + 1)^{k-t}( 2\delta^{-nd-d}  +  \delta^{-nd} +1) \delta^{-td} \notag \\
+         & \qquad -   (\delta^{-(n+1)d} + 1)^{k-1}(\delta^{-nd-d}  +  \delta^{-nd} )\delta^{-d}  - \delta^{-(k+1)d} \label{eqn:upper-bound} \tag{UP}
+    \end{align}
+    \begin{align}
+    S_k &= (\delta^{-(n+1)d} + 1)^{k} \cdot \delta^{-nd} -  \sum_{t=2}^k  (\delta^{-(n+1)d} + 1)^{k-t}( 2\delta^{-nd-d}  +  \delta^{-nd} +1) \delta^{-(t-1)d} \notag \\
+         & \qquad -   (\delta^{-(n+1)d} + 1)^{k-1}(\delta^{-nd-d}  +  \delta^{-nd} ) - \delta^{-kd} \label{eqn:lower-bound} \tag{LP}
+    \end{align}
+    
+    After each $k$ phases, we will maintain the following invariants:
+    \begin{enumerate}
+    \item  $S_k < \tl^k_0 < T_k$ for all $k \in \{ 0, 1, \dots, n\}$. 
+    \item  $T_{k-1} \leq  f_k < S_k $
+    \item  The order of the inner products after $k^{th}$ phase is 
+     \[l_{k+1} < l_{k+2} \dots < l_n < f_1 < f_2< \dots <  f_{k} < \tl_0^k .\] 
+    \end{enumerate}
+    
+    
+    \paragraph{Base case}    
+    The case $k=0$, is trivial as we simply set  $S_0 = \delta^{-(n+1)d}$, $T_0 = \delta^{-(n+1)\cdot d}+\delta$. 
+    
+    The first nontrivial case is $k=1$. 
+
+   \paragraph{ Inductive Step }
+   First, in the low shift operation is performed in the range $[\delta^{-(k-1)d}, \delta^{-kd})_{\delta}$
+   Due to the invariant, we know that there exists only one column $x_k$ that is affected by this shift. 
+   In particular, for column $k$, we will have $\max_{j \in N(k)} \bkt{u}{x_j} = \bkt{u}{x_{0}} = \tl^{k-1}_0$. The minimum is $l_k$. Thus the update will be
+   $f_k = \delta^{-d} ( \tl_0^{k-1} - l_k ) + l_k $.  Observe that for small enough $\delta$,
+   $f_k \geq \tl_0^{k-1}$.  Hence the total ordering, after this operation is
+   %
+    \begin{align}
+        l_k+1 < l_{k+2} \dots < l_n < f_1 < f_2< \dots <  \tl_0^{k-1} < f_{k}  \label{eqn:intermediate}
+    \end{align}
+    %
+    Now when we operate a higher selective shift operator in the range $[S_{k-1},T_{k-1})_{\delta}$.  
+    Since only global token's innerproduct  $\tl_0^{k-1}$ is in this range, 
+    it will be the only column affected by the shift operator. The global token operates  over the entire range, we know from~\Cref{eqn:intermediate} that,  $f_k = \max_{i \in [n]} \bkt{u}{x_i}$ and $l_{k+1} = \min_{i \in [n]} \bkt{u}{x_i}$. 
+    The new value $\tl_0^k = \delta^{-nd} \cdot (f_k - l_{k+1} ) + \tl_0^{k-1}$. 
+    Expanding and simplifying we get,  
+    \begin{align*}
+        \tl_0^k &= \delta^{-nd} \cdot (f_k - l_{k+1} ) + \tl_0^{k-1} \\
+        &= \delta^{-nd} \cdot (   \delta^{-d} ( \tl_0^{k-1} - l_k ) + l_k - l_{k+1} ) + \tl_0^{k-1} \\
+        &= \delta^{-(n+1)d} \cdot (    \tl_0^{k-1} - l_k )  +  \delta^{-nd}(l_k - l_{k+1}) + \tl_0^{k-1} \\
+        &= (\delta^{-(n+1)d} + 1) \tl_0^{k-1} - (\delta^{-nd-d}  +  \delta^{-nd}) l_k - l_{k+1} \\
+        \intertext{Expanding the above recursively, we get}
+        &= (\delta^{-(n+1)d} + 1)^{k} \cdot \tl_0^{0} -  \sum_{t=2}^k  (\delta^{-(n+1)d} + 1)^{k-t}( 2\delta^{-nd-d}  +  \delta^{-nd} +1) l_t \\
+         & \qquad -   (\delta^{-(n+1)d} + 1)^{k-1}(\delta^{-nd-d}  +  \delta^{-nd} )l_1  - l_{k+1}
+         \end{align*}
+         
+    Since we know that $\tl_0^0 = \delta^{-nd}$ and each $l_i < \delta^{-id}$, we can substitute this to get~\Cref{eqn:upper-bound}
+    and we can get an lower-bound~\Cref{eqn:lower-bound} by using $l_i \geq \delta^{-(i-1)d} $. 
+    
+    By construction, we know that $S_k \leq \tl_0^k < T_k$.  For sufficiently small $\delta$, 
+    observe that $S_k \leq \tl_0^k < T_k$ all are essentially the dominant term $ \approx O(\delta^{-n(k+1)d - kd})$ and all the lower order terms do not matter.  As a result it is 
+    immediate to see that that $f_k > \delta^{-d} (\tl_0^{k-1} - l_k) > T_{k-1}$ and hence we
+    can see that the invariant 2 is also satisfied. Since only column $k$ and the global token are affected,
+    we can see that invariant 3 is also satisfied. 
+    
+    After $n$ iterations, $\tl^n_0$ contains a unique encoding for any $P \in \Gdpos$. 
+    To ensure that all tokens are distinct, we will add an additional layer 
+    $X = X + \delta^{-n^2d} \psi(X,v -\delta/2, v+\delta/2)$ for all $v \in [S_1, T_n)_{\delta}$. 
+    This ensures that for all $P, P' \in \Gdpos$, each entry of $q(P) $ and $q(P')$ are distinct. 
+\end{proof}
+
+The previous lemma shows that we can compute a contextual mapping using only sparse transforms. 
+We now use the following lemma to show that we can use a contextual mapping and feed-forward layers
+to accurately map to the desired output of the function $\bar{f}$. 
+
+\begin{lemma}[Lemma 7~\cite{Yun19}]
+Let $g_c$ be the function in~\Cref{lem:contextual}, we can construct
+a function $g_v: \R^{(n+1) \times (d+1)} \to \R^{(n+1) \times d} $ composed of 
+$O(n \delta^{-nd})$ feed-forward layers (with hidden dimension $q=1$) 
+with activations in $\Phi$ such that 
+$g_v$ is defined as  $g_v(Z) = [g_v^{tkn}(Z_{1}), \dots, g^{tkn}_v(Z_{n})]$, 
+where  for all $j \in \{1,\dots, n\}$, 
+        \[ g_v^{tkn}(g_c(L)_{j}) =  f(L)_{j}  \]
+\end{lemma}
+
+\subsubsection{Approximating modified Transformers by Transformers}
+
+The previous section assumed we used Transformers that used hardmax operator $\sigma_H$ and 
+activations functions belonging to the set $\Phi$. This is without loss of generality as
+following lemma shows.
+
+\begin{lemma}[Lemma 9 \cite{Yun19}]
+For each $g \in \bar{\mathcal{T}}^{2,1,1}$ and $1 \leq p \leq \infty$, $\exists g \in \mathcal{T}^{2,1,4}$ such that
+$d_p(g,\bar{g}) \leq \epsilon/3$
+\end{lemma}
+    
+Combining the above lemma with the \Cref{lem:contextual}, we get our main result:
+\begin{theorem}
+    Let $1\leq p \leq \infty$ and $\epsilon > 0$, there exists a transformer network 
+    $g \in \mathcal{T}_D^{2,1,4}$
+    which achieves a ratio of $d_{p}(f,g) \leq \epsilon$ where $D$ is the sparse graph. 
+\end{theorem}
+
+
+Since the sparsity graph associated with \bigb contains a star network, we know that it 
+can express any continuous function from a compact domain.
+
+
+\paragraph{Contemporary work on Universal Approximability of Sparse Transformers}
+We would like to note that, contemporary work done by \citet{yun2020on}, also parallelly explored the ability of sparse transformers with linear connections to capture sequence-to-sequence functions on the compact domain.
+ 

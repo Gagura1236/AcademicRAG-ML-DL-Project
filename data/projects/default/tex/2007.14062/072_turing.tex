@@ -1,0 +1,500 @@
+\section{Turing Completeness}
+\label{sec:apndx-turing}
+
+In this section, we will extend our results to the setting of \citet{Perez19}. Our 
+exposition will largely use their proof structure but we will make a few changes. 
+We  repeat some of the lemmas with the amendments to make the exposition 
+self-contained. 
+
+
+
+\subsection{Notation}
+\paragraph{Transformer Decoder}
+We need both an encoder and a decoder in the transformer for simulating a Turing machine.
+We utilize the same notation used in~\Cref{sec:apndx-enc-notation} for encoders. 
+The decoder is similar to an encoder but with additional attention to an external pair of key-value vectors $(\mK^{\textbf{e}}\in\R^{n\times m},\mV^{\textbf{e}}\in\R^{n\times d})$, which usually come from the encoder stack.
+A single layer of Transformer decoder is a parametric function $\Dec$ receiving a sequence $\mY_j=(\vy_1,\ldots, \vy_j)$ of vectors in $\R^d$ plus the external $(\mK^{\textbf{e}}, \mV^{\textbf{e}})$ and returning a sequence of vectors $\mZ_j=(\vz_1,\ldots,\vz_j)$ of the same length. Each $\vz_i$ is a $d$ dimensional vector as well.  $\Dec$ has three components, one more than $\Enc$:
+\begin{enumerate}[leftmargin=6mm, itemsep=2mm, partopsep=0pt,parsep=0pt]
+    \item An attention mechanism $\Attn$ that takes in the sequence $\mY_j$ and returns sequence $(\vp_1, ..., \vp_j)$ of the same length and dimensionality;  
+    \item A cross-attention mechanism $\CrossAttn$ that takes in the sequence $(\vp_1, ..., \vp_j)$ plus the external $(\mK^{\textbf{e}}, \mV^{\textbf{e}})$ and returns sequence $(\va_1, ..., \va_j)$, with each $\va_i\in\R^d$; and
+    \item A two layer fully connected network $O$ that takes in a vector in $\R^d$ and returns a vector in $\R^d$. 
+\end{enumerate}
+\vspace{-2mm}
+Then $i$-th output vector of $\Dec(\mY_j; \mK^{\textbf{e}}, \mV^{\textbf{e}})$ is computed as follows:
+\begin{flalign}
+    && \vz_i &= O(\va_i) + \va_i & \label{eq:dec-ff} \\
+    &\text{where} & \va_i &= \CrossAttn(\vp_i, \mK^{\textbf{e}}, \mV^{\textbf{e}}) + \vp_i & \label{eq:dec-ext} \\
+    &\text{and} & \vp_i &= \Attn_D(\mY_j)_i + \vy_i \label{eq:dec-self}&
+\end{flalign}
+%
+$\Attn_D$ and $O$ are as defined in~\Cref{sec:apndx-enc-notation} and it remains to define $\CrossAttn$.
+The $i^\textrm{th}$ output vector of multi-head cross-attention attention is given by
+\begin{align}
+\CrossAttn(\mY_j)_i &=  \sum_{h=1}^H \sigma \left((\vy_i W_Q^h) (\mK^{(e)} W_K^h)^T  \right) \cdot (\mV^{(e)} W_V^h ) 
+\end{align}
+where $W_Q^h, W_K^h, W_V^h \in \R^{d \times m}$, $W_V^h\in \R^{d \times d}$, for all $h = 1, \ldots H$ heads.
+
+
+\paragraph{Turning Machine}
+We will use the same setup of Turning Machine that was used by \citet{Perez19} (see section B.4). 
+Given a Turing Machine $M = (Q,\Sigma, \delta, q_{init},F)$, we use the following notation
+\begin{align*}
+    q^{(j)} &: \text{ state of Turing machine } M \text{ at time }j.  \\
+    s^{(j)} &: \text{ symbol under the head of } M \text{ at time }j.  \\
+    v^{(j)} &: \text{ symbol written by } M \text{ at time }j.  \\
+    m^{(j)} &: \text{ head direction in the transition of } M \text{ at time }j. 
+\end{align*}
+
+\paragraph{Vector representations}
+For a symbol $s\in \Sigma$, $\oh{s}$ denotes its one-hot vector representation in $\Q^{|\Sigma|}$.
+All the transformer intermediate vectors used in our simulations have dimension $d=2|Q|+4|\Sigma|+16$.
+Note that we use five extra dimension as compared to \citet{Perez19}.
+We follow the convention used in \citet{Perez19} and write a a vector $\vv\in\Q^d$ arranged in four groups of values
+as follows
+\[
+\begin{array}{rcllr}
+\vv & = & [ 
+& \vq_1,\vs_1,x_1, \\
+&&& \vq_2,\vs_2,x_2,x_3,x_4,x_5,x_6, \\
+&&& \vs_3,x_7,\vs_4, \\
+&&& x_8,x_9,x_{10},x_{11},x_{12},x_{13},x_{14},x_{15},x_{16} & ] 
+\end{array}
+\]
+where $\vq_i\in \Q^{|Q|}$, $\vs_i\in \Q^{|\Sigma|}$, and $x_i\in\Q$.
+
+\subsection{Details of the Simulation}
+\label{sec:details}
+
+In this section, we give more details on the architecture of the encoder and decoder needed to implement our simulation strategy. 
+
+
+\begin{figure}[b]
+    \vspace{-5mm}
+    \centering
+    \includegraphics[width=\linewidth]{figures/Turing.pdf}
+    \vspace{-10mm}
+    \caption{Mapping between transformer step and original Turing machine step.}
+    \label{fig:apndx_turing}
+\end{figure}
+
+\paragraph{High Level Overview:}
+Given the Turing machine $M$, we will show that a transformer with an appropriate encoder and decoder $\mathcal{T}_D$ can simulate each step of $M$'s execution.
+Our simulation strategy will mostly follow \citet{Perez19}, except we will use a sparse attention mechanism.
+The main idea is to maintain the current Turing machine state $q^{(j)}$ and symbol under the head $s^{(j)}$ as part of the decoder sequence $\mY$ for all time step $j$ so that we can always simulate the corresponding Turing machine transition $\delta(q^{(j)}, s^{(j)}) = (q^{(j)}, v^{(j)}, m^{(j)})$.
+The key difference will rise in Lemma~B.4 of \citet{Perez19}, where full attention is used to select the appropriate symbol from tape history in one step.
+To accomplish the same task with sparse attention, we will exploit the associative property of max and break down the symbol selection over multiple steps.
+Thus, unlike \citet{Perez19} one decoding step of our sparse transformer $\mathcal{T}_D$ does not correspond to one step of the Turing machine $M$.
+In particular, we will have two type of steps: compute step corresponding to update of $M$'s state and intermediate steps corresponding to aggregating the max (which in turn is used for symbol selection).
+Let $i$ denote the step of $\mathcal{T}_D$ and $g(i)$ denote the step of $M$ being simulated at step $i$ of the decoder.
+At each decoding step we want to maintain the current Turing machine state $q^{g(i)}$ and symbol under the $s^{g(i)}$ in $\vy_i$.
+For roughly $O(\sqrt{i})$ intermediate steps the state will remain the same, while we aggregate information about relevant past output symbols through sparse attention.
+To maintain the same state for intermediate steps, we introduce an extra switching layer (\Cref{sec:appndx-new-layer}).
+Finally, at the next compute step we will make the transition to new state $q^{g(i)+1}$, new head movement $m^{g(i)}$, and new output symbol $v^{g(i)}$ to be written. 
+Thereby we are able to completely simulate the given Turing machine $M$.
+%
+As a result, we can prove the following main theorem:
+\begin{theorem}
+There exists a sparse attention mechanism using $O(n)$ inner products such that the resulting class of Transformer Networks using this sparse attention mechanism is Turing Complete. 
+\end{theorem}
+
+
+\subsubsection*{Encoder}
+As \citep{Perez19}, we use the same trivial single layer encoder where resulting $\mK^{(e)}$ contains position embedding and $\mV^{(e)}$ contains one-hot symbol representation.
+
+\subsubsection*{Decoder}
+\paragraph{Sparse Self-Attention mechanism for Decoder}
+In this section, we will consider a particular instance of the sparse graph $D$ at decoder.
+We define its edges to be given by the following relations:
+$\forall j\in\N_{+}, 1\leq k\leq j+1$,  
+\begin{align*}
+&\left(\frac{j(j+1)}{2} + k, \frac{k(k+1)}{2} \right) \text{ and }\\ \\
+&\left(\frac{j(j+1)}{2} + k, \frac{j(j+1)}{2} + k \right)  \text{ if } k>1 \text{ else } \left(\frac{j(j+1)}{2} + 1, \frac{j(j+1)}{2} \right).
+\end{align*}
+
+This graph can be seen as a special case of \bigb where first type 
+of edges are realizations of random and second type of edges correspond to locality.
+Also note that this graph satisfies the left-to-right constraint of 
+decoder, i.e.~no node attends to a node in the future.
+
+
+\paragraph{Embeddings and positional encodings}
+Our construction needs a different positional encoding $\penc_{\Dec} :\N\to\Q^{d}$ for decoder: 
+\begin{equation*}
+\begin{array}{rcllr}
+\penc_{\Dec}(i) & = & [ 
+& \sz, \\
+&&& \sz, \\
+&&& \sz, \\
+&&& 1,g(i)+1,\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},h(i),0,0,0,0 & ] 
+\end{array}
+\end{equation*}
+where $g(i) = \left\lfloor \frac{-1+\sqrt{1+8i}}{2} \right\rfloor$ and $h(i) = g(i+1) - g(i)$. Note that $h(i)$ reduces to a binary indicator variable $
+\mathbf{1}\left\lbrace\frac{-1+\sqrt{1+8i}}{2}=\left\lfloor \frac{-1+\sqrt{1+8i}}{2} \right\rfloor\right\rbrace$.
+
+
+\subsubsection*{Induction Setup}
+We next show how to construct the decoder layers to produce the sequence of outputs $\vy_1,\vy_2,\ldots$,
+where $\vy_i$ is given by:
+\begin{equation*}
+\begin{array}{rcllr}
+{\vy}_i & = & [ 
+& \oh{q^{g(i)}},\oh{s^{g(i)}},c^{g(i)}, \\
+&&& \sz, \\
+&&& \vzs,0,\oh{w^{(i)}}, \\
+&&& 0,0,0,0,0,u_1^{(i)},u_2^{(i)},u_3^{(i)},u_4^{(i)} & ] 
+\end{array}
+\end{equation*}
+That is, at step $i$ of our sparse decoder $\vy_i$, it will contain the information about the state of the turing machine $M$ at time $g(i)$, the symbol under the head of $M$ at time $g(i)$, and the current location of head of $M$ at time $g(i)$.
+We also have a placeholder symbol $w$ and placeholder scalars $u_1,u_2, u_3$, whose role will be clear from our construction.
+
+We consider as the starting vector for the decoder the vector
+\begin{equation*}
+\begin{array}{rcllr}
+{\vy}_1 & = & [ 
+& \oh{q_{\text{init}}},\oh{\#},0, \\
+&&& \sz, \\
+&&& \sz, \\
+&&& \sz & ] 
+\end{array}
+\end{equation*}
+We assume that the start head is at $c^{(0)}=0$, the initial state is $q^{(0)}=q_{\text{init}}$, and $s^{(0)}=\#$ as we initialize from clean tape.
+We show the correctness of our construction by an inductive argument:
+we describe the architecture piece by piece and at the same time will show for every $r\geq 0$ 
+, our architecture constructs $\vy_{r+1}$ from the previous vectors 
+$(\vy_0,\ldots,\vy_r)$.
+
+Thus, assume that $\vy_1,\ldots,\vy_r$ satisfy the properties stated above. 
+Since we are using positional encodings, 
+the actual input for the first layer of the decoder is the sequence
+\[
+\vy_1+\penc_{\Dec}(1),\ \vy_2+\penc_{\Dec}(2),\ \ldots,\ \vy_{r}+\penc_{\Dec}(r).
+\]
+We denote by $\overline{\vy}_i$ the vector $\vy_i$ plus its positional encoding.
+Thus we have $\forall \ 1 \leq i \leq r$ that
+\begin{equation*}
+\begin{array}{rcllr}
+\overline{\vy}_i & = & [ 
+& \oh{q^{g(i)}},\oh{s^{g(i)}},c^{g(i)}, \\
+&&& \sz, \\
+&&& \vzs,0,\oh{w^{(i)}}, \\
+&&& 1,g(i)+1,\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},h(i),u_1^{(i)},u_2^{(i)},u_3^{(i)},u_4^{(i)} &] 
+\end{array}
+\end{equation*}
+
+\subsubsection{Layer 1: Simulate Transition Function}
+
+
+In this layer, we use the cross-attention between encoder and decoder to access the 
+input string and  a feed-forward network to simulate the transition function of $M$.
+The first self attention in~\Cref{eq:dec-self} is not used in this layer and 
+we just produce the identity.
+This identity function is achieved by setting all queries, keys, values to be 0 
+everywhere plus the residual connection.
+Thus, we have  ${\vp}^1_i=\overline{\vy}_i$.
+
+
+Since $\vp^1_i$ is of the form $[\lu,\ldots,\lu,1,g(i)+1,\lu,\ldots,\lu]$, we know
+by Lemma B.1 of \citet{Perez19} that if we use $\vp^1_i$ to attend over the encoder we obtain
+\begin{equation*}\label{eq:first-layer2}
+\begin{array}{rcllr}
+\CrossAttn(\vp^1_i,\mK^{\textbf{e}},\mV^{\textbf{e}}) & = & [ 
+& \sz, \\
+&&& \sz, \\
+&&& \oh{\alpha^{g(i)+1}},\beta^{g(i)+1},\vzs, \\
+&&& \sz & ] 
+\end{array}
+\end{equation*}
+where $\alpha$ and $\beta$ are as defined in Eq. (21) of \citep{Perez19}.
+Thus in~\Cref{eq:dec-ext} we finally produce the vector $\va^1_i$ given by
+\begin{equation}\label{eq:ai_1}
+\begin{array}{rcllr}
+\va^1_{i} & = &&
+\CrossAttn(\vp^1_i,\mK^{\textbf{e}},\mV^{\textbf{e}}) + \vp^1_i \\ 
+& = & [ 
+& \oh{q^{g(i)}},\oh{s^{g(i)}},c^{g(i)}, \\
+&&& \sz, \\
+&&& \oh{\alpha^{g(i)+1}},\beta^{g(i)+1},\oh{w^{(i)}}, \\
+&&& 1,g(i)+1,\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},h(i),u_1^{(i)},u_2^{(i)},u_3^{(i)},u_4^{(i)} & ] 
+\end{array}
+\end{equation}
+
+
+As the final piece of the first decoder layer 
+we use a function $O_1(\cdot)$ (\Cref{eq:dec-ff}) that satisfies the following lemma.
+\begin{lemma}[Lemma B.2 \citep{Perez19}]\label{lem:M}
+There exists a two-layer feed-forward network $O_1:\Q^d\to\Q^d$ such that with input vector $\va^1_{i}$ (\Cref{eq:ai_1}) produces as output
+\begin{equation*}
+\begin{array}{rcllr}
+O_1(\va^1_i) & = & [ 
+& \sz, \\
+&&& \oh{q^{g(i)+1}},\oh{v^{g(i)}},m^{g(i)},0,0,0,0 \\
+&&& \sz, \\
+&&& \sz & ] 
+\end{array}
+\end{equation*}
+\end{lemma}
+That is, function $O_1(\cdot)$ simulates transition $\delta(q^{g(i)},s^{g(i)})$ 
+to construct $\oh{q^{g(i)+1}}$, $\oh{v^{g(i)}}$, and $m^{g(i)}$
+besides some other linear transformations.
+
+Thus, finally the output of the first decoder layer is
+\begin{equation*}
+\begin{array}{rcllr}
+\vz^1_i = O_1(\va^1_i) + \va^1_i & = & [ 
+& \oh{q^{g(i)}},\oh{s^{g(i)}},c^{g(i)}, \\
+&&& \oh{q^{g(i)+1}},\oh{v^{g(i)}},m^{g(i)},0,0,0,0, \\
+&&& \oh{\alpha^{g(i)+1}},\beta^{g(i)+1},\oh{w^{(i)}}, \\
+&&& 1,g(i)+1,\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},h(i),u_1^{(i)},u_2^{(i)},u_3^{(i)},u_4^{(i)} & ] 
+\end{array}
+\end{equation*}
+
+
+\subsubsection{Layer 2: Finding Head Node}
+In this layer, we only use the feed-forward network to evaluate the next location of the head.
+The self-attention and cross-attention are set to be the identity function, so $\va_i^2=\vp_i^2=\vz_i^1$.
+Recall that $c^{g(i)}$ is the cell to which $M$ is pointing to at time $g(i)$, and that it satisfies the following recursion $c^{g(i)+1}=c^{g(i)}+m^{g(i)}$, which can be expanded to see that
+that $c^{g(i)+1}=m^{(0)}+m^{(1)}+\cdots + m^{g(i)}$.
+Its not difficult to see that a two layer network with non-linearity can compute $c^{g(i)+1}/(g(i)+1)$ and $c^{g(i)}/(g(i)+1)$ from $c^{g(i)}$, $m^{g(i)}$, and $1/(g(i)+1)$ using the relation $c^{g(i)+1}=c^{g(i)}+m^{g(i)}$.
+At the  end of layer 2, we obtain 
+\begin{equation*}
+\begin{array}{rcllr}
+\vz^2_i  \ = \ O_2(\va^2_i) + \va^2_i & = & [ 
+& \oh{q^{g(i)}},\oh{s^{g(i)}},c^{g(i)}, \\
+&&& \oh{q^{g(i)+1}},\oh{v^{g(i)}},c^{g(i)+1},\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},\frac{c^{g(i)+1}}{g(i)+1},\frac{c^{g(i)}}{g(i)+1}, \\
+&&& \oh{\alpha^{g(i)+1}},\beta^{g(i)+1},\oh{w^{(i)}}, \\
+&&& 1,g(i)+1,\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},h(i),u_1^{(i)},u_2^{(i)},u_3^{(i)},u_4^{(i)} & ] 
+\end{array}
+\end{equation*}
+
+\subsubsection{Layer 3: Distinguishing Node Type}
+\label{sec:appndx-new-layer}
+This is an additional layer (not present in the work of \cite{Perez19}), where we propagate computations 
+in our sparse graph. 
+In particular, we will use this layer to ``compute'' or accumulate state in intermediate nodes. 
+We make this clear below.
+The self-attention and cross-attention are all set to be the identity function, so $\va_i^3=\vp_i^3=\vz_i^2$.
+In this layer, we only use the dense attention layers to select the newly computed states or to continue 
+with previous states.
+Using idea similar to Lemma B.6 of \citep{Perez19}, we can construct a dense network such that
+\[
+O([\vx,\vy,\vz,b])) = 
+\begin{cases} 
+[\vzero,\vzero,\vzero,0] & \text{if }b=1, \\
+[\vzero,\vz-\vy,-\vz,0] & \text{if }b=0.
+\end{cases} 
+\]
+The negatives are generated to offset results from skip connection. 
+We utilize such network to switch Turing machine state and position embedding for intermediate steps to the values received from previous time step and do nothing for compute nodes. 
+We use $h(i)$ as the flipping bit $b$.
+Thus, at end of layer 3, we obtain
+\begin{equation*}
+\begin{array}{rcllr}
+\vz^3_i \ = \ O_3(\va^3_i) + \va^3_i & = & [ 
+& \sz, \\
+&&& \oh{\hat{q}^{(i)}},\oh{\hat{v}^{(i)}},\hat{c}^{(i)},\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},\frac{c^{g(i)+1}}{g(i)+1},\hat{u}_4^{(i)}, \\
+&&& \oh{\hat{\alpha}^{(i)}},\hat{\beta}^{(i)},\vzs, \\
+&&& 1,\hat{u}_1^{(i)},\hat{u}_2^{(i)},\hat{u}_3^{(i)},h(i),0,0,0,0 & ] 
+\end{array}
+\end{equation*}
+where we used $h(i)$ for selecting old states. In particular,
+\vspace{-3mm}
+\begin{itemize}[leftmargin=6mm, itemsep=2mm, partopsep=0mm,parsep=0mm]
+    \item We copy the input state and head position as is for intermediate nodes. We do not need to transition to next Turing machine states in these nodes.
+\end{itemize}
+
+\begin{table}[h]
+    \small
+    \vspace{-3mm}
+    \hspace*{12mm}
+    \begin{tabular}{lclcl}
+    $
+    \hat{q}^{(i)} = 
+    \begin{cases} 
+    q^{g(i)+1} & \text{if }h(i)=1 \\
+    q^{g(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ ,
+    &
+    $
+    \hat{v}^{(i)} = 
+    \begin{cases} 
+    v^{g(i)} & \text{if }h(i)=1 \\
+    w^{(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ ,
+    &
+    $
+    \hat{c}^{(i)} = 
+    \begin{cases} 
+    c^{g(i)+1} & \text{if }h(i)=1 \\
+    c^{g(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ .
+    \end{tabular}
+    \vspace{-3mm}
+\end{table}
+
+\begin{itemize}[leftmargin=6mm, itemsep=2mm, partopsep=0mm,parsep=0mm]
+    \item To preserve the symbol under the head for intermediate nodes, we copy the previous symbol to $\alpha$ location and set $\beta=g(i)+1$, as the symbol at $\alpha$ location will be copied as the symbol under head for next transformer step by the final transformation layer if $\beta=g(i)+1$. Thus, we correctly preserve the previous symbol under head as Turing machine does not transition these nodes. For compute nodes, things happen as usual.
+\end{itemize}
+\begin{table}[h]
+    \small
+    \vspace{-3mm}
+    \hspace*{12mm}
+    \begin{tabular}{lclcl}
+    $
+    \hat{\alpha}^{(i)} = 
+    \begin{cases} 
+    \alpha^{g(i)+1} & \text{if }h(i)=1 \\
+    s^{g(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ ,
+    &&
+    $
+    \hat{\beta}^{(i)} = 
+    \begin{cases} 
+    \beta^{g(i)+1} & \text{if }h(i)=1 \\
+    g(i)+1 & \text{if }h(i)=0
+    \end{cases} 
+    $ .
+    \end{tabular}
+    \vspace{-3mm}
+\end{table}
+\begin{itemize}[leftmargin=6mm, itemsep=3mm, partopsep=0mm,parsep=0mm]
+    \item Finally for the intermediate nodes, we copy the position embedding corresponding to current best symbol $w$, which is stored in $u_1,u_2,u_3$. For compute node, we let the position embedding correspond to current Turing machine step.
+\end{itemize}
+\vspace{-3mm}
+\begin{table}[ht]
+    \small
+    \hspace*{12mm}
+    \begin{tabular}{lclcl}
+    $
+    \hat{u}_1^{(i)} = 
+    \begin{cases} 
+    g(i)+1 & \text{if }h(i)=1 \\
+    u_1^{(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ ,
+    &&
+    $
+    \hat{u}_2^{(i)} = 
+    \begin{cases} 
+    \frac{1}{(g(i)+1)} & \text{if }h(i)=1 \\
+    u_2^{(i)} & \text{if }h(i)=0
+    \end{cases}  
+    $ ,
+    \\\\
+    $
+    \hat{u}_3^{(i)} = 
+    \begin{cases} 
+    \frac{1}{(g(i)+1)^2} & \text{if }h(i)=1 \\
+    u_3^{(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ ,
+    &&
+    $
+    \hat{u}_4^{(i)} = 
+    \begin{cases} 
+    \frac{c^{g(i)}}{g(i)+1} & \text{if }h(i)=1 \\
+    u_4^{(i)} & \text{if }h(i)=0
+    \end{cases} 
+    $ .
+    \end{tabular}
+\end{table}
+
+For further simplification note that $g(i+1) = g(i) $ if $h(i) = 0$ else $ g(i) + 1$ when $h(i) = 1$. With this fact, we can conclude that $\hat{q}^{(i)}=q^{g(i+1)}$ and $\hat{c}^{(i)}=c^{g(i+1)}$. Thus, we can write,
+\begin{equation*}
+\begin{array}{rcllr}
+\vz^3_i \ & = & [ 
+& \sz, \\
+&&& \oh{{q}^{g(i+1)}},\oh{\hat{v}^{(i)}},{c}^{g(i+1)},\frac{1}{g(i)+1},\frac{1}{(g(i)+1)^2},\frac{c^{g(i)+1}}{g(i)+1},\hat{u}_4^{(i)}, \\
+&&& \oh{\hat{\alpha}^{(i)}},\hat{\beta}^{(i)},\vzs, \\
+&&& 1,\hat{u}_1^{(i)},\hat{u}_2^{(i)},\hat{u}_3^{(i)},h(i),0,0,0,0 & ] 
+\end{array}
+\end{equation*}
+
+
+
+\subsubsection{Layer 4: Finding next symbol on tape}
+To find the symbol on tape under next head position $c^{g(i)+1}$, we try to find what was written last at the location $c^{g(i)+1}$.
+To facilitate this, following \citep{Perez19}, we define $\ell(j)$ to be the last time (previous to $j$) in which $M$ was pointing to position $c^{(j)}$,
+or it is $j-1$ if this is the first time that $M$ is pointing to $c^{(j)}$.
+Recall $j$ is the Turing machine step counter, which is different from sparse transformer step $i$. \citep{Perez19} could utilize full attention mechanism to find $v^{\ell(j+1)}$ at one go, but we have to do it over multiple steps owing to our sparse attention mechanism.
+
+
+
+We use similar query, key, value functions as used for full attention by \citep{Perez19} $\forall i $:
+\begin{equation*}
+\begin{array}{rcllr}
+Q_4(\vz^3_i)  & = & [ 
+& \sz \\
+&&& \sz, \\
+&&& \sz, \\
+&&& 0, \frac{c^{g(i)+1}}{g(i)+1}, \frac{1}{g(i)+1}, \frac{1}{3(g(i)+1)^2}, 0,0,0,0,0 & ] \\
+\end{array}
+\end{equation*}
+\begin{equation*}
+\begin{array}{rcllr}
+K_4(\vz^3_i)  & = & [ 
+& \sz \\
+&&& \sz, \\
+&&& \sz, \\
+&&& 0, \hat{u}_2^{(i)}, \hat{u}_4^{(i)}, \hat{u}_3^{(i)},0,0,0,0,0 & ] \\
+V_4(\vz^3_i)  & = & [ 
+& \sz, \\
+&&& \sz, \\
+&&& \vzs,0,\oh{\hat{v}^{(i)}}, \\
+&&& 0,0,0,0,0, \hat{u}_1^{(i)}, \hat{u}_2^{(i)}, \hat{u}_3^{(i)} , \hat{u}_4^{(i)} & ] 
+\end{array}
+\end{equation*}
+It is clear that the three functions are linear transformations and thus they can be defined by feed-forward networks. Notice that the query vector is always formed using current time step position embedding, whereas key and value vectors are formed using copied over entries for intermediate nodes and using current entries only for compute node.
+
+\citet{Perez19} find the desired $v^{l(j+1)}$ as $v^{m(j)}$ using full attention, where
+\begin{equation*}
+    m(t) = \argmin_{m\in\{0,...,t\}} \chi_t^j = \argmin_{m\in\{0,...,t\}} | \langle Q_4(\vz_j^3), K_4(\vz_m^3) \rangle |
+\end{equation*}
+Note the minimization is only over Turing machine steps, i.e. over compute nodes in our case.
+We show below that we can estimates $m(j)$ by parts using sparse attention mechanism. The main idea is just to notice that minimization problem $\min_{m\in\{0,...,t\}} \chi_t^j$ can be expressed as $\min\{ \cdots \min\{ \min\{\chi^j_0, \chi^j_1\}, \chi^j_2 \}, ..., \chi^j_t \} $ by the associativity property.
+
+By definition of our graph $D$, at every intermediate node $i$ of the form $j(j+1)/2+k$, i.e. where $k>0$, $g(i)=j$ and $h(i)=0$, we will attend over node $k(k+1)/2$ and best till now copied from $i-1$.
+The node $k(k+1)/2$ is never an intermediate node as $h(k(k+1)/2)=1$ for all $k$ and in fact corresponds to Turing machine's step $k$.
+This will help us select the key and value corresponding to min between node $k(k+1)/2$ and $i-1$.
+In other words, at node $i$ of the form $j(j+1)/2+k$ we would have evaluated $m(k)$ and corresponding value selected:
+\begin{equation*}
+    w^{(j(j+1)/2+k+1)} = \hat{v}^{m(k-1)}
+\end{equation*}
+and similarly for $u$'s.
+So after going through all the intermediate nodes, finally at the next compute node, i.e. when $k=j+1$, we will obtain the minimum value over all of $0,1,...,j$.
+This implies at a compute node will be able to recover $\ell(g(i)+1)$ and its corresponding value as shown in Lemma B.4 of \citep{Perez19}.
+Then we have that $\vp^4_i$ is given by
+\begin{equation}
+\begin{array}{rcllr}
+\vp^4_i & = && \Attn_D (\mZ_i^3) + \vz^3_i \\
+& = & [ 
+& \sz, \\
+&&& \oh{q^{g(i+1)}},\oh{\hat{v}^{(i)}},c^{g(i+1)},0,\frac{c^{g(i)+1}}{g(i)+1},\hat{u}_4^{(i)}, \\
+&&& \oh{\hat{\alpha}^{(i)}},\hat{\beta}^{(i)},\oh{w^{(i+1)}}, \\
+&&& 1,\hat{u}_1^{(i)},\hat{u}_2^{(i)},\hat{u}_3^{(i)},h(i),{u}_1^{(i+1)},{u}_2^{(i+1)},{u}_3^{(i+1)},{u}_4^{(i+1)} & ] 
+\end{array}
+\end{equation}
+The cross-attention and feed-forward network are set to be identity, so $\vz_i^4=\va_i^4=\vp_i^4$.
+
+
+\subsubsection{Final transformation}
+We finish our construction by using the final transformation function $F(\cdot)$ from the corresponding lemma from~\citet{Perez19}, with a slight modification.
+\begin{lemma}[Lemma B.5 \citep{Perez19}]
+\label{lem:yr+1}
+There exists a function $F:\Q^d\to \Q^d$ defined by a feed-forward network such that
+\begin{equation*}
+\begin{array}{rcllr}
+F(\vz^4_r) & = & [ 
+& \oh{q^{g(r+1)}},\oh{s^{g(r+1))}},c^{g(r+1)}, \\
+&&& \sz, \\
+&&& \vzs,0,\oh{w^{(r+1)}}, \\
+&&& 0,0,0,0,0,{u}_1^{(r+1)}, {u}_2^{(r+1)}, {u}_3^{(r+1)}, {u}_4^{(r+1)} ] \\ 
+& = & & \vy_{r+1}
+\end{array}
+\end{equation*}
+\end{lemma}
+The modification is to let $w, u_1, u_2, u_3$ to pass through.
+This yields the desired input to transformer at next time step for both intermediate and compute node, thereby concluding our induction.
