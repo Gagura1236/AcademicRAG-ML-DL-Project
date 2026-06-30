@@ -8,6 +8,8 @@ import config
 from src.locales import get_text
 
 def format_citations_html(text, chunks):
+    if not text:
+        return ""
     if not chunks:
         return text
         

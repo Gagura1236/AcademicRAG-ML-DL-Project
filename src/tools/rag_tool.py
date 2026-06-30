@@ -36,6 +36,7 @@ def search_paper(query: str) -> str:
     except Exception:
         pass
 
+    engine = get_rag_engine()
     results = engine.search(query, top_k=3, target_projects=target_projects)
     if not results:
         return "Search Observation: No relevant documents found in the database. [Reflection Trigger] You must re-evaluate your query and try different, broader, or more specific keywords."

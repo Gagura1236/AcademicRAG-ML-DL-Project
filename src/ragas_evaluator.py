@@ -1,9 +1,11 @@
 import json
 import os
 
+import config
+
 class RagasEvaluator:
-    def __init__(self, data_dir="v2.0"):
-        self.data_dir = data_dir
+    def __init__(self, data_dir=None):
+        self.data_dir = data_dir if data_dir is not None else config.DATA_DIR
         self.feedback_file = os.path.join(self.data_dir, "feedback.json")
         self._ensure_file_exists()
 

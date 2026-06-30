@@ -531,7 +531,7 @@ Text: {text[:1500]}
                 "- 重新檢視 Step 1 的論文切片是否過於零碎，導致上下文流失。"
             )
         else:
-            status = "健康 (Balanced ✔)"
+            status = "健康 (Balanced)"
             recommendation = (
                 "**診斷分析**：\n"
                 f"- 總體檢索排名能力優良 (ROC-AUC={auc:.3f})，正負樣本之間有明確的分數邊界 (Margin={margin:.3f})。\n"

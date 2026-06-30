@@ -47,6 +47,10 @@ def _save_lora_config(epochs, rank, lr, margin):
 
 def render(rag_engine):
     lang = st.session_state.get("lang", "zh")
+    if "diagnostic_report" not in st.session_state:
+        st.session_state["diagnostic_report"] = None
+    if "before_report" not in st.session_state:
+        st.session_state["before_report"] = None
     st.subheader(get_text("menu_step6", lang))
 
     if lang == "zh":
